@@ -16,6 +16,8 @@ export const petitionSignatures = pgTable("petition_signatures", {
   userId: uuid("user_id").references(() => users.userId, {
     onDelete: "set null",
   }),
+  city: varchar("city", { length: 255 }),
+  country: varchar("country", { length: 255 }),
   guestToken: uuid("guest_token"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at")
