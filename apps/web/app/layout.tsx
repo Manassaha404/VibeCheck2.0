@@ -5,6 +5,7 @@ import { GlobalProviders } from "../providers/global";
 import { Geist } from "next/font/google";
 import { cn } from "@/lib/utils";
 import { Toaster } from "@/components/ui/sonner";
+import { AuthProvider } from "@/providers/auth-provider";
 
 const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -18,8 +19,9 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "VibeCheck",
-  description: "Create and share Forms",
+  title: "VibeCheck — Polls, Quizzes & Forms",
+  description:
+    "Create polls, quizzes, forms, and petitions. Free, fast, and beautiful.",
 };
 
 export default function RootLayout({
@@ -28,10 +30,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={cn("font-sans", geist.variable)}>
+    <html
+      lang="en"
+      className={cn("font-sans", geist.variable)}
+      suppressHydrationWarning
+    >
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <GlobalProviders>
-          {children}
+          <AuthProvider>{children}</AuthProvider>
           <Toaster richColors position="top-right" />
         </GlobalProviders>
       </body>

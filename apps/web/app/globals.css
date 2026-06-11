@@ -1,4 +1,364 @@
+/* ─── Google Fonts (must be first @imports) ────────────────── */
+@import url("https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Hanken+Grotesk:wght@400..700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap");
+
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
+@theme {
+  --color-leaf-green: #8ED462;
+  --color-electric-sun: #F5E211;
+  --color-canvas-cream: #F5F1E4;
+  --color-ink-charcoal: #2C2E2A;
+  --color-pure-white: #FFFFFF;
+  --color-vivid-coral: #FF6B6B;
+  --color-sky-blue: #4FC3F7;
+  --color-tangerine: #FF9548;
+  --color-mint: #00E5BD;
+  --color-lavender: #C084FC;
+}
+
+/* ─── Design Tokens — Light Mode (Stitch: Vivid Narrative) ──── */
+@layer base {
+  :root {
+    color-scheme: light;
+
+    /* ── Stitch Brand Palette ─────────────────────────────── */
+    --color-leaf-green:          #8ED462;
+    --color-electric-sun:        #F5E211;
+    --color-canvas-cream:        #F5F1E4;
+    --color-ink-charcoal:        #2C2E2A;
+    --color-pure-white:          #FFFFFF;
+
+    /* ── Extra Accent Colors (extended Stitch palette) ──── */
+    --color-vivid-coral:         #FF6B6B;
+    --color-sky-blue:            #4FC3F7;
+    --color-tangerine:           #FF9548;
+    --color-mint:                #00E5BD;
+    --color-lavender:            #C084FC;
+
+    /* ── Surface Scale ───────────────────────────────────── */
+    --color-surface:             #fafaf3;
+    --color-surface-dim:         #dadad4;
+    --color-surface-bright:      #fafaf3;
+    --color-surface-container-lowest: #ffffff;
+    --color-surface-container-low:    #f4f4ee;
+    --color-surface-container:        #eeeee8;
+    --color-surface-container-high:   #e8e9e2;
+    --color-surface-container-highest:#e3e3dd;
+    --color-on-surface:          #1a1c19;
+    --color-on-surface-variant:  #41493a;
+    --color-inverse-surface:     #2f312d;
+    --color-inverse-on-surface:  #f1f1eb;
+
+    /* ── Outline ─────────────────────────────────────────── */
+    --color-outline:             #717a69;
+    --color-outline-variant:     #c1c9b6;
+
+    /* ── Primary ─────────────────────────────────────────── */
+    --color-primary:             #2e6c00;
+    --color-on-primary:          #ffffff;
+    --color-primary-container:   #8ed462;
+    --color-on-primary-container:#265b00;
+    --color-inverse-primary:     #93d966;
+    --color-primary-fixed:       #adf67f;
+    --color-primary-fixed-dim:   #93d966;
+
+    /* ── Secondary ───────────────────────────────────────── */
+    --color-secondary:           #686000;
+    --color-on-secondary:        #ffffff;
+    --color-secondary-container: #f5e212;
+    --color-on-secondary-container: #6d6400;
+    --color-secondary-fixed:     #f8e518;
+    --color-secondary-fixed-dim: #dac900;
+
+    /* ── Tertiary ────────────────────────────────────────── */
+    --color-tertiary:            #605f55;
+    --color-on-tertiary:         #ffffff;
+    --color-tertiary-container:  #c5c2b6;
+    --color-on-tertiary-container: #515046;
+    --color-tertiary-fixed:      #e6e2d6;
+    --color-tertiary-fixed-dim:  #cac6ba;
+
+    /* ── Error ───────────────────────────────────────────── */
+    --color-error:               #ba1a1a;
+    --color-on-error:            #ffffff;
+    --color-error-container:     #ffdad6;
+    --color-on-error-container:  #93000a;
+
+    /* ── Spacing ─────────────────────────────────────────── */
+    --spacing-unit:              8px;
+    --spacing-gutter:            24px;
+    --spacing-margin-mobile:     16px;
+    --spacing-margin-desktop:    40px;
+    --spacing-container-max:     1280px;
+
+    /* ── Radius ──────────────────────────────────────────── */
+    --radius-sm:    0.25rem;
+    --radius:       0.5rem;
+    --radius-md:    0.75rem;
+    --radius-lg:    1rem;
+    --radius-xl:    1.5rem;
+    --radius-full:  9999px;
+
+    /* ── Hard shadow color (light = charcoal) ─────────────── */
+    --color-shadow-hard: #2C2E2A;
+    --color-dot-pattern: #2C2E2A;
+
+    /* ── Section stripe background ───────────────────────── */
+    --color-section-stripe: var(--color-canvas-cream);
+    --color-border-main:    var(--color-ink-charcoal);
+
+    /* ── Navbar ──────────────────────────────────────────── */
+    --color-navbar-bg:   rgba(245,241,228,0.92);
+    --color-navbar-text: var(--color-ink-charcoal);
+  }
+}
+
+/* ─── Base Styles ───────────────────────────────────────────── */
+@layer base {
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  body {
+    background-color: var(--color-canvas-cream);
+    color: var(--color-ink-charcoal);
+    font-family: 'Hanken Grotesk', sans-serif;
+    font-size: 16px;
+    line-height: 24px;
+    min-height: 100vh;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-weight: 800;
+    color: var(--color-ink-charcoal);
+  }
+}
+
+/* ─── Design System Utilities ───────────────────────────────── */
+@layer utilities {
+
+  /* Typography */
+  .font-display    { font-family: 'Bricolage Grotesque', sans-serif; }
+  .font-body       { font-family: 'Hanken Grotesk', sans-serif; }
+
+  .text-display-lg {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-size: clamp(40px, 6vw, 72px);
+    line-height: 1.05;
+    letter-spacing: -0.04em;
+    font-weight: 800;
+  }
+
+  .text-headline-lg {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-size: clamp(32px, 4vw, 48px);
+    line-height: 1.08;
+    letter-spacing: -0.02em;
+    font-weight: 800;
+  }
+
+  .text-headline-md {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-size: 32px;
+    line-height: 38px;
+    font-weight: 700;
+  }
+
+  .text-headline-sm {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-size: 24px;
+    line-height: 30px;
+    font-weight: 700;
+  }
+
+  .text-body-lg {
+    font-family: 'Hanken Grotesk', sans-serif;
+    font-size: 18px;
+    line-height: 28px;
+    font-weight: 400;
+  }
+
+  .text-body-md {
+    font-family: 'Hanken Grotesk', sans-serif;
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 400;
+  }
+
+  .text-label-md {
+    font-family: 'Hanken Grotesk', sans-serif;
+    font-size: 14px;
+    line-height: 20px;
+    letter-spacing: 0.02em;
+    font-weight: 600;
+  }
+
+  .text-label-sm {
+    font-family: 'Hanken Grotesk', sans-serif;
+    font-size: 12px;
+    line-height: 16px;
+    letter-spacing: 0.05em;
+    font-weight: 700;
+  }
+
+  /* Neubrutalist Shadows — use CSS var for dark mode flip */
+  .shadow-hard {
+    box-shadow: 4px 4px 0px 0px var(--color-shadow-hard);
+  }
+  .shadow-hard-sm {
+    box-shadow: 2px 2px 0px 0px var(--color-shadow-hard);
+  }
+  .shadow-hard-lg {
+    box-shadow: 6px 6px 0px 0px var(--color-shadow-hard);
+  }
+  .shadow-hard-xl {
+    box-shadow: 8px 8px 0px 0px var(--color-shadow-hard);
+  }
+
+  /* Press interaction — shadow disappears + translates */
+  .btn-press {
+    transition: box-shadow 0.12s ease, transform 0.12s ease;
+  }
+  .btn-press:hover {
+    box-shadow: 0px 0px 0px 0px var(--color-shadow-hard);
+    transform: translate(4px, 4px);
+  }
+  .btn-press:active {
+    box-shadow: 0px 0px 0px 0px var(--color-shadow-hard);
+    transform: translate(4px, 4px) scale(0.98);
+  }
+
+  /* Card hover lift */
+  .card-lift {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .card-lift:hover {
+    transform: translateY(-4px);
+    box-shadow: 8px 8px 0px 0px var(--color-shadow-hard);
+  }
+
+  /* Dot pattern background — dark-mode aware via CSS var */
+  .bg-dot-pattern {
+    background-image: radial-gradient(
+      circle at center,
+      var(--color-dot-pattern) 1.5px,
+      transparent 1.5px
+    );
+    background-size: 24px 24px;
+    background-attachment: local;
+  }
+
+  /* Material Symbols Outlined */
+  .material-symbols-outlined {
+    font-family: 'Material Symbols Outlined', sans-serif;
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    font-size: inherit;
+    line-height: 1;
+    user-select: none;
+    display: inline-block;
+    white-space: nowrap;
+    word-wrap: normal;
+    direction: ltr;
+    -webkit-font-smoothing: antialiased;
+  }
+  .material-symbols-outlined.filled {
+    font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  }
+
+  /* Tilt card */
+  .tilt-card {
+    transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+                box-shadow 0.2s ease;
+  }
+  .tilt-card:hover {
+    transform: rotate(-1.5deg) scale(1.025);
+  }
+
+  /* Hard-shadow aliases */
+  .hard-shadow {
+    box-shadow: 4px 4px 0px 0px var(--color-shadow-hard);
+  }
+  .hard-shadow-lg {
+    box-shadow: 8px 8px 0px 0px var(--color-shadow-hard);
+  }
+  .hard-shadow:active {
+    box-shadow: none;
+    transform: translate(4px, 4px);
+  }
+
+  /* Theme transition — smooth swap */
+  .theme-transition {
+    transition: background-color 0.3s ease, color 0.3s ease,
+                border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  /* Color chip helpers for accent sections */
+  .accent-coral  { background-color: var(--color-vivid-coral); }
+  .accent-sky    { background-color: var(--color-sky-blue); }
+  .accent-tangerine { background-color: var(--color-tangerine); }
+  .accent-mint   { background-color: var(--color-mint); }
+  .accent-lavender { background-color: var(--color-lavender); }
+  .accent-green  { background-color: var(--color-leaf-green); }
+  .accent-yellow { background-color: var(--color-electric-sun); }
+
+} /* end @layer utilities */
+
+/* ─── Keyframe Animations ───────────────────────────────────── */
+@keyframes float-slow {
+  0%, 100% { transform: translateY(0px) rotate(-2deg); }
+  50%       { transform: translateY(-12px) rotate(2deg); }
+}
+@keyframes float-medium {
+  0%, 100% { transform: translateY(0px) rotate(3deg); }
+  50%       { transform: translateY(-8px) rotate(-1deg); }
+}
+@keyframes wiggle {
+  0%, 100% { transform: rotate(-3deg); }
+  50%       { transform: rotate(3deg); }
+}
+@keyframes pulse-border {
+  0%, 100% { border-color: var(--color-ink-charcoal); }
+  50%       { border-color: var(--color-leaf-green); }
+}
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes slide-in-left {
+  from { opacity: 0; transform: translateX(-32px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+@keyframes theme-pop {
+  0%   { transform: scale(1); }
+  50%  { transform: scale(1.3) rotate(20deg); }
+  100% { transform: scale(1) rotate(0deg); }
+}
+
+.animate-float-slow   { animation: float-slow 5s ease-in-out infinite; }
+.animate-float-medium { animation: float-medium 4s ease-in-out infinite; }
+.animate-wiggle       { animation: wiggle 2s ease-in-out infinite; }
+.animate-fade-up      { animation: fade-up 0.6s ease forwards; }
+.animate-slide-left   { animation: slide-in-left 0.5s ease forwards; }
+.animate-marquee      { animation: marquee 28s linear infinite; }
+.animate-theme-pop    { animation: theme-pop 0.4s cubic-bezier(0.175,0.885,0.32,1.275); }
+
+/* ─── Anchor scroll offset (accounts for sticky navbar) ────────── */
+[id] {
+  scroll-margin-top: 80px;
+}
