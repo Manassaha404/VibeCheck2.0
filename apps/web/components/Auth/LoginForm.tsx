@@ -32,6 +32,11 @@ export default function LoginForm() {
     });
   };
 
+  const handleGoogleLogin = () => {
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL?.replace('/trpc', '') || 'http://localhost:8000';
+    window.location.href = `${apiUrl}/auth/google`;
+  };
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
       {apiError && (
@@ -90,6 +95,7 @@ export default function LoginForm() {
 
       <button 
         type="button" 
+        onClick={handleGoogleLogin}
         className="w-full bg-[var(--color-pure-white)] border-2 border-[var(--color-ink-charcoal)] rounded-full py-3 font-display text-headline-sm text-[var(--color-ink-charcoal)] text-center btn-press shadow-[4px_4px_0px_0px_var(--color-ink-charcoal)] flex items-center justify-center gap-3"
       >
         <svg className="w-5 h-5" viewBox="0 0 24 24">

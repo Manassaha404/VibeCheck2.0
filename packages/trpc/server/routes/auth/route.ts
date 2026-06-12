@@ -16,6 +16,7 @@ import {
   verifySignUpOtpDto,
   resetPasswordRouteDto,
   resendOtpDto,
+  changeUsernameRouteDto,
 } from "./model";
 import { generateAccessToken, generateRefreshToken } from "../../utils/jwt";
 import * as crypto from "node:crypto";
@@ -162,4 +163,15 @@ export const authRouter = router({
       handleRouteError(error);
     }
   }),
+  changeUsername: protectedProcedure
+    .input(changeUsernameRouteDto)
+    .mutation(async ({ input, ctx }) => {
+      try {
+        const { newUsername } = await changeUsernameRouteDto.parseAsync(input);
+        const result = await authService.changeUsername(ctx.user.id, { newUsername });
+        return { message: "Username updated successfully", ...result };
+      } catch (error) {
+        handleRouteError(error);
+      }
+    }),
 });

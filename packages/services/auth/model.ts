@@ -31,9 +31,14 @@ export const resetPasswordDto = z.object({
   newPassword: z.string().min(8).describe("new password of the user"),
 })
 
+export const changeUsernameDto = z.object({
+  newUsername: z.string().trim().min(3).max(255).describe("new username for the user"),
+})
+
 export type createVerifiedUserType = z.infer<typeof createVerifiedUserDto>
 export type registerWithEmailAndPasswordType = z.infer<typeof registerWithEmailAndPasswordDto>
 export type getMetype = z.infer<typeof getMeDto>
 export type loginWithEmailAndPasswordType = z.infer<typeof loginWithEmailAndPasswordDto>
 export type forgotPasswordType = z.infer<typeof forgotPasswordDto>
 export type resetPasswordType = z.infer<typeof resetPasswordDto>
+export type changeUsernameType = z.infer<typeof changeUsernameDto>

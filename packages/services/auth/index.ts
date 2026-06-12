@@ -16,6 +16,8 @@ import {
   registerWithEmailAndPasswordType,
   resetPasswordDto,
   resetPasswordType,
+  changeUsernameDto,
+  changeUsernameType,
 } from "./model";
 import { AppError } from "@repo/error";
 class AuthServices {
@@ -183,6 +185,25 @@ class AuthServices {
       .where(eq(auths.userId, user.userId));
     
     return { success: true };
+  }
+
+  public async changeUsername(userId: string, payload: changeUsernameType) {
+    const { newUsername } = await changeUsernameDto.parseAsync(payload);
+    const [existing] = await db
+      .select()
+      .from(users)
+      .where(eq(users.username, newUsername));
+
+    if (existing) {
+      throw new AppError("CONFLICT", "Username already exists");
+    }
+
+    await db
+      .update(users)
+      .set({ username: newUsername })
+      .where(eq(users.userId, userId));
+
+    return { success: true, newUsername };
   }
 }
 

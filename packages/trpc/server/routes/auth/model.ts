@@ -32,3 +32,7 @@ export const resetPasswordRouteDto = z.object({
   otp: z.string().trim().describe("otp user typed in"),
   newPassword: z.string().min(8).describe("new password"),
 });
+
+export const changeUsernameRouteDto = z.object({
+  newUsername: z.string().trim().min(3).max(255).describe("new username"),
+});

@@ -8,6 +8,7 @@ import { serverRouter, createContext, openApiDocument } from "@repo/trpc/server"
 
 import { env } from "./env";
 import cookieParser from "cookie-parser";
+import authRouter from "./authRouter";
 
 export const app = express();
 
@@ -32,6 +33,7 @@ app.get("/health", (req, res) => {
 });
 
 
+app.use("/auth", authRouter);
 
 app.get("/api/openapi.json", (req, res) => {
   res.setHeader("Content-Type", "application/json");
