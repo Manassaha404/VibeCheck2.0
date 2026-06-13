@@ -1,5 +1,5 @@
 import React from 'react';
-import { UsernameForm } from './_components/UsernameForm';
+import { UsernameForm } from '../../../components/Auth/UsernameForm';
 
 export default function UsernamePage() {
   return (

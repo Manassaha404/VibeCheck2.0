@@ -4,19 +4,21 @@ import { users } from "@repo/database/models/users";
 import { AppError } from "@repo/error";
 import { env } from "../env";
 
-export interface GoogleUserInfo {
-  sub: string; // Google account ID
-  email: string;
-  given_name: string;
-  family_name: string;
-  picture: string;
-  email_verified: boolean;
-}
+import {
+  GoogleUserInfo,
+  ExchangeCodeParams,
+  ExchangeCodeForDriveTokensParams,
+  LinkDriveToUserParams,
+  IsDriveConnectedParams,
+  GetGoogleUserInfoParams,
+  FindOrCreateUserParams,
+  GetGoogleDriveAuthUrlParams,
+} from "./model";
 const GOOGLE_AUTH_URL = "https://accounts.google.com/o/oauth2/v2/auth";
 const GOOGLE_TOKEN_URL = "https://oauth2.googleapis.com/token";
 const GOOGLE_USERINFO_URL = "https://www.googleapis.com/oauth2/v3/userinfo";
 
-
+import { encrypt } from "../utils/encryption";
 
 class OauthService {
   private async generateUniqueUsername(base: string): Promise<string> {
@@ -52,7 +54,10 @@ class OauthService {
     });
     return `${GOOGLE_AUTH_URL}?${params.toString()}`;
   }
-  public async exchangeCodeForTokens(code: string): Promise<{
+
+  
+
+  public async exchangeCodeForTokens({ code }: ExchangeCodeParams): Promise<{
     access_token: string;
     refresh_token?: string;
   }> {
@@ -76,7 +81,10 @@ class OauthService {
     }
     return res.json();
   }
-  public async getGoogleUserInfo(accessToken: string): Promise<GoogleUserInfo> {
+
+  public async getGoogleUserInfo({
+    accessToken,
+  }: GetGoogleUserInfoParams): Promise<GoogleUserInfo> {
     const res = await fetch(GOOGLE_USERINFO_URL, {
       headers: { Authorization: `Bearer ${accessToken}` },
     });
@@ -85,10 +93,11 @@ class OauthService {
 
     return res.json();
   }
-  public async findOrCreateUser(
-    googleUser: GoogleUserInfo,
-    refreshToken?: string,
-  ): Promise<{ userId: string; isNewUser: boolean }> {
+
+  public async findOrCreateUser({
+    googleUser,
+    refreshToken,
+  }: FindOrCreateUserParams): Promise<{ userId: string; isNewUser: boolean }> {
     // Case 1: Already linked Google account
     const [existingAuth] = await db
       .select()
@@ -177,6 +186,81 @@ class OauthService {
       return { userId: newUser.userId, isNewUser: true };
     });
   }
+
+  //drive
+
+
+  public getGoogleDriveAuthUrl({
+    redirectUri,
+  }: GetGoogleDriveAuthUrlParams): string {
+    const params = new URLSearchParams({
+      client_id: env.GOOGLE_CLIENT_ID,
+      redirect_uri: redirectUri,
+      response_type: "code",
+      scope: "https://www.googleapis.com/auth/drive.file",
+      access_type: "offline",
+      prompt: "consent",
+    });
+    return `${GOOGLE_AUTH_URL}?${params.toString()}`;
+  }
+
+  public async exchangeCodeForDriveTokens({
+    code,
+    redirectUri,
+  }: ExchangeCodeForDriveTokensParams): Promise<{
+    access_token: string;
+    refresh_token?: string;
+  }> {
+    const res = await fetch(GOOGLE_TOKEN_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({
+        code,
+        client_id: env.GOOGLE_CLIENT_ID,
+        client_secret: env.GOOGLE_CLIENT_SECRET,
+        redirect_uri: redirectUri,
+        grant_type: "authorization_code",
+      }),
+    });
+    if (!res.ok) {
+      const err = await res.json();
+      throw new AppError(
+        "INTERNAL_SERVER_ERROR",
+        `Token exchange failed: ${err.error_description}`,
+      );
+    }
+    return res.json();
+  }
+
+  public async linkDriveToUser({
+    userId,
+    refreshToken,
+  }: LinkDriveToUserParams): Promise<void> {
+    if (!refreshToken) {
+      // If Google didn't return a new refresh token, assume the existing one is still valid
+      return;
+    }
+    const encryptedToken = encrypt(refreshToken);
+    await db
+      .update(auths)
+      .set({
+        googleDriveRefreshToken: encryptedToken,
+      })
+      .where(eq(auths.userId, userId));
+  }
+
+  public async isDriveConnected({
+    userId,
+  }: IsDriveConnectedParams): Promise<boolean> {
+    const [existingAuth] = await db
+      .select({ googleDriveRefreshToken: auths.googleDriveRefreshToken })
+      .from(auths)
+      .where(eq(auths.userId, userId));
+
+    return !!existingAuth?.googleDriveRefreshToken;
+  }
+
+  
 }
 
 export default OauthService;

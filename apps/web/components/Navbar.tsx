@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
 import { useUserInfoStore } from "@/store/userInfoStore";
 import { useLogout } from "@/hook/auth/useLogout";
@@ -25,6 +26,7 @@ const defaultLinks: NavLink[] = [
 
 export default function Navbar({ links = defaultLinks, logoText = "VibeCheck" }: NavbarProps) {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const pathname = usePathname();
   const { userId } = useUserInfoStore();
   const { handleLogout, isLoggingOut } = useLogout();
 
@@ -57,21 +59,27 @@ export default function Navbar({ links = defaultLinks, logoText = "VibeCheck" }:
 
         {/* Nav links */}
         <nav className="flex gap-8" aria-label="Main navigation">
-          {links.map((link) => (
-            <Link
-              key={link.label}
-              href={link.href}
-              id={`nav-link-${link.label.toLowerCase()}`}
-              className={[
-                "text-headline-sm font-display font-bold transition-colors",
-                link.active
-                  ? "text-[var(--color-primary)] border-b-4 border-[var(--color-electric-sun)] pb-1"
-                  : "text-[var(--color-ink-charcoal)] hover:text-[var(--color-primary)]",
-              ].join(" ")}
-            >
-              {link.label}
-            </Link>
-          ))}
+          {links.map((link) => {
+            const isActive = link.active !== undefined 
+              ? link.active 
+              : pathname === link.href || (link.href !== '/' && pathname.startsWith(link.href + '/'));
+
+            return (
+              <Link
+                key={link.label}
+                href={link.href}
+                id={`nav-link-${link.label.toLowerCase()}`}
+                className={[
+                  "text-headline-sm font-display font-bold transition-colors",
+                  isActive
+                    ? "text-[var(--color-primary)] border-b-4 border-[var(--color-electric-sun)] pb-1"
+                    : "text-[var(--color-ink-charcoal)] hover:text-[var(--color-primary)]",
+                ].join(" ")}
+              >
+                {link.label}
+              </Link>
+            );
+          })}
         </nav>
 
         {/* Actions */}
@@ -132,16 +140,27 @@ export default function Navbar({ links = defaultLinks, logoText = "VibeCheck" }:
           style={{ backgroundColor: "var(--color-canvas-cream)" }}
           aria-label="Mobile navigation"
         >
-          {links.map((link) => (
-            <Link
-              key={link.label}
-              href={link.href}
-              onClick={() => setMobileOpen(false)}
-              className="text-body-lg font-bold text-[var(--color-ink-charcoal)] hover:text-[var(--color-primary)] transition-colors py-2 border-b border-[var(--color-outline-variant)]"
-            >
-              {link.label}
-            </Link>
-          ))}
+          {links.map((link) => {
+            const isActive = link.active !== undefined 
+              ? link.active 
+              : pathname === link.href || (link.href !== '/' && pathname.startsWith(link.href + '/'));
+
+            return (
+              <Link
+                key={link.label}
+                href={link.href}
+                onClick={() => setMobileOpen(false)}
+                className={[
+                  "text-body-lg font-bold transition-colors py-2 border-b border-[var(--color-outline-variant)]",
+                  isActive
+                    ? "text-[var(--color-primary)]"
+                    : "text-[var(--color-ink-charcoal)] hover:text-[var(--color-primary)]",
+                ].join(" ")}
+              >
+                {link.label}
+              </Link>
+            );
+          })}
           {!userId ? (
             <>
               <Link

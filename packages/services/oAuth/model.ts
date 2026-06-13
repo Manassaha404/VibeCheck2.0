@@ -1,0 +1,54 @@
+import { z } from "zod";
+
+export const GoogleUserInfoSchema = z.object({
+  sub: z.string(), // Google account ID
+  email: z.email(),
+  given_name: z.string(),
+  family_name: z.string(),
+  picture: z.url(),
+  email_verified: z.boolean(),
+});
+
+export const ExchangeCodeSchema = z.object({
+  code: z.string(),
+});
+
+export const ExchangeCodeForDriveTokensSchema = z.object({
+  code: z.string(),
+  redirectUri: z.url(),
+});
+
+export const LinkDriveToUserSchema = z.object({
+  userId: z.string(),
+  refreshToken: z.string().optional(),
+});
+
+export const IsDriveConnectedSchema = z.object({
+  userId: z.string(),
+});
+
+export const GetGoogleUserInfoSchema = z.object({
+  accessToken: z.string(),
+});
+
+export const FindOrCreateUserSchema = z.object({
+  googleUser: GoogleUserInfoSchema,
+  refreshToken: z.string().optional(),
+});
+
+export const GetGoogleDriveAuthUrlSchema = z.object({
+  redirectUri: z.url(),
+});
+
+export type GoogleUserInfo = z.infer<typeof GoogleUserInfoSchema>;
+export type ExchangeCodeParams = z.infer<typeof ExchangeCodeSchema>;
+export type ExchangeCodeForDriveTokensParams = z.infer<
+  typeof ExchangeCodeForDriveTokensSchema
+>;
+export type LinkDriveToUserParams = z.infer<typeof LinkDriveToUserSchema>;
+export type IsDriveConnectedParams = z.infer<typeof IsDriveConnectedSchema>;
+export type GetGoogleUserInfoParams = z.infer<typeof GetGoogleUserInfoSchema>;
+export type FindOrCreateUserParams = z.infer<typeof FindOrCreateUserSchema>;
+export type GetGoogleDriveAuthUrlParams = z.infer<
+  typeof GetGoogleDriveAuthUrlSchema
+>;

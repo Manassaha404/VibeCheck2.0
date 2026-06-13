@@ -1,0 +1,1 @@
+ALTER TABLE "auths" ADD COLUMN "google_drive_refresh_token" varchar(512);

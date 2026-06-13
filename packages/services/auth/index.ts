@@ -76,12 +76,13 @@ class AuthServices {
     const [user] = await db
       .select()
       .from(users)
+      .leftJoin(auths, eq(auths.userId, userId))
       .where(eq(users.userId, userId));
 
     if (!user) {
       throw new AppError("NOT_FOUND", "user not found");
     }
-    return { user };
+    return { ...user };
   }
 
   public async loginWithEmailAndPassword(

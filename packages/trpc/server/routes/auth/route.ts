@@ -91,8 +91,12 @@ export const authRouter = router({
     }),
   getMe: protectedProcedure.query(async ({ ctx }) => {
     try {
-      const user = await authService.getme({ userId: ctx.user.id });
-      return { ...user };
+      const { users, auths } = await authService.getme({ userId: ctx.user.id });
+
+      return {
+        users,
+        googleDriveRefreshToken: auths?.googleDriveRefreshToken,
+      };
     } catch (error) {
       handleRouteError(error);
     }
@@ -168,7 +172,9 @@ export const authRouter = router({
     .mutation(async ({ input, ctx }) => {
       try {
         const { newUsername } = await changeUsernameRouteDto.parseAsync(input);
-        const result = await authService.changeUsername(ctx.user.id, { newUsername });
+        const result = await authService.changeUsername(ctx.user.id, {
+          newUsername,
+        });
         return { message: "Username updated successfully", ...result };
       } catch (error) {
         handleRouteError(error);

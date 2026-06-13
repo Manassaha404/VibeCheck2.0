@@ -1,9 +1,10 @@
 import { z } from "zod";
 
 const envSchema = z.object({
-  GOOGLE_CLIENT_ID:z.string(),
-  GOOGLE_CALLBACK_URL:z.string(),
-  GOOGLE_CLIENT_SECRET:z.string(),
+  GOOGLE_CLIENT_ID: z.string(),
+  GOOGLE_CALLBACK_URL: z.string(),
+  GOOGLE_CLIENT_SECRET: z.string(),
+  ENCRYPTION_SECRET: z.string().optional(),
 });
 
 function createEnv(env: NodeJS.ProcessEnv) {

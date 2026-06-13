@@ -249,6 +249,18 @@
     box-shadow: 8px 8px 0px 0px var(--color-shadow-hard);
   }
 
+  /* Neubrutalist Create Card */
+  .shadow-neubrutalist {
+    box-shadow: 8px 8px 0px 0px var(--color-shadow-hard);
+  }
+  .hover-lift {
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .hover-lift:hover {
+    transform: translate(-4px, -4px);
+    box-shadow: 12px 12px 0px 0px var(--color-shadow-hard);
+  }
+
   /* Dot pattern background — dark-mode aware via CSS var */
   .bg-dot-pattern {
     background-image: radial-gradient(

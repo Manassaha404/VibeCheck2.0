@@ -15,6 +15,20 @@
       "when": 1781190676086,
       "tag": "0001_demonic_tana_nile",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1781279219527,
+      "tag": "0002_curly_screwball",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1781288915105,
+      "tag": "0003_familiar_raider",
+      "breakpoints": true
     }
   ]
 }

@@ -20,6 +20,7 @@ export const auths = pgTable("auths", {
   plan: userPlanEnum("plan").default("free").notNull(),
   googleAccountId: varchar("google_account_id", { length: 255 }),
   googleRefreshToken: varchar("google_refresh_token", { length: 512 }),
+  googleDriveRefreshToken: varchar("google_drive_refresh_token", { length: 512 }),
   failedLoginAttempts: integer("failed_login_attempts").default(0).notNull(),
   lockedUntil: timestamp("locked_until"),
   isVerified: boolean("is_verified").default(false).notNull(),

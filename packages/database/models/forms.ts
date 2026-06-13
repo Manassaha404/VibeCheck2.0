@@ -24,7 +24,7 @@ export const forms = pgTable("forms", {
     .notNull()
     .references(() => users.userId, { onDelete: "cascade" }),
   title: varchar("title", { length: 255 }).notNull(),
-  slug: varchar("slug", { length: 255 }).notNull().unique(),
+  slug: varchar("slug", { length: 255 }).notNull(),
   description: text("description"),
   isPublished: boolean("is_published").default(false).notNull(),
   status: formStatusEnum("status").default("draft").notNull(),

@@ -14,13 +14,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   });
   useEffect(() => {
     if (isLoading) return;
-    const publicRoutes = ["/", "/signin", "/signup", "/forgot-password"];
+    const publicRoutes = ["/", "/signin", "/forgot-password"];
     const isPublicRoute =
       publicRoutes.includes(pathname) ||
-      pathname.startsWith("/signup/verify/") ||
+      pathname.startsWith("/signup") ||
       pathname.startsWith("/reset-password/")
 
-    if (isError || !data?.user?.userId) {
+    if (isError || !data?.users?.userId) {
       setInitialized(true);
       setUserInfo({
         userId: undefined,
@@ -33,12 +33,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
       return;
     }
-    if (data?.user?.userId) {
+    if (data?.users?.userId) {
       setUserInfo({
-        userId: data.user.userId,
-        email: data.user.email,
-        fullName: data.user.firstName + " " + data.user.lastName,
-        username: data.user.username,
+        userId: data.users.userId,
+        email: data.users.email,
+        fullName: data.users.firstName + " " + data.users.lastName,
+        username: data.users.username,
+        googleDriveRefreshToken: data?.googleDriveRefreshToken ? data?.googleDriveRefreshToken : undefined
       });
       setInitialized(true);
     }
