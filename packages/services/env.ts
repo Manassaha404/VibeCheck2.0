@@ -4,7 +4,8 @@ const envSchema = z.object({
   GOOGLE_CLIENT_ID: z.string(),
   GOOGLE_CALLBACK_URL: z.string(),
   GOOGLE_CLIENT_SECRET: z.string(),
-  ENCRYPTION_SECRET: z.string().optional(),
+  ENCRYPTION_SECRET: z.string(),
+  OPENAI_API_KEY:z.string()
 });
 
 function createEnv(env: NodeJS.ProcessEnv) {

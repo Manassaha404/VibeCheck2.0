@@ -8,12 +8,14 @@ import { GeneralDetailsSection } from "@/components/form-builder/setup/GeneralDe
 import { SecuritySettingsSection } from "@/components/form-builder/setup/SecuritySettingsSection";
 import { ControlsSection } from "@/components/form-builder/setup/ControlsSection";
 import { IntegrationsSection } from "@/components/form-builder/setup/IntegrationsSection";
-import { useDraftForm } from "@/hook/form/useDraftForm";
+import { useDraftForm } from "@/hook/form/useCreateForm";
 import { useCreateFormStore } from "@/store/createFormStore";
+import { useRouter } from "next/navigation";
 
 export default function FormSetupPage() {
   const { handleDraft, isDrafting, apiError, setApiError } = useDraftForm();
   const formState = useCreateFormStore();
+  const router = useRouter();
 
   const onDraftClick = async () => {
     const trimmedTitle = formState.title.trim();
@@ -58,6 +60,10 @@ export default function FormSetupPage() {
           break;
         }
       }
+    }
+
+    if (success) {
+      router.push(`/create/form/draft/${encodeURIComponent(currentSlug)}`);
     }
   };
 

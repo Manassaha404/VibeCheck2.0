@@ -29,5 +29,8 @@ export * from "./poll-tags";
 export * from "./petition-tags";
 export * from "./user-tag-preferences";
 
+// Agent
+export * from "./agent-conversations";
+
 // Saves
 export * from "./saves";

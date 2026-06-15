@@ -25,6 +25,7 @@ export const fieldTypeEnum = pgEnum("field_type", [
   "file",
   "rating",
   "scale",
+  "mood",
 ]);
 
 export const formFields = pgTable("form_fields", {
@@ -38,6 +39,7 @@ export const formFields = pgTable("form_fields", {
   label: varchar("label", { length: 255 }).notNull(),
   placeholder: varchar("placeholder", { length: 255 }),
   isRequired: boolean("is_required").default(false).notNull(),
+  helperText: varchar("helper_text", { length: 255 }),
   options: jsonb("options"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at")

@@ -1,32 +1,120 @@
 import React from "react";
+import { FieldType, useFormBuilderStore } from "../../store/formBuilderStore";
+import { 
+  Type, 
+  AlignLeft, 
+  CircleDot, 
+  CheckSquare, 
+  ChevronDownSquare, 
+  Calendar, 
+  Upload, 
+  Mail, 
+  Hash, 
+  Star, 
+  Smile,
+  GripVertical,
+  Plus
+} from "lucide-react";
+
+const getTypeColor = (type: FieldType) => {
+  switch (type) {
+    case 'short_text':
+    case 'long_text':
+      return 'bg-sky-blue';
+    case 'radio':
+    case 'checkbox':
+    case 'select':
+    case 'multi_select':
+      return 'bg-lavender';
+    case 'number':
+    case 'phone':
+    case 'email':
+    case 'date':
+      return 'bg-mint';
+    case 'file':
+      return 'bg-tangerine';
+    case 'rating':
+    case 'scale':
+    case 'mood':
+      return 'bg-vivid-coral';
+    default:
+      return 'bg-electric-sun';
+  }
+};
 
 export function FieldPalette() {
+  const { addNode, setSelectedNode } = useFormBuilderStore();
+
+  const onDragStart = (event: React.DragEvent, nodeType: FieldType, label: string) => {
+    event.dataTransfer.setData('application/reactflow', JSON.stringify({ type: nodeType, label }));
+    event.dataTransfer.effectAllowed = 'move';
+  };
+
+  const handleAddClick = (nodeType: FieldType, label: string) => {
+    const defaultOptions = ['radio', 'select', 'checkbox', 'multi_select'].includes(nodeType) 
+      ? [
+          { id: crypto.randomUUID(), value: 'Option 1' },
+          { id: crypto.randomUUID(), value: 'Option 2' }
+        ] 
+      : undefined;
+
+    const newNode = {
+      id: crypto.randomUUID(),
+      type: 'fieldNode',
+      position: { x: 50, y: 50 }, // Default position for canvas mode if added via click
+      data: { 
+        label, 
+        type: nodeType, 
+        isRequired: false, 
+        isPrimary: false,
+        ...(defaultOptions && { options: defaultOptions })
+      },
+    };
+    addNode(newNode);
+    setSelectedNode(newNode.id);
+  };
+
+  const elements: { icon: React.ElementType; label: string; type: FieldType }[] = [
+    { icon: Type, label: "Short Text", type: "short_text" },
+    { icon: AlignLeft, label: "Long Text", type: "long_text" },
+    { icon: CircleDot, label: "Single Select", type: "radio" },
+    { icon: CheckSquare, label: "Multi Select", type: "checkbox" },
+    { icon: ChevronDownSquare, label: "Dropdown", type: "select" },
+    { icon: Calendar, label: "Date Picker", type: "date" },
+    { icon: Upload, label: "File Upload", type: "file" },
+    { icon: Mail, label: "Email", type: "email" },
+    { icon: Hash, label: "Number", type: "number" },
+    { icon: Star, label: "Rating", type: "rating" },
+    { icon: Smile, label: "Mood", type: "mood" }
+  ];
+
   return (
     <aside className="w-full md:w-72 border-r-2 border-ink-charcoal bg-pure-white flex flex-col h-full flex-shrink-0 z-10">
       <div className="p-4 border-b-2 border-ink-charcoal bg-canvas-cream">
-        <h2 className="text-headline-sm text-ink-charcoal uppercase tracking-tight">Form Elements</h2>
+        <h2 className="text-headline-sm text-ink-charcoal uppercase tracking-tight font-headline-sm font-bold">Form Elements</h2>
       </div>
       <div className="p-4 flex-grow overflow-y-auto bg-pure-white space-y-4">
-        <p className="text-label-sm text-outline uppercase tracking-wider mb-2">Drag to add</p>
+        <p className="text-label-sm font-label-sm font-bold text-outline uppercase tracking-wider mb-2">Drag to add</p>
         
-        {/* Draggable Items */}
-        {[
-          { icon: "short_text", label: "Short Text" },
-          { icon: "notes", label: "Long Text" },
-          { icon: "radio_button_checked", label: "Single Select" },
-          { icon: "check_box", label: "Multi Select" },
-          { icon: "arrow_drop_down_circle", label: "Dropdown" },
-          { icon: "calendar_month", label: "Date Picker" },
-          { icon: "upload_file", label: "File Upload" },
-          { icon: "mail", label: "Email" },
-          { icon: "123", label: "Number" },
-          { icon: "star", label: "Rating" },
-          { icon: "sentiment_satisfied", label: "Mood" }
-        ].map((item) => (
-          <div key={item.label} className="bg-surface-container-low border-2 border-ink-charcoal rounded p-3 cursor-grab hover:bg-electric-sun transition-colors flex items-center gap-3 group">
-            <span className="material-symbols-outlined text-outline group-hover:text-ink-charcoal">{item.icon}</span>
-            <span className="text-label-md flex-grow">{item.label}</span>
-            <span className="material-symbols-outlined text-outline group-hover:text-ink-charcoal opacity-50">drag_indicator</span>
+        {/* Draggable & Clickable Items */}
+        {elements.map(({ icon: Icon, label, type }) => (
+          <div 
+            key={label}
+            draggable
+            onDragStart={(e) => onDragStart(e, type, label)}
+            className="flex items-center gap-3 p-3 border-2 border-ink-charcoal bg-pure-white rounded cursor-grab hover:shadow-[4px_4px_0px_0px_rgba(44,46,42,1)] hover:-translate-y-1 transition-all group"
+          >
+            <div className={`p-2 rounded border-2 border-ink-charcoal ${getTypeColor(type)}`}>
+              <Icon className="w-5 h-5 text-ink-charcoal" />
+            </div>
+            <span className="font-label-md text-label-md flex-grow">{label}</span>
+            <button 
+              onClick={() => handleAddClick(type, label)}
+              className="p-1.5 border-2 border-transparent group-hover:border-ink-charcoal rounded hover:bg-electric-sun transition-colors opacity-0 group-hover:opacity-100"
+              title="Add to Canvas"
+            >
+              <Plus className="w-4 h-4" />
+            </button>
           </div>
         ))}
       </div>

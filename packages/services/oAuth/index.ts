@@ -55,8 +55,6 @@ class OauthService {
     return `${GOOGLE_AUTH_URL}?${params.toString()}`;
   }
 
-  
-
   public async exchangeCodeForTokens({ code }: ExchangeCodeParams): Promise<{
     access_token: string;
     refresh_token?: string;
@@ -189,7 +187,6 @@ class OauthService {
 
   //drive
 
-
   public getGoogleDriveAuthUrl({
     redirectUri,
   }: GetGoogleDriveAuthUrlParams): string {
@@ -259,8 +256,6 @@ class OauthService {
 
     return !!existingAuth?.googleDriveRefreshToken;
   }
-
-  
 }
 
 export default OauthService;

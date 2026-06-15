@@ -7,17 +7,15 @@ import { draftFormDto } from "@repo/services/form/model";
 type DraftFormDtoType = z.infer<typeof draftFormDto>;
 
 export const useDraftForm = () => {
-  const router = useRouter();
   const [apiError, setApiError] = useState<string | null>(null);
   
-  const { mutateAsync: draftMutation, isPending: isDrafting } = trpc.form.draft.useMutation();
+  const { mutateAsync: draftMutation, isPending: isDrafting } = trpc.form.createForm.useMutation();
 
   const handleDraft = async (data: DraftFormDtoType) => {
     setApiError(null);
     try {
       const response = await draftMutation(data);
       if (response?.form) {
-        router.push(`/dashboard`);
         return true;
       }
       return false;

@@ -5,11 +5,13 @@ import { router } from "./trpc";
 
 
 import { formRouter } from "./routes/form/route";
+import { agentRouter } from "./routes/agent/route";
 
 export const serverRouter = router({
   health: healthRouter,
   auth: authRouter,
   form: formRouter,
+  agent:agentRouter
 });
 
 export { createContext } from "./context";

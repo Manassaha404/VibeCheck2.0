@@ -42,6 +42,6 @@ export const forms = pgTable("forms", {
     .$onUpdate(() => new Date()),
 }, (forms) => [
   index("form_user_id_idx").on(forms.userId),
-  uniqueIndex("form_slug_idx").on(forms.slug),
+  uniqueIndex("form_slug_idx").on(forms.slug, forms.userId),
   index("form_status_idx").on(forms.status),
 ]);

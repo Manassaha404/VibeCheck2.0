@@ -123,7 +123,7 @@ authRouter.get("/google/drive", async (req: Request, res: Response) => {
       const basePath =
         typeof returnTo === "string" && returnTo.startsWith("/")
           ? returnTo
-          : "/settings";
+          : "/";
       const redirectUrl = new URL(`${env.FRONTEND_URL}${basePath}`);
       redirectUrl.searchParams.set("info", "drive_already_connected");
       return res.redirect(redirectUrl.toString());

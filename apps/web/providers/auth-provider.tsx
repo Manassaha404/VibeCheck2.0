@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { trpc } from "@/trpc/client";
 import { useUserInfoStore } from "@/store/userInfoStore";
+import { PageLoader } from "@/components/PageLoader";
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter();
@@ -46,7 +47,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [data, isLoading, isError, pathname, router, setInitialized, setUserInfo]);
 
   if (!useUserInfoStore.getState().isInitialized && isLoading) {
-    return <div>Loading...</div>;
+    return <PageLoader message="Authenticating..." />;
   }
   return <>{children}</>;
 }
