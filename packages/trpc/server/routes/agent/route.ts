@@ -1,6 +1,6 @@
 import { AppError } from "@repo/error";
 import { protectedProcedure, router } from "../../trpc";
-import { agentServices } from "../../services";
+import { formBuilderAgentServices } from "../../services";
 import { generateFormDto, clearHistoryDto } from "./model";
 
 export const agentRouter = router({
@@ -8,7 +8,7 @@ export const agentRouter = router({
     .input(generateFormDto)
     .mutation(async ({ input, ctx }) => {
       try {
-        const form = await agentServices.runFormMakerAgent(
+        const form = await formBuilderAgentServices.runFormMakerAgent(
           ctx.user.id,
           input.formId,
           input.prompt,
@@ -27,11 +27,10 @@ export const agentRouter = router({
       }
     }),
 
-  clearHistory: protectedProcedure
+  clearFormBuilderAgentHistory: protectedProcedure
     .input(clearHistoryDto)
     .mutation(async ({ input, ctx }) => {
-      await agentServices.clearHistory(ctx.user.id, input.formId);
+      await formBuilderAgentServices.clearHistory(ctx.user.id, input.formId);
       return { message: "Conversation history cleared" };
     }),
 });
-

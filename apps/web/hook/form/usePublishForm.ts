@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { trpc } from "@/trpc/client";
-import { z } from "zod";
+import { success, z } from "zod";
 import { saveDraftFormDto } from "@repo/services/form/model";
 
 type SaveDraftFormDtoType = z.infer<typeof saveDraftFormDto>;
 
 export const usePublishForm = () => {
+  
   const [apiError, setApiError] = useState<string | null>(null);
   
   const { mutateAsync: publishFormMutation, isPending: isPublishing } = trpc.form.publishForm.useMutation();
@@ -15,12 +16,12 @@ export const usePublishForm = () => {
     try {
       const response = await publishFormMutation(data);
       if (response?.form) {
-        return true;
+        return {success: true, formSlug: response.form.slug}
       }
-      return false;
+      return {success:false}
     } catch (error: any) {
       setApiError(error.message || "Failed to publish form. Please try again.");
-      return false;
+      return {success:false}
     }
   };
 

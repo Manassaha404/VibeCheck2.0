@@ -1,6 +1,6 @@
 import { Worker, Job } from "bullmq";
 import { Resend } from "resend";
-import { env } from "../../env";
+import { env } from "../env";
 import { EmailJobData } from "./emailQueue";
 
 const resend = new Resend(env.RESEND_API_KEY);

@@ -1,8 +1,12 @@
 import AuthServices from "@repo/services/auth";
 import OauthService from "@repo/services/oAuth";
 import FormServices from "@repo/services/form";
-import AgentServices from "@repo/services/agent";
+import FormBuilderAgentServices from "@repo/services/agent/formBuilderAgent";
+import FormRespondentAgentService from "@repo/services/agent/formRespondentAgent";
+import EmailServices from "@repo/services/email";
 export const authService = new AuthServices();
 export const oAuthService = new OauthService();
 export const formServices = new FormServices();
-export const agentServices = new AgentServices();
+export const formBuilderAgentServices = new FormBuilderAgentServices();
+export const formRespondentAgentService = new FormRespondentAgentService();
+export const emailServices = new EmailServices();

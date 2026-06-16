@@ -10,14 +10,14 @@ import { FieldSettings } from "@/components/form-builder/field-settings";
 import { AgentChat } from "@/components/form-builder/agent-chat";
 import { useFormBuilderStore } from "@/store/formBuilderStore";
 import { List, GitMerge, Save, Loader2, Check, Send } from "lucide-react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useUserInfoStore } from "@/store/userInfoStore";
 import { useSaveDraftForm } from "@/hook/form/useSaveDraftForm";
 import { useLoadDraftForm } from "@/hook/form/useLoadDraftForm";
 import { usePublishForm } from "@/hook/form/usePublishForm";
 import { PageLoader } from "@/components/PageLoader";
-
 export default function FormDraftBuilderPage() {
+  const router = useRouter();
   const { viewMode, setViewMode } = useFormBuilderStore();
   const params = useParams();
   const formSlug = params?.id as string;
@@ -78,14 +78,15 @@ export default function FormDraftBuilderPage() {
       options: node.data.options,
     }));
 
-    const success = await handlePublishForm({
+    const response = await handlePublishForm({
       formSlug,
       fields,
     });
 
-    if (success) {
+    if (response.success && response.formSlug) {
       setIsPublished(true);
-      setTimeout(() => setIsPublished(false), 3000);
+      setTimeout(() => setIsPublished(false), 2000);
+      router.push(`/dashboard/analytics/form/${response.formSlug}`)
     }
   };
 

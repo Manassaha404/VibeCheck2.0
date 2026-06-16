@@ -1,14 +1,11 @@
-import redis from "../../services/redis";
+import redis from "@repo/services/redis";
 import { authService } from "../../services";
 import { protectedProcedure, publicProcedure, router } from "../../trpc";
 import {
   loginWithEmailAndPasswordDto,
   registerWithEmailAndPasswordDto,
 } from "@repo/services/auth/model";
-import {
-  sendPasswordResetEmail,
-  sendVerificationEmail,
-} from "../../utils/email/email";
+import { emailServices } from "../../services";
 import { handleRouteError } from "../../utils/error";
 import { AppError } from "@repo/error";
 import {
@@ -43,7 +40,7 @@ export const authRouter = router({
           verificationOtp,
         });
         await redis.expire(id, 60 * 5);
-        await sendVerificationEmail(email, verificationOtp);
+        await emailServices.sendVerificationEmail(email, verificationOtp);
         return { message: "verification email sent successfully" };
       } catch (error) {
         handleRouteError(error);
@@ -119,7 +116,7 @@ export const authRouter = router({
         );
         await redis.expire(id, ttlInSeconds);
 
-        await sendPasswordResetEmail(email, otp);
+        await emailServices.sendPasswordResetEmail(email, otp);
         return { message: "Password reset OTP sent successfully" };
       } catch (error) {
         handleRouteError(error);
@@ -161,7 +158,7 @@ export const authRouter = router({
       const newOtp = crypto.randomInt(100000, 1000000).toString();
       await redis.hset(id, { ...data, verificationOtp: newOtp });
       await redis.expire(id, 60 * 5);
-      await sendVerificationEmail(data.email, newOtp);
+      await emailServices.sendVerificationEmail(data.email, newOtp);
       return { message: "New OTP sent successfully" };
     } catch (error) {
       handleRouteError(error);

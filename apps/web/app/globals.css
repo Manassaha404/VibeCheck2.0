@@ -409,3 +409,27 @@
 [id] {
   scroll-margin-top: 80px;
 }
+
+/* ─── Custom scrollbar for raw feed ───────────────────────── */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 12px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: var(--color-canvas-cream);
+  border-left: 2px solid var(--color-ink-charcoal);
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: var(--color-ink-charcoal);
+  border: 2px solid var(--color-canvas-cream);
+}
+
+/* ─── Pie Chart Segment Helper ────────────────────────────── */
+.pie-chart {
+  background: conic-gradient(
+    var(--color-leaf-green) 0% 75%,
+    #FF007F 75% 90%,
+    var(--color-electric-sun) 90% 100%
+  );
+  border-radius: 50%;
+}
+

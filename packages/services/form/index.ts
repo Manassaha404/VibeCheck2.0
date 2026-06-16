@@ -1,4 +1,4 @@
-import db, { eq, and } from "@repo/database";
+import db, { eq, and, gte, sql, desc, ilike } from "@repo/database";
 import { forms } from "@repo/database/models/forms";
 import { AppError } from "@repo/error";
 import {
@@ -10,8 +10,28 @@ import {
   SaveDraftFormDtoType,
   publishFormDto,
   PublishFormDtoType,
+  getFormAnalyticsDto,
+  GetFormAnalyticsDtoType,
+  getFormResponsesDto,
+  GetFormResponsesDtoType,
+  getPublicFormDto,
+  GetPublicFormDtoType,
+  PublicFormResult,
+  FieldType,
+  FieldAnalyticsData,
+  AnalyticsField,
+  FormAnalyticsResult,
+  FormResponsesResult,
+  FormResponseItem,
+  FormResponseAnswer,
+  submitStaticFormDto,
+  SubmitStaticFormDtoType,
 } from "./model";
 import { formFields } from "@repo/database/models/form-fields";
+import { formResponses } from "@repo/database/models/form-responses";
+import { formAnswers } from "@repo/database/models/form-answers";
+import { users } from "@repo/database/models/users";
+
 
 class FormServices {
   public async createForm(userId: string, payload: DraftFormDtoType) {
@@ -83,6 +103,209 @@ class FormServices {
 
     return existingForm;
   }
+
+  public async getPublicForm(
+    payload: GetPublicFormDtoType,
+    guestToken?: string,
+  ): Promise<PublicFormResult> {
+    const { username, slug, password, editMode } = getPublicFormDto.parse(payload);
+
+    // Resolve username → userId
+    const [user] = await db
+      .select({ userId: users.userId })
+      .from(users)
+      .where(eq(users.username, username));
+
+    if (!user) {
+      throw new AppError("NOT_FOUND", "User not found");
+    }
+
+    // Fetch the published form
+    const [form] = await db
+      .select()
+      .from(forms)
+      .where(
+        and(
+          eq(forms.userId, user.userId),
+          eq(forms.slug, slug),
+          eq(forms.isPublished, true),
+        ),
+      );
+
+    if (!form) {
+      throw new AppError("NOT_FOUND", "Form not found or not published");
+    }
+
+    const baseResult = {
+      formId: form.formId,
+      title: form.title,
+      description: form.description ?? null,
+      slug: form.slug,
+    };
+
+    // Check expiry
+    if (form.expiresAt && new Date() > form.expiresAt) {
+      return { ...baseResult, access: "expired" };
+    }
+
+    // Check limit
+    if (form.responseLimit) {
+      const result = await db
+        .select({ count: sql<number>`count(*)` })
+        .from(formResponses)
+        .where(eq(formResponses.formId, form.formId));
+      const count = result[0]?.count ?? 0;
+      if (count >= form.responseLimit) {
+        return { ...baseResult, access: "limit_reached" };
+      }
+    }
+
+    // Check password
+    if (form.passwordNeeded && form.password !== password) {
+      return { ...baseResult, access: "password_required" };
+    }
+
+    // Check if already responded
+    let previousAnswers: Record<string, unknown> | undefined = undefined;
+    let existingResponseId: string | undefined = undefined;
+    
+    if (guestToken) {
+      const [existing] = await db
+        .select()
+        .from(formResponses)
+        .where(
+          and(
+            eq(formResponses.formId, form.formId),
+            eq(formResponses.guestToken, guestToken),
+          ),
+        );
+        
+      if (existing) {
+        if (!editMode || !form.allowResponseEdit) {
+          return {
+            ...baseResult,
+            access: "already_responded",
+            allowResponseEdit: form.allowResponseEdit,
+            responseId: existing.responseId,
+          };
+        } else {
+          existingResponseId = existing.responseId;
+          const answers = await db
+            .select()
+            .from(formAnswers)
+            .where(eq(formAnswers.responseId, existing.responseId));
+            
+          previousAnswers = {};
+          for (const ans of answers) {
+            previousAnswers[ans.fieldId] = ans.value;
+          }
+        }
+      }
+    }
+
+    const fields = await db
+      .select()
+      .from(formFields)
+      .where(eq(formFields.formId, form.formId))
+      .orderBy(formFields.orderIndex);
+
+    return {
+      ...baseResult,
+      access: "granted",
+      isCommentsAllowed: form.isCommentsAllowed,
+      previousAnswers,
+      responseId: existingResponseId,
+      fields: fields.map((f) => ({
+        fieldId: f.fieldId,
+        label: f.label,
+        type: f.type as FieldType,
+        placeholder: f.placeholder ?? null,
+        helperText: f.helperText ?? null,
+        isRequired: f.isRequired,
+        isPrimary: f.isPrimary,
+        options: (f.options as { id: string; value: string }[] | null) ?? null,
+        orderIndex: f.orderIndex,
+      })),
+    };
+  }
+
+  public async submitStaticForm(
+    payload: SubmitStaticFormDtoType,
+    guestToken: string,
+  ) {
+    const data = submitStaticFormDto.parse(payload);
+    const { formId, answers, responseId } = data;
+
+    const [form] = await db.select().from(forms).where(eq(forms.formId, formId));
+    if (!form) throw new AppError("NOT_FOUND", "Form not found");
+
+    if (form.expiresAt && new Date() > form.expiresAt) {
+      throw new AppError("FORBIDDEN", "Form has expired");
+    }
+
+    if (!responseId && form.responseLimit) {
+      const result = await db
+        .select({ count: sql<number>`count(*)` })
+        .from(formResponses)
+        .where(eq(formResponses.formId, formId));
+      const count = result[0]?.count ?? 0;
+      if (count >= form.responseLimit) {
+        throw new AppError("FORBIDDEN", "Response limit reached");
+      }
+    }
+
+    let currentResponseId = responseId;
+
+    if (currentResponseId) {
+      // Update
+      const [existing] = await db
+        .select()
+        .from(formResponses)
+        .where(
+          and(
+            eq(formResponses.responseId, currentResponseId),
+            eq(formResponses.guestToken, guestToken),
+          ),
+        );
+      if (!existing) throw new AppError("FORBIDDEN", "Not your response");
+      if (!form.allowResponseEdit) throw new AppError("FORBIDDEN", "Editing not allowed");
+
+      await db.delete(formAnswers).where(eq(formAnswers.responseId, currentResponseId));
+    } else {
+      // Insert new
+      const [existing] = await db
+        .select()
+        .from(formResponses)
+        .where(
+          and(
+            eq(formResponses.formId, formId),
+            eq(formResponses.guestToken, guestToken),
+          ),
+        );
+      if (existing) throw new AppError("FORBIDDEN", "Already submitted");
+
+      const [newResponse] = await db
+        .insert(formResponses)
+        .values({ formId, guestToken })
+        .returning({ responseId: formResponses.responseId });
+      
+      if (!newResponse) throw new AppError("INTERNAL_SERVER_ERROR", "Failed to create response");
+      currentResponseId = newResponse.responseId;
+    }
+
+    const answersToInsert = Object.entries(answers).map(([fieldId, value]) => ({
+      fieldId,
+      responseId: currentResponseId as string,
+      value: value as any,
+    }));
+
+    if (answersToInsert.length > 0) {
+      await db.insert(formAnswers).values(answersToInsert);
+    }
+
+    return { responseId: currentResponseId };
+  }
+
   public async getSavedFields(userId: string, payload: getSavedFieldsType) {
     const { formSlug } = await getSavedFieldsDto.parseAsync(payload);
     const [existingForm] = await db
@@ -118,6 +341,396 @@ class FormServices {
 
     return publishedForm;
   }
+
+  public async getFormAnalytics(
+    userId: string,
+    payload: GetFormAnalyticsDtoType,
+  ): Promise<FormAnalyticsResult> {
+    const { formSlug } = getFormAnalyticsDto.parse(payload);
+
+    // 1. Fetch the form (owner check)
+    const [form] = await db
+      .select()
+      .from(forms)
+      .where(and(eq(forms.slug, formSlug), eq(forms.userId, userId)));
+
+    if (!form) {
+      throw new AppError("NOT_FOUND", "Form not found");
+    }
+
+    // 2. Fetch all fields ordered
+    const fields = await db
+      .select()
+      .from(formFields)
+      .where(eq(formFields.formId, form.formId))
+      .orderBy(formFields.orderIndex);
+
+    // 3. Fetch all responses for the form
+    const responses = await db
+      .select()
+      .from(formResponses)
+      .where(eq(formResponses.formId, form.formId));
+
+    const totalResponses = responses.length;
+    const responseIds = responses.map((r) => r.responseId);
+
+    // 4. Compute weekly response counts (last 6 weeks)
+    const sixWeeksAgo = new Date();
+    sixWeeksAgo.setDate(sixWeeksAgo.getDate() - 42);
+
+    // Build weekly buckets
+    const weeklyMap: Record<string, number> = {};
+    for (let w = 0; w < 6; w++) {
+      const label = w === 0 ? "This Wk" : w === 1 ? "Last Wk" : `${w} Wks Ago`;
+      weeklyMap[label] = 0;
+    }
+    for (const r of responses) {
+      const daysAgo = Math.floor(
+        (Date.now() - r.createdAt.getTime()) / (1000 * 60 * 60 * 24),
+      );
+      if (daysAgo < 42) {
+        const weekIndex = Math.floor(daysAgo / 7); // 0 = most recent
+        const label = weekIndex === 0 ? "This Wk" : weekIndex === 1 ? "Last Wk" : `${weekIndex} Wks Ago`;
+        if (weeklyMap[label] !== undefined) {
+          weeklyMap[label]!++;
+        }
+      }
+    }
+    const weeklyResponses = Object.entries(weeklyMap)
+      .map(([week, count]) => ({ week, count }))
+      .reverse();
+
+    // 5. Fetch all answers for all responses (if any)
+    let allAnswers: { answerId: string; fieldId: string; responseId: string; value: unknown }[] = [];
+    if (responseIds.length > 0) {
+      allAnswers = await db
+        .select()
+        .from(formAnswers)
+        .where(
+          sql`${formAnswers.responseId} = ANY(${sql.raw(`ARRAY[${responseIds.map((id) => `'${id}'`).join(",")}]::uuid[]`)})`,
+        );
+    }
+
+    // Group answers by fieldId
+    const answersByField: Record<string, unknown[]> = {};
+    for (const answer of allAnswers) {
+      if (!answersByField[answer.fieldId]) {
+        answersByField[answer.fieldId] = [];
+      }
+      answersByField[answer.fieldId]!.push(answer.value);
+    }
+
+    // 6. Build per-field analytics
+    const analyticsFields: AnalyticsField[] = fields.map((field) => {
+      const rawAnswers = answersByField[field.fieldId] ?? [];
+      const type = field.type as FieldType;
+      let analytics: FieldAnalyticsData;
+
+      // Text-type fields
+      if (
+        type === "short_text" ||
+        type === "long_text" ||
+        type === "email" ||
+        type === "phone"
+      ) {
+        const samples = rawAnswers
+          .map((v) => (typeof v === "string" ? v : JSON.stringify(v)))
+          .filter(Boolean)
+          .slice(0, 20);
+        analytics = { kind: "text", samples, totalAnswered: rawAnswers.length };
+      }
+      // Mood field
+      else if (type === "mood") {
+        const tally: Record<string, number> = {};
+        for (const v of rawAnswers) {
+          const key = typeof v === "string" ? v : JSON.stringify(v);
+          tally[key] = (tally[key] ?? 0) + 1;
+        }
+        const total = rawAnswers.length || 1;
+        const distribution = Object.entries(tally).map(([mood, count]) => ({
+          mood,
+          count,
+          pct: Math.round((count / total) * 100),
+        }));
+        analytics = {
+          kind: "mood",
+          distribution,
+          totalAnswered: rawAnswers.length,
+        };
+      }
+      // Single/multi select, radio, checkbox
+      else if (
+        type === "select" ||
+        type === "radio" ||
+        type === "multi_select" ||
+        type === "checkbox"
+      ) {
+        const tally: Record<string, number> = {};
+        // Pre-populate from field options
+        const fieldOptions: string[] =
+          Array.isArray(field.options)
+            ? (field.options as string[])
+            : [];
+        for (const opt of fieldOptions) {
+          tally[String(opt)] = 0;
+        }
+        for (const v of rawAnswers) {
+          if (Array.isArray(v)) {
+            for (const item of v as unknown[]) {
+              const key = String(item);
+              tally[key] = (tally[key] ?? 0) + 1;
+            }
+          } else {
+            const key = String(v);
+            tally[key] = (tally[key] ?? 0) + 1;
+          }
+        }
+        const totalVotes = Object.values(tally).reduce((a, b) => a + b, 0) || 1;
+        const options = Object.entries(tally).map(([label, count]) => ({
+          label,
+          count,
+          pct: Math.round((count / totalVotes) * 100),
+        }));
+        analytics = {
+          kind: "choice",
+          options,
+          totalAnswered: rawAnswers.length,
+        };
+      }
+      // Numeric / rating / scale
+      else if (type === "number" || type === "rating" || type === "scale") {
+        const nums = rawAnswers
+          .map((v) => parseFloat(String(v)))
+          .filter((n) => !isNaN(n));
+        const average =
+          nums.length > 0
+            ? Math.round((nums.reduce((a, b) => a + b, 0) / nums.length) * 10) / 10
+            : 0;
+        const min = nums.length > 0 ? Math.min(...nums) : 0;
+        const max = nums.length > 0 ? Math.max(...nums) : 0;
+
+        // Distribution buckets (1-5 for rating/scale, or 5 equal buckets for number)
+        const bucketCount = type === "rating" || type === "scale" ? Math.ceil(max) || 5 : 5;
+        const distribution: { label: string; count: number }[] = [];
+        if (type === "rating" || type === "scale") {
+          for (let i = 1; i <= Math.max(bucketCount, 5); i++) {
+            distribution.push({
+              label: String(i),
+              count: nums.filter((n) => Math.round(n) === i).length,
+            });
+          }
+        } else {
+          const range = max - min || 1;
+          const step = range / 5;
+          for (let i = 0; i < 5; i++) {
+            const lo = min + step * i;
+            const hi = min + step * (i + 1);
+            distribution.push({
+              label: `${Math.round(lo)}-${Math.round(hi)}`,
+              count: nums.filter((n) => n >= lo && (i === 4 ? n <= hi : n < hi)).length,
+            });
+          }
+        }
+        analytics = { kind: "numeric", average, min, max, distribution, totalAnswered: rawAnswers.length };
+      }
+      // Date field
+      else if (type === "date") {
+        const monthTally: Record<string, number> = {};
+        for (const v of rawAnswers) {
+          const d = new Date(String(v));
+          if (!isNaN(d.getTime())) {
+            const label = d.toLocaleString("default", { month: "short", year: "2-digit" });
+            monthTally[label] = (monthTally[label] ?? 0) + 1;
+          }
+        }
+        const distribution = Object.entries(monthTally).map(([label, count]) => ({
+          label,
+          count,
+        }));
+        analytics = { kind: "date", distribution, totalAnswered: rawAnswers.length };
+      }
+      // File field
+      else {
+        analytics = { kind: "file", totalUploads: rawAnswers.length };
+      }
+
+      return {
+        fieldId: field.fieldId,
+        label: field.label,
+        type,
+        orderIndex: field.orderIndex,
+        analytics,
+      };
+    });
+
+    return {
+      form: {
+        formId: form.formId,
+        title: form.title,
+        slug: form.slug,
+        status: form.status,
+        createdAt: form.createdAt,
+        responseLimit: form.responseLimit,
+        expiresAt: form.expiresAt ?? null,
+      },
+      totalResponses,
+      weeklyResponses,
+      fields: analyticsFields,
+    };
+  }
+
+  public async getFormResponses(
+    userId: string,
+    payload: GetFormResponsesDtoType,
+  ): Promise<FormResponsesResult> {
+    const { formSlug, page, limit, search } = getFormResponsesDto.parse(payload);
+    const offset = (page - 1) * limit;
+
+    // 1. Verify ownership
+    const [form] = await db
+      .select()
+      .from(forms)
+      .where(and(eq(forms.slug, formSlug), eq(forms.userId, userId)));
+
+    if (!form) {
+      throw new AppError("NOT_FOUND", "Form not found");
+    }
+
+    // 2. Fetch all fields ordered
+    const fields = await db
+      .select()
+      .from(formFields)
+      .where(eq(formFields.formId, form.formId))
+      .orderBy(formFields.orderIndex);
+
+    const primaryField = fields.find((f) => f.isPrimary) ?? null;
+
+    // 3. Build field map for label lookup
+    const fieldMap: Record<string, typeof fields[number]> = {};
+    for (const f of fields) {
+      fieldMap[f.fieldId] = f;
+    }
+
+    // 4. If search is provided, find responseIds matching the primary field value
+    let matchingResponseIds: string[] | null = null;
+    if (search && primaryField) {
+      const searchLower = `%${search.toLowerCase()}%`;
+      const matchingAnswers = await db
+        .select({ responseId: formAnswers.responseId })
+        .from(formAnswers)
+        .where(
+          and(
+            eq(formAnswers.fieldId, primaryField.fieldId),
+            sql`LOWER(${formAnswers.value}::text) LIKE ${searchLower}`,
+          ),
+        );
+      matchingResponseIds = matchingAnswers.map((a) => a.responseId);
+    }
+
+    // 5. Fetch total count for pagination
+    const allResponses = await db
+      .select({ responseId: formResponses.responseId, createdAt: formResponses.createdAt })
+      .from(formResponses)
+      .where(
+        matchingResponseIds !== null
+          ? sql`${formResponses.formId} = ${form.formId} AND ${formResponses.responseId} = ANY(${sql.raw(`ARRAY[${matchingResponseIds.length > 0 ? matchingResponseIds.map((id) => `'${id}'`).join(",") : "'00000000-0000-0000-0000-000000000000'"}]::uuid[]`)})`
+          : eq(formResponses.formId, form.formId),
+      )
+      .orderBy(desc(formResponses.createdAt));
+
+    const total = allResponses.length;
+
+    // 6. Slice to page
+    const pageResponses = allResponses.slice(offset, offset + limit);
+    const pageResponseIds = pageResponses.map((r) => r.responseId);
+
+    // 7. Fetch answers for this page's responses
+    let pageAnswers: { answerId: string; fieldId: string; responseId: string; value: unknown }[] = [];
+    if (pageResponseIds.length > 0) {
+      pageAnswers = await db
+        .select()
+        .from(formAnswers)
+        .where(
+          sql`${formAnswers.responseId} = ANY(${sql.raw(`ARRAY[${pageResponseIds.map((id) => `'${id}'`).join(",")}]::uuid[]`)})`,
+        );
+    }
+
+    // Group answers by responseId
+    const answersByResponse: Record<string, typeof pageAnswers> = {};
+    for (const ans of pageAnswers) {
+      if (!answersByResponse[ans.responseId]) {
+        answersByResponse[ans.responseId] = [];
+      }
+      answersByResponse[ans.responseId]!.push(ans);
+    }
+
+    // 8. Build response items
+    const responseItems: FormResponseItem[] = pageResponses.map((r) => {
+      const answers = answersByResponse[r.responseId] ?? [];
+
+      // Build typed answers array in field order
+      const typedAnswers: FormResponseAnswer[] = fields
+        .map((field) => {
+          const ans = answers.find((a) => a.fieldId === field.fieldId);
+          return {
+            fieldId: field.fieldId,
+            fieldLabel: field.label,
+            fieldType: field.type as FieldType,
+            isPrimary: field.isPrimary,
+            value: ans?.value ?? null,
+          };
+        })
+        .filter((a) => a.value !== null || a.isPrimary);
+
+      // Determine respondent identity from primary field
+      let respondentIdentity = "Anonymous Vibe";
+      if (primaryField) {
+        const primaryAnswer = answers.find((a) => a.fieldId === primaryField.fieldId);
+        if (primaryAnswer?.value) {
+          const v = primaryAnswer.value;
+          respondentIdentity =
+            typeof v === "string" ? v : JSON.stringify(v);
+        }
+      }
+
+      // Derive avatar initials (up to 2 chars from words)
+      const initials = respondentIdentity
+        .split(/\s+/)
+        .filter(Boolean)
+        .slice(0, 2)
+        .map((w) => w[0]?.toUpperCase() ?? "")
+        .join("") || "?";
+
+      return {
+        responseId: r.responseId,
+        respondentIdentity,
+        respondentAvatar: initials,
+        submittedAt: r.createdAt.toISOString(),
+        answers: typedAnswers,
+      };
+    });
+
+    return {
+      form: {
+        formId: form.formId,
+        title: form.title,
+        slug: form.slug,
+      },
+      fields: fields.map((f) => ({
+        fieldId: f.fieldId,
+        label: f.label,
+        type: f.type as FieldType,
+        isPrimary: f.isPrimary,
+        orderIndex: f.orderIndex,
+      })),
+      responses: responseItems,
+      total,
+      page,
+      pageSize: limit,
+    };
+  }
 }
 
 export default FormServices;
+
+

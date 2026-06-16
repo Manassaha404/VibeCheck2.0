@@ -66,7 +66,7 @@ export function GeneralDetailsSection() {
           </label>
           <div className="flex items-stretch border-2 border-ink-charcoal rounded-DEFAULT overflow-hidden shadow-[4px_4px_0px_0px_rgba(245,226,17,0.3)] transition-colors focus-within:border-electric-sun focus-within:shadow-[4px_4px_0px_0px_rgba(245,226,17,0.6)]">
             <span className="bg-canvas-cream px-4 py-4 flex items-center border-r-2 border-ink-charcoal font-body-md text-ink-charcoal font-bold select-none whitespace-nowrap">
-              vibecheck.com/{username ? `${username}/` : 'f/'}
+              vibecheck.com/f/{username ? `${username}/` : 'username/'}
             </span>
             <input 
               className="flex-grow bg-pure-white p-4 font-body-lg text-body-lg focus:outline-none focus:ring-0 min-w-0" 

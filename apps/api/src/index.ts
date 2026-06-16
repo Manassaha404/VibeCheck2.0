@@ -2,7 +2,7 @@ import http from "node:http";
 import { app as expressApplication } from "./server";
 import "dotenv/config";
 import { env } from "./env";
-import "@repo/trpc/server/utils/email/emailWorker";
+import "@repo/services/email/emailWorker";
 
 async function init() {
   try {

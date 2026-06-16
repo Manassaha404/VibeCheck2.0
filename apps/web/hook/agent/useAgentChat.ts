@@ -21,7 +21,7 @@ export const useAgentChat = () => {
   const { nodes, setNodes, syncLinearEdges, formId } = useFormBuilderStore();
   const { mutateAsync: generateFormMutation, isPending: isGenerating } =
     trpc.agent.generateForm.useMutation();
-  const { mutateAsync: clearHistoryMutation } = trpc.agent.clearHistory.useMutation();
+  const { mutateAsync: clearHistoryMutation } = trpc.agent.clearFormBuilderAgentHistory.useMutation();
 
   const handleSend = async () => {
     if (!input.trim()) return;
