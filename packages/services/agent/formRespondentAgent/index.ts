@@ -12,198 +12,35 @@ import {
   RespondentAgentChatResult,
   RespondentFormField,
 } from "./model";
+import { AppError } from "@repo/error";
 
-// ── Redis key helpers ────────────────────────────────────────────────────────
-
-/** All temp respondent session state lives under this prefix. */
+//redis session key for respondent conversation store in redis
 const SESSION_KEY = (formId: string, guestToken: string) =>
   `respondent:session:${formId}:${guestToken}`;
 
-/** Serialised AgentInputItem[] history for the current session. */
 const HISTORY_KEY = (formId: string, guestToken: string) =>
   `respondent:history:${formId}:${guestToken}`;
 
-/** 24 hours — enough for a respondent to pause and return. */
+// per session TTL, 24hrs
 const SESSION_TTL_SECONDS = 60 * 60 * 24;
 
-// ── Stored session shape ─────────────────────────────────────────────────────
-
+//redis session type
 interface RedisSession {
   collectedAnswers: CollectedAnswer[];
   isCompleted: boolean;
   currentFieldId: string | null;
-  /** responseId is only set once isCompleted and the DB row was written. */
   responseId?: string;
 }
 
-// ── Service ──────────────────────────────────────────────────────────────────
-
 class FormRespondentAgentService {
-  // ── Public API ─────────────────────────────────────────────────────────────
+  //Send a respondent's message to the interviewer agent.
+  //Redis stores two keys per session:
+  // SESSION_KEY  → { collectedAnswers, isCompleted, currentFieldId, responseId? }
+  // HISTORY_KEY  → AgentInputItem[]  (raw @openai/agents conversation history)
+  //Both keys share a 24-hour TTL, refreshed on every turn.
+  //The DB is only touched once — when `isCompleted` flips to true.
 
-  /**
-   * Send a respondent's message to the interviewer agent.
-   *
-   * Redis stores two keys per session:
-   *   - SESSION_KEY  → { collectedAnswers, isCompleted, currentFieldId, responseId? }
-   *   - HISTORY_KEY  → AgentInputItem[]  (raw @openai/agents conversation history)
-   *
-   * Both keys share a 24-hour TTL, refreshed on every turn.
-   * The DB is only touched once — when `isCompleted` flips to true.
-   */
-  public async chat(
-    formId: string,
-    guestToken: string,
-    userMessage: string,
-  ): Promise<RespondentAgentChatResult> {
-    // 1. Load form + fields
-    const [form] = await db
-      .select()
-      .from(forms)
-      .where(eq(forms.formId, formId));
-
-    if (!form) throw new Error("Form not found");
-    if (!form.isPublished) throw new Error("This form is not accepting responses yet");
-
-    const fields = await db
-      .select()
-      .from(formFields)
-      .where(eq(formFields.formId, formId))
-      .orderBy(formFields.orderIndex);
-
-    // 2. Load existing session state from Redis
-    const sessionKey = SESSION_KEY(formId, guestToken);
-    const historyKey = HISTORY_KEY(formId, guestToken);
-
-    const [rawSession, rawHistory] = await Promise.all([
-      redis.get(sessionKey),
-      redis.get(historyKey),
-    ]);
-
-    const session: RedisSession = rawSession
-      ? JSON.parse(rawSession)
-      : { collectedAnswers: [], isCompleted: false, currentFieldId: null };
-
-    // Guard: already completed — no need to run the agent again
-    if (session.isCompleted) {
-      return {
-        reply: "You've already completed this form. Thank you for your response! 🎉",
-        collectedAnswers: session.collectedAnswers,
-        isComplete: true,
-        currentFieldId: null,
-        responseId: session.responseId,
-      };
-    }
-
-    const previousHistory: AgentInputItem[] = rawHistory
-      ? JSON.parse(rawHistory)
-      : [];
-
-    // 3. Build context block injected into each turn
-    const contextBlock = this.buildContextBlock(
-      form.title,
-      form.description ?? undefined,
-      fields as RespondentFormField[],
-      session.collectedAnswers,
-    );
-
-    const turnMessage = `${contextBlock}\n\nRespondent: ${userMessage}`;
-
-    // 4. Build agent input — resume from history or start fresh
-    const agentInput: string | AgentInputItem[] =
-      previousHistory.length > 0
-        ? ([...previousHistory, { role: "user", content: turnMessage }] as AgentInputItem[])
-        : turnMessage;
-
-    // 5. Run the agent
-    const result = await run(formRespondentAgent, agentInput);
-
-    if (!result.finalOutput) throw new Error("Agent returned no output");
-
-    const output = result.finalOutput;
-
-    // 6. Persist updated state to Redis (refresh TTL on every turn)
-    const updatedSession: RedisSession = {
-      collectedAnswers: output.collectedAnswers,
-      isCompleted: output.isComplete,
-      currentFieldId: output.currentFieldId,
-    };
-
-    await Promise.all([
-      redis.set(sessionKey, JSON.stringify(updatedSession), "EX", SESSION_TTL_SECONDS),
-      redis.set(historyKey, JSON.stringify(result.history), "EX", SESSION_TTL_SECONDS),
-    ]);
-
-    // 7. If complete — write the permanent DB submission (only once)
-    let responseId: string | undefined;
-    if (output.isComplete && output.collectedAnswers.length > 0) {
-      responseId = await this.submitResponse(formId, guestToken, output.collectedAnswers);
-
-      // Patch the responseId into the session so reconnects can surface it
-      updatedSession.responseId = responseId;
-      await redis.set(sessionKey, JSON.stringify(updatedSession), "EX", SESSION_TTL_SECONDS);
-    }
-
-    return {
-      reply: output.reply,
-      collectedAnswers: output.collectedAnswers,
-      isComplete: output.isComplete,
-      currentFieldId: output.currentFieldId,
-      responseId,
-    };
-  }
-
-  /**
-   * Restore in-progress session state (e.g. on page reload).
-   * Returns the stored answers and completion status without running the agent.
-   */
-  public async getSession(
-    formId: string,
-    guestToken: string,
-  ): Promise<{
-    hasSession: boolean;
-    isCompleted: boolean;
-    collectedAnswers: CollectedAnswer[];
-    currentFieldId: string | null;
-    responseId?: string;
-  }> {
-    const raw = await redis.get(SESSION_KEY(formId, guestToken));
-
-    if (!raw) {
-      return {
-        hasSession: false,
-        isCompleted: false,
-        collectedAnswers: [],
-        currentFieldId: null,
-      };
-    }
-
-    const session: RedisSession = JSON.parse(raw);
-    return {
-      hasSession: true,
-      isCompleted: session.isCompleted,
-      collectedAnswers: session.collectedAnswers,
-      currentFieldId: session.currentFieldId,
-      responseId: session.responseId,
-    };
-  }
-
-  /**
-   * Delete both Redis keys for this session (lets the respondent restart).
-   */
-  public async clearSession(formId: string, guestToken: string): Promise<void> {
-    await Promise.all([
-      redis.del(SESSION_KEY(formId, guestToken)),
-      redis.del(HISTORY_KEY(formId, guestToken)),
-    ]);
-  }
-
-  // ── Private helpers ────────────────────────────────────────────────────────
-
-  /**
-   * Build the system-context block injected at the top of every user turn.
-   * Gives the agent a full snapshot of the form fields + what's already collected.
-   */
+  // build full context for agent, 
   private buildContextBlock(
     title: string,
     description: string | undefined,
@@ -245,11 +82,8 @@ class FormRespondentAgentService {
     ].join("\n");
   }
 
-  /**
-   * Write the completed answers into the permanent DB tables.
-   * Uses the same schema as a regular (non-agent) form submission.
-   * Idempotent — returns the existing responseId if already submitted.
-   */
+
+  //store response in the db
   private async submitResponse(
     formId: string,
     guestToken: string,
@@ -288,6 +122,174 @@ class FormRespondentAgentService {
     }
 
     return newResponse.responseId;
+  }
+
+
+
+  public async chat(
+    formId: string,
+    guestToken: string,
+    userMessage: string,
+  ): Promise<RespondentAgentChatResult> {
+    
+    const [form] = await db
+      .select()
+      .from(forms)
+      .where(eq(forms.formId, formId));
+
+    if (!form) throw new AppError("NOT_FOUND", "Form not found")
+    if (!form.isPublished)
+      throw new AppError("FORBIDDEN", "This form is not accepting responses yet");
+
+    const fields = await db
+      .select()
+      .from(formFields)
+      .where(eq(formFields.formId, formId))
+      .orderBy(formFields.orderIndex);
+
+    //Load existing session state from Redis
+    const sessionKey = SESSION_KEY(formId, guestToken);
+    const historyKey = HISTORY_KEY(formId, guestToken);
+
+    const [rawSession, rawHistory] = await Promise.all([
+      redis.get(sessionKey),
+      redis.get(historyKey),
+    ]);
+
+    const session: RedisSession = rawSession
+      ? JSON.parse(rawSession)
+      : { collectedAnswers: [], isCompleted: false, currentFieldId: null };
+
+    //already completed — no need to run the agent again
+    if (session.isCompleted) {
+      return {
+        reply:
+          "You've already completed this form. Thank you for your response! 🎉",
+        collectedAnswers: session.collectedAnswers,
+        isComplete: true,
+        currentFieldId: null,
+        responseId: session.responseId,
+      };
+    }
+
+    const previousHistory: AgentInputItem[] = rawHistory
+      ? JSON.parse(rawHistory)
+      : [];
+
+    // Build context block injected into each turn
+    const contextBlock = this.buildContextBlock(
+      form.title,
+      form.description ?? undefined,
+      fields as RespondentFormField[],
+      session.collectedAnswers,
+    );
+
+    const turnMessage = `${contextBlock}\n\nRespondent: ${userMessage}`;
+
+    // agent-input -> resume from history or start fresh
+    const agentInput: string | AgentInputItem[] =
+      previousHistory.length > 0
+        ? ([
+            ...previousHistory,
+            { role: "user", content: turnMessage },
+          ] as AgentInputItem[])
+        : turnMessage;
+
+    // Run the agent
+    const result = await run(formRespondentAgent, agentInput);
+
+    if (!result.finalOutput) throw new Error("Agent returned no output");
+
+    const output = result.finalOutput;
+
+    // Persist updated state to Redis (refresh TTL on every turn)
+    const updatedSession: RedisSession = {
+      collectedAnswers: output.collectedAnswers,
+      isCompleted: output.isComplete,
+      currentFieldId: output.currentFieldId,
+    };
+
+    await Promise.all([
+      redis.set(
+        sessionKey,
+        JSON.stringify(updatedSession),
+        "EX",
+        SESSION_TTL_SECONDS,
+      ),
+      redis.set(
+        historyKey,
+        JSON.stringify(result.history),
+        "EX",
+        SESSION_TTL_SECONDS,
+      ),
+    ]);
+
+    // write the permanent DB submission (only once)
+    let responseId: string | undefined;
+    if (output.isComplete && output.collectedAnswers.length > 0) {
+      responseId = await this.submitResponse(
+        formId,
+        guestToken,
+        output.collectedAnswers,
+      );
+
+      // Patch the responseId into the session so reconnects can surface it
+      updatedSession.responseId = responseId;
+      await redis.set(
+        sessionKey,
+        JSON.stringify(updatedSession),
+        "EX",
+        SESSION_TTL_SECONDS,
+      );
+    }
+
+    return {
+      reply: output.reply,
+      collectedAnswers: output.collectedAnswers,
+      isComplete: output.isComplete,
+      currentFieldId: output.currentFieldId,
+      responseId,
+    };
+  }
+
+  
+  public async getSession(
+    formId: string,
+    guestToken: string,
+  ): Promise<{
+    hasSession: boolean;
+    isCompleted: boolean;
+    collectedAnswers: CollectedAnswer[];
+    currentFieldId: string | null;
+    responseId?: string;
+  }> {
+    const raw = await redis.get(SESSION_KEY(formId, guestToken));
+
+    if (!raw) {
+      return {
+        hasSession: false,
+        isCompleted: false,
+        collectedAnswers: [],
+        currentFieldId: null,
+      };
+    }
+
+    const session: RedisSession = JSON.parse(raw);
+    return {
+      hasSession: true,
+      isCompleted: session.isCompleted,
+      collectedAnswers: session.collectedAnswers,
+      currentFieldId: session.currentFieldId,
+      responseId: session.responseId,
+    };
+  }
+
+  
+  public async clearSession(formId: string, guestToken: string): Promise<void> {
+    await Promise.all([
+      redis.del(SESSION_KEY(formId, guestToken)),
+      redis.del(HISTORY_KEY(formId, guestToken)),
+    ]);
   }
 }
 

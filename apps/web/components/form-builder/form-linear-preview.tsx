@@ -1,5 +1,5 @@
 import React from "react";
-import { useFormBuilderStore, FieldNode as FieldNodeType } from "../../store/formBuilderStore";
+import { useFormBuilderStore, FieldNode as FieldNodeType } from "../../store/formStore/formBuilderStore";
 import { GripVertical, Rocket } from "lucide-react";
 import { FieldPreviewRenderer } from "./shared/field-preview-renderer";
 

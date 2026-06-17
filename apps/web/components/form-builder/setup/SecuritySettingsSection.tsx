@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Lock } from 'lucide-react';
-import { useCreateFormStore } from '@/store/createFormStore';
+import { useCreateFormStore } from '@/store/formStore/createFormStore';
 
 export function SecuritySettingsSection() {
   const { passwordNeeded, setPasswordNeeded, password, setPassword } = useCreateFormStore();

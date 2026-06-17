@@ -6,12 +6,9 @@ import {
   getFormAnalyticsDto,
   getFormResponsesDto,
   getPublicFormDto,
-  agentChatDto,
-  agentGetSessionDto,
-  agentClearSessionDto,
   submitStaticFormDto,
 } from "@repo/services/form/model";
-import { formServices, formRespondentAgentService } from "../../services";
+import { formServices } from "../../services";
 import { handleRouteError } from "../../utils/error";
 
 export const formRouter = router({
@@ -79,8 +76,6 @@ export const formRouter = router({
         handleRouteError(error);
       }
     }),
-
-  // ── Public: fetch a published form by username + slug ──────────────────
   getPublicForm: publicProcedure
     .input(getPublicFormDto)
     .query(async ({ input, ctx }) => {
@@ -98,48 +93,6 @@ export const formRouter = router({
         const guestToken = ctx.guestToken;
         if (!guestToken) throw new Error("Guest token missing");
         return await formServices.submitStaticForm(input, guestToken);
-      } catch (error) {
-        handleRouteError(error);
-      }
-    }),
-
-  // ── Public: AI respondent agent chat ───────────────────────────────────
-  agentChat: publicProcedure
-    .input(agentChatDto)
-    .mutation(async ({ input, ctx }) => {
-      try {
-        const guestToken = ctx.guestToken;
-        if (!guestToken) throw new Error("Guest token missing");
-        return await formRespondentAgentService.chat(
-          input.formId,
-          guestToken,
-          input.message,
-        );
-      } catch (error) {
-        handleRouteError(error);
-      }
-    }),
-
-  agentGetSession: publicProcedure
-    .input(agentGetSessionDto)
-    .query(async ({ input, ctx }) => {
-      try {
-        const guestToken = ctx.guestToken;
-        if (!guestToken) return { hasSession: false, isCompleted: false, collectedAnswers: [], currentFieldId: null };
-        return await formRespondentAgentService.getSession(input.formId, guestToken);
-      } catch (error) {
-        handleRouteError(error);
-      }
-    }),
-
-  agentClearSession: publicProcedure
-    .input(agentClearSessionDto)
-    .mutation(async ({ input, ctx }) => {
-      try {
-        const guestToken = ctx.guestToken;
-        if (!guestToken) return { message: "No session to clear" };
-        await formRespondentAgentService.clearSession(input.formId, guestToken);
-        return { message: "Session cleared" };
       } catch (error) {
         handleRouteError(error);
       }

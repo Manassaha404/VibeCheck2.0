@@ -1,5 +1,5 @@
 import React from "react";
-import { FieldType, useFormBuilderStore } from "../../store/formBuilderStore";
+import { FieldType, useFormBuilderStore } from "../../store/formStore/formBuilderStore";
 import { 
   Type, 
   AlignLeft, 

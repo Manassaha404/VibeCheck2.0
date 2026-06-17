@@ -1,5 +1,5 @@
 import React from "react";
-import { FieldNode as FieldNodeType, useFormBuilderStore } from "../../../store/formBuilderStore";
+import { FieldNode as FieldNodeType, useFormBuilderStore } from "../../../store/formStore/formBuilderStore";
 import { Mail, Phone, Calendar, ChevronDown, Upload, Star, Smile, Meh, Frown } from "lucide-react";
 
 export function FieldPreviewRenderer({ data, nodeId }: { data: FieldNodeType['data'], nodeId?: string }) {

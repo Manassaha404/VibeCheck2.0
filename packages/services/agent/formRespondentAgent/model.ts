@@ -1,7 +1,5 @@
 import { z } from "zod";
 
-// ── Field context passed into the agent per-run ─────────────────────────────
-
 export const RespondentFormFieldSchema = z.object({
   fieldId: z.string(),
   label: z.string(),
@@ -30,7 +28,7 @@ export const RespondentFormFieldSchema = z.object({
 
 export type RespondentFormField = z.infer<typeof RespondentFormFieldSchema>;
 
-// ── One collected answer entry ───────────────────────────────────────────────
+
 
 export const CollectedAnswerSchema = z.object({
   fieldId: z.string().describe("The fieldId of the form field this answer belongs to"),
@@ -46,8 +44,9 @@ export const CollectedAnswerSchema = z.object({
 
 export type CollectedAnswer = z.infer<typeof CollectedAnswerSchema>;
 
-// ── Structured output the agent returns each turn ────────────────────────────
 
+
+//output type
 export const RespondentAgentOutputSchema = z.object({
   reply: z
     .string()
@@ -80,8 +79,8 @@ export const RespondentAgentOutputSchema = z.object({
 
 export type RespondentAgentOutput = z.infer<typeof RespondentAgentOutputSchema>;
 
-// ── Guardrail result (reused pattern from formBuilderAgent) ──────────────────
 
+//guardrail schema
 export const GuardrailResultSchema = z.object({
   isValid: z
     .boolean()
@@ -94,17 +93,12 @@ export const GuardrailResultSchema = z.object({
 
 export type GuardrailResult = z.infer<typeof GuardrailResultSchema>;
 
-// ── Service-level return type ────────────────────────────────────────────────
+
 
 export type RespondentAgentChatResult = {
-  /** The agent's reply message shown in the chat UI */
   reply: string;
-  /** All answers collected so far (across all turns) */
   collectedAnswers: CollectedAnswer[];
-  /** True when the agent has gathered all required answers and submitted */
   isComplete: boolean;
-  /** Which field is currently being asked */
   currentFieldId: string | null;
-  /** Set once when isComplete — the newly created response ID in the DB */
   responseId?: string;
 };

@@ -1,5 +1,5 @@
 import React, { useCallback } from "react";
-import { useFormBuilderStore } from "../../store/formBuilderStore";
+import { useFormBuilderStore } from "../../store/formStore/formBuilderStore";
 import { Pointer, Info, GripVertical, X, Plus, Trash2, CheckCircle2 } from "lucide-react";
 import { useUserInfoStore } from "../../store/userInfoStore";
 import { usePathname } from "next/navigation";

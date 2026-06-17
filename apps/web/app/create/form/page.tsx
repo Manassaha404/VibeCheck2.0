@@ -9,7 +9,7 @@ import { SecuritySettingsSection } from "@/components/form-builder/setup/Securit
 import { ControlsSection } from "@/components/form-builder/setup/ControlsSection";
 import { IntegrationsSection } from "@/components/form-builder/setup/IntegrationsSection";
 import { useDraftForm } from "@/hook/form/useCreateForm";
-import { useCreateFormStore } from "@/store/createFormStore";
+import { useCreateFormStore } from "@/store/formStore/createFormStore";
 import { useRouter } from "next/navigation";
 
 export default function FormSetupPage() {

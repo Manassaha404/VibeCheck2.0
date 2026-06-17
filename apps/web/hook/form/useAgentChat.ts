@@ -27,7 +27,7 @@ export function useAgentChat(
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
-  const chatMutation = trpc.form.agentChat.useMutation({
+  const chatMutation = trpc.agent.respondentAgentChat.useMutation({
     onSuccess: (data) => {
       if (!data) return;
       const agentMsg: Message = {
@@ -56,7 +56,7 @@ export function useAgentChat(
     },
   });
 
-  const clearMutation = trpc.form.agentClearSession.useMutation({
+  const clearMutation = trpc.agent.respondentAgentClearSession.useMutation({
     onSuccess: () => {
       setMessages([
         {

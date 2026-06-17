@@ -2,11 +2,9 @@ import { Agent, InputGuardrail, run } from "@openai/agents";
 import type { AgentInputItem } from "@openai/agents";
 import { GuardrailResultSchema } from "./model";
 
-// ── Input guardrail ──────────────────────────────────────────────────────────
+//input guardrail
 
-const respondentInputGuardrailAgent = new Agent({
-  name: "respondent_input_guardrail_agent",
-  instructions: `You are a safety guardrail for a conversational form-filling assistant.
+const inputGuardrailInstruction = `You are a safety guardrail for a conversational form-filling assistant.
 Your job is to check whether a respondent's message is appropriate and safe.
 
 Reject the following:
@@ -21,15 +19,17 @@ Allow the following:
 - Questions about the form itself.
 
 You MUST always respond with a JSON object containing "isValid" (boolean) and "reason" (string | null).
-Respond with isValid: true if the message is safe, and isValid: false with a clear reason if it is not.`,
+Respond with isValid: true if the message is safe, and isValid: false with a clear reason if it is not.`
+
+
+const respondentInputGuardrailAgent = new Agent({
+  name: "respondent_input_guardrail_agent",
+  instructions: inputGuardrailInstruction,
   model: "gpt-4o-mini",
   outputType: GuardrailResultSchema,
 });
 
-/**
- * Extract only the latest user message from history or a plain string input.
- * The guardrail only needs to check the current turn — not the full history.
- */
+// extract users latest message from the history
 function extractLatestUserText(input: string | AgentInputItem[] | unknown): string {
   if (typeof input === "string") return input;
 
@@ -52,6 +52,7 @@ function extractLatestUserText(input: string | AgentInputItem[] | unknown): stri
   return JSON.stringify(input);
 }
 
+//guardrail function
 export const respondentInputGuardrail: InputGuardrail = {
   name: "form_respondent_input_guardrail",
   runInParallel: false,

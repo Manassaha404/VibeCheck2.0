@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Settings, Info, Calendar } from 'lucide-react';
-import { useCreateFormStore } from '@/store/createFormStore';
+import { useCreateFormStore } from '@/store/formStore/createFormStore';
 
 export function ControlsSection() {
   const { 

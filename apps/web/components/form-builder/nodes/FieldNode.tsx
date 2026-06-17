@@ -1,6 +1,6 @@
 import React from 'react';
 import { Handle, Position } from '@xyflow/react';
-import { useFormBuilderStore, FieldNode as FieldNodeType, FieldType } from '../../../store/formBuilderStore';
+import { useFormBuilderStore, FieldNode as FieldNodeType, FieldType } from '../../../store/formStore/formBuilderStore';
 import { FieldPreviewRenderer } from '../shared/field-preview-renderer';
 import { ArrowUp, ArrowDown } from 'lucide-react';
 

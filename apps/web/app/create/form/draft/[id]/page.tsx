@@ -8,7 +8,7 @@ import { FormPreviewCanvas } from "@/components/form-builder/form-canvas-preview
 import { FormLinearPreview } from "@/components/form-builder/form-linear-preview";
 import { FieldSettings } from "@/components/form-builder/field-settings";
 import { AgentChat } from "@/components/form-builder/agent-chat";
-import { useFormBuilderStore } from "@/store/formBuilderStore";
+import { useFormBuilderStore } from "@/store/formStore/formBuilderStore";
 import { List, GitMerge, Save, Loader2, Check, Send } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { useUserInfoStore } from "@/store/userInfoStore";

@@ -12,7 +12,7 @@ export function usePublicForm(
     { staleTime: 1000 * 60 * 5 },
   );
 
-  const { data: session } = trpc.form.agentGetSession.useQuery(
+  const { data: session } = trpc.agent.respondentAgentGetSession.useQuery(
     { formId: form?.formId ?? "" },
     { enabled: !!form?.formId, staleTime: 0 },
   );

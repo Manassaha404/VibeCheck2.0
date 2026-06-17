@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { trpc } from "@/trpc/client";
-import { useFormBuilderStore, FieldNode } from "@/store/formBuilderStore";
+import { useFormBuilderStore, FieldNode } from "@/store/formStore/formBuilderStore";
 
 export type ChatMessage = {
   id: string;

@@ -1,7 +1,7 @@
 "use client";
 
 import React from 'react';
-import { useCreateFormStore } from '@/store/createFormStore';
+import { useCreateFormStore } from '@/store/formStore/createFormStore';
 import { useUserInfoStore } from '@/store/userInfoStore';
 
 export function GeneralDetailsSection() {

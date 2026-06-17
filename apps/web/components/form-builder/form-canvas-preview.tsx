@@ -1,7 +1,7 @@
 import React, { useCallback, useRef } from "react";
 import { ReactFlow, Background, Controls, useReactFlow } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
-import { useFormBuilderStore } from "../../store/formBuilderStore";
+import { useFormBuilderStore } from "../../store/formStore/formBuilderStore";
 import { FieldNode } from "./nodes/FieldNode";
 import { Rocket } from "lucide-react";
 
