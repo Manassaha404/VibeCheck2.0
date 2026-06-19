@@ -6,7 +6,7 @@ import { useUserInfoStore } from '../../../store/userInfoStore';
 import { usePathname } from 'next/navigation';
 
 export function IntegrationsSection() {
-  const { googleDriveRefreshToken } = useUserInfoStore();
+  const { isGoogleDriveConnected } = useUserInfoStore();
   const pathname = usePathname();
 
   const handleConnect = () => {
@@ -14,7 +14,7 @@ export function IntegrationsSection() {
     window.location.href = `${apiUrl}/auth/google/drive?returnTo=${pathname}`;
   };
 
-  const isConnected = !!googleDriveRefreshToken;
+  const isConnected = !!isGoogleDriveConnected;
 
   return (
     <section className="bg-pure-white border-4 border-ink-charcoal rounded-DEFAULT shadow-[6px_6px_0px_0px_rgba(44,46,42,1)] p-6 relative">

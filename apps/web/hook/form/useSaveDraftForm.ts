@@ -2,6 +2,7 @@ import { useState } from "react";
 import { trpc } from "@/trpc/client";
 import { z } from "zod";
 import { saveDraftFormDto } from "@repo/services/form/model";
+import { toast } from "sonner";
 
 type SaveDraftFormDtoType = z.infer<typeof saveDraftFormDto>;
 
@@ -19,7 +20,9 @@ export const useSaveDraftForm = () => {
       }
       return false;
     } catch (error: any) {
-      setApiError(error.message || "Failed to save draft. Please try again.");
+      const msg = error.message || "Failed to save draft. Please try again.";
+      setApiError(msg);
+      toast.error(msg);
       return false;
     }
   };

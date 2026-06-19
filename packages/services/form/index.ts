@@ -26,13 +26,16 @@ import {
   FormResponseAnswer,
   submitStaticFormDto,
   SubmitStaticFormDtoType,
+  getResumableUploadUrlDto,
+  GetResumableUploadUrlDtoType,
 } from "./model";
 import { formFields } from "@repo/database/models/form-fields";
 import { formResponses } from "@repo/database/models/form-responses";
 import { formAnswers } from "@repo/database/models/form-answers";
 import { users } from "@repo/database/models/users";
-
-
+import { auths } from "@repo/database/models/auths";
+import { GoogleDriveService } from "../googleApis";
+const googleDriveService = new GoogleDriveService();
 class FormServices {
   public async createForm(userId: string, payload: DraftFormDtoType) {
     const data = draftFormDto.parse(payload);
@@ -83,7 +86,34 @@ class FormServices {
       await db
         .delete(formFields)
         .where(eq(formFields.formId, existingForm.formId));
-
+      if (
+        data.fields.some((e) => e.type === "file") &&
+        !existingForm.googleDriveFolderId
+      ) {
+        const [userAuth] = await db
+          .select()
+          .from(auths)
+          .where(eq(auths.userId, userId));
+        if (!userAuth?.googleDriveRefreshToken) {
+          throw new AppError("BAD_REQUEST", "");
+        }
+        let folderId;
+        try {
+          folderId = await googleDriveService.createFormFolder(
+            userAuth.googleDriveRefreshToken,
+            existingForm.slug,
+          );
+        } catch (error) {
+          console.error("Google Drive API error:", error);
+          throw new AppError("BAD_REQUEST", "Failed to access Google Drive. Please reconnect your account.");
+        }
+        await db
+          .update(forms)
+          .set({
+            googleDriveFolderId: folderId,
+          })
+          .where(eq(forms.formId, existingForm.formId));
+      }
       if (data.fields.length > 0) {
         const fieldsToInsert = data.fields.map((field, index) => ({
           formId: existingForm.formId,
@@ -108,7 +138,8 @@ class FormServices {
     payload: GetPublicFormDtoType,
     guestToken?: string,
   ): Promise<PublicFormResult> {
-    const { username, slug, password, editMode } = getPublicFormDto.parse(payload);
+    const { username, slug, password, editMode } =
+      getPublicFormDto.parse(payload);
 
     // Resolve username → userId
     const [user] = await db
@@ -168,7 +199,7 @@ class FormServices {
     // Check if already responded
     let previousAnswers: Record<string, unknown> | undefined = undefined;
     let existingResponseId: string | undefined = undefined;
-    
+
     if (guestToken) {
       const [existing] = await db
         .select()
@@ -179,7 +210,7 @@ class FormServices {
             eq(formResponses.guestToken, guestToken),
           ),
         );
-        
+
       if (existing) {
         if (!editMode || !form.allowResponseEdit) {
           return {
@@ -194,7 +225,7 @@ class FormServices {
             .select()
             .from(formAnswers)
             .where(eq(formAnswers.responseId, existing.responseId));
-            
+
           previousAnswers = {};
           for (const ans of answers) {
             previousAnswers[ans.fieldId] = ans.value;
@@ -236,7 +267,10 @@ class FormServices {
     const data = submitStaticFormDto.parse(payload);
     const { formId, answers, responseId } = data;
 
-    const [form] = await db.select().from(forms).where(eq(forms.formId, formId));
+    const [form] = await db
+      .select()
+      .from(forms)
+      .where(eq(forms.formId, formId));
     if (!form) throw new AppError("NOT_FOUND", "Form not found");
 
     if (form.expiresAt && new Date() > form.expiresAt) {
@@ -268,9 +302,12 @@ class FormServices {
           ),
         );
       if (!existing) throw new AppError("FORBIDDEN", "Not your response");
-      if (!form.allowResponseEdit) throw new AppError("FORBIDDEN", "Editing not allowed");
+      if (!form.allowResponseEdit)
+        throw new AppError("FORBIDDEN", "Editing not allowed");
 
-      await db.delete(formAnswers).where(eq(formAnswers.responseId, currentResponseId));
+      await db
+        .delete(formAnswers)
+        .where(eq(formAnswers.responseId, currentResponseId));
     } else {
       // Insert new
       const [existing] = await db
@@ -288,8 +325,12 @@ class FormServices {
         .insert(formResponses)
         .values({ formId, guestToken })
         .returning({ responseId: formResponses.responseId });
-      
-      if (!newResponse) throw new AppError("INTERNAL_SERVER_ERROR", "Failed to create response");
+
+      if (!newResponse)
+        throw new AppError(
+          "INTERNAL_SERVER_ERROR",
+          "Failed to create response",
+        );
       currentResponseId = newResponse.responseId;
     }
 
@@ -315,8 +356,11 @@ class FormServices {
     if (!existingForm) {
       throw new AppError("NOT_FOUND", "Form not found");
     }
-    const fields = await db.select().from(formFields).where(eq(formFields.formId, existingForm.formId));
-    return {fields, form:existingForm};
+    const fields = await db
+      .select()
+      .from(formFields)
+      .where(eq(formFields.formId, existingForm.formId));
+    return { fields, form: existingForm };
   }
   public async publishForm(userId: string, payload: PublishFormDtoType) {
     const data = publishFormDto.parse(payload);
@@ -390,7 +434,12 @@ class FormServices {
       );
       if (daysAgo < 42) {
         const weekIndex = Math.floor(daysAgo / 7); // 0 = most recent
-        const label = weekIndex === 0 ? "This Wk" : weekIndex === 1 ? "Last Wk" : `${weekIndex} Wks Ago`;
+        const label =
+          weekIndex === 0
+            ? "This Wk"
+            : weekIndex === 1
+              ? "Last Wk"
+              : `${weekIndex} Wks Ago`;
         if (weeklyMap[label] !== undefined) {
           weeklyMap[label]!++;
         }
@@ -401,7 +450,12 @@ class FormServices {
       .reverse();
 
     // 5. Fetch all answers for all responses (if any)
-    let allAnswers: { answerId: string; fieldId: string; responseId: string; value: unknown }[] = [];
+    let allAnswers: {
+      answerId: string;
+      fieldId: string;
+      responseId: string;
+      value: unknown;
+    }[] = [];
     if (responseIds.length > 0) {
       allAnswers = await db
         .select()
@@ -467,10 +521,9 @@ class FormServices {
       ) {
         const tally: Record<string, number> = {};
         // Pre-populate from field options
-        const fieldOptions: string[] =
-          Array.isArray(field.options)
-            ? (field.options as string[])
-            : [];
+        const fieldOptions: string[] = Array.isArray(field.options)
+          ? (field.options as string[])
+          : [];
         for (const opt of fieldOptions) {
           tally[String(opt)] = 0;
         }
@@ -504,13 +557,15 @@ class FormServices {
           .filter((n) => !isNaN(n));
         const average =
           nums.length > 0
-            ? Math.round((nums.reduce((a, b) => a + b, 0) / nums.length) * 10) / 10
+            ? Math.round((nums.reduce((a, b) => a + b, 0) / nums.length) * 10) /
+              10
             : 0;
         const min = nums.length > 0 ? Math.min(...nums) : 0;
         const max = nums.length > 0 ? Math.max(...nums) : 0;
 
         // Distribution buckets (1-5 for rating/scale, or 5 equal buckets for number)
-        const bucketCount = type === "rating" || type === "scale" ? Math.ceil(max) || 5 : 5;
+        const bucketCount =
+          type === "rating" || type === "scale" ? Math.ceil(max) || 5 : 5;
         const distribution: { label: string; count: number }[] = [];
         if (type === "rating" || type === "scale") {
           for (let i = 1; i <= Math.max(bucketCount, 5); i++) {
@@ -527,11 +582,19 @@ class FormServices {
             const hi = min + step * (i + 1);
             distribution.push({
               label: `${Math.round(lo)}-${Math.round(hi)}`,
-              count: nums.filter((n) => n >= lo && (i === 4 ? n <= hi : n < hi)).length,
+              count: nums.filter((n) => n >= lo && (i === 4 ? n <= hi : n < hi))
+                .length,
             });
           }
         }
-        analytics = { kind: "numeric", average, min, max, distribution, totalAnswered: rawAnswers.length };
+        analytics = {
+          kind: "numeric",
+          average,
+          min,
+          max,
+          distribution,
+          totalAnswered: rawAnswers.length,
+        };
       }
       // Date field
       else if (type === "date") {
@@ -539,15 +602,24 @@ class FormServices {
         for (const v of rawAnswers) {
           const d = new Date(String(v));
           if (!isNaN(d.getTime())) {
-            const label = d.toLocaleString("default", { month: "short", year: "2-digit" });
+            const label = d.toLocaleString("default", {
+              month: "short",
+              year: "2-digit",
+            });
             monthTally[label] = (monthTally[label] ?? 0) + 1;
           }
         }
-        const distribution = Object.entries(monthTally).map(([label, count]) => ({
-          label,
-          count,
-        }));
-        analytics = { kind: "date", distribution, totalAnswered: rawAnswers.length };
+        const distribution = Object.entries(monthTally).map(
+          ([label, count]) => ({
+            label,
+            count,
+          }),
+        );
+        analytics = {
+          kind: "date",
+          distribution,
+          totalAnswered: rawAnswers.length,
+        };
       }
       // File field
       else {
@@ -583,7 +655,8 @@ class FormServices {
     userId: string,
     payload: GetFormResponsesDtoType,
   ): Promise<FormResponsesResult> {
-    const { formSlug, page, limit, search } = getFormResponsesDto.parse(payload);
+    const { formSlug, page, limit, search } =
+      getFormResponsesDto.parse(payload);
     const offset = (page - 1) * limit;
 
     // 1. Verify ownership
@@ -606,7 +679,7 @@ class FormServices {
     const primaryField = fields.find((f) => f.isPrimary) ?? null;
 
     // 3. Build field map for label lookup
-    const fieldMap: Record<string, typeof fields[number]> = {};
+    const fieldMap: Record<string, (typeof fields)[number]> = {};
     for (const f of fields) {
       fieldMap[f.fieldId] = f;
     }
@@ -629,7 +702,10 @@ class FormServices {
 
     // 5. Fetch total count for pagination
     const allResponses = await db
-      .select({ responseId: formResponses.responseId, createdAt: formResponses.createdAt })
+      .select({
+        responseId: formResponses.responseId,
+        createdAt: formResponses.createdAt,
+      })
       .from(formResponses)
       .where(
         matchingResponseIds !== null
@@ -645,7 +721,12 @@ class FormServices {
     const pageResponseIds = pageResponses.map((r) => r.responseId);
 
     // 7. Fetch answers for this page's responses
-    let pageAnswers: { answerId: string; fieldId: string; responseId: string; value: unknown }[] = [];
+    let pageAnswers: {
+      answerId: string;
+      fieldId: string;
+      responseId: string;
+      value: unknown;
+    }[] = [];
     if (pageResponseIds.length > 0) {
       pageAnswers = await db
         .select()
@@ -685,21 +766,23 @@ class FormServices {
       // Determine respondent identity from primary field
       let respondentIdentity = "Anonymous Vibe";
       if (primaryField) {
-        const primaryAnswer = answers.find((a) => a.fieldId === primaryField.fieldId);
+        const primaryAnswer = answers.find(
+          (a) => a.fieldId === primaryField.fieldId,
+        );
         if (primaryAnswer?.value) {
           const v = primaryAnswer.value;
-          respondentIdentity =
-            typeof v === "string" ? v : JSON.stringify(v);
+          respondentIdentity = typeof v === "string" ? v : JSON.stringify(v);
         }
       }
 
       // Derive avatar initials (up to 2 chars from words)
-      const initials = respondentIdentity
-        .split(/\s+/)
-        .filter(Boolean)
-        .slice(0, 2)
-        .map((w) => w[0]?.toUpperCase() ?? "")
-        .join("") || "?";
+      const initials =
+        respondentIdentity
+          .split(/\s+/)
+          .filter(Boolean)
+          .slice(0, 2)
+          .map((w) => w[0]?.toUpperCase() ?? "")
+          .join("") || "?";
 
       return {
         responseId: r.responseId,
@@ -729,8 +812,45 @@ class FormServices {
       pageSize: limit,
     };
   }
+
+  public async getResumableUploadUrl(payload: GetResumableUploadUrlDtoType) {
+    const data = getResumableUploadUrlDto.parse(payload);
+
+    const [form] = await db
+      .select()
+      .from(forms)
+      .where(eq(forms.formId, data.formId));
+
+    if (!form) {
+      throw new AppError("NOT_FOUND", "Form not found");
+    }
+
+    if (!form.googleDriveFolderId) {
+      throw new AppError("BAD_REQUEST", "Form does not have a Google Drive folder configured.");
+    }
+
+    const [userAuth] = await db
+      .select()
+      .from(auths)
+      .where(eq(auths.userId, form.userId));
+
+    if (!userAuth || !userAuth.googleDriveRefreshToken) {
+      throw new AppError("BAD_REQUEST", "Form owner has not connected Google Drive.");
+    }
+
+    try {
+      const uploadUrl = await googleDriveService.getResumableUploadUrl(
+        userAuth.googleDriveRefreshToken,
+        form.googleDriveFolderId,
+        data.file
+      );
+      return { uploadUrl };
+    } catch (error: any) {
+      console.error("Failed to get resumable upload URL:", error);
+      throw new AppError("INTERNAL_SERVER_ERROR", error.message || "Failed to initiate file upload.");
+    }
+  }
+
 }
 
 export default FormServices;
-
-

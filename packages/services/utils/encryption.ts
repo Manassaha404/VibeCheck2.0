@@ -19,13 +19,21 @@ export function encrypt(text: string): string {
 }
 
 export function decrypt(text: string): string {
-  const textParts = text.split(":");
-  const ivStr = textParts.shift();
-  if (!ivStr) throw new Error("Invalid encrypted text format");
-  const iv = Buffer.from(ivStr, "hex");
-  const encryptedText = Buffer.from(textParts.join(":"), "hex");
-  const decipher = crypto.createDecipheriv(ALGORITHM, Buffer.from(SECRET_KEY), iv);
-  let decrypted = decipher.update(encryptedText);
-  decrypted = Buffer.concat([decrypted, decipher.final()]);
-  return decrypted.toString();
+  try {
+    const textParts = text.split(":");
+    if (textParts.length < 2) return text; // fallback for unencrypted tokens
+    
+    const ivStr = textParts.shift();
+    if (!ivStr) return text;
+    
+    const iv = Buffer.from(ivStr, "hex");
+    const encryptedText = Buffer.from(textParts.join(":"), "hex");
+    const decipher = crypto.createDecipheriv(ALGORITHM, Buffer.from(SECRET_KEY), iv);
+    let decrypted = decipher.update(encryptedText);
+    decrypted = Buffer.concat([decrypted, decipher.final()]);
+    return decrypted.toString();
+  } catch (err) {
+    console.error("[Encryption] Decrypt failed:", err);
+    throw new Error("Decryption failed. The encryption secret may have changed or the token is invalid.");
+  }
 }

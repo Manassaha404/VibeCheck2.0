@@ -11,10 +11,12 @@
     "@repo/trpc": "workspace:*",
     "@scalar/express-api-reference": "^0.9.19",
     "@trpc/server": "^11.8.1",
+    "@types/multer": "^2.1.0",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
+    "multer": "^2.2.0",
     "trpc-to-openapi": "^3.3.0",
     "zod": "^4.3.5"
   },

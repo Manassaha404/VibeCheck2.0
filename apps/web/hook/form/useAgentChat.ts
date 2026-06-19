@@ -12,8 +12,9 @@ export function useAgentChat(
   formId: string,
   formTitle: string,
   onComplete: (responseId?: string) => void,
-  onClear: () => void
+  onClear: () => void,
 ) {
+  const utils = trpc.useUtils();
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "welcome",
@@ -30,6 +31,18 @@ export function useAgentChat(
   const chatMutation = trpc.agent.respondentAgentChat.useMutation({
     onSuccess: (data) => {
       if (!data) return;
+
+      utils.agent.respondentAgentGetSession.setData({ formId }, (prev) => {
+        if (!prev) return undefined;
+        return {
+          ...prev,
+          isCompleted: data.isComplete,
+          collectedAnswers: data.collectedAnswers,
+          currentFieldId: data.currentFieldId,
+          responseId: data.responseId,
+        };
+      });
+
       const agentMsg: Message = {
         id: crypto.randomUUID(),
         role: "agent",
@@ -58,6 +71,12 @@ export function useAgentChat(
 
   const clearMutation = trpc.agent.respondentAgentClearSession.useMutation({
     onSuccess: () => {
+      utils.agent.respondentAgentGetSession.setData({ formId }, () => ({
+        hasSession: false,
+        isCompleted: false,
+        collectedAnswers: [],
+        currentFieldId: null,
+      }));
       setMessages([
         {
           id: "restart",

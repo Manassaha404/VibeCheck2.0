@@ -98,6 +98,16 @@ export const submitStaticFormDto = z.object({
   responseId: z.string().uuid().optional(),
 });
 
+export const getResumableUploadUrlDto = z.object({
+  formId: z.string().uuid(),
+  file: z.object({
+    name: z.string(),
+    mimeType: z.string(),
+    sizeInBytes: z.number(),
+  }),
+});
+
+
 
 export const agentChatDto = z.object({
   formId: z.string().uuid(),
@@ -124,6 +134,8 @@ export type AgentChatDtoType = z.infer<typeof agentChatDto>;
 export type AgentGetSessionDtoType = z.infer<typeof agentGetSessionDto>;
 export type AgentClearSessionDtoType = z.infer<typeof agentClearSessionDto>;
 export type SubmitStaticFormDtoType = z.infer<typeof submitStaticFormDto>;
+export type GetResumableUploadUrlDtoType = z.infer<typeof getResumableUploadUrlDto>;
+
 
 // ── Public form result type ─────────────────────────────────────
 export type PublicFormField = {

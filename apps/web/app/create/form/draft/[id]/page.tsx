@@ -9,24 +9,25 @@ import { FormLinearPreview } from "@/components/form-builder/form-linear-preview
 import { FieldSettings } from "@/components/form-builder/field-settings";
 import { AgentChat } from "@/components/form-builder/agent-chat";
 import { useFormBuilderStore } from "@/store/formStore/formBuilderStore";
-import { List, GitMerge, Save, Loader2, Check, Send } from "lucide-react";
+import { List, GitMerge, Save, Loader2, Check, Send, Ghost, Home } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { useUserInfoStore } from "@/store/userInfoStore";
 import { useSaveDraftForm } from "@/hook/form/useSaveDraftForm";
 import { useLoadDraftForm } from "@/hook/form/useLoadDraftForm";
 import { usePublishForm } from "@/hook/form/usePublishForm";
+import { toast } from "sonner";
 import { PageLoader } from "@/components/PageLoader";
 export default function FormDraftBuilderPage() {
   const router = useRouter();
   const { viewMode, setViewMode } = useFormBuilderStore();
   const params = useParams();
   const formSlug = params?.id as string;
-  const { username } = useUserInfoStore();
+  const { username, isGoogleDriveConnected } = useUserInfoStore();
   const { handleSaveDraft, isSaving } = useSaveDraftForm();
   const [isSaved, setIsSaved] = React.useState(false);
   const { handlePublishForm, isPublishing } = usePublishForm();
   const [isPublished, setIsPublished] = React.useState(false);
-  const { loadDraft, isLoading } = useLoadDraftForm();
+  const { loadDraft, isLoading, apiError } = useLoadDraftForm();
 
   React.useEffect(() => {
     if (formSlug) {
@@ -40,6 +41,12 @@ export default function FormDraftBuilderPage() {
     
     const nodes = useFormBuilderStore.getState().nodes;
     
+    const hasFileField = nodes.some(node => node.data.type === 'file');
+    if (hasFileField && !isGoogleDriveConnected) {
+      toast.error("You must connect your Google Drive to save forms with file upload fields.");
+      return;
+    }
+
     const fields = nodes.map((node) => ({
       id: node.id,
       type: node.data.type,
@@ -67,6 +74,12 @@ export default function FormDraftBuilderPage() {
     
     const nodes = useFormBuilderStore.getState().nodes;
     
+    const hasFileField = nodes.some(node => node.data.type === 'file');
+    if (hasFileField && !isGoogleDriveConnected) {
+      toast.error("You must connect your Google Drive to publish forms with file upload fields.");
+      return;
+    }
+
     const fields = nodes.map((node) => ({
       id: node.id,
       type: node.data.type,
@@ -92,6 +105,42 @@ export default function FormDraftBuilderPage() {
 
   if (isLoading) {
     return <PageLoader message="Loading Draft..." />;
+  }
+
+  if (apiError) {
+    return (
+      <div className="bg-canvas-cream h-screen flex flex-col items-center justify-center font-body-md text-ink-charcoal selection:bg-electric-sun selection:text-ink-charcoal p-6 relative overflow-hidden">
+        {/* Background decorative elements */}
+        <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-leaf-green/20 rounded-full blur-3xl" />
+        <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-electric-sun/20 rounded-full blur-3xl" />
+
+        <div className="w-full max-w-md bg-white border-[3px] border-ink-charcoal shadow-hard p-8 flex flex-col items-center text-center relative animate-fade-up z-10">
+          {/* Top accent bar */}
+          <div className="absolute top-0 left-0 right-0 h-3 bg-electric-sun border-b-[3px] border-ink-charcoal" />
+
+          {/* Icon */}
+          <div className="w-20 h-20 bg-canvas-cream border-[3px] border-ink-charcoal rounded flex items-center justify-center mt-4 mb-6 shadow-[4px_4px_0px_0px_rgba(44,46,42,1)]">
+            <Ghost className="w-10 h-10 text-ink-charcoal" strokeWidth={2.5} />
+          </div>
+
+          <h1 className="text-display-sm font-bold mb-3 uppercase tracking-tight">Form Not Found</h1>
+          
+          <div className="w-16 h-1.5 bg-ink-charcoal mb-5" />
+          
+          <p className="text-body-lg font-bold opacity-80 mb-8 leading-relaxed">
+            {apiError || "We couldn't track down this form. It may have been deleted, or you might not have the correct permissions."}
+          </p>
+
+          <button
+            onClick={() => router.push("/dashboard")}
+            className="group flex items-center gap-2 px-8 py-3.5 bg-leaf-green text-pure-white font-bold font-label-md uppercase border-[3px] border-ink-charcoal shadow-[4px_4px_0px_0px_rgba(44,46,42,1)] hover:-translate-y-1 hover:shadow-[8px_8px_0px_0px_rgba(44,46,42,1)] transition-all active:translate-y-0 active:shadow-none"
+          >
+            <Home className="w-5 h-5 transition-transform group-hover:-rotate-12" strokeWidth={2.5} />
+            Back to Dashboard
+          </button>
+        </div>
+      </div>
+    );
   }
 
   return (

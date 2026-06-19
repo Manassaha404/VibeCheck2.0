@@ -57,7 +57,7 @@ export default function PublicFormPage({ params }: PageProps) {
   if (isError || !form) {
     return (
       <div className="min-h-screen bg-[var(--color-canvas-cream)] flex items-center justify-center bg-dot-pattern">
-        <div className="bg-white border-4 border-[var(--color-ink-charcoal)] rounded-2xl shadow-hard-xl p-10 max-w-md text-center">
+        <div className="bg-white border-4 border-[var(--color-ink-charcoal)] rounded-2xl shadow-hard-xl p-8 md:p-10 w-[90%] md:w-full max-w-md mx-auto text-center">
           <div className="text-6xl mb-4">😕</div>
           <h1 className="text-headline-sm mb-3">Form Not Found</h1>
           <p className="text-body-md opacity-60">
@@ -107,7 +107,7 @@ export default function PublicFormPage({ params }: PageProps) {
       />
 
       {/* ── Body ────────────────────────────────────────────────────────── */}
-      <main className={`flex-grow flex flex-col items-center py-12 md:py-16 px-4 md:px-10 max-w-3xl mx-auto w-full relative ${mode === "agent" && !isAgentComplete ? "overflow-hidden" : ""}`}>
+      <main className={`flex-grow flex flex-col items-center max-w-3xl mx-auto w-full relative ${mode === "agent" && !isAgentComplete ? "overflow-hidden p-2 md:py-8 md:px-10" : "py-8 px-4 md:py-16 md:px-10"}`}>
         
         {/* Decorative elements */}
         <div className="absolute -left-12 top-20 text-[var(--color-electric-sun)] opacity-50 hidden lg:block animate-float-slow">
@@ -124,15 +124,15 @@ export default function PublicFormPage({ params }: PageProps) {
             onEdit={() => router.push(`/f/${username}/${slug}/edit`)}
           />
         ) : (
-          <div className={`bg-white border-[3px] border-[var(--color-ink-charcoal)] shadow-hard-lg w-full p-6 md:p-12 relative z-10 transition-all duration-500 ease-in-out flex flex-col ${mode === "agent" && !isAgentComplete ? "flex-1 min-h-0 overflow-hidden" : ""}`}>
+          <div className={`bg-white border-[3px] border-[var(--color-ink-charcoal)] shadow-hard-lg w-full relative z-10 transition-all duration-500 ease-in-out flex flex-col ${mode === "agent" && !isAgentComplete ? "flex-1 min-h-0 overflow-hidden p-2 md:p-8" : "p-6 md:p-12"}`}>
             
             {/* Title Area */}
-            <div className="flex-shrink-0 mb-8 border-b-[3px] border-[var(--color-ink-charcoal)] pb-6">
-              <h1 className="font-headline-lg-mobile md:font-headline-lg text-[var(--color-ink-charcoal)] mb-3 leading-tight">
+            <div className={`flex-shrink-0 border-b-[3px] border-[var(--color-ink-charcoal)] pb-4 md:pb-6 px-2 md:px-0 ${mode === "agent" && !isAgentComplete ? "mb-4" : "mb-8"}`}>
+              <h1 className="font-headline-lg-mobile md:font-headline-lg text-[var(--color-ink-charcoal)] mb-2 md:mb-3 leading-tight">
                 {form.title}
               </h1>
               {form.description && (
-                <p className="text-body-lg text-[var(--color-on-surface-variant)] opacity-90 font-headline-sm">
+                <p className="text-body-md md:text-body-lg text-[var(--color-on-surface-variant)] opacity-90 font-headline-sm">
                   {form.description}
                 </p>
               )}
@@ -152,6 +152,7 @@ export default function PublicFormPage({ params }: PageProps) {
                       setAgentCollectedCount(0);
                       setIsAgentComplete(false);
                     }}
+                    primaryFieldId={form.fields.find((f: any) => f.isPrimary)?.fieldId}
                   />
                 </div>
               ) : (

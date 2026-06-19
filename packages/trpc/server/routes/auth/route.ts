@@ -92,7 +92,7 @@ export const authRouter = router({
 
       return {
         users,
-        googleDriveRefreshToken: auths?.googleDriveRefreshToken,
+        isGoogleDriveConnected: auths?.googleDriveRefreshToken ? true : false,
       };
     } catch (error) {
       handleRouteError(error);

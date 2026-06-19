@@ -1,10 +1,12 @@
-import React from "react";
-import { User, Mail, MessageSquare, Hash, Phone, Calendar, CheckSquare, List, CircleDot, Star, Smile } from "lucide-react";
+import React, { useState } from "react";
+import { User, Mail, MessageSquare, Hash, Phone, Calendar, CheckSquare, List, CircleDot, Star, Smile, Upload, File as FileIcon, Loader2 } from "lucide-react";
+import { trpc } from "@/trpc/client";
+import { useFileUpload } from "../../hook/form/useFileUpload";
 
 export type FieldType =
   | "short_text" | "long_text" | "number" | "email" | "phone"
   | "date" | "select" | "multi_select" | "radio" | "checkbox"
-  | "rating" | "scale" | "mood";
+  | "rating" | "scale" | "mood" | "file";
 
 export interface Field {
   fieldId: string;
@@ -13,6 +15,7 @@ export interface Field {
   placeholder: string | null;
   helperText: string | null;
   isRequired: boolean;
+  isPrimary?: boolean;
   options: { id: string; value: string }[] | null;
 }
 
@@ -39,19 +42,40 @@ function getFieldIcon(type: FieldType) {
     case "rating":
     case "scale": return <Star size={20} />;
     case "mood": return <Smile size={20} />;
+    case "file": return <Upload size={20} />;
     default: return null;
   }
 }
 
 export function FieldInput({
   field,
+  formId,
   value,
+  primaryFieldValue,
   onChange,
 }: {
   field: Field;
+  formId: string;
   value: unknown;
+  primaryFieldValue?: string;
   onChange: (val: unknown) => void;
 }) {
+  const { uploadFile, isUploading } = useFileUpload();
+  const [localFileName, setLocalFileName] = useState<string | null>(null);
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      const fileId = await uploadFile(formId, file, primaryFieldValue);
+      setLocalFileName(file.name);
+      onChange(fileId);
+    } catch (error) {
+      console.error("Upload error:", error);
+      alert("Failed to upload file");
+    }
+  };
   const baseInput =
     "w-full bg-transparent border-none p-4 text-body-lg text-[var(--color-ink-charcoal)] placeholder-[var(--color-tertiary)] focus:ring-0 outline-none font-bold";
   const inputWrapper =
@@ -164,11 +188,10 @@ export function FieldInput({
                   }}
                   className="peer sr-only"
                 />
-                <div className={`border-[3px] border-[var(--color-ink-charcoal)] bg-white p-4 transition-all flex items-center gap-3 ${
-                  selected 
-                    ? "bg-[var(--color-electric-sun)] shadow-hard" 
+                <div className={`border-[3px] border-[var(--color-ink-charcoal)] bg-white p-4 transition-all flex items-center gap-3 ${selected
+                    ? "bg-[var(--color-electric-sun)] shadow-hard"
                     : "hover:bg-[var(--color-canvas-cream)]"
-                }`}>
+                  }`}>
                   <div className={`w-5 h-5 border-[3px] border-[var(--color-ink-charcoal)] flex items-center justify-center flex-shrink-0 bg-white ${isRadio ? "rounded-full" : "rounded"}`}>
                     {selected && (
                       <div className={`bg-[var(--color-ink-charcoal)] ${isRadio ? "w-2.5 h-2.5 rounded-full" : "w-2.5 h-2.5"}`} />
@@ -243,6 +266,42 @@ export function FieldInput({
               </div>
             </label>
           ))}
+        </div>
+      )}
+
+      {/* ── File ── */}
+      {field.type === "file" && (
+        <div className={inputWrapper + " flex items-center p-4 gap-4"}>
+          {isUploading ? (
+            <div className="flex items-center gap-3 text-body-lg font-bold text-[var(--color-ink-charcoal)]">
+              <Loader2 className="animate-spin" size={24} />
+              Uploading...
+            </div>
+          ) : value ? (
+            <div className="flex items-center gap-3 w-full">
+              <FileIcon size={24} className="text-[var(--color-ink-charcoal)]" />
+              <span className="text-body-lg font-bold truncate flex-1">
+                {localFileName || String(value)}
+              </span>
+              <button
+                type="button"
+                onClick={() => onChange("")}
+                className="text-label-sm font-bold opacity-60 hover:opacity-100"
+              >
+                Remove
+              </button>
+            </div>
+          ) : (
+            <label className="cursor-pointer flex items-center gap-3 w-full hover:opacity-80 transition-opacity">
+              <Upload size={24} className="text-[var(--color-ink-charcoal)]" />
+              <span className="text-body-lg font-bold text-[var(--color-ink-charcoal)] placeholder">Click to upload a file</span>
+              <input
+                type="file"
+                className="hidden"
+                onChange={handleFileUpload}
+              />
+            </label>
+          )}
         </div>
       )}
     </div>

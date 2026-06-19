@@ -264,7 +264,7 @@ class FormRespondentAgentService {
     responseId?: string;
   }> {
     const raw = await redis.get(SESSION_KEY(formId, guestToken));
-
+    
     if (!raw) {
       return {
         hasSession: false,

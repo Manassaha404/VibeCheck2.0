@@ -22,6 +22,10 @@ app.use(
 );
 
 app.use(cookieParser());
+
+
+
+// JSON parser for all other routes (default 100 kb limit is fine)
 app.use(express.json());
 
 app.get("/", (req, res) => {

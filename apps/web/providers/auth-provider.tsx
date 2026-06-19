@@ -19,7 +19,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const isPublicRoute =
       publicRoutes.includes(pathname) ||
       pathname.startsWith("/signup") ||
-      pathname.startsWith("/reset-password/")
+      pathname.startsWith("/reset-password/") ||
+      pathname.startsWith("/f/")
 
     if (isError || !data?.users?.userId) {
       setInitialized(true);
@@ -40,14 +41,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         email: data.users.email,
         fullName: data.users.firstName + " " + data.users.lastName,
         username: data.users.username,
-        googleDriveRefreshToken: data?.googleDriveRefreshToken ? data?.googleDriveRefreshToken : undefined
+        isGoogleDriveConnected: data?.isGoogleDriveConnected 
       });
       setInitialized(true);
     }
   }, [data, isLoading, isError, pathname, router, setInitialized, setUserInfo]);
 
   if (!useUserInfoStore.getState().isInitialized && isLoading) {
-    return <PageLoader message="Authenticating..." />;
+    return <PageLoader/>;
   }
   return <>{children}</>;
 }

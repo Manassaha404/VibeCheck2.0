@@ -7,6 +7,7 @@ import {
   getFormResponsesDto,
   getPublicFormDto,
   submitStaticFormDto,
+  getResumableUploadUrlDto,
 } from "@repo/services/form/model";
 import { formServices } from "../../services";
 import { handleRouteError } from "../../utils/error";
@@ -97,6 +98,15 @@ export const formRouter = router({
         handleRouteError(error);
       }
     }),
+
+  getResumableUploadUrl: publicProcedure
+    .input(getResumableUploadUrlDto)
+    .mutation(async ({ input }) => {
+      try {
+        return await formServices.getResumableUploadUrl(input);
+      } catch (error) {
+        handleRouteError(error);
+      }
+    }),
+
 });
-
-

@@ -1,20 +1,20 @@
 import { google } from "googleapis";
 import { env } from "../env";
 import { decrypt } from "../utils/encryption";
-import stream from "node:stream";
+import { AppError } from "@repo/error";
 
 export class GoogleDriveService {
   private getOAuth2Client(encryptedRefreshToken: string) {
     const oauth2Client = new google.auth.OAuth2(
       env.GOOGLE_CLIENT_ID,
       env.GOOGLE_CLIENT_SECRET,
-      env.GOOGLE_CALLBACK_URL 
+      env.GOOGLE_CALLBACK_URL,
     );
 
     const refreshToken = decrypt(encryptedRefreshToken);
-    
+
     oauth2Client.setCredentials({
-      refresh_token: refreshToken
+      refresh_token: refreshToken,
     });
 
     return oauth2Client;
@@ -25,9 +25,12 @@ export class GoogleDriveService {
     return google.drive({ version: "v3", auth });
   }
 
-  public async createFormFolder(encryptedRefreshToken: string, slug: string): Promise<string> {
+  public async createFormFolder(
+    encryptedRefreshToken: string,
+    slug: string,
+  ): Promise<string> {
     const drive = await this.getDriveClient(encryptedRefreshToken);
-    
+
     const fileMetadata = {
       name: slug,
       mimeType: "application/vnd.google-apps.folder",
@@ -45,35 +48,57 @@ export class GoogleDriveService {
     return res.data.id;
   }
 
+  
 
-  //review needed, optimization needed
-  public async uploadFileToFolder(
-    encryptedRefreshToken: string, 
-    folderId: string, 
-    file: { name: string, mimeType: string, buffer: Buffer }
+  public async getResumableUploadUrl(
+    encryptedRefreshToken: string,
+    folderId: string,
+    file: { name: string; mimeType: string; sizeInBytes: number },
   ): Promise<string> {
-    const drive = await this.getDriveClient(encryptedRefreshToken);
     
-    const bufferStream = new stream.PassThrough();
-    bufferStream.end(file.buffer);
+    const auth = this.getOAuth2Client(encryptedRefreshToken);
+    const tokenResponse = await auth.getAccessToken();
+    const accessToken = tokenResponse.token;
 
-    const res = await drive.files.create({
-      requestBody: {
-        name: file.name,
-        parents: [folderId],
-      },
-      media: {
-        mimeType: file.mimeType,
-        body: bufferStream,
-      },
-      fields: "id",
-    });
-
-    if (!res.data.id) {
-      throw new Error("Failed to upload file");
+    if (!accessToken) {
+      throw new AppError("INTERNAL_SERVER_ERROR", "Could not obtain Google access token");
     }
 
-    return res.data.id;
+    const metadata = {
+      name: file.name,
+      parents: [folderId],
+    };
+
+    const response = await fetch(
+      `https://www.googleapis.com/upload/drive/v3/files?uploadType=resumable&fields=id,name`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+          "X-Upload-Content-Type": file.mimeType,
+          "X-Upload-Content-Length": file.sizeInBytes.toString(),
+          "Origin": process.env.FRONTEND_URL || "http://localhost:3000",
+        },
+        body: JSON.stringify(metadata),
+      },
+    );
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new AppError(
+        "INTERNAL_SERVER_ERROR",
+        `Google Drive responded with ${response.status}: ${errorText}`,
+      );
+    }
+
+    const uploadUrl = response.headers.get("location");
+
+    if (!uploadUrl) {
+      throw new AppError("INTERNAL_SERVER_ERROR", "Google did not return a resumable upload URL");
+    }
+
+    return uploadUrl;
   }
 }
 

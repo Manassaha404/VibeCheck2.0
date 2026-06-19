@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 
 export function FieldSettings() {
   const { nodes, selectedNodeId, updateNodeData, removeNode } = useFormBuilderStore();
-  const { googleDriveRefreshToken } = useUserInfoStore();
+  const { isGoogleDriveConnected } = useUserInfoStore();
   const pathname = usePathname();
   
   const selectedNode = nodes.find(n => n.id === selectedNodeId);
@@ -16,7 +16,7 @@ export function FieldSettings() {
     window.location.href = `${apiUrl}/auth/google/drive?returnTo=${pathname}`;
   };
 
-  const isDriveConnected = !!googleDriveRefreshToken;
+  const isDriveConnected = !!isGoogleDriveConnected;
 
   const handleUpdate = useCallback((key: string, value: any) => {
     if (selectedNodeId) {

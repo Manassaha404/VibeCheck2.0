@@ -35,7 +35,7 @@ export function FeedbackScreen({
   }[state];
 
   return (
-    <div className="bg-white border-[3px] border-[var(--color-ink-charcoal)] shadow-hard-lg w-full max-w-md p-8 md:p-12 text-center relative z-10 flex flex-col items-center justify-center animate-pop-in mx-auto mt-20">
+    <div className="bg-white border-[3px] border-[var(--color-ink-charcoal)] shadow-hard-lg w-[90%] md:w-full max-w-md p-6 md:p-12 text-center relative z-10 flex flex-col items-center justify-center animate-pop-in mx-auto mt-12 md:mt-20">
       <div className={`w-24 h-24 ${config.color} rounded-full border-[3px] border-[var(--color-ink-charcoal)] shadow-hard mb-6 flex items-center justify-center animate-wiggle`}>
         {config.icon}
       </div>

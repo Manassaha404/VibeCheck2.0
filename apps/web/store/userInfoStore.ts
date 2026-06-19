@@ -5,9 +5,9 @@ interface UserInfoState {
   email?: string;
   fullName?: string;
   username?: string;
-  googleDriveRefreshToken?: string
+  isGoogleDriveConnected?: boolean
   isInitialized: boolean;
-  setUserInfo: (info: { userId?: string; email?: string; fullName?: string; username?: string; googleDriveRefreshToken?: string }) => void;
+  setUserInfo: (info: { userId?: string; email?: string; fullName?: string; username?: string; isGoogleDriveConnected?: boolean }) => void;
   setInitialized: (val: boolean) => void;
 }
 
@@ -16,7 +16,7 @@ export const useUserInfoStore = create<UserInfoState>((set) => ({
   email: undefined,
   fullName: undefined,
   username: undefined,
-  googleDriveRefreshToken: undefined,
+  isGoogleDriveConnected: undefined,
   isInitialized: false,
   setUserInfo: (info) => set((state) => ({ ...state, ...info })),
   setInitialized: (val) => set({ isInitialized: val }),

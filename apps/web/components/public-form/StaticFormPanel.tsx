@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { ChevronRight, Sparkles, Loader2, Send } from "lucide-react";
 import { SuccessScreen } from "./SuccessScreen";
 import { FieldInput, Field } from "./FieldInput";
-import { trpc } from "@/trpc/client";
+import { useSubmitStaticForm } from "../../hook/form/useSubmitStaticForm";
 
 export function StaticFormPanel({
   form,
@@ -29,7 +29,7 @@ export function StaticFormPanel({
   const [answers, setAnswers] = useState<Record<string, unknown>>(previousAnswers || {});
   const [submitted, setSubmitted] = useState(false);
 
-  const submitMutation = trpc.form.submitStaticForm.useMutation({
+  const submitMutation = useSubmitStaticForm({
     onSuccess: () => {
       setSubmitted(true);
       if (onSuccess) onSuccess();
@@ -72,16 +72,23 @@ export function StaticFormPanel({
 
       {/* Fields */}
       <div className="space-y-8 mt-8">
-        {form.fields.map((field) => (
-          <FieldInput
-            key={field.fieldId}
-            field={field}
-            value={answers[field.fieldId]}
-            onChange={(val) =>
-              setAnswers((prev) => ({ ...prev, [field.fieldId]: val }))
-            }
-          />
-        ))}
+        {form.fields.map((field) => {
+          const primaryField = form.fields.find(f => f.isPrimary);
+          const primaryFieldValue = primaryField ? String(answers[primaryField.fieldId] || "") : undefined;
+
+          return (
+            <FieldInput
+              key={field.fieldId}
+              field={field}
+              formId={form.formId}
+              value={answers[field.fieldId]}
+              primaryFieldValue={primaryFieldValue || undefined}
+              onChange={(val) =>
+                setAnswers((prev) => ({ ...prev, [field.fieldId]: val }))
+              }
+            />
+          );
+        })}
       </div>
 
       {/* Submit */}

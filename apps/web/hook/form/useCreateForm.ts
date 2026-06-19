@@ -8,8 +8,9 @@ type DraftFormDtoType = z.infer<typeof draftFormDto>;
 
 export const useDraftForm = () => {
   const [apiError, setApiError] = useState<string | null>(null);
-  
-  const { mutateAsync: draftMutation, isPending: isDrafting } = trpc.form.createForm.useMutation();
+
+  const { mutateAsync: draftMutation, isPending: isDrafting } =
+    trpc.form.createForm.useMutation();
 
   const handleDraft = async (data: DraftFormDtoType) => {
     setApiError(null);
