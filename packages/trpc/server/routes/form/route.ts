@@ -3,11 +3,13 @@ import {
   draftFormDto,
   getSavedFieldsDto,
   saveDraftFormDto,
+  updateFormSettingsDto,
   getFormAnalyticsDto,
   getFormResponsesDto,
   getPublicFormDto,
   submitStaticFormDto,
   getResumableUploadUrlDto,
+  deleteFileDto,
 } from "@repo/services/form/model";
 import { formServices } from "../../services";
 import { handleRouteError } from "../../utils/error";
@@ -29,6 +31,16 @@ export const formRouter = router({
       try {
         const form = await formServices.saveDraft(ctx.user.id, input);
         return { message: "Form saved successfully", form };
+      } catch (error) {
+        handleRouteError(error);
+      }
+    }),
+  updateFormSettings: protectedProcedure
+    .input(updateFormSettingsDto)
+    .mutation(async ({ input, ctx }) => {
+      try {
+        const form = await formServices.updateFormSettings(ctx.user.id, input);
+        return { message: "Form settings updated successfully", form };
       } catch (error) {
         handleRouteError(error);
       }
@@ -104,6 +116,16 @@ export const formRouter = router({
     .mutation(async ({ input }) => {
       try {
         return await formServices.getResumableUploadUrl(input);
+      } catch (error) {
+        handleRouteError(error);
+      }
+    }),
+
+  deleteFile: publicProcedure
+    .input(deleteFileDto)
+    .mutation(async ({ input }) => {
+      try {
+        return await formServices.deleteFile(input);
       } catch (error) {
         handleRouteError(error);
       }

@@ -1,1 +1,0 @@
-ALTER TABLE "forms" DROP CONSTRAINT "forms_slug_unique";

@@ -15,10 +15,6 @@ export const draftFormDto = z.object({
     .default(false)
     .describe("is form password protected or not"),
   password: z.string().min(2).max(255).describe("the password of the form"),
-  isCommentsAllowed: z
-    .boolean()
-    .default(true)
-    .describe("is comments on form allowed or not"),
   expiresAt: z.string().nullable().describe("form expiry date"),
   responseLimit: z
     .number()
@@ -73,6 +69,16 @@ export const publishFormDto = z.object({
   formSlug: z.string().trim(),
 });
 
+export const updateFormSettingsDto = z.object({
+  formSlug: z.string().trim(),
+  passwordNeeded: z.boolean().optional(),
+  password: z.string().min(2).max(255).optional(),
+  expiresAt: z.string().nullable().optional(),
+  responseLimit: z.number().nullable().optional(),
+  allowResponseEdit: z.boolean().optional(),
+});
+
+
 
 export const getFormAnalyticsDto = z.object({
   formSlug: z.string().trim(),
@@ -107,6 +113,11 @@ export const getResumableUploadUrlDto = z.object({
   }),
 });
 
+export const deleteFileDto = z.object({
+  formId: z.string().uuid(),
+  fileId: z.string(),
+});
+
 
 
 export const agentChatDto = z.object({
@@ -126,6 +137,7 @@ export const agentClearSessionDto = z.object({
 export type DraftFormDtoType = z.infer<typeof draftFormDto>;
 export type getSavedFieldsType = z.infer<typeof getSavedFieldsDto>;
 export type SaveDraftFormDtoType = z.infer<typeof saveDraftFormDto>;
+export type UpdateFormSettingsDtoType = z.infer<typeof updateFormSettingsDto>;
 export type PublishFormDtoType = z.infer<typeof publishFormDto>;
 export type GetFormAnalyticsDtoType = z.infer<typeof getFormAnalyticsDto>;
 export type GetFormResponsesDtoType = z.infer<typeof getFormResponsesDto>;
@@ -135,6 +147,7 @@ export type AgentGetSessionDtoType = z.infer<typeof agentGetSessionDto>;
 export type AgentClearSessionDtoType = z.infer<typeof agentClearSessionDto>;
 export type SubmitStaticFormDtoType = z.infer<typeof submitStaticFormDto>;
 export type GetResumableUploadUrlDtoType = z.infer<typeof getResumableUploadUrlDto>;
+export type DeleteFileDtoType = z.infer<typeof deleteFileDto>;
 
 
 // ── Public form result type ─────────────────────────────────────
@@ -156,7 +169,7 @@ export type PublicFormResult = {
   description: string | null;
   slug: string;
 } & (
-  | { access: "granted"; isCommentsAllowed: boolean; fields: PublicFormField[]; previousAnswers?: Record<string, unknown>; responseId?: string }
+  | { access: "granted"; fields: PublicFormField[]; previousAnswers?: Record<string, unknown>; responseId?: string }
   | { access: "password_required" }
   | { access: "expired" }
   | { access: "limit_reached" }

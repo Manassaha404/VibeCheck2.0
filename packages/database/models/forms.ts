@@ -33,7 +33,6 @@ export const forms = pgTable("forms", {
   passwordNeeded: boolean("password_needed").default(false).notNull(),
   password: varchar("password", { length: 255 }),
   googleDriveFolderId: varchar("google_drive_folder_id", { length: 255 }),
-  isCommentsAllowed: boolean("is_comments_allowed").default(true).notNull(),
   expiresAt: timestamp("expires_at"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at")

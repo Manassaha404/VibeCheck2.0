@@ -6,7 +6,6 @@ import { useCreateFormStore } from '@/store/formStore/createFormStore';
 
 export function ControlsSection() {
   const { 
-    isCommentsAllowed, setIsCommentsAllowed, 
     allowResponseEdit, setAllowResponseEdit,
     responseLimit, setResponseLimit,
     expiresAt, setExpiresAt
@@ -52,28 +51,6 @@ export function ControlsSection() {
         </div>
 
         <hr className="border-t-2 border-ink-charcoal/20" />
-
-        {/* Toggle: Allow Comments */}
-        <div className="flex items-center justify-between">
-          <label className="font-label-md text-label-md cursor-pointer flex flex-col" htmlFor="toggle-comments">
-            <span>Allow Comments</span>
-            <span className="text-[12px] text-on-surface-variant font-normal">Let respondents leave feedback</span>
-          </label>
-          <div className="relative inline-block w-12 mr-2 align-middle select-none transition duration-200 ease-in">
-            <input 
-              className="toggle-checkbox absolute left-0 top-0 m-0 block w-6 h-6 rounded-full bg-pure-white border-2 border-ink-charcoal appearance-none cursor-pointer z-10 transition-transform duration-200 ease-in-out peer checked:translate-x-6" 
-              id="toggle-comments" 
-              name="toggle" 
-              type="checkbox" 
-              checked={isCommentsAllowed}
-              onChange={(e) => setIsCommentsAllowed(e.target.checked)}
-            />
-            <label 
-              className="toggle-label block overflow-hidden h-6 rounded-full border-2 border-ink-charcoal cursor-pointer transition-colors duration-200 bg-surface-variant peer-checked:bg-leaf-green" 
-              htmlFor="toggle-comments"
-            ></label>
-          </div>
-        </div>
 
         {/* Toggle: Allow Response Edit */}
         <div className="flex items-center justify-between">

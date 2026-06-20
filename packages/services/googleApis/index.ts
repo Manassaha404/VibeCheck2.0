@@ -42,7 +42,7 @@ export class GoogleDriveService {
     });
 
     if (!res.data.id) {
-      throw new Error("Failed to create folder");
+      throw new AppError("INTERNAL_SERVER_ERROR","Failed to create folder");
     }
 
     return res.data.id;
@@ -99,6 +99,23 @@ export class GoogleDriveService {
     }
 
     return uploadUrl;
+  }
+
+  public async deleteFile(encryptedRefreshToken: string, fileId: string): Promise<boolean> {
+    try {
+      const drive = await this.getDriveClient(encryptedRefreshToken);
+      await drive.files.delete({
+        fileId,
+      });
+      return true;
+    } catch (error: any) {
+      if (error.code === 404 || error.status === 404) {
+        // File already deleted or doesn't exist
+        return true;
+      }
+      console.error("Google Drive deleteFile error:", error);
+      throw new AppError("INTERNAL_SERVER_ERROR", "Failed to delete file from Google Drive");
+    }
   }
 }
 

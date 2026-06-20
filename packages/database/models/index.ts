@@ -9,7 +9,6 @@ export * from "./forms";
 export * from "./form-fields";
 export * from "./form-responses";
 export * from "./form-answers";
-export * from "./form-comments";
 
 // Polls
 export * from "./polls";

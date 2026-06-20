@@ -4,6 +4,7 @@ import { trpc } from "@/trpc/client";
 export function useFileUpload() {
   const [isUploading, setIsUploading] = useState(false);
   const uploadUrlMutation = trpc.form.getResumableUploadUrl.useMutation();
+  const deleteFileMutation = trpc.form.deleteFile.useMutation();
   const utils = trpc.useUtils();
 
   const uploadFile = async (
@@ -90,5 +91,15 @@ export function useFileUpload() {
     return session;
   };
 
-  return { uploadFile, isUploading, fetchPrimaryFieldValue, fetchRespondentSession };
+  const deleteExistingFile = async (formId: string, fileId: string) => {
+    try {
+      await deleteFileMutation.mutateAsync({ formId, fileId });
+      return true;
+    } catch (error) {
+      console.error("Failed to delete existing file:", error);
+      return false;
+    }
+  };
+
+  return { uploadFile, isUploading, fetchPrimaryFieldValue, fetchRespondentSession, deleteExistingFile };
 }

@@ -53,27 +53,55 @@ export function FieldInput({
   value,
   primaryFieldValue,
   onChange,
+  onUploadingChange,
+  error,
 }: {
   field: Field;
   formId: string;
   value: unknown;
   primaryFieldValue?: string;
   onChange: (val: unknown) => void;
+  onUploadingChange?: (isUploading: boolean) => void;
+  error?: string;
 }) {
-  const { uploadFile, isUploading } = useFileUpload();
+  const { uploadFile, isUploading, deleteExistingFile } = useFileUpload();
   const [localFileName, setLocalFileName] = useState<string | null>(null);
+  const [pendingDeleteFileId, setPendingDeleteFileId] = useState<string | null>(null);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const prevUploadingRef = React.useRef(isProcessing || isUploading);
+
+  React.useEffect(() => {
+    const currentlyUploading = isProcessing || isUploading;
+    if (onUploadingChange && currentlyUploading !== prevUploadingRef.current) {
+      onUploadingChange(currentlyUploading);
+      prevUploadingRef.current = currentlyUploading;
+    }
+  }, [isProcessing, isUploading, onUploadingChange]);
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
     try {
+      setIsProcessing(true);
+      
+      // Run deletion in background to prevent delaying the upload and 
+      // preventing the File object from being revoked by the browser
+      if (pendingDeleteFileId) {
+        deleteExistingFile(formId, pendingDeleteFileId).catch(console.error);
+        setPendingDeleteFileId(null);
+      } else if (value && typeof value === 'string') {
+        deleteExistingFile(formId, value).catch(console.error);
+      }
+
       const fileId = await uploadFile(formId, file, primaryFieldValue);
       setLocalFileName(file.name);
       onChange(fileId);
     } catch (error) {
       console.error("Upload error:", error);
       alert("Failed to upload file");
+    } finally {
+      setIsProcessing(false);
     }
   };
   const baseInput =
@@ -82,7 +110,7 @@ export function FieldInput({
     "border-[3px] border-[var(--color-ink-charcoal)] bg-white shadow-hard-sm transition-all focus-within:border-[var(--color-electric-sun)] focus-within:shadow-[0_0_0_4px_var(--color-electric-sun),4px_4px_0px_0px_var(--color-ink-charcoal)] relative overflow-hidden";
 
   return (
-    <div className="space-y-3 group animate-fade-up">
+    <div id={`field-container-${field.fieldId}`} className="space-y-3 group animate-fade-up">
       <label className="text-headline-sm font-bold text-[var(--color-ink-charcoal)] block group-hover:text-[var(--color-primary)] transition-colors flex items-center gap-2">
         {getFieldIcon(field.type)}
         {field.label}
@@ -272,7 +300,7 @@ export function FieldInput({
       {/* ── File ── */}
       {field.type === "file" && (
         <div className={inputWrapper + " flex items-center p-4 gap-4"}>
-          {isUploading ? (
+          {(isProcessing || isUploading) ? (
             <div className="flex items-center gap-3 text-body-lg font-bold text-[var(--color-ink-charcoal)]">
               <Loader2 className="animate-spin" size={24} />
               Uploading...
@@ -285,7 +313,12 @@ export function FieldInput({
               </span>
               <button
                 type="button"
-                onClick={() => onChange("")}
+                onClick={() => {
+                  if (value && typeof value === 'string') {
+                    setPendingDeleteFileId(value);
+                  }
+                  onChange("");
+                }}
                 className="text-label-sm font-bold opacity-60 hover:opacity-100"
               >
                 Remove
@@ -303,6 +336,12 @@ export function FieldInput({
             </label>
           )}
         </div>
+      )}
+
+      {error && (
+        <p className="text-[var(--color-error)] text-label-md font-bold animate-fade-in">
+          {error}
+        </p>
       )}
     </div>
   );

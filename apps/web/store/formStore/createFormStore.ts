@@ -7,7 +7,6 @@ interface CreateFormState {
   isSlugManuallyEdited: boolean;
   passwordNeeded: boolean;
   password?: string;
-  isCommentsAllowed: boolean;
   allowResponseEdit: boolean;
   responseLimit?: number;
   expiresAt?: string;
@@ -17,7 +16,6 @@ interface CreateFormState {
   setIsSlugManuallyEdited: (val: boolean) => void;
   setPasswordNeeded: (val: boolean) => void;
   setPassword: (val: string) => void;
-  setIsCommentsAllowed: (val: boolean) => void;
   setAllowResponseEdit: (val: boolean) => void;
   setResponseLimit: (val: number | undefined) => void;
   setExpiresAt: (val: string | undefined) => void;
@@ -30,8 +28,7 @@ export const useCreateFormStore = create<CreateFormState>((set) => ({
   isSlugManuallyEdited: false,
   passwordNeeded: false,
   password: "",
-  isCommentsAllowed: true,
-  allowResponseEdit: true,
+  allowResponseEdit: false,
   responseLimit: undefined,
   expiresAt: undefined,
   setTitle: (title) => set({ title }),
@@ -39,8 +36,7 @@ export const useCreateFormStore = create<CreateFormState>((set) => ({
   setSlug: (slug) => set({ slug }),
   setIsSlugManuallyEdited: (val) => set({ isSlugManuallyEdited: val }),
   setPasswordNeeded: (val) => set({ passwordNeeded: val }),
-  setPassword: (password) => set({ password }),
-  setIsCommentsAllowed: (val) => set({ isCommentsAllowed: val }),
+  setPassword: (val) => set({ password: val }),
   setAllowResponseEdit: (val) => set({ allowResponseEdit: val }),
   setResponseLimit: (val) => set({ responseLimit: val }),
   setExpiresAt: (val) => set({ expiresAt: val }),

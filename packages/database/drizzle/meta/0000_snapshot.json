@@ -1,5 +1,5 @@
 {
-  "id": "8cb8ce7b-348a-4eea-ae57-7f3767c6778c",
+  "id": "3f5983f3-4f7e-42ca-944e-68629aa713a0",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -55,21 +55,9 @@
           "primaryKey": false,
           "notNull": false
         },
-        "email_otp_verification": {
-          "name": "email_otp_verification",
-          "type": "varchar(10)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "email_otp_verification_expiry": {
-          "name": "email_otp_verification_expiry",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "otp_verification_secret": {
-          "name": "otp_verification_secret",
-          "type": "varchar(255)",
+        "google_drive_refresh_token": {
+          "name": "google_drive_refresh_token",
+          "type": "varchar(512)",
           "primaryKey": false,
           "notNull": false
         },
@@ -344,13 +332,6 @@
           "primaryKey": false,
           "notNull": false
         },
-        "is_comments_allowed": {
-          "name": "is_comments_allowed",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": true,
-          "default": true
-        },
         "expires_at": {
           "name": "expires_at",
           "type": "timestamp",
@@ -396,6 +377,12 @@
               "isExpression": false,
               "asc": true,
               "nulls": "last"
+            },
+            {
+              "expression": "user_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
             }
           ],
           "isUnique": true,
@@ -435,15 +422,7 @@
         }
       },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {
-        "forms_slug_unique": {
-          "name": "forms_slug_unique",
-          "nullsNotDistinct": false,
-          "columns": [
-            "slug"
-          ]
-        }
-      },
+      "uniqueConstraints": {},
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false
@@ -503,6 +482,12 @@
           "primaryKey": false,
           "notNull": true,
           "default": false
+        },
+        "helper_text": {
+          "name": "helper_text",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
         },
         "options": {
           "name": "options",
@@ -810,107 +795,6 @@
             "response_id"
           ],
           "onDelete": "cascade",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    },
-    "public.form_comments": {
-      "name": "form_comments",
-      "schema": "",
-      "columns": {
-        "form_comment_id": {
-          "name": "form_comment_id",
-          "type": "uuid",
-          "primaryKey": true,
-          "notNull": true,
-          "default": "gen_random_uuid()"
-        },
-        "form_id": {
-          "name": "form_id",
-          "type": "uuid",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "user_id": {
-          "name": "user_id",
-          "type": "uuid",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "guest_token": {
-          "name": "guest_token",
-          "type": "uuid",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "text": {
-          "name": "text",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        }
-      },
-      "indexes": {
-        "form_comment_form_id_idx": {
-          "name": "form_comment_form_id_idx",
-          "columns": [
-            {
-              "expression": "form_id",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        }
-      },
-      "foreignKeys": {
-        "form_comments_form_id_forms_form_id_fk": {
-          "name": "form_comments_form_id_forms_form_id_fk",
-          "tableFrom": "form_comments",
-          "tableTo": "forms",
-          "columnsFrom": [
-            "form_id"
-          ],
-          "columnsTo": [
-            "form_id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        },
-        "form_comments_user_id_users_user_id_fk": {
-          "name": "form_comments_user_id_users_user_id_fk",
-          "tableFrom": "form_comments",
-          "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "user_id"
-          ],
-          "onDelete": "set null",
           "onUpdate": "no action"
         }
       },
@@ -2272,6 +2156,123 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
+    "public.form_building_agent_conversations": {
+      "name": "form_building_agent_conversations",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "form_id": {
+          "name": "form_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "history": {
+          "name": "history",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'[]'::jsonb"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "agent_conv_user_form_idx": {
+          "name": "agent_conv_user_form_idx",
+          "columns": [
+            {
+              "expression": "user_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "form_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "agent_conv_user_idx": {
+          "name": "agent_conv_user_idx",
+          "columns": [
+            {
+              "expression": "user_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "form_building_agent_conversations_user_id_users_user_id_fk": {
+          "name": "form_building_agent_conversations_user_id_users_user_id_fk",
+          "tableFrom": "form_building_agent_conversations",
+          "tableTo": "users",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "user_id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "form_building_agent_conversations_form_id_forms_form_id_fk": {
+          "name": "form_building_agent_conversations_form_id_forms_form_id_fk",
+          "tableFrom": "form_building_agent_conversations",
+          "tableTo": "forms",
+          "columnsFrom": [
+            "form_id"
+          ],
+          "columnsTo": [
+            "form_id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
     "public.saves": {
       "name": "saves",
       "schema": "",
@@ -2507,7 +2508,8 @@
         "checkbox",
         "file",
         "rating",
-        "scale"
+        "scale",
+        "mood"
       ]
     },
     "public.poll_status": {

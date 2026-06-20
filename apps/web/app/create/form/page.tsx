@@ -43,7 +43,6 @@ export default function FormSetupPage() {
           slug: currentSlug,
           passwordNeeded: formState.passwordNeeded,
           password: formState.passwordNeeded ? formState.password || "defaultPass" : "not_set",
-          isCommentsAllowed: formState.isCommentsAllowed,
           expiresAt: formState.expiresAt ? new Date(formState.expiresAt).toISOString() : null,
           responseLimit: formState.responseLimit || null,
           allowResponseEdit: formState.allowResponseEdit,

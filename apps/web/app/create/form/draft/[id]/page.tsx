@@ -9,7 +9,8 @@ import { FormLinearPreview } from "@/components/form-builder/form-linear-preview
 import { FieldSettings } from "@/components/form-builder/field-settings";
 import { AgentChat } from "@/components/form-builder/agent-chat";
 import { useFormBuilderStore } from "@/store/formStore/formBuilderStore";
-import { List, GitMerge, Save, Loader2, Check, Send, Ghost, Home } from "lucide-react";
+import { FormSettingsModal } from "@/components/form-builder/FormSettingsModal";
+import { List, GitMerge, Save, Loader2, Check, Send, Ghost, Home, Settings } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { useUserInfoStore } from "@/store/userInfoStore";
 import { useSaveDraftForm } from "@/hook/form/useSaveDraftForm";
@@ -27,6 +28,7 @@ export default function FormDraftBuilderPage() {
   const [isSaved, setIsSaved] = React.useState(false);
   const { handlePublishForm, isPublishing } = usePublishForm();
   const [isPublished, setIsPublished] = React.useState(false);
+  const [isSettingsModalOpen, setIsSettingsModalOpen] = React.useState(false);
   const { loadDraft, isLoading, apiError } = useLoadDraftForm();
 
   React.useEffect(() => {
@@ -169,6 +171,14 @@ export default function FormDraftBuilderPage() {
         </div>
         <div className="flex-1 flex justify-end gap-2">
           <button 
+            onClick={() => setIsSettingsModalOpen(true)}
+            className="flex items-center gap-2 px-6 py-2 bg-surface-variant text-ink-charcoal font-bold font-label-md uppercase border-2 border-ink-charcoal rounded shadow-[2px_2px_0px_0px_rgba(44,46,42,1)] hover:-translate-y-0.5 hover:shadow-[4px_4px_0px_0px_rgba(44,46,42,1)] transition-all active:translate-y-0 active:shadow-none disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <Settings className="w-5 h-5" />
+            Settings
+          </button>
+
+          <button 
             onClick={onSaveDraft}
             disabled={isSaving || isSaved || isPublishing}
             className="flex items-center gap-2 px-6 py-2 bg-leaf-green text-pure-white font-bold font-label-md uppercase border-2 border-ink-charcoal rounded shadow-[2px_2px_0px_0px_rgba(44,46,42,1)] hover:-translate-y-0.5 hover:shadow-[4px_4px_0px_0px_rgba(44,46,42,1)] transition-all active:translate-y-0 active:shadow-none disabled:opacity-50 disabled:cursor-not-allowed"
@@ -204,6 +214,13 @@ export default function FormDraftBuilderPage() {
 
       {/* Agent Chat Widget */}
       <AgentChat />
+
+      {/* Form Settings Modal */}
+      <FormSettingsModal 
+        isOpen={isSettingsModalOpen}
+        onClose={() => setIsSettingsModalOpen(false)}
+        formSlug={formSlug}
+      />
     </div>
   );
 }

@@ -1,8 +1,47 @@
 import React, { useState, useEffect } from "react";
+import { z } from "zod";
 import { ChevronRight, Sparkles, Loader2, Send } from "lucide-react";
 import { SuccessScreen } from "./SuccessScreen";
 import { FieldInput, Field } from "./FieldInput";
 import { useSubmitStaticForm } from "../../hook/form/useSubmitStaticForm";
+
+const buildFormSchema = (fields: Field[]) => {
+  const shape: Record<string, z.ZodTypeAny> = {};
+
+  fields.forEach(f => {
+    let fieldSchema: z.ZodTypeAny;
+
+    if (f.type === 'email') {
+      fieldSchema = f.isRequired 
+        ? z.string().min(1, "This field is required").email("Invalid email format")
+        : z.union([z.literal(""), z.string().email("Invalid email format")]).optional().nullable();
+    } else if (f.type === 'checkbox' || f.type === 'multi_select') {
+      fieldSchema = f.isRequired
+        ? z.array(z.string()).min(1, "Please select at least one option")
+        : z.array(z.string()).optional().nullable();
+    } else if (f.type === 'number' || f.type === 'rating' || f.type === 'scale') {
+      fieldSchema = f.isRequired
+        ? z.union([z.number(), z.string().min(1, "This field is required")])
+        : z.union([z.number(), z.string()]).optional().nullable();
+    } else if (f.type === 'file') {
+      fieldSchema = f.isRequired
+        ? z.string().min(1, "Please upload a file")
+        : z.union([z.literal(""), z.string()]).optional().nullable();
+    } else {
+      fieldSchema = f.isRequired
+        ? z.string().min(1, "This field is required")
+        : z.union([z.literal(""), z.string()]).optional().nullable();
+    }
+    
+    if (f.type === 'checkbox' || f.type === 'multi_select') {
+      shape[f.fieldId] = z.preprocess((v) => v || [], fieldSchema);
+    } else {
+      shape[f.fieldId] = z.preprocess((v) => (v === undefined || v === null ? "" : v), fieldSchema);
+    }
+  });
+
+  return z.object(shape);
+};
 
 export function StaticFormPanel({
   form,
@@ -17,7 +56,6 @@ export function StaticFormPanel({
     title: string;
     description: string | null;
     slug: string;
-    isCommentsAllowed: boolean;
     fields: Field[];
   };
   previousAnswers?: Record<string, unknown>;
@@ -27,7 +65,9 @@ export function StaticFormPanel({
   hideAiMode?: boolean;
 }) {
   const [answers, setAnswers] = useState<Record<string, unknown>>(previousAnswers || {});
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitted, setSubmitted] = useState(false);
+  const [uploadingFields, setUploadingFields] = useState<Set<string>>(new Set());
 
   const submitMutation = useSubmitStaticForm({
     onSuccess: () => {
@@ -83,9 +123,25 @@ export function StaticFormPanel({
               formId={form.formId}
               value={answers[field.fieldId]}
               primaryFieldValue={primaryFieldValue || undefined}
-              onChange={(val) =>
-                setAnswers((prev) => ({ ...prev, [field.fieldId]: val }))
-              }
+              error={errors[field.fieldId]}
+              onChange={(val) => {
+                setAnswers((prev) => ({ ...prev, [field.fieldId]: val }));
+                if (errors[field.fieldId]) {
+                  setErrors((prev) => {
+                    const newErrors = { ...prev };
+                    delete newErrors[field.fieldId];
+                    return newErrors;
+                  });
+                }
+              }}
+              onUploadingChange={(isUploading) => {
+                setUploadingFields((prev) => {
+                  const next = new Set(prev);
+                  if (isUploading) next.add(field.fieldId);
+                  else next.delete(field.fieldId);
+                  return next;
+                });
+              }}
             />
           );
         })}
@@ -95,8 +151,31 @@ export function StaticFormPanel({
       <div className="pt-8 mt-8 border-t-[3px] border-[var(--color-ink-charcoal)]">
         <button
           id="form-submit-btn"
-          disabled={submitMutation.isPending}
+          disabled={submitMutation.isPending || uploadingFields.size > 0}
           onClick={() => {
+            const schema = buildFormSchema(form.fields);
+            const result = schema.safeParse(answers);
+
+            if (!result.success) {
+              const formatted = result.error.format();
+              const newErrors: Record<string, string> = {};
+              Object.keys(formatted).forEach(key => {
+                if (key !== '_errors') {
+                  newErrors[key] = (formatted[key as keyof typeof formatted] as any)._errors[0];
+                }
+              });
+              setErrors(newErrors);
+              
+              const firstErrorFieldId = Object.keys(newErrors)[0];
+              if (firstErrorFieldId) {
+                 const el = document.getElementById(`field-container-${firstErrorFieldId}`);
+                 if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
+              }
+              return;
+            }
+
+            setErrors({});
+
             submitMutation.mutate({
               formId: form.formId,
               answers,
@@ -107,6 +186,8 @@ export function StaticFormPanel({
         >
           {submitMutation.isPending ? (
             <><Loader2 size={24} className="animate-spin" /> Submitting…</>
+          ) : uploadingFields.size > 0 ? (
+            <><Loader2 size={24} className="animate-spin" /> Uploading Files…</>
           ) : (
             <>
               {responseId ? "Update Feedback" : "Submit Feedback"}

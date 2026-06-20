@@ -10,6 +10,8 @@ import {
   SaveDraftFormDtoType,
   publishFormDto,
   PublishFormDtoType,
+  updateFormSettingsDto,
+  UpdateFormSettingsDtoType,
   getFormAnalyticsDto,
   GetFormAnalyticsDtoType,
   getFormResponsesDto,
@@ -28,6 +30,8 @@ import {
   SubmitStaticFormDtoType,
   getResumableUploadUrlDto,
   GetResumableUploadUrlDtoType,
+  deleteFileDto,
+  DeleteFileDtoType,
 } from "./model";
 import { formFields } from "@repo/database/models/form-fields";
 import { formResponses } from "@repo/database/models/form-responses";
@@ -59,7 +63,6 @@ class FormServices {
         description: data.description,
         passwordNeeded: data.passwordNeeded,
         password: data.password || null,
-        isCommentsAllowed: data.isCommentsAllowed,
         expiresAt: expiresAtDate,
         responseLimit: data.responseLimit,
         allowResponseEdit: data.allowResponseEdit,
@@ -133,6 +136,36 @@ class FormServices {
 
     return existingForm;
   }
+
+  public async updateFormSettings(userId: string, payload: UpdateFormSettingsDtoType) {
+    const data = updateFormSettingsDto.parse(payload);
+    
+    const [existingForm] = await db
+      .select()
+      .from(forms)
+      .where(and(eq(forms.slug, data.formSlug), eq(forms.userId, userId)));
+
+    if (!existingForm) {
+      throw new AppError("NOT_FOUND", "Form not found");
+    }
+
+    const updates: Partial<typeof forms.$inferInsert> = {};
+    if (data.passwordNeeded !== undefined) updates.passwordNeeded = data.passwordNeeded;
+    if (data.password !== undefined) updates.password = data.password;
+    if (data.expiresAt !== undefined) updates.expiresAt = data.expiresAt ? new Date(data.expiresAt) : null;
+    if (data.responseLimit !== undefined) updates.responseLimit = data.responseLimit;
+    if (data.allowResponseEdit !== undefined) updates.allowResponseEdit = data.allowResponseEdit;
+
+    if (Object.keys(updates).length > 0) {
+      await db
+        .update(forms)
+        .set(updates)
+        .where(eq(forms.formId, existingForm.formId));
+    }
+
+    return existingForm;
+  }
+
 
   public async getPublicForm(
     payload: GetPublicFormDtoType,
@@ -243,7 +276,6 @@ class FormServices {
     return {
       ...baseResult,
       access: "granted",
-      isCommentsAllowed: form.isCommentsAllowed,
       previousAnswers,
       responseId: existingResponseId,
       fields: fields.map((f) => ({
@@ -848,6 +880,39 @@ class FormServices {
     } catch (error: any) {
       console.error("Failed to get resumable upload URL:", error);
       throw new AppError("INTERNAL_SERVER_ERROR", error.message || "Failed to initiate file upload.");
+    }
+  }
+
+  public async deleteFile(payload: DeleteFileDtoType) {
+    const data = deleteFileDto.parse(payload);
+
+    const [form] = await db
+      .select()
+      .from(forms)
+      .where(eq(forms.formId, data.formId));
+
+    if (!form) {
+      throw new AppError("NOT_FOUND", "Form not found");
+    }
+
+    const [userAuth] = await db
+      .select()
+      .from(auths)
+      .where(eq(auths.userId, form.userId));
+
+    if (!userAuth || !userAuth.googleDriveRefreshToken) {
+      throw new AppError("BAD_REQUEST", "Form owner has not connected Google Drive.");
+    }
+
+    try {
+      await googleDriveService.deleteFile(
+        userAuth.googleDriveRefreshToken,
+        data.fileId
+      );
+      return { success: true };
+    } catch (error) {
+      console.error("deleteFile service error:", error);
+      throw new AppError("INTERNAL_SERVER_ERROR", "Failed to delete file from Google Drive");
     }
   }
 
