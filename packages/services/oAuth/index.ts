@@ -21,6 +21,7 @@ const GOOGLE_USERINFO_URL = "https://www.googleapis.com/oauth2/v3/userinfo";
 import { encrypt } from "../utils/encryption";
 
 class OauthService {
+  //auth
   private async generateUniqueUsername(base: string): Promise<string> {
     const sanitized = base
       .toLowerCase()
@@ -186,7 +187,6 @@ class OauthService {
   }
 
   //drive
-
   public getGoogleDriveAuthUrl({
     redirectUri,
   }: GetGoogleDriveAuthUrlParams): string {

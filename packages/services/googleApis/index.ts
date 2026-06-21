@@ -48,8 +48,6 @@ export class GoogleDriveService {
     return res.data.id;
   }
 
-  
-
   public async getResumableUploadUrl(
     encryptedRefreshToken: string,
     folderId: string,

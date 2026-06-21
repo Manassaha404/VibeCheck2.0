@@ -2,7 +2,6 @@ import express from "express";
 import cors from "cors";
 
 import * as trpcExpress from "@trpc/server/adapters/express";
-import { apiReference } from "@scalar/express-api-reference";
 
 import { serverRouter, createContext, openApiDocument } from "@repo/trpc/server";
 
@@ -25,8 +24,10 @@ app.use(cookieParser());
 
 
 
-// JSON parser for all other routes (default 100 kb limit is fine)
+import rateLimiter from "@repo/services/utils/rateLimiting";
+
 app.use(express.json());
+app.use(rateLimiter);
 
 app.get("/", (req, res) => {
   return res.json({ message: "server is running.." });
@@ -38,23 +39,6 @@ app.get("/health", (req, res) => {
 
 
 app.use("/auth", authRouter);
-
-app.get("/api/openapi.json", (req, res) => {
-  res.setHeader("Content-Type", "application/json");
-  return res.json(openApiDocument);
-});
-
-
-app.use(
-  "/docs",
-  apiReference({
-    theme: "purple",
-    spec: {
-      url: "/api/openapi.json",
-    },
-  }),
-);
-
 
 
 app.use(

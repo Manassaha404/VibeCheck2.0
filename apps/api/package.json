@@ -8,6 +8,7 @@
     "start": "node dist/index.js"
   },
   "dependencies": {
+    "@repo/services": "workspace:*",
     "@repo/trpc": "workspace:*",
     "@scalar/express-api-reference": "^0.9.19",
     "@trpc/server": "^11.8.1",
