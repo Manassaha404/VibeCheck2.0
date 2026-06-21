@@ -20,7 +20,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       publicRoutes.includes(pathname) ||
       pathname.startsWith("/signup") ||
       pathname.startsWith("/reset-password/") ||
-      pathname.startsWith("/f/")
+      pathname.startsWith("/f/");
 
     if (isError || !data?.users?.userId) {
       setInitialized(true);
@@ -41,14 +41,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         email: data.users.email,
         fullName: data.users.firstName + " " + data.users.lastName,
         username: data.users.username,
-        isGoogleDriveConnected: data?.isGoogleDriveConnected 
+        isGoogleDriveConnected: data?.isGoogleDriveConnected,
       });
       setInitialized(true);
+
+      const isAuthRoute =
+        pathname === "/signin" || pathname.startsWith("/signup");
+
+      if (isAuthRoute) {
+        router.replace("/");
+      }
     }
   }, [data, isLoading, isError, pathname, router, setInitialized, setUserInfo]);
 
   if (!useUserInfoStore.getState().isInitialized && isLoading) {
-    return <PageLoader/>;
+    return <PageLoader />;
   }
   return <>{children}</>;
 }
