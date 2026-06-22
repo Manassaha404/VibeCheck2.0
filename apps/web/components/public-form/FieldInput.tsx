@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { User, Mail, MessageSquare, Hash, Phone, Calendar, CheckSquare, List, CircleDot, Star, Smile, Upload, File as FileIcon, Loader2 } from "lucide-react";
 import { trpc } from "@/trpc/client";
-import { useFileUpload } from "../../hook/form/useFileUpload";
 
 export type FieldType =
   | "short_text" | "long_text" | "number" | "email" | "phone"
@@ -53,7 +52,6 @@ export function FieldInput({
   value,
   primaryFieldValue,
   onChange,
-  onUploadingChange,
   error,
 }: {
   field: Field;
@@ -61,49 +59,8 @@ export function FieldInput({
   value: unknown;
   primaryFieldValue?: string;
   onChange: (val: unknown) => void;
-  onUploadingChange?: (isUploading: boolean) => void;
   error?: string;
 }) {
-  const { uploadFile, isUploading, deleteExistingFile } = useFileUpload();
-  const [localFileName, setLocalFileName] = useState<string | null>(null);
-  const [pendingDeleteFileId, setPendingDeleteFileId] = useState<string | null>(null);
-  const [isProcessing, setIsProcessing] = useState(false);
-  const prevUploadingRef = React.useRef(isProcessing || isUploading);
-
-  React.useEffect(() => {
-    const currentlyUploading = isProcessing || isUploading;
-    if (onUploadingChange && currentlyUploading !== prevUploadingRef.current) {
-      onUploadingChange(currentlyUploading);
-      prevUploadingRef.current = currentlyUploading;
-    }
-  }, [isProcessing, isUploading, onUploadingChange]);
-
-  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    try {
-      setIsProcessing(true);
-      
-      // Run deletion in background to prevent delaying the upload and 
-      // preventing the File object from being revoked by the browser
-      if (pendingDeleteFileId) {
-        deleteExistingFile(formId, pendingDeleteFileId).catch(console.error);
-        setPendingDeleteFileId(null);
-      } else if (value && typeof value === 'string') {
-        deleteExistingFile(formId, value).catch(console.error);
-      }
-
-      const fileId = await uploadFile(formId, file, primaryFieldValue);
-      setLocalFileName(file.name);
-      onChange(fileId);
-    } catch (error) {
-      console.error("Upload error:", error);
-      alert("Failed to upload file");
-    } finally {
-      setIsProcessing(false);
-    }
-  };
   const baseInput =
     "w-full bg-transparent border-none p-4 text-body-lg text-[var(--color-ink-charcoal)] placeholder-[var(--color-tertiary)] focus:ring-0 outline-none font-bold";
   const inputWrapper =
@@ -300,23 +257,15 @@ export function FieldInput({
       {/* ── File ── */}
       {field.type === "file" && (
         <div className={inputWrapper + " flex items-center p-4 gap-4"}>
-          {(isProcessing || isUploading) ? (
-            <div className="flex items-center gap-3 text-body-lg font-bold text-[var(--color-ink-charcoal)]">
-              <Loader2 className="animate-spin" size={24} />
-              Uploading...
-            </div>
-          ) : value ? (
+          {value ? (
             <div className="flex items-center gap-3 w-full">
               <FileIcon size={24} className="text-[var(--color-ink-charcoal)]" />
               <span className="text-body-lg font-bold truncate flex-1">
-                {localFileName || String(value)}
+                {value instanceof File ? value.name : String(value)}
               </span>
               <button
                 type="button"
                 onClick={() => {
-                  if (value && typeof value === 'string') {
-                    setPendingDeleteFileId(value);
-                  }
                   onChange("");
                 }}
                 className="text-label-sm font-bold opacity-60 hover:opacity-100"
@@ -331,7 +280,12 @@ export function FieldInput({
               <input
                 type="file"
                 className="hidden"
-                onChange={handleFileUpload}
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) {
+                    onChange(file);
+                  }
+                }}
               />
             </label>
           )}

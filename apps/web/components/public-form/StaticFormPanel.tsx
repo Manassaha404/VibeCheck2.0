@@ -4,6 +4,7 @@ import { ChevronRight, Sparkles, Loader2, Send } from "lucide-react";
 import { SuccessScreen } from "./SuccessScreen";
 import { FieldInput, Field } from "./FieldInput";
 import { useSubmitStaticForm } from "../../hook/form/useSubmitStaticForm";
+import { useFileUpload } from "../../hook/form/useFileUpload";
 
 const buildFormSchema = (fields: Field[]) => {
   const shape: Record<string, z.ZodTypeAny> = {};
@@ -25,8 +26,8 @@ const buildFormSchema = (fields: Field[]) => {
         : z.union([z.number(), z.string()]).optional().nullable();
     } else if (f.type === 'file') {
       fieldSchema = f.isRequired
-        ? z.string().min(1, "Please upload a file")
-        : z.union([z.literal(""), z.string()]).optional().nullable();
+        ? z.custom<File | string>((val) => val instanceof File || (typeof val === 'string' && val.length > 0), "Please upload a file")
+        : z.custom<File | string | null | undefined>((val) => val === undefined || val === null || val === "" || val instanceof File || typeof val === 'string').optional().nullable();
     } else {
       fieldSchema = f.isRequired
         ? z.string().min(1, "This field is required")
@@ -67,7 +68,9 @@ export function StaticFormPanel({
   const [answers, setAnswers] = useState<Record<string, unknown>>(previousAnswers || {});
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitted, setSubmitted] = useState(false);
-  const [uploadingFields, setUploadingFields] = useState<Set<string>>(new Set());
+  const [isUploadingFiles, setIsUploadingFiles] = useState(false);
+
+  const { uploadFile, deleteExistingFile } = useFileUpload();
 
   const submitMutation = useSubmitStaticForm({
     onSuccess: () => {
@@ -134,14 +137,6 @@ export function StaticFormPanel({
                   });
                 }
               }}
-              onUploadingChange={(isUploading) => {
-                setUploadingFields((prev) => {
-                  const next = new Set(prev);
-                  if (isUploading) next.add(field.fieldId);
-                  else next.delete(field.fieldId);
-                  return next;
-                });
-              }}
             />
           );
         })}
@@ -151,8 +146,8 @@ export function StaticFormPanel({
       <div className="pt-8 mt-8 border-t-[3px] border-[var(--color-ink-charcoal)]">
         <button
           id="form-submit-btn"
-          disabled={submitMutation.isPending || uploadingFields.size > 0}
-          onClick={() => {
+          disabled={submitMutation.isPending || isUploadingFiles}
+          onClick={async () => {
             const schema = buildFormSchema(form.fields);
             const result = schema.safeParse(answers);
 
@@ -175,18 +170,46 @@ export function StaticFormPanel({
             }
 
             setErrors({});
+            setIsUploadingFiles(true);
 
-            submitMutation.mutate({
-              formId: form.formId,
-              answers,
-              responseId,
-            });
+            try {
+              const finalAnswers = { ...answers };
+              for (const field of form.fields) {
+                if (field.type === "file") {
+                  const val = finalAnswers[field.fieldId];
+                  const prevFileId = previousAnswers?.[field.fieldId] as string | undefined;
+
+                  if (val instanceof File) {
+                    if (prevFileId && typeof prevFileId === 'string') {
+                      await deleteExistingFile(form.formId, prevFileId);
+                    }
+                    const primaryField = form.fields.find(f => f.isPrimary);
+                    const primaryFieldValue = primaryField ? String(finalAnswers[primaryField.fieldId] || "") : undefined;
+                    const newFileId = await uploadFile(form.formId, val, primaryFieldValue);
+                    finalAnswers[field.fieldId] = newFileId;
+                  } else if (val === "" && prevFileId && typeof prevFileId === 'string') {
+                    await deleteExistingFile(form.formId, prevFileId);
+                  }
+                }
+              }
+
+              submitMutation.mutate({
+                formId: form.formId,
+                answers: finalAnswers,
+                responseId,
+              });
+            } catch (err) {
+              console.error("Upload error before submit:", err);
+              alert("Failed to process files");
+            } finally {
+              setIsUploadingFiles(false);
+            }
           }}
           className="w-full md:w-auto md:min-w-[240px] bg-[var(--color-leaf-green)] text-[var(--color-ink-charcoal)] font-bold text-headline-sm py-4 px-8 border-[3px] border-[var(--color-ink-charcoal)] shadow-hard hover:translate-y-[4px] hover:translate-x-[4px] hover:shadow-none active:bg-[var(--color-primary-container)] transition-all flex items-center justify-center gap-3 disabled:opacity-60"
         >
           {submitMutation.isPending ? (
             <><Loader2 size={24} className="animate-spin" /> Submitting…</>
-          ) : uploadingFields.size > 0 ? (
+          ) : isUploadingFiles ? (
             <><Loader2 size={24} className="animate-spin" /> Uploading Files…</>
           ) : (
             <>

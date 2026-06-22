@@ -4,6 +4,7 @@ import { useFormBuilderStore, FieldNode } from "@/store/formStore/formBuilderSto
 
 export const useLoadDraftForm = () => {
   const [apiError, setApiError] = useState<string | null>(null);
+  const [isFormPublished, setIsFormPublished] = useState<boolean>(false);
 
   const { mutateAsync: loadDraftMutation, isPending: isLoading } =
     trpc.form.loadSaveDraft.useMutation();
@@ -14,6 +15,7 @@ export const useLoadDraftForm = () => {
     try {
       const response = await loadDraftMutation({ formSlug });
       if (response?.form) {
+        setIsFormPublished(response.form.isPublished ?? false);
         const sortedFields = response.fields.sort(
           (a: any, b: any) => a.orderIndex - b.orderIndex,
         );
@@ -49,5 +51,5 @@ export const useLoadDraftForm = () => {
     }
   };
 
-  return { loadDraft, apiError, isLoading };
+  return { loadDraft, apiError, isLoading, isFormPublished };
 };

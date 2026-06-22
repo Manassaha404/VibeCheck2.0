@@ -226,18 +226,7 @@ export function ExportSection({ formSlug, fields }: ExportSectionProps) {
             </>
           )}
 
-          {/* Hover star badge */}
-          {!isExporting && (
-            <div
-              className="absolute -top-16 -right-16 bg-electric-sun text-ink-charcoal text-2xl p-6 border-4 border-ink-charcoal opacity-0 group-hover:opacity-100 transition-opacity rotate-12 pointer-events-none"
-              style={{
-                clipPath:
-                  'polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%)',
-              }}
-            >
-              KAPOW!
-            </div>
-          )}
+
         </button>
 
         {selectedFields.size === 0 && (

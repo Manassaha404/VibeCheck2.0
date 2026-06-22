@@ -133,7 +133,6 @@ export function AgentChatPanel({
           </div>
           <div>
             <p className="text-label-sm md:text-label-md font-bold leading-tight">AI Form Guide</p>
-            <p className="text-[9px] md:text-[11px] opacity-80 font-bold">Powered by GPT-4o mini</p>
           </div>
         </div>
         <div className="flex flex-col items-end gap-1">

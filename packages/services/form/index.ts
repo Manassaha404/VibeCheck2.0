@@ -212,18 +212,6 @@ class FormServices {
       return { ...baseResult, access: "expired" };
     }
 
-    // Check limit
-    if (form.responseLimit) {
-      const result = await db
-        .select({ count: sql<number>`count(*)` })
-        .from(formResponses)
-        .where(eq(formResponses.formId, form.formId));
-      const count = result[0]?.count ?? 0;
-      if (count >= form.responseLimit) {
-        return { ...baseResult, access: "limit_reached" };
-      }
-    }
-
     // Check password
     if (form.passwordNeeded && form.password !== password) {
       return { ...baseResult, access: "password_required" };
@@ -232,6 +220,7 @@ class FormServices {
     // Check if already responded
     let previousAnswers: Record<string, unknown> | undefined = undefined;
     let existingResponseId: string | undefined = undefined;
+    let hasResponded = false;
 
     if (guestToken) {
       const [existing] = await db
@@ -245,6 +234,7 @@ class FormServices {
         );
 
       if (existing) {
+        hasResponded = true;
         if (!editMode || !form.allowResponseEdit) {
           return {
             ...baseResult,
@@ -264,6 +254,18 @@ class FormServices {
             previousAnswers[ans.fieldId] = ans.value;
           }
         }
+      }
+    }
+
+    // Check limit (only if they haven't responded yet or are creating a new response, but if they responded, they either returned already or are editing)
+    if (!hasResponded && form.responseLimit) {
+      const result = await db
+        .select({ count: sql<number>`count(*)` })
+        .from(formResponses)
+        .where(eq(formResponses.formId, form.formId));
+      const count = result[0]?.count ?? 0;
+      if (count >= form.responseLimit) {
+        return { ...baseResult, access: "limit_reached" };
       }
     }
 

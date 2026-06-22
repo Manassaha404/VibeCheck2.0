@@ -10,7 +10,7 @@ import { FieldSettings } from "@/components/form-builder/field-settings";
 import { AgentChat } from "@/components/form-builder/agent-chat";
 import { useFormBuilderStore } from "@/store/formStore/formBuilderStore";
 import { FormSettingsModal } from "@/components/form-builder/FormSettingsModal";
-import { List, GitMerge, Save, Loader2, Check, Send, Ghost, Home, Settings } from "lucide-react";
+import { List, GitMerge, Save, Loader2, Check, Send, Ghost, Home, Settings, BarChart2 } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { useUserInfoStore } from "@/store/userInfoStore";
 import { useSaveDraftForm } from "@/hook/form/useSaveDraftForm";
@@ -29,7 +29,7 @@ export default function FormDraftBuilderPage() {
   const { handlePublishForm, isPublishing } = usePublishForm();
   const [isPublished, setIsPublished] = React.useState(false);
   const [isSettingsModalOpen, setIsSettingsModalOpen] = React.useState(false);
-  const { loadDraft, isLoading, apiError } = useLoadDraftForm();
+  const { loadDraft, isLoading, apiError, isFormPublished } = useLoadDraftForm();
 
   React.useEffect(() => {
     if (formSlug) {
@@ -101,7 +101,7 @@ export default function FormDraftBuilderPage() {
     if (response.success && response.formSlug) {
       setIsPublished(true);
       setTimeout(() => setIsPublished(false), 2000);
-      router.push(`/dashboard/analytics/form/${response.formSlug}`)
+      router.replace(`/dashboard/analytics/form/${response.formSlug}`)
     }
   };
 
@@ -184,17 +184,27 @@ export default function FormDraftBuilderPage() {
             className="flex items-center gap-2 px-6 py-2 bg-leaf-green text-pure-white font-bold font-label-md uppercase border-2 border-ink-charcoal rounded shadow-[2px_2px_0px_0px_rgba(44,46,42,1)] hover:-translate-y-0.5 hover:shadow-[4px_4px_0px_0px_rgba(44,46,42,1)] transition-all active:translate-y-0 active:shadow-none disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isSaving ? <Loader2 className="w-5 h-5 animate-spin" /> : isSaved ? <Check className="w-5 h-5" /> : <Save className="w-5 h-5" />}
-            {isSaving ? "Saving..." : isSaved ? "Saved" : "Save Draft"}
+            {isSaving ? "Saving..." : isSaved ? "Saved" : isFormPublished ? "Save" : "Save Draft"}
           </button>
           
-          <button 
-            onClick={onPublish}
-            disabled={isPublishing || isPublished || isSaving}
-            className="flex items-center gap-2 px-6 py-2 bg-electric-sun text-ink-charcoal font-bold font-label-md uppercase border-2 border-ink-charcoal rounded shadow-[2px_2px_0px_0px_rgba(44,46,42,1)] hover:-translate-y-0.5 hover:shadow-[4px_4px_0px_0px_rgba(44,46,42,1)] transition-all active:translate-y-0 active:shadow-none disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {isPublishing ? <Loader2 className="w-5 h-5 animate-spin" /> : isPublished ? <Check className="w-5 h-5" /> : <Send className="w-5 h-5" />}
-            {isPublishing ? "Publishing..." : isPublished ? "Published" : "Publish"}
-          </button>
+          {!isFormPublished ? (
+            <button 
+              onClick={onPublish}
+              disabled={isPublishing || isPublished || isSaving}
+              className="flex items-center gap-2 px-6 py-2 bg-electric-sun text-ink-charcoal font-bold font-label-md uppercase border-2 border-ink-charcoal rounded shadow-[2px_2px_0px_0px_rgba(44,46,42,1)] hover:-translate-y-0.5 hover:shadow-[4px_4px_0px_0px_rgba(44,46,42,1)] transition-all active:translate-y-0 active:shadow-none disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isPublishing ? <Loader2 className="w-5 h-5 animate-spin" /> : isPublished ? <Check className="w-5 h-5" /> : <Send className="w-5 h-5" />}
+              {isPublishing ? "Publishing..." : isPublished ? "Published" : "Publish"}
+            </button>
+          ) : (
+            <button 
+              onClick={() => router.replace(`/dashboard/analytics/form/${formSlug}`)}
+              className="flex items-center gap-2 px-6 py-2 bg-electric-sun text-ink-charcoal font-bold font-label-md uppercase border-2 border-ink-charcoal rounded shadow-[2px_2px_0px_0px_rgba(44,46,42,1)] hover:-translate-y-0.5 hover:shadow-[4px_4px_0px_0px_rgba(44,46,42,1)] transition-all active:translate-y-0 active:shadow-none"
+            >
+              <BarChart2 className="w-5 h-5" />
+              View Analytics
+            </button>
+          )}
         </div>
       </div>
 

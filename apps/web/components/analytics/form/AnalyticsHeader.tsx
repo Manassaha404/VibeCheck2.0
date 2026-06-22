@@ -71,14 +71,21 @@ export function AnalyticsHeader({
         </div>
       </header>
 
-      {/* CTA button */}
-      <div className="flex justify-start w-full mt-8">
+      {/* CTA buttons */}
+      <div className="flex flex-col xl:flex-row justify-start w-full mt-8 gap-4 md:gap-8">
         <button
           onClick={() => router.push(`/dashboard/analytics/form/${formSlug}/responses`)}
-          className="relative group bg-leaf-green text-pure-white font-display-lg text-[32px] md:text-[48px] uppercase font-black px-8 md:px-16 py-6 border-8 border-ink-charcoal shadow-[8px_8px_0px_0px_rgba(44,46,42,1)] hover:-translate-y-2 hover:shadow-[16px_16px_0px_0px_rgba(44,46,42,1)] hover:bg-[#FF007F] active:translate-x-1 active:translate-y-1 active:shadow-none flex items-center gap-6 transition-all duration-200"
+          className="relative group bg-leaf-green text-pure-white font-display-lg text-[32px] md:text-[48px] uppercase font-black px-8 md:px-16 py-6 border-8 border-ink-charcoal shadow-[8px_8px_0px_0px_rgba(44,46,42,1)] hover:-translate-y-2 hover:shadow-[16px_16px_0px_0px_rgba(44,46,42,1)] hover:bg-[#FF007F] active:translate-x-1 active:translate-y-1 active:shadow-none flex items-center justify-center gap-4 md:gap-6 transition-all duration-200"
         >
           SEE ALL RESPONSES
           <ArrowRight className="transform group-hover:translate-x-2 transition-transform duration-200" size={40} strokeWidth={3} />
+        </button>
+
+        <button
+          onClick={() => router.replace(`/create/form/draft/${formSlug}`)}
+          className="relative group bg-electric-sun text-ink-charcoal font-display-lg text-[32px] md:text-[48px] uppercase font-black px-8 md:px-16 py-6 border-8 border-ink-charcoal shadow-[8px_8px_0px_0px_rgba(44,46,42,1)] hover:-translate-y-2 hover:shadow-[16px_16px_0px_0px_rgba(44,46,42,1)] active:translate-x-1 active:translate-y-1 active:shadow-none flex items-center justify-center gap-4 md:gap-6 transition-all duration-200"
+        >
+          EDIT FORM
         </button>
       </div>
     </>
