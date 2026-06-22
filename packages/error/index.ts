@@ -1,3 +1,5 @@
+import logger from "@repo/logger/logger";
+
 export class AppError extends Error {
   constructor(
     public code:
@@ -21,5 +23,9 @@ export class AppError extends Error {
   ) {
     super(message);
     this.name = "AppError";
+    logger.error(`[AppError] ${this.code}: ${message}`, {
+      code: this.code,
+      stack: this.stack,
+    });
   }
 }

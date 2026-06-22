@@ -6,6 +6,7 @@ import {
   verifyRefreshToken,
 } from "@repo/trpc/server/utils/jwt";
 import { env } from "./env";
+import logger from "@repo/logger/logger";
 const authRouter = Router();
 
 // login/signup
@@ -87,7 +88,7 @@ authRouter.get("/google/callback", async (req: Request, res: Response) => {
 
     return res.redirect(`${env.FRONTEND_URL}${basePath}`);
   } catch (err) {
-    console.error("Google OAuth error:", err);
+    logger.error("Google OAuth error:", err);
     const redirectUrl = new URL(`${env.FRONTEND_URL}/login`);
     redirectUrl.searchParams.set("error", "server_error");
     if (basePath) redirectUrl.searchParams.set("returnTo", basePath);
@@ -184,7 +185,7 @@ authRouter.get(
       redirectUrl.searchParams.set("success", "drive_connected");
       return res.redirect(redirectUrl.toString());
     } catch (err) {
-      console.error("Google Drive OAuth error:", err);
+      logger.error("Google Drive OAuth error:", err);
       const redirectUrl = new URL(`${env.FRONTEND_URL}${basePath}`);
       redirectUrl.searchParams.set("error", "server_error");
       return res.redirect(redirectUrl.toString());

@@ -1,6 +1,7 @@
 import { AppError } from "@repo/error";
 import { TRPCError } from "@trpc/server/unstable-core-do-not-import";
 import { z } from "zod";
+import logger from "@repo/logger/logger";
 
 export const handleRouteError = (error: unknown): never => {
   if (error instanceof AppError) {
@@ -17,7 +18,7 @@ export const handleRouteError = (error: unknown): never => {
   }
 
   if (error instanceof Error) {
-    console.error(`[tRPC] Unhandled ${error.constructor.name}: ${error.message}`, error.stack);
+    logger.error(`[tRPC] Unhandled ${error.constructor.name}: ${error.message}`, { stack: error.stack });
     throw new TRPCError({
       code: "INTERNAL_SERVER_ERROR",
       message:

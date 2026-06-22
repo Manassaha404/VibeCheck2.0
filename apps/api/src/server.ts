@@ -21,10 +21,19 @@ app.use(
 );
 
 app.use(cookieParser());
-
+app.use((req, res, next) => {
+  logger.info(`Incoming request: ${req.method} ${req.path}`, {
+    method: req.method,
+    path: req.path,
+    ip: req.ip,
+    userAgent: req.get("user-agent"),
+  });
+  next();
+});
 
 
 import rateLimiter from "@repo/services/utils/rateLimiting";
+import logger from "@repo/logger/logger";
 
 app.use(express.json());
 app.use(rateLimiter);
