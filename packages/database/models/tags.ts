@@ -4,8 +4,7 @@ export const tags = pgTable(
   "tags",
   {
     tagId: uuid("tag_id").primaryKey().defaultRandom(),
-    text: varchar("text", { length: 100 }).notNull(),
-    slug: varchar("slug", { length: 100 }).notNull().unique(),
+    text: varchar("text", { length: 100 }).notNull().unique(),
   },
-  (tags) => [uniqueIndex("tag_slug_idx").on(tags.slug)],
+  (tags) => [uniqueIndex("tag_text_idx")],
 );

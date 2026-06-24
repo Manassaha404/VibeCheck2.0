@@ -14,7 +14,6 @@ export const pollQuestions = pgTable("poll_questions", {
     .notNull()
     .references(() => polls.pollId, { onDelete: "cascade" }),
   text: varchar("text", { length: 500 }).notNull(),
-  orderIndex: integer("order_index").notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at")
     .defaultNow()

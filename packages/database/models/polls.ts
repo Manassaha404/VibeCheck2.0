@@ -7,13 +7,13 @@ import {
   timestamp,
   index,
   pgEnum,
+  uniqueIndex,
 } from "drizzle-orm/pg-core";
 import { users } from "./users";
 
 export const pollStatusEnum = pgEnum("poll_status", [
   "draft",
   "active",
-  "closed",
   "archived",
 ]);
 
@@ -26,6 +26,7 @@ export const polls = pgTable(
       .references(() => users.userId, { onDelete: "cascade" }),
     title: varchar("title", { length: 255 }).notNull(),
     description: text("description"),
+    slug: varchar("slug", { length: 255 }).notNull(),
     isPublic: boolean("is_public").default(true).notNull(),
     isPublished: boolean("is_published").default(false).notNull(),
     status: pollStatusEnum("status").default("draft").notNull(),
@@ -40,5 +41,8 @@ export const polls = pgTable(
       .notNull()
       .$onUpdate(() => new Date()),
   },
-  (polls) => [index("poll_user_id_idx").on(polls.userId)],
+  (polls) => [
+    index("poll_user_id_idx").on(polls.userId),
+    uniqueIndex("poll_user_slug_unique_idx").on(polls.userId, polls.slug),
+  ],
 );
