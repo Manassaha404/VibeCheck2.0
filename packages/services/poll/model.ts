@@ -50,3 +50,56 @@ export const savePollDraftDto = z.object({
 });
 
 export type SavePollDraftDtoType = z.infer<typeof savePollDraftDto>;
+
+// ─── Analytics ─────────────────────────────────────────────────────────────
+
+export const getPollAnalyticsDto = z.object({
+  slug: z.string().min(1),
+});
+
+export type GetPollAnalyticsDtoType = z.infer<typeof getPollAnalyticsDto>;
+
+export const submitVoteDto = z.object({
+  pollId: z.string().uuid(),
+  optionId: z.string().uuid(),
+  comment: z.string().trim().max(500).optional(),
+});
+
+export type SubmitVoteDtoType = z.infer<typeof submitVoteDto>;
+
+export interface PollAnalyticsOptionResult {
+  id: string;
+  text: string;
+  votes: number;
+  percentage: number;
+}
+
+export interface PollAnalyticsComment {
+  id: string;
+  username: string;
+  text: string;
+  timeAgo: string;
+}
+
+export interface PollAnalyticsTimeline {
+  time: string;
+  votes: number;
+  cumulative: number;
+}
+
+export interface PollAnalyticsResult {
+  pollId: string;
+  slug: string;
+  username: string;
+  question: string;
+  startedAt: string;
+  isLive: boolean;
+  totalVotes: number;
+  totalViews: number;
+  engagementRate: number;
+  topAnswer: string;
+  options: PollAnalyticsOptionResult[];
+  comments: PollAnalyticsComment[];
+  voteTimeline: PollAnalyticsTimeline[];
+  demographicData: { label: string; value: number }[];
+}

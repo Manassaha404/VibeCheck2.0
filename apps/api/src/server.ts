@@ -8,14 +8,41 @@ import { serverRouter, createContext, openApiDocument } from "@repo/trpc/server"
 import { env } from "./env";
 import cookieParser from "cookie-parser";
 import authRouter from "./authRouter";
-
+import { inngestRouter } from "@repo/services/inngest/index";
 export const app = express();
 
 app.set("trust proxy", 1);
 
+// Inngest dev server needs its own CORS — it POSTs to /api/inngest from
+// http://localhost:8288, which is blocked by the global cors() below.
+const inngestCors = cors({
+  origin: (origin, callback) => {
+    // Allow Inngest dev server, Inngest cloud, and requests with no origin (server-to-server)
+    const allowed = [
+      "http://localhost:8288",
+      "http://127.0.0.1:8288",
+      "https://app.inngest.com",
+      "https://api.inngest.com",
+    ];
+    if (!origin || allowed.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(null, false);
+    }
+  },
+  methods: ["GET", "POST", "PUT"],
+  allowedHeaders: ["Content-Type", "Authorization", "x-inngest-signature", "x-inngest-sdk", "x-inngest-expected-server-kind"],
+  credentials: false,
+});
+
+// Moved express.json() up so that inngestRouter can parse POST bodies
+app.use(express.json());
+
+app.use("/api/inngest", inngestCors, inngestRouter);
+
 app.use(
   cors({
-    origin: env.FRONTEND_URL,
+    origin: env.CLIENT_URL,
     credentials: true,
   }),
 );
@@ -34,9 +61,9 @@ app.use((req, res, next) => {
 
 import rateLimiter from "@repo/services/utils/rateLimiting";
 import logger from "@repo/logger/logger";
-
-app.use(express.json());
-app.use(rateLimiter);
+app.use((req, res, next) => {
+  return rateLimiter(req, res, next);
+});
 
 app.get("/", (req, res) => {
   return res.json({ message: "server is running.." });
@@ -45,6 +72,8 @@ app.get("/", (req, res) => {
 app.get("/health", (req, res) => {
   return res.json({ message: "VibeCheck server is healthy", healthy: true });
 });
+
+
 
 
 app.use("/auth", authRouter);

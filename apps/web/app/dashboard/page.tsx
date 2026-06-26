@@ -1,1 +1,1 @@
-export default function Dashboard() { return null; }
+export default function Dashboard() { return <h1>hello</h1>; }

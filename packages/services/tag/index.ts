@@ -54,6 +54,9 @@ class TagService {
         }
         return { message: "Tags added to poll successfully" };
     }
+    static async incrementTagScoreForView(tag:string){
+        await redis.zincrby(TAG_LEADERBOARD_KEY, SCORE_FOR_VIWE_TAG_POLLS, tag);
+    }
 }
 
 export default TagService;

@@ -7,6 +7,7 @@ const envSchema = z.object({
   ENCRYPTION_SECRET: z.string(),
   OPENAI_API_KEY:z.string(),
   RESEND_API_KEY:z.string(),
+  CLIENT_URL:z.string()
 });
 
 function createEnv(env: NodeJS.ProcessEnv) {

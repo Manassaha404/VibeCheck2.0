@@ -6,9 +6,13 @@ import logger from "@repo/logger/logger";
 import { app as expressApplication } from "./server";
 import { env } from "./env";
 import "@repo/services/email/emailWorker";
+import { attachSocketServer } from "@repo/services/socket/pollSocket";
+
 async function init() {
   try {
     const server = http.createServer(expressApplication);
+    attachSocketServer(server);
+    
     const PORT: number = env.PORT ? +env.PORT : 8000;
     server.listen(PORT, () => {
       logger.info(`http server is running on PORT ${PORT}`);

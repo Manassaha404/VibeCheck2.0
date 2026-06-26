@@ -89,7 +89,7 @@ export function PollDraftContainer() {
     
     const success = await handlePublish(currentPoll.pollId, draftDto, data.tags);
     if (success) {
-      router.push(`/poll/${currentPoll.slug}`);
+      router.replace(`/dashboard/analytics/poll/${currentPoll.slug}`);
     }
   };
 
@@ -98,7 +98,7 @@ export function PollDraftContainer() {
     setDraft(data);
 
     if (currentPoll?.pollId) {
-      const draftDto = constructDto(data);
+      const draftDto = constructDto({ ...data, allowMultipleVotes: data.allowMultipleVotes ?? false, visibility: data.visibility ?? "public" });
       await handleSave(currentPoll.pollId, draftDto);
     } else {
       toast.error("Could not save to server. Poll ID missing.");

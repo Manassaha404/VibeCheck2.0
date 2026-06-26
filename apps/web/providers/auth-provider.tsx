@@ -20,7 +20,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       publicRoutes.includes(pathname) ||
       pathname.startsWith("/signup") ||
       pathname.startsWith("/reset-password/") ||
-      pathname.startsWith("/f/");
+      pathname.startsWith("/f/") || 
+      pathname.startsWith("/p/")
 
     if (isError || !data?.users?.userId) {
       setInitialized(true);

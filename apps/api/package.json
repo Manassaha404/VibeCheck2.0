@@ -4,6 +4,7 @@
   "description": "",
   "scripts": {
     "dev": "tsx watch src/index.ts",
+    "inngest:dev": "inngest dev -u http://localhost:8000/api/inngest",
     "build": "tsup",
     "start": "node dist/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -30,6 +31,7 @@
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
     "@types/node": "^22.15.3",
+    "inngest-cli": "^1.33.0",
     "tsup": "^8.5.1",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3"
