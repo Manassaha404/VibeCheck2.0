@@ -81,7 +81,7 @@ export default function PublicPollPage() {
 
       <Navbar />
 
-      <main className="flex-grow flex flex-col items-center px-margin-mobile md:px-margin-desktop pt-28 md:pt-36 pb-20 relative z-10 w-full">
+      <main className="flex-grow flex flex-col items-center px-4 sm:px-6 md:px-8 lg:px-12 pt-24 md:pt-36 pb-16 md:pb-20 relative z-10 w-full">
         <AnimatePresence mode="wait">
           {!voted ? (
             /* ── Poll form ────────────────────────────────────── */
@@ -92,17 +92,7 @@ export default function PublicPollPage() {
               exit={{ opacity: 0, y: -50, scale: 0.95 }}
               transition={{ duration: 0.5, ease: "easeInOut" }}
               className="max-w-3xl w-full mx-auto relative"
-            >
-              {/* Decorative: Kapow sticker (top-left) */}
-              <div className="absolute -top-12 -left-12 hidden md:block rotate-[-15deg] z-20">
-                <div
-                  className="bg-electric-sun border-4 border-ink-charcoal px-4 py-2 font-headline-sm text-headline-sm uppercase hard-shadow"
-                  style={{ borderRadius: "50% 50% 50% 10% / 50% 50% 50% 10%" }}
-                >
-                  Kapow!
-                </div>
-              </div>
-
+            > 
               {/* Decorative: Smile circle (bottom-left) */}
               <div className="absolute -bottom-12 -left-12 hidden md:block z-20">
                 <div className="w-28 h-28 bg-leaf-green border-4 border-ink-charcoal rounded-full flex items-center justify-center hard-shadow animate-pulse">

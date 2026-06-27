@@ -31,7 +31,10 @@ class PollService {
       .replace(/^-|-$/g, "");
   }
 
-  private async generateUniqueSlug(userId: string, title: string): Promise<string> {
+  private async generateUniqueSlug(
+    userId: string,
+    title: string,
+  ): Promise<string> {
     const baseSlug = this.toSlug(title);
 
     const [existing] = await db
@@ -75,7 +78,11 @@ class PollService {
     return newPoll;
   }
 
-  public async saveDraft(userId: string, pollId: string, payload: SavePollDraftDtoType) {
+  public async saveDraft(
+    userId: string,
+    pollId: string,
+    payload: SavePollDraftDtoType,
+  ) {
     const data = savePollDraftDto.parse(payload);
 
     return await db.transaction(async (tx) => {
@@ -94,9 +101,11 @@ class PollService {
         .update(polls)
         .set({
           isPublic: data.isPublic ?? existingPoll.isPublic,
-          isCommentsAllowed: data.isCommentsAllowed ?? existingPoll.isCommentsAllowed,
+          isCommentsAllowed:
+            data.isCommentsAllowed ?? existingPoll.isCommentsAllowed,
           isMultipleOptionVoteAllowed:
-            data.isMultipleOptionVoteAllowed ?? existingPoll.isMultipleOptionVoteAllowed,
+            data.isMultipleOptionVoteAllowed ??
+            existingPoll.isMultipleOptionVoteAllowed,
           isPublished: data.isPublished ?? existingPoll.isPublished,
           status: data.status ?? existingPoll.status,
         })
@@ -135,7 +144,9 @@ class PollService {
 
       // Handle Options (Delete and reinsert for drafts to easily handle removed/reordered options)
       if (questionId) {
-        await tx.delete(pollOptions).where(eq(pollOptions.questionId, questionId));
+        await tx
+          .delete(pollOptions)
+          .where(eq(pollOptions.questionId, questionId));
 
         if (data.question.options.length > 0) {
           await tx.insert(pollOptions).values(
@@ -143,7 +154,7 @@ class PollService {
               questionId: questionId as string,
               text: opt.text,
               orderIndex: opt.orderIndex ?? i,
-            }))
+            })),
           );
         }
       }
@@ -210,7 +221,12 @@ class PollService {
     };
   }
 
-  public async getPublicPollBySlug(username: string, slug: string, userId: string | null = null, guestToken: string | null = null) {
+  public async getPublicPollBySlug(
+    username: string,
+    slug: string,
+    userId: string | null = null,
+    guestToken: string | null = null,
+  ) {
     const [user] = await db
       .select({ userId: users.userId })
       .from(users)
@@ -264,8 +280,8 @@ class PollService {
         .where(
           and(
             eq(pollVotes.questionId, question.pollQuestionId),
-            or(...conditions)
-          )
+            or(...conditions),
+          ),
         )
         .limit(1);
 
@@ -336,7 +352,10 @@ class PollService {
       pollOptionId: o.pollOptionId,
       text: o.text,
       votes: Number(o.voteCount),
-      percentage: totalVotes > 0 ? Math.round((Number(o.voteCount) / totalVotes) * 100) : 0,
+      percentage:
+        totalVotes > 0
+          ? Math.round((Number(o.voteCount) / totalVotes) * 100)
+          : 0,
     }));
 
     return options;
@@ -398,7 +417,11 @@ class PollService {
     return comments;
   }
 
-  public async submitVote(userId: string | null, guestToken: string | null, payload: SubmitVoteDtoType) {
+  public async submitVote(
+    userId: string | null,
+    guestToken: string | null,
+    payload: SubmitVoteDtoType,
+  ) {
     const data = submitVoteDto.parse(payload);
 
     const [option] = await db
@@ -428,12 +451,21 @@ class PollService {
           text: data.comment.trim(),
         });
       }
+      await inngest.send({
+        name: "poll/submit",
+        data: {
+          pollId: data.pollId,
+        },
+      });
     });
 
     return { success: true };
   }
 
-  public async getPollAnalytics(userId: string, slug: string): Promise<PollAnalyticsResult> {
+  public async getPollAnalytics(
+    userId: string,
+    slug: string,
+  ): Promise<PollAnalyticsResult> {
     // ── 1. Fetch poll (must belong to calling user) ──────────────────────────
     const [poll] = await db
       .select({
@@ -487,7 +519,9 @@ class PollService {
       text: o.text,
       votes: Number(o.voteCount),
       percentage:
-        totalVotes > 0 ? Math.round((Number(o.voteCount) / totalVotes) * 100) : 0,
+        totalVotes > 0
+          ? Math.round((Number(o.voteCount) / totalVotes) * 100)
+          : 0,
     }));
 
     // ── 5. Top answer ────────────────────────────────────────────────────────
@@ -502,7 +536,9 @@ class PollService {
 
     const totalViews = Number(viewsRow?.total ?? 0);
     const engagementRate =
-      totalViews > 0 ? Math.min(100, Math.round((totalVotes / totalViews) * 100)) : 0;
+      totalViews > 0
+        ? Math.min(100, Math.round((totalVotes / totalViews) * 100))
+        : 0;
 
     // ── 7. Recent comments (last 10) ─────────────────────────────────────────
     const commentRows = await db
@@ -565,7 +601,9 @@ class PollService {
 
     // ── 10. Started-at label ─────────────────────────────────────────────────
     const pollCreatedAt = new Date(poll.createdAt);
-    const diffMins = Math.floor((Date.now() - pollCreatedAt.getTime()) / 60_000);
+    const diffMins = Math.floor(
+      (Date.now() - pollCreatedAt.getTime()) / 60_000,
+    );
     const startedAt =
       diffMins < 1
         ? "just now"
@@ -592,22 +630,19 @@ class PollService {
       demographicData,
     };
   }
-  public async newView(pollId: string, userId: string | null, guestToken: string | null) {
-    try {
-      console.log("hellloo qwedasdjashdjhasjkdhasjkhdjkashdjkashdjkhas");
-      
-      await inngest.send({
-        name: "poll/view",
-        data: {
-          pollId,
-          userId,
-          guestToken,
-        },
-      });
-    } catch (err) {
-      // Log but don't throw — a view tracking failure shouldn't break the poll page
-      console.error("[PollService.newView] Failed to send inngest event:", err);
-    }
+  public async newView(
+    pollId: string,
+    userId: string | null,
+    guestToken: string | null,
+  ) {
+    await inngest.send({
+      name: "poll/view",
+      data: {
+        pollId,
+        userId,
+        guestToken,
+      },
+    });
   }
 }
 

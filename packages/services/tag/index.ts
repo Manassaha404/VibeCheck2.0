@@ -3,7 +3,8 @@ import redis from "../redis";
 import { tags, pollTags } from "@repo/database/models";
 
 const SCORE_FOR_CREATE_TAG=1;
-const SCORE_FOR_VIWE_TAG_POLLS=2;
+const SCORE_FOR_VIEW_POLLS=2;
+const SCORE_FOR_SUBMIT_POLL = 3;
 const TAG_LEADERBOARD_KEY = "tag:leaderboard"
 
 class TagService {
@@ -55,7 +56,10 @@ class TagService {
         return { message: "Tags added to poll successfully" };
     }
     static async incrementTagScoreForView(tag:string){
-        await redis.zincrby(TAG_LEADERBOARD_KEY, SCORE_FOR_VIWE_TAG_POLLS, tag);
+        await redis.zincrby(TAG_LEADERBOARD_KEY, SCORE_FOR_VIEW_POLLS, tag);
+    }
+    static async incrementTagScoreForSubmitPoll(tag:string){
+        await redis.zincrby(TAG_LEADERBOARD_KEY, SCORE_FOR_SUBMIT_POLL, tag);
     }
 }
 

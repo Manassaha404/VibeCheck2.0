@@ -47,21 +47,6 @@ export const PollCard = ({
           backgroundSize: "20px 20px"
         }}
       />
-      
-      {/* Vibe Character */}
-      <div className="absolute -top-16 -right-8 md:-top-24 md:-right-12 z-20">
-        <div 
-          className="w-32 h-32 md:w-48 md:h-48 border-4 border-ink-charcoal hard-shadow overflow-hidden bg-white rotate-[8deg]" 
-          style={{ borderRadius: "20% 80% 30% 70% / 70% 30% 80% 20%" }}
-        >
-          <img 
-            alt="Vibe Character" 
-            className="w-full h-full object-cover" 
-            src="https://lh3.googleusercontent.com/aida-public/AB6AXuBkPUy-hIbfANt5LrBpB_wmFSKbVSkGZtZth2KkuUhPeZDdHgGNzlHedOLLJ-pn1_DmAzExaK5kAGHW7rkCdJ9zW4COP7IKk_mvoVo8_--Fdkd-dvaIhtAYWgECj9s2mvq5CPsaSgIfXNmf5NsL9ra_joPskdUDAV-slm3IJ43OkmF9e9sDJWCf-dWoArInVs8zxnLfIRTWGy6Z36Kog54SX-h5zgfXKhOcTB4ho7YyDPgqtmdAltVDfmLmD2FF2KFJb5351rgrtaI" 
-          />
-        </div>
-      </div>
-      
       <div className="relative z-30">
         
         {/* Title & Description */}

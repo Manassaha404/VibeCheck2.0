@@ -3,7 +3,7 @@ import { inngest } from "./client";
 import { pollTags, pollViews, tags as tagsModel } from "@repo/database/models";
 import TagService from "../tag";
 
-export const pollView = inngest.createFunction(
+ const pollView = inngest.createFunction(
   {
     id: "poll-view",
     triggers: [
@@ -29,13 +29,48 @@ export const pollView = inngest.createFunction(
         .from(pollTags)
         .innerJoin(tagsModel, eq(tagsModel.tagId, pollTags.tagId))
         .where(eq(pollTags.pollId, pollId));
-      return results.map(r => r.text);
+      return results.map((r) => r.text);
     });
 
     await step.run("increment-tags-score", async () => {
       await Promise.all(
-        tagsList.map((tagText) => TagService.incrementTagScoreForView(tagText))
+        tagsList.map((tagText) => TagService.incrementTagScoreForView(tagText)),
       );
     });
   },
 );
+
+ const submitPoll = inngest.createFunction(
+  {
+    id: "poll-submit",
+    triggers: [
+      {
+        event: "poll/submit",
+      },
+    ],
+  },
+  async ({ event, step }) => {
+    const { pollId } = event.data;
+    const tagsList = await step.run("get-poll-tags", async () => {
+      const { pollId } = event.data;
+      const results = await db
+        .select({ text: tagsModel.text })
+        .from(pollTags)
+        .innerJoin(tagsModel, eq(tagsModel.tagId, pollTags.tagId))
+        .where(eq(pollTags.pollId, pollId));
+      return results.map((r) => r.text);
+    });
+    await step.run("increment-tags-score", async () => {
+      await Promise.all(
+        tagsList.map((tagText) =>
+          TagService.incrementTagScoreForSubmitPoll(tagText),
+        ),
+      );
+    });
+  },
+);
+
+
+const pollFunctions = [submitPoll, pollView];
+export default pollFunctions
+

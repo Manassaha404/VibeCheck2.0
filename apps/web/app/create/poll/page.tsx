@@ -19,15 +19,15 @@ function PollActions() {
   } = useFormContext<CreatePollFormInput>();
 
   return (
-    <div className="flex flex-col items-center gap-4 mt-8">
+    <div className="flex flex-col items-center gap-4 mt-6 md:mt-8 w-full">
       <button
         type="submit"
         disabled={isSubmitting}
-        className={`font-label-md text-label-md px-10 py-4 ${
+        className={`font-label-md text-label-md w-full md:w-auto px-6 md:px-10 py-3 md:py-4 ${
           isSubmitting
             ? "bg-surface-variant cursor-not-allowed opacity-60"
             : "bg-leaf-green hover:bg-primary-fixed hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[1px_1px_0px_0px_rgba(44,46,42,1)]"
-        } text-ink-charcoal border-4 border-ink-charcoal rounded shadow-[6px_6px_0px_0px_rgba(44,46,42,1)] transition-all active:translate-x-1 active:translate-y-1 active:shadow-none whitespace-nowrap text-lg uppercase tracking-wider font-bold`}
+        } text-ink-charcoal border-4 border-ink-charcoal rounded shadow-[6px_6px_0px_0px_rgba(44,46,42,1)] transition-all active:translate-x-1 active:translate-y-1 active:shadow-none whitespace-nowrap text-base md:text-lg uppercase tracking-wider font-bold`}
       >
         {isSubmitting ? "Creating..." : "Create Poll"}
       </button>
