@@ -1,109 +1,40 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import { Download, Loader2 } from 'lucide-react';
 import type { FieldType, FieldAnalyticsData } from './types';
+import { useFormExport } from '@/hook/form/useFormExport';
 
 export type { FieldAnalyticsData };
 
-interface ExportField {
+export interface ExportField {
   fieldId: string;
   label: string;
   type: FieldType;
   analytics: FieldAnalyticsData;
 }
 
-interface ExportSectionProps {
+export interface ExportSectionProps {
   formSlug: string;
   fields: ExportField[];
 }
 
-type TimePeriod = '7d' | '14d' | '30d' | 'all';
-
-function buildCsv(
-  fields: ExportField[],
-  selectedIds: Set<string>,
-): string {
-  const selected = fields.filter((f) => selectedIds.has(f.fieldId));
-  if (selected.length === 0) return '';
-
-  const headers = ['Field Label', 'Field Type', 'Total Answers', 'Analytics Summary'];
-  const rows: string[][] = selected.map((f) => {
-    const { analytics } = f;
-    let summary = '';
-    if (analytics.kind === 'text') {
-      const samples = (analytics.samples as string[]) ?? [];
-      summary = samples.slice(0, 5).join(' | ');
-    } else if (analytics.kind === 'choice') {
-      const options = (analytics.options as { label: string; pct: number }[]) ?? [];
-      summary = options.map((o) => `${o.label}: ${o.pct}%`).join(' | ');
-    } else if (analytics.kind === 'numeric') {
-      summary = `Avg: ${analytics.average} | Min: ${analytics.min} | Max: ${analytics.max}`;
-    } else if (analytics.kind === 'mood') {
-      const dist = (analytics.distribution as { mood: string; pct: number }[]) ?? [];
-      summary = dist.map((d) => `${d.mood}: ${d.pct}%`).join(' | ');
-    } else if (analytics.kind === 'file') {
-      summary = `${(analytics as { totalUploads: number }).totalUploads} uploads`;
-    } else if (analytics.kind === 'date') {
-      const dist = (analytics as { distribution: { label: string; count: number }[] }).distribution ?? [];
-      summary = dist.map((d) => `${d.label}: ${d.count}`).join(' | ');
-    }
-
-    const totalAnswered = (() => {
-      if ('totalAnswered' in analytics) return (analytics as { totalAnswered: number }).totalAnswered;
-      if ('totalUploads' in analytics) return (analytics as { totalUploads: number }).totalUploads;
-      return 0;
-    })();
-
-
-    return [
-      `"${f.label.replace(/"/g, '""')}"`,
-      f.type,
-      String(totalAnswered),
-      `"${summary.replace(/"/g, '""')}"`,
-    ];
-  });
-
-  return [headers.join(','), ...rows.map((r) => r.join(','))].join('\n');
-}
+export type TimePeriod = '7d' | '14d' | '30d' | 'all';
 
 export function ExportSection({ formSlug, fields }: ExportSectionProps) {
-  const [selectedFields, setSelectedFields] = useState<Set<string>>(
-    new Set(fields.map((f) => f.fieldId)),
-  );
-  const [timePeriod, setTimePeriod] = useState<TimePeriod>('all');
-  const [isExporting, setIsExporting] = useState(false);
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
-
-  const toggleField = (id: string) => {
-    setSelectedFields((prev) => {
-      const next = new Set(prev);
-      if (next.has(id)) next.delete(id);
-      else next.add(id);
-      return next;
-    });
-  };
-
-  const handleExport = async () => {
-    if (selectedFields.size === 0) return;
-    setIsExporting(true);
-
-    try {
-      const csv = buildCsv(fields, selectedFields);
-      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `vibecheck-analytics-${formSlug}-${timePeriod}.csv`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-    } finally {
-      setIsExporting(false);
-    }
-  };
+  const {
+    selectedFields,
+    setSelectedFields,
+    timePeriod,
+    setTimePeriod,
+    isExporting,
+    startDate,
+    setStartDate,
+    endDate,
+    setEndDate,
+    toggleField,
+    handleExport,
+  } = useFormExport({ formSlug, fields });
 
   return (
     <section className="bg-pure-white border-4 border-ink-charcoal shadow-[16px_16px_0px_0px_rgba(44,46,42,1)] p-8 md:p-12 relative flex flex-col items-center mt-8">
