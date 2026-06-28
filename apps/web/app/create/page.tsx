@@ -1,7 +1,7 @@
 import React from 'react';
 import { CreateHeader } from '@/components/Create/CreateHeader';
 import { CreateCard } from '@/components/Create/CreateCard';
-import { BarChart, FileText, Lightbulb, LayoutTemplate } from 'lucide-react';
+import { BarChart, FileText, Lightbulb, LayoutTemplate, Megaphone } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 
 export default function CreateSelectionPage() {
@@ -40,12 +40,12 @@ export default function CreateSelectionPage() {
             badgeColorClass="text-[var(--color-ink-charcoal)]"
           />
           <CreateCard
-            title="Partition"
-            description="Organize and segment your audience with ease."
-            icon={<LayoutTemplate className="w-8 h-8" strokeWidth={2.5} />}
-            href="/create/partition"
-            accentColorClass="bg-[var(--color-surface-container)] opacity-50"
-            badgeBgClass="bg-[var(--color-surface-container-high)]"
+            title="Petition"
+            description="Craft a narrative that moves people to action. Bold ideas win."
+            icon={<Megaphone className="w-8 h-8" strokeWidth={2.5} />}
+            href="/create/petition"
+            accentColorClass="bg-[var(--color-sky-blue)] opacity-50"
+            badgeBgClass="bg-[var(--color-sky-blue)]"
             badgeColorClass="text-[var(--color-ink-charcoal)]"
           />
         </div>

@@ -22,6 +22,13 @@
       "when": 1782288741373,
       "tag": "0002_absent_ghost_rider",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1782636729944,
+      "tag": "0003_safe_junta",
+      "breakpoints": true
     }
   ]
 }

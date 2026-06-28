@@ -8,6 +8,7 @@ import {
   timestamp,
   index,
   pgEnum,
+  uniqueIndex,
 } from "drizzle-orm/pg-core";
 import { users } from "./users";
 export const petitionStatusEnum = pgEnum("petition_status", [
@@ -24,6 +25,8 @@ export const petitions = pgTable("petitions", {
     .references(() => users.userId, { onDelete: "cascade" }),
   title: varchar("title", { length: 255 }).notNull(),
   description: text("description"),
+  slug: varchar("slug", { length: 255 }).notNull(),
+  targetAuthority: varchar("target_authority", { length: 255 }),
   signaturesTarget: integer("signatures_target").notNull(),
   isPublished: boolean("is_published").default(false).notNull(),
   status: petitionStatusEnum("status").default("draft").notNull(),
@@ -35,4 +38,5 @@ export const petitions = pgTable("petitions", {
     .$onUpdate(() => new Date()),
 }, (petitions) => [
   index("petition_user_id_idx").on(petitions.userId),
+  uniqueIndex("petition_user_slug_idx").on(petitions.userId, petitions.slug)
 ]);

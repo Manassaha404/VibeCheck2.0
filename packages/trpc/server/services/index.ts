@@ -6,6 +6,7 @@ import FormRespondentAgentService from "@repo/services/agent/formRespondentAgent
 import EmailServices from "@repo/services/email";
 import PollService from "@repo/services/poll";
 import TagService from "@repo/services/tag";
+import PetitionService from "@repo/services/petition";
 
 export const authService = new AuthServices();
 export const oAuthService = new OauthService();
@@ -15,3 +16,4 @@ export const formRespondentAgentService = new FormRespondentAgentService();
 export const emailServices = new EmailServices();
 export const pollService = new PollService();
 export const tagService = new TagService();
+export const petitionService = new PetitionService();
