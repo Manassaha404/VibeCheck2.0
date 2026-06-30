@@ -13,8 +13,8 @@ import TagService from "../tag";
     ],
   },
   async ({ event, step }) => {
+    const { pollId, userId, guestToken } = event.data;
     await step.run("add-new-view", async () => {
-      const { pollId, userId, guestToken } = event.data;
       await db.insert(pollViews).values({
         pollId,
         userId: userId ?? null,
@@ -22,21 +22,28 @@ import TagService from "../tag";
       });
     });
 
-    const tagsList = await step.run("get-poll-tags", async () => {
-      const { pollId } = event.data;
+    const [tagsList = [], tagId = []] = (await step.run("get-poll-tags", async () => {
       const results = await db
-        .select({ text: tagsModel.text })
+        .select({ text: tagsModel.text, id: tagsModel.tagId })
         .from(pollTags)
         .innerJoin(tagsModel, eq(tagsModel.tagId, pollTags.tagId))
         .where(eq(pollTags.pollId, pollId));
-      return results.map((r) => r.text);
-    });
+      return [results.map((r) => r.text), results.map((r) => r.id)];
+    })) || [[], []];
 
     await step.run("increment-tags-score", async () => {
-      await Promise.all(
-        tagsList.map((tagText) => TagService.incrementTagScoreForView(tagText)),
-      );
+      if (tagsList && tagsList.length > 0) {
+        await Promise.all(
+          tagsList.map((tagText) => TagService.incrementTagScoreForView(tagText)),
+        );
+      }
     });
+
+    if (userId && tagId && tagId.length > 0) {
+      await step.run("user-tag-preferences-increase", async () => {
+        await TagService.incrementUserTagPreference(userId, tagId, "view");
+      });
+    }
   },
 );
 
@@ -50,27 +57,53 @@ import TagService from "../tag";
     ],
   },
   async ({ event, step }) => {
-    const { pollId } = event.data;
-    const tagsList = await step.run("get-poll-tags", async () => {
-      const { pollId } = event.data;
+    const { pollId, userId } = event.data;
+    const [tagText = [], tagId = []] = (await step.run("get-poll-tags", async () => {
       const results = await db
-        .select({ text: tagsModel.text })
+        .select({ text: tagsModel.text, id: tagsModel.tagId })
         .from(pollTags)
         .innerJoin(tagsModel, eq(tagsModel.tagId, pollTags.tagId))
         .where(eq(pollTags.pollId, pollId));
-      return results.map((r) => r.text);
-    });
+      return [results.map((r) => r.text), results.map((r) => r.id)];
+    })) || [[], []];
+
     await step.run("increment-tags-score", async () => {
-      await Promise.all(
-        tagsList.map((tagText) =>
-          TagService.incrementTagScoreForSubmitPoll(tagText),
-        ),
-      );
+      if (tagText && tagText.length > 0) {
+        await Promise.all(
+          tagText.map((text) =>
+            TagService.incrementTagScoreForSubmit(text),
+          ),
+        );
+      }
     });
+
+    if (userId && tagId && tagId.length > 0) {
+        await step.run("user-tag-preferences-increase", async () => {
+            await TagService.incrementUserTagPreference(userId, tagId, "submit");
+        });
+    }
   },
 );
 
 
-const pollFunctions = [submitPoll, pollView];
+const addPollTags = inngest.createFunction(
+  {
+    id: "poll-add-tags",
+    triggers: [
+      {
+        event: "poll/add-tags",
+      },
+    ],
+  },
+  async ({ event, step }) => {
+    const { pollId, tags } = event.data;
+
+    await step.run("sync-poll-tags", async () => {
+      await TagService.syncPollTags(pollId, tags);
+    });
+  }
+);
+
+const pollFunctions = [submitPoll, pollView, addPollTags];
 export default pollFunctions
 

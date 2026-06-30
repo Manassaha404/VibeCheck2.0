@@ -17,6 +17,10 @@
       "cache": false,
       "persistent": true
     },
+    "inngest:dev": {
+      "cache": false,
+      "persistent": true
+    },
     "db:generate": {},
     "db:migrate": {}
   }

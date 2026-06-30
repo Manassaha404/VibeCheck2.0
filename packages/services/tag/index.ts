@@ -1,11 +1,18 @@
-import db, { eq } from "@repo/database";
+import db, { eq, sql, and, inArray } from "@repo/database";
 import redis from "../redis";
-import { tags, pollTags, petitionTags } from "@repo/database/models";
+import {
+  tags,
+  pollTags,
+  petitionTags,
+  userTagPreferences,
+} from "@repo/database/models";
 const SCORE_FOR_CREATE_TAG = 1;
-const SCORE_FOR_VIEW_POLLS = 2;
-const SCORE_FOR_SUBMIT_POLL = 3;
+const SCORE_FOR_VIEW = 2;
+const SCORE_FOR_SUBMIT = 3;
 const TAG_LEADERBOARD_KEY = "tag:leaderboard";
-
+const INCREMENT_SCORE_USER_TAG_PREFERENCE_FOR_VIEW = 2;
+const INCREMENT_SCORE_USER_TAG_PREFERENCE_FOR_SUBMIT = 3;
+type UserTaskForIncrementTagPreferenceScoreEnum = "view" | "submit";
 class TagService {
   public async getTopTags() {
     const data = await redis.zrange(TAG_LEADERBOARD_KEY, 0, 1000);
@@ -27,101 +34,150 @@ class TagService {
     return { message: "create new tag successfully" };
   }
 
+  static async syncPollTags(pollId: string, tagsArray: string[]) {
+    const existingPollTags = await db
+      .select({ text: tags.text, tagId: pollTags.tagId })
+      .from(pollTags)
+      .innerJoin(tags, eq(tags.tagId, pollTags.tagId))
+      .where(eq(pollTags.pollId, pollId));
 
+    const existingTagTexts = existingPollTags.map((t) => t.text);
 
+    const requestedTags = Array.from(
+      new Set(
+        (tagsArray || [])
+          .map((t) => t.trim())
+          .filter((t) => t.length > 0)
+      )
+    );
 
+    const tagsToAdd = requestedTags.filter((t) => !existingTagTexts.includes(t));
+    const tagsToRemove = existingPollTags.filter(
+      (t) => !requestedTags.includes(t.text)
+    );
 
-  static async addTagsToPolls(pollId: string, tagsArray: string[]) {
-    // First delete existing associations
-    await db.delete(pollTags).where(eq(pollTags.pollId, pollId));
-
-    if (!tagsArray || tagsArray.length === 0)
-      return { message: "Tags cleared" };
-
-    const tagIds: string[] = [];
-
-    for (const tagText of tagsArray) {
-      const trimmedTag = tagText.trim();
-      if (!trimmedTag) continue;
-
-      // Ensure tag exists and update leaderboard
-      await this.createNewTag(trimmedTag);
-
-      // Fetch the tag to get its ID
-      const [existingTag] = await db
-        .select()
-        .from(tags)
-        .where(eq(tags.text, trimmedTag));
-      if (existingTag) {
-        tagIds.push(existingTag.tagId);
-      }
-    }
-
-    // Insert into pollTags
-    if (tagIds.length > 0) {
-      await db.insert(pollTags).values(
-        tagIds.map((tagId) => ({
-          pollId,
-          tagId,
-        })),
+    if (tagsToRemove.length > 0) {
+      const idsToRemove = tagsToRemove.map((t) => t.tagId);
+      await db.delete(pollTags).where(
+        and(
+          eq(pollTags.pollId, pollId),
+          inArray(pollTags.tagId, idsToRemove)
+        )
       );
     }
-    return { message: "Tags added to poll successfully" };
+
+    if (tagsToAdd.length > 0) {
+      const newTagIds: string[] = [];
+      for (const tagText of tagsToAdd) {
+        await this.createNewTag(tagText);
+        const [existingTag] = await db
+          .select()
+          .from(tags)
+          .where(eq(tags.text, tagText));
+        if (existingTag) {
+          newTagIds.push(existingTag.tagId);
+        }
+      }
+
+      if (newTagIds.length > 0) {
+        const uniqueTagIds = Array.from(new Set(newTagIds));
+        await db.insert(pollTags).values(
+          uniqueTagIds.map((tagId) => ({ pollId, tagId }))
+        );
+      }
+    }
   }
 
-
-
-
-
-
-  static async addTagsToPetitions(petitionId: string, tagsArray: string[]) {
-    // First delete existing associations
-    await db
-      .delete(petitionTags)
+  static async syncPetitionTags(petitionId: string, tagsArray: string[]) {
+    const existingPetitionTags = await db
+      .select({ text: tags.text, tagId: petitionTags.tagId })
+      .from(petitionTags)
+      .innerJoin(tags, eq(tags.tagId, petitionTags.tagId))
       .where(eq(petitionTags.petitionId, petitionId));
 
-    if (!tagsArray || tagsArray.length === 0)
-      return { message: "Tags cleared" };
+    const existingTagTexts = existingPetitionTags.map((t) => t.text);
 
-    const tagIds: string[] = [];
+    const requestedTags = Array.from(
+      new Set(
+        (tagsArray || [])
+          .map((t) => t.trim())
+          .filter((t) => t.length > 0)
+      )
+    );
 
-    for (const tagText of tagsArray) {
-      const trimmedTag = tagText.trim();
-      if (!trimmedTag) continue;
+    const tagsToAdd = requestedTags.filter((t) => !existingTagTexts.includes(t));
+    const tagsToRemove = existingPetitionTags.filter(
+      (t) => !requestedTags.includes(t.text)
+    );
 
-      // Ensure tag exists and update leaderboard
-      await this.createNewTag(trimmedTag);
-
-      // Fetch the tag to get its ID
-      const [existingTag] = await db
-        .select()
-        .from(tags)
-        .where(eq(tags.text, trimmedTag));
-      if (existingTag) {
-        tagIds.push(existingTag.tagId);
-      }
-    }
-
-    // Insert into petitionTags
-    if (tagIds.length > 0) {
-      await db.insert(petitionTags).values(
-        tagIds.map((tagId) => ({
-          petitionId,
-          tagId,
-        })),
+    if (tagsToRemove.length > 0) {
+      const idsToRemove = tagsToRemove.map((t) => t.tagId);
+      await db.delete(petitionTags).where(
+        and(
+          eq(petitionTags.petitionId, petitionId),
+          inArray(petitionTags.tagId, idsToRemove)
+        )
       );
     }
-    return { message: "Tags added to petition successfully" };
+
+    if (tagsToAdd.length > 0) {
+      const newTagIds: string[] = [];
+      for (const tagText of tagsToAdd) {
+        await this.createNewTag(tagText);
+        const [existingTag] = await db
+          .select()
+          .from(tags)
+          .where(eq(tags.text, tagText));
+        if (existingTag) {
+          newTagIds.push(existingTag.tagId);
+        }
+      }
+
+      if (newTagIds.length > 0) {
+        const uniqueTagIds = Array.from(new Set(newTagIds));
+        await db.insert(petitionTags).values(
+          uniqueTagIds.map((tagId) => ({ petitionId, tagId }))
+        );
+      }
+    }
   }
-
-
-
 
   static async incrementTagScoreForView(tag: string) {
-    await redis.zincrby(TAG_LEADERBOARD_KEY, SCORE_FOR_VIEW_POLLS, tag);
+    await redis.zincrby(TAG_LEADERBOARD_KEY, SCORE_FOR_VIEW, tag);
   }
-  static async incrementTagScoreForSubmitPoll(tag: string) {
-    await redis.zincrby(TAG_LEADERBOARD_KEY, SCORE_FOR_SUBMIT_POLL, tag);
+  static async incrementTagScoreForSubmit(tag: string) {
+    await redis.zincrby(TAG_LEADERBOARD_KEY, SCORE_FOR_SUBMIT, tag);
+  }
+
+  static async incrementUserTagPreference(
+    userId: string,
+    tagsIdArray: string[],
+    task: UserTaskForIncrementTagPreferenceScoreEnum,
+  ) {
+    if (!tagsIdArray || tagsIdArray.length === 0) return;
+
+    const validTagIds = tagsIdArray.filter((id) => id && id.trim().length > 0);
+    const incrementScore =
+      task === "view"
+        ? INCREMENT_SCORE_USER_TAG_PREFERENCE_FOR_VIEW
+        : INCREMENT_SCORE_USER_TAG_PREFERENCE_FOR_SUBMIT;
+    if (validTagIds.length > 0) {
+      await db
+        .insert(userTagPreferences)
+        .values(
+          validTagIds.map((tagId) => ({
+            userId,
+            tagId,
+            score: incrementScore,
+          })),
+        )
+        .onConflictDoUpdate({
+          target: [userTagPreferences.userId, userTagPreferences.tagId],
+          set: {
+            score: sql`${userTagPreferences.score} + ${incrementScore}`,
+          },
+        });
+    }
   }
 }
 

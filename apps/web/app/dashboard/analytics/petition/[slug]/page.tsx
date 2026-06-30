@@ -9,6 +9,7 @@ import GrowthChart from '@/components/analytics/petition/GrowthChart';
 import LiveVibeFeed from '@/components/analytics/petition/LiveVibeFeed';
 import TopHubsMap from '@/components/analytics/petition/TopHubsMap';
 import PetitionNotFound from '@/components/analytics/petition/PetitionNotFound';
+import ShareComponent from '@/components/analytics/petition/ShareComponent';
 import { useParams } from 'next/navigation';
 import { usePetitionAnalytics } from '@/hook/petition/usePetitionAnalytics';
 
@@ -33,7 +34,7 @@ export default function PetitionAnalyticsPage() {
 
   return (
     <div className="min-h-screen flex flex-col font-body bg-dot-pattern relative overflow-x-hidden">
-      <div className="fixed inset-0 pointer-events-none z-0 opacity-5" 
+      <div className="fixed inset-0 pointer-events-none z-0 opacity-5"
         style={{
           backgroundImage: 'radial-gradient(circle, var(--color-ink-charcoal) 2px, transparent 2.5px)',
           backgroundSize: '16px 16px',
@@ -43,34 +44,30 @@ export default function PetitionAnalyticsPage() {
 
       <Navbar />
 
-      <main className="flex-grow z-10 w-full max-w-[1280px] mx-auto px-4 md:px-10 py-12 md:py-16">
-        <LiveBanner />
-        <HeaderSection 
-          title={petition.title} 
-          status={petition.status} 
-          totalSignatures={petition.totalSignatures} 
+      <main className="flex-grow w-full max-w-[1280px] mx-auto px-4 md:px-10 py-12 space-y-16 relative z-10">
+        <div className="space-y-6">
+          <LiveBanner />
+          <HeaderSection
+            title={petition.title}
+            status={petition.status}
+            totalSignatures={petition.totalSignatures}
+          />
+        </div>
+
+        <OverviewCard
+          title={petition.title}
+          totalSignatures={petition.totalSignatures}
+          target={petition.signaturesTarget}
         />
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          {/* Left Column */}
-          <div className="lg:col-span-8 flex flex-col gap-6">
-            <OverviewCard 
-              title={petition.title} 
-              totalSignatures={petition.totalSignatures} 
-              target={petition.signaturesTarget} 
-            />
-            <GrowthChart data={growth} />
-          </div>
+        <GrowthChart data={growth} />
 
-          {/* Right Column */}
-          <div className="lg:col-span-4 flex flex-col gap-6 h-full">
-            <LiveVibeFeed signatures={recentSignatures} />
-          </div>
-        </div>
-
-        <div className="mt-6 w-full">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
           <TopHubsMap topCities={topHubs} />
+          <LiveVibeFeed signatures={recentSignatures} />
         </div>
+
+        <ShareComponent username={petition.username} slug={petition.slug} />
       </main>
 
       <Footer />

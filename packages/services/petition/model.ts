@@ -23,8 +23,45 @@ export type GetAnalyticsResponseType = {
     status: string;
     signaturesTarget: number;
     totalSignatures: number;
+    username: string;
   };
   growth: { day: string; signatures: number }[];
   recentSignatures: { firstName: string; lastName: string; createdAt: Date; city: string | null }[];
   topHubs: { city: string; country: string; count: number }[];
+};
+
+export const getPetitionForSignDto = z.object({
+  username: z.string().trim().min(1, "Username is required"),
+  slug: z.string().trim().min(1, "Slug is required"),
+});
+
+export const signPetitionDto = z.object({
+  petitionId: z.string().uuid("Invalid petition ID"),
+  firstName: z.string().trim().min(1, "First name is required").max(255),
+  lastName: z.string().trim().min(1, "Last name is required").max(255),
+  email: z.string().email("Invalid email address").max(255),
+  city: z.string().max(255).optional(),
+  country: z.string().max(255).optional(),
+});
+
+export type signPetitionType = z.infer<typeof signPetitionDto>;
+
+export type GetPetitionForSignResponseType = {
+  petition: {
+    petitionId: string;
+    title: string;
+    description: string | null;
+    signaturesTarget: number;
+    status: string;
+    username: string;
+    slug: string;
+  };
+  totalSignatures: number;
+  recentSignatures: {
+    firstName: string;
+    lastName: string;
+    createdAt: Date;
+    city: string | null;
+  }[];
+  hasSigned: boolean;
 };

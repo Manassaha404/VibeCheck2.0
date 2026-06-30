@@ -18,7 +18,7 @@ export const petitionSignatures = pgTable("petition_signatures", {
   }),
   city: varchar("city", { length: 255 }),
   country: varchar("country", { length: 255 }),
-  guestToken: uuid("guest_token"),
+  guestToken: uuid("guest_token").notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at")
     .defaultNow()

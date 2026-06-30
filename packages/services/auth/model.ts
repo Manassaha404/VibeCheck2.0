@@ -16,7 +16,7 @@ export const createVerifiedUserDto = z.object({
     password: z.string().min(8).describe("password of the user")
 })
 export const getMeDto = z.object({
-  userId: z.uuid().trim().describe("the user id of the user to fetch details for")
+  userId: z.string().uuid().trim().describe("the user id of the user to fetch details for")
 })
 export const loginWithEmailAndPasswordDto = z.object({
     emailOrUsername: z.string().trim().min(1).describe("email or username of the user"),

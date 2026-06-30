@@ -132,6 +132,9 @@ importers:
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
+      country-state-city:
+        specifier: ^3.2.1
+        version: 3.2.1
       d3-geo:
         specifier: ^3.1.1
         version: 3.1.1
@@ -4605,6 +4608,9 @@ packages:
     peerDependenciesMeta:
       typescript:
         optional: true
+
+  country-state-city@3.2.1:
+    resolution: {integrity: sha512-kxbanqMc6izjhc/EHkGPCTabSPZ2G6eG4/97akAYHJUN4stzzFEvQPZoF8oXDQ+10gM/O/yUmISCR1ZVxyb6EA==}
 
   cron-parser@4.9.0:
     resolution: {integrity: sha512-p0SaNjrHOnQeR8/VnfGbmg9te2kfyYSQ7Sc/j/6DtPL3JQvKxmjO9TSjNFpujqV3vEYYBvNNvXSxzyksBWAx1Q==}
@@ -12143,6 +12149,8 @@ snapshots:
       parse-json: 5.2.0
     optionalDependencies:
       typescript: 5.9.2
+
+  country-state-city@3.2.1: {}
 
   cron-parser@4.9.0:
     dependencies:

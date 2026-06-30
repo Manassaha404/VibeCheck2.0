@@ -1,8 +1,10 @@
 "use client";
 import React from 'react';
-import { MapContainer, TileLayer, Marker } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+import { Country, City } from 'country-state-city';
+import { useMemo } from 'react';
 
 const CITY_COORDINATES: Record<string, [number, number]> = {
   "New York": [40.7128, -74.0060],
@@ -80,27 +82,66 @@ const createCustomIcon = (name: string, count: string, heatLevel: number, color:
   });
 };
 
+function MapController({ markers }: { markers: any[] }) {
+  const map = useMap();
+  
+  React.useEffect(() => {
+    if (markers.length === 0) return;
+    
+    let currentIndex = 0;
+    
+    // Set initial view to the first city
+    map.setView(markers[0].coordinates, 4);
+
+    const interval = setInterval(() => {
+      currentIndex = (currentIndex + 1) % markers.length;
+      map.flyTo(markers[currentIndex].coordinates, 4, {
+        duration: 2
+      });
+    }, 4000); // 4 seconds interval between flights
+
+    return () => clearInterval(interval);
+  }, [map, markers]);
+
+  return null;
+}
+
 export default function LeafletMap({ topCities = [] }: { topCities?: { city: string, country: string, count: number }[] }) {
-  // Map topCities to markers if they exist in our coordinate dictionary
-  const markers = topCities
-    .map(city => {
-      const coords = CITY_COORDINATES[city.city];
-      if (!coords) return null; // Skip if we don't have coords for this city
-      
-      // Calculate heat level based on count (min 10, max 40 for visual scale)
-      // This is a simple linear scale assuming count could be anything from 1 to 1000s
-      const heatLevel = Math.max(10, Math.min(40, 10 + (city.count * 2)));
-      
-      return {
-        name: `${city.city}, ${city.country}`,
-        coordinates: coords,
-        count: city.count >= 1000 ? (city.count / 1000).toFixed(1) + 'k' : city.count.toString(),
-        heatLevel,
-        color: "var(--color-leaf-green)",
-        shadowColor: "rgba(142,212,98,0)"
-      };
-    })
-    .filter(Boolean); // Remove nulls
+  // Map topCities to markers if they exist in our coordinate dictionary or dynamically lookup
+  const markers = useMemo(() => {
+    return topCities
+      .map(city => {
+        let coords = CITY_COORDINATES[city.city];
+        
+        // Dynamically find coordinates if not hardcoded
+        if (!coords) {
+          const countryObj = Country.getAllCountries().find(c => c.name === city.country);
+          if (countryObj) {
+            const citiesOfCountry = City.getCitiesOfCountry(countryObj.isoCode);
+            const cityObj = citiesOfCountry?.find(c => c.name === city.city);
+            if (cityObj && cityObj.latitude && cityObj.longitude) {
+              coords = [parseFloat(cityObj.latitude), parseFloat(cityObj.longitude)];
+            }
+          }
+        }
+
+        if (!coords) return null; // Skip if we don't have coords for this city
+        
+        // Calculate heat level based on count (min 10, max 40 for visual scale)
+        // This is a simple linear scale assuming count could be anything from 1 to 1000s
+        const heatLevel = Math.max(10, Math.min(40, 10 + (city.count * 2)));
+        
+        return {
+          name: `${city.city}, ${city.country}`,
+          coordinates: coords,
+          count: city.count >= 1000 ? (city.count / 1000).toFixed(1) + 'k' : city.count.toString(),
+          heatLevel,
+          color: "var(--color-leaf-green)",
+          shadowColor: "rgba(142,212,98,0)"
+        };
+      })
+      .filter(Boolean); // Remove nulls
+  }, [topCities]);
 
   return (
     <div className="w-full h-full relative z-0">
@@ -111,6 +152,7 @@ export default function LeafletMap({ topCities = [] }: { topCities?: { city: str
         zoomControl={true}
         scrollWheelZoom={true}
       >
+        <MapController markers={markers} />
         <TileLayer
           url="https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png"
           attribution='&copy; <a href="https://carto.com/">CARTO</a>'

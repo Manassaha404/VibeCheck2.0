@@ -45,6 +45,7 @@ export const savePollDraftDto = z.object({
   isPublic: z.boolean().optional().describe("is the poll visible to everyone"),
   isCommentsAllowed: z.boolean().optional().describe("can viewers comment on the poll"),
   isMultipleOptionVoteAllowed: z.boolean().optional().describe("can voters select multiple options"),
+  tags: z.array(z.string()).optional().describe("tags for the poll"),
   isPublished: z.boolean().optional().describe("is the poll published"),
   status: z.enum(["draft", "active", "archived"]).optional().describe("the status of the poll"),
 });

@@ -35,7 +35,44 @@ const getGuestToken = tRPCContext.middleware(({ctx, next}) => {
   return next({ctx: {...ctx, guestToken}});
 })
 
-export const publicProcedure = tRPCContext.procedure.use(getGuestToken);
+const getOptionalUser = tRPCContext.middleware(({ ctx, next }) => {
+  const accessToken = ctx.getCookie("accessToken");
+  const refreshToken = ctx.getCookie("refreshToken");
+
+  let userId: string | undefined = undefined;
+
+  try {
+    if (accessToken) {
+      const decoded = verifyAccessToken(accessToken);
+      userId = decoded.userId;
+    } else {
+      throw new Error("Missing access token");
+    }
+  } catch (error) {
+    if (refreshToken) {
+      try {
+        const decoded = verifyRefreshToken(refreshToken);
+        userId = decoded.userId;
+
+        const newAccessToken = generateAccessToken(userId);
+        const newRefreshToken = generateRefreshToken(userId);
+        ctx.setCookie("accessToken", newAccessToken);
+        ctx.setCookie("refreshToken", newRefreshToken);
+      } catch (refreshError) {
+        // Token is invalid, user remains undefined
+      }
+    }
+  }
+
+  return next({
+    ctx: {
+      ...ctx,
+      user: userId ? { id: userId } : null,
+    },
+  });
+});
+
+export const publicProcedure = tRPCContext.procedure.use(getGuestToken).use(getOptionalUser);
 
 
 const isAuthed = tRPCContext.middleware(({ ctx, next }) => {

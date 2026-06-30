@@ -1,0 +1,1 @@
+CREATE UNIQUE INDEX "tag_text_idx" ON "tags" USING btree ("text");

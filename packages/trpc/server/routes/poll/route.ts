@@ -84,8 +84,8 @@ export const pollRouter = router({
     .input(submitVoteDto)
     .mutation(async ({ input, ctx }) => {
       try {
-        const userId = (ctx as any).user?.id ?? null;
-        const guestToken = ctx.guestToken ?? null;
+        const userId = (ctx).user?.id ?? null;
+        const guestToken = ctx.guestToken;
         return await pollService.submitVote(userId, guestToken, input);
       } catch (error) {
         handleRouteError(error);
@@ -106,7 +106,7 @@ export const pollRouter = router({
     .input(z.object({ pollId: z.string().uuid() }))
     .mutation(async ({ input, ctx }) => {
       try {
-        const userId = (ctx as any).user?.id ?? null;
+        const userId = ctx.user?.id || null
         const guestToken = ctx.guestToken ?? null;
         await pollService.newView(input.pollId, userId, guestToken);
         return { success: true };

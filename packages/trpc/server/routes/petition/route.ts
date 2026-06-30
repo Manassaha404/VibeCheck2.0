@@ -1,5 +1,5 @@
 import { protectedProcedure, publicProcedure, router } from "../../trpc";
-import { createPetitionDto, getAnalyticsDto } from "@repo/services/petition/model";
+import { createPetitionDto, getAnalyticsDto, getPetitionForSignDto, signPetitionDto } from "@repo/services/petition/model";
 import { petitionService } from "../../services";
 import { handleRouteError } from "../../utils/error";
 
@@ -20,6 +20,24 @@ export const petitionRouter = router({
       try {
         const analytics = await petitionService.getAnalytics(input.slug);
         return analytics;
+      } catch (error) {
+        handleRouteError(error);
+      }
+    }),
+  getPetitionForSign: publicProcedure
+    .input(getPetitionForSignDto)
+    .query(async ({ input,ctx }) => {
+      try {
+        return await petitionService.getPetitionForSign(input.username, input.slug, ctx.user?.id, ctx.guestToken);
+      } catch (error) {
+        handleRouteError(error);
+      }
+    }),
+  signPetition: publicProcedure
+    .input(signPetitionDto)
+    .mutation(async ({ input, ctx }) => {
+      try {
+        return await petitionService.signPetition(input, ctx.user?.id, ctx.guestToken);
       } catch (error) {
         handleRouteError(error);
       }

@@ -29,6 +29,20 @@
       "when": 1782636729944,
       "tag": "0003_safe_junta",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1782837450149,
+      "tag": "0004_flaky_senator_kelly",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1782840842175,
+      "tag": "0005_fuzzy_zemo",
+      "breakpoints": true
     }
   ]
 }

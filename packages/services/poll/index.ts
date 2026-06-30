@@ -159,6 +159,16 @@ class PollService {
         }
       }
 
+      if (data.tags !== undefined) {
+        await inngest.send({
+          name: "poll/add-tags",
+          data: {
+            pollId,
+            tags: data.tags,
+          }
+        });
+      }
+
       return { success: true, pollId };
     });
   }
@@ -419,7 +429,7 @@ class PollService {
 
   public async submitVote(
     userId: string | null,
-    guestToken: string | null,
+    guestToken: string,
     payload: SubmitVoteDtoType,
   ) {
     const data = submitVoteDto.parse(payload);
@@ -439,7 +449,7 @@ class PollService {
         questionId: option.questionId,
         optionId: data.optionId,
         userId: userId ?? null,
-        guestToken: guestToken ?? null,
+        guestToken: guestToken,
       });
 
       // 2. Insert comment if provided
@@ -455,6 +465,7 @@ class PollService {
         name: "poll/submit",
         data: {
           pollId: data.pollId,
+          userId
         },
       });
     });

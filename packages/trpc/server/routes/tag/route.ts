@@ -20,13 +20,5 @@ export const tagRouter = router({
         handleRouteError(error);
       }
     }),
-  addTagsToPolls: protectedProcedure
-    .input(z.object({ pollId: z.string().uuid(), tags: z.array(z.string()) }))
-    .mutation(async ({ input }) => {
-      try {
-        return await tagService.addTagsToPolls(input.pollId, input.tags);
-      } catch (error) {
-        handleRouteError(error);
-      }
-    }),
+
 });

@@ -14,7 +14,6 @@ export const usePublishPoll = () => {
   const router = useRouter();
 
   const { mutateAsync: saveDraftMutation } = trpc.poll.saveDraft.useMutation();
-  const { mutateAsync: addTagsMutation } = trpc.tag.addTagsToPolls.useMutation();
   const { mutateAsync: setPollActiveMutation } = trpc.poll.setPollActive.useMutation();
   
   const [isPublishing, setIsPublishing] = useState(false);
@@ -24,10 +23,7 @@ export const usePublishPoll = () => {
     setIsPublishing(true);
     try {
       // 1. Save Poll
-      await saveDraftMutation({ pollId, data: draftData });
-      
-      // 2. Add Tags
-      await addTagsMutation({ pollId, tags });
+      await saveDraftMutation({ pollId, data: { ...draftData, tags } });
       
       // 3. Change status to active
       await setPollActiveMutation({ pollId });
