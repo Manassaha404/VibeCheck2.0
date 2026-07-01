@@ -1,11 +1,28 @@
 import db, { eq, and, sql, desc } from "@repo/database";
 import { petitions } from "@repo/database/models/petitions";
 import { petitionSignatures } from "@repo/database/models/petition-signatures";
-import { createPetitionDto, createPetitionType, getAnalyticsDto, GetAnalyticsResponseType, getPetitionForSignDto, signPetitionDto, signPetitionType, GetPetitionForSignResponseType } from "./model";
+import {
+  createPetitionDto,
+  createPetitionType,
+  getAnalyticsDto,
+  GetAnalyticsResponseType,
+  getPetitionForSignDto,
+  signPetitionDto,
+  signPetitionType,
+  GetPetitionForSignResponseType,
+  archivePetitionDto,
+  ArchivePetitionDtoType,
+  activatePetitionDto,
+  ActivatePetitionDtoType,
+  deletePetitionDto,
+  DeletePetitionDtoType,
+  type DashboardPetitionsResult
+} from "./model";
 import { AppError } from "@repo/error";
 import { users } from "@repo/database/models/users";
 import * as crypto from "node:crypto";
 import { inngest } from "../inngest";
+import { count } from "drizzle-orm";
 
 class PetitionService {
   private async generateUniqueSlug(userId: string, title: string): Promise<string> {
@@ -154,6 +171,7 @@ class PetitionService {
 
     return {
       petition: {
+        petitionId: petition.petitionId,
         title: petition.title,
         slug: petition.slug,
         status: petition.status,
@@ -185,6 +203,10 @@ class PetitionService {
 
     if (!petition) {
       throw new AppError("NOT_FOUND", "Petition not found");
+    }
+
+    if (petition.status === "archived") {
+      throw new AppError("FORBIDDEN", "This petition has been archived and is no longer accepting signatures");
     }
 
     const totalResult = await db.execute(sql`
@@ -241,6 +263,19 @@ class PetitionService {
   public async signPetition(payload: signPetitionType, viewerUserId:string | undefined, guestToken:string) {
     const data = await signPetitionDto.parseAsync(payload);
 
+    // Verify the petition exists and is not archived
+    const [existingPetition] = await db
+      .select({ status: petitions.status })
+      .from(petitions)
+      .where(eq(petitions.petitionId, data.petitionId));
+
+    if (!existingPetition) {
+      throw new AppError("NOT_FOUND", "Petition not found");
+    }
+    if (existingPetition.status === "archived") {
+      throw new AppError("FORBIDDEN", "This petition has been archived and is no longer accepting signatures");
+    }
+
     await db.insert(petitionSignatures).values({
       petitionId: data.petitionId,
       firstName: data.firstName,
@@ -257,6 +292,96 @@ class PetitionService {
         userId: viewerUserId
       }
     });
+
+    return { success: true };
+  }
+
+  public async getDashboardItems(userId: string): Promise<DashboardPetitionsResult> {
+    const rows = await db
+      .select({
+        petitionId: petitions.petitionId,
+        title: petitions.title,
+        description: petitions.description,
+        slug: petitions.slug,
+        status: petitions.status,
+        signaturesTarget: petitions.signaturesTarget,
+        createdAt: petitions.createdAt,
+        totalSignatures: count(petitionSignatures.petitionSignatureId),
+      })
+      .from(petitions)
+      .leftJoin(
+        petitionSignatures,
+        eq(petitionSignatures.petitionId, petitions.petitionId),
+      )
+      .where(eq(petitions.userId, userId))
+      .groupBy(petitions.petitionId)
+      .orderBy(desc(petitions.createdAt));
+
+    const petitionItems = rows.map((r) => ({
+      petitionId: r.petitionId,
+      title: r.title,
+      description: r.description ?? null,
+      slug: r.slug,
+      status: r.status as "draft" | "active" | "closed" | "archived",
+      signaturesTarget: r.signaturesTarget,
+      totalSignatures: Number(r.totalSignatures),
+      createdAt: r.createdAt.toISOString(),
+    }));
+
+    return { petitions: petitionItems, total: petitionItems.length };
+  }
+  public async archiveItem(userId: string, payload: ArchivePetitionDtoType) {
+    const data = archivePetitionDto.parse(payload);
+    const [existingPetition] = await db
+      .select()
+      .from(petitions)
+      .where(and(eq(petitions.petitionId, data.petitionId), eq(petitions.userId, userId)));
+
+    if (!existingPetition) {
+      throw new AppError("NOT_FOUND", "Petition not found");
+    }
+
+    await db
+      .update(petitions)
+      .set({ status: "archived" })
+      .where(eq(petitions.petitionId, existingPetition.petitionId));
+
+    return { success: true };
+  }
+
+  public async activateItem(userId: string, payload: ActivatePetitionDtoType) {
+    const data = activatePetitionDto.parse(payload);
+    const [existingPetition] = await db
+      .select()
+      .from(petitions)
+      .where(and(eq(petitions.petitionId, data.petitionId), eq(petitions.userId, userId)));
+
+    if (!existingPetition) {
+      throw new AppError("NOT_FOUND", "Petition not found");
+    }
+
+    await db
+      .update(petitions)
+      .set({ status: "active", isPublished: true })
+      .where(eq(petitions.petitionId, existingPetition.petitionId));
+
+    return { success: true };
+  }
+
+  public async deleteItem(userId: string, payload: DeletePetitionDtoType) {
+    const data = deletePetitionDto.parse(payload);
+    const [existingPetition] = await db
+      .select()
+      .from(petitions)
+      .where(and(eq(petitions.petitionId, data.petitionId), eq(petitions.userId, userId)));
+
+    if (!existingPetition) {
+      throw new AppError("NOT_FOUND", "Petition not found");
+    }
+
+    await db
+      .delete(petitions)
+      .where(eq(petitions.petitionId, existingPetition.petitionId));
 
     return { success: true };
   }

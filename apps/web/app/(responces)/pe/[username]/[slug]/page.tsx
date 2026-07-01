@@ -8,7 +8,7 @@ import SignatureForm from '@/components/petition-sign/SignatureForm';
 import SignVibeCheck from '@/components/petition-sign/SignVibeCheck';
 import SignRecentSigners from '@/components/petition-sign/SignRecentSigners';
 import { useGetPetitionForSign } from '@/hook/petition/useGetPetitionForSign';
-import { notFound } from 'next/navigation';
+import { ContentErrorState } from '@/components/ui/ContentErrorState';
 
 export default function PetitionSignPage({ params }: { params: Promise<{ username: string, slug: string }> }) {
   const { username, slug } = use(params);
@@ -27,7 +27,14 @@ export default function PetitionSignPage({ params }: { params: Promise<{ usernam
   }
 
   if (isError || !data) {
-    return notFound();
+    const errorMessage = (isError as any)?.message ?? "";
+    const isArchived = errorMessage.toLowerCase().includes("archived");
+    return (
+      <ContentErrorState
+        kind="petition"
+        variant={isArchived ? "archived" : "not_found"}
+      />
+    );
   }
 
   const { petition, totalSignatures, recentSignatures, hasSigned } = data;

@@ -52,6 +52,38 @@ export const savePollDraftDto = z.object({
 
 export type SavePollDraftDtoType = z.infer<typeof savePollDraftDto>;
 
+// ─── Dashboard ─────────────────────────────────────────────────────────────
+
+export const archivePollDto = z.object({
+  pollId: z.string().uuid(),
+});
+export type ArchivePollDtoType = z.infer<typeof archivePollDto>;
+
+export const activatePollDto = z.object({
+  pollId: z.string().uuid(),
+});
+export type ActivatePollDtoType = z.infer<typeof activatePollDto>;
+
+export const deletePollDto = z.object({
+  pollId: z.string().uuid(),
+});
+export type DeletePollDtoType = z.infer<typeof deletePollDto>;
+
+export interface DashboardPollItem {
+  pollId: string;
+  title: string;
+  description: string | null;
+  slug: string;
+  status: "draft" | "active" | "archived";
+  totalVotes: number;
+  createdAt: string;
+}
+
+export type DashboardPollsResult = {
+  polls: DashboardPollItem[];
+  total: number;
+};
+
 // ─── Analytics ─────────────────────────────────────────────────────────────
 
 export const getPollAnalyticsDto = z.object({
@@ -95,6 +127,7 @@ export interface PollAnalyticsResult {
   question: string;
   startedAt: string;
   isLive: boolean;
+  status: string;
   totalVotes: number;
   totalViews: number;
   engagementRate: number;

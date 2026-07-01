@@ -17,7 +17,14 @@ import {
   savePollDraftDto,
   submitVoteDto,
   SubmitVoteDtoType,
+  archivePollDto,
+  ArchivePollDtoType,
+  activatePollDto,
+  ActivatePollDtoType,
+  deletePollDto,
+  DeletePollDtoType,
   type PollAnalyticsResult,
+  type DashboardPollsResult,
 } from "./model";
 
 class PollService {
@@ -255,6 +262,10 @@ class PollService {
       throw new AppError("NOT_FOUND", "Poll not found");
     }
 
+    if (poll.status === "archived") {
+      throw new AppError("FORBIDDEN", "This poll has been archived and is no longer accepting votes");
+    }
+
     const [question] = await db
       .select()
       .from(pollQuestions)
@@ -441,6 +452,19 @@ class PollService {
 
     if (!option) {
       throw new AppError("NOT_FOUND", "Option not found");
+    }
+
+    // Check the parent poll is not archived
+    const [pollForVote] = await db
+      .select({ status: polls.status })
+      .from(polls)
+      .where(eq(polls.pollId, data.pollId));
+
+    if (!pollForVote) {
+      throw new AppError("NOT_FOUND", "Poll not found");
+    }
+    if (pollForVote.status === "archived") {
+      throw new AppError("FORBIDDEN", "This poll has been archived and is no longer accepting votes");
     }
 
     await db.transaction(async (tx) => {
@@ -631,6 +655,7 @@ class PollService {
       question: question.text,
       startedAt,
       isLive: poll.status === "active",
+      status: poll.status,
       totalVotes,
       totalViews,
       engagementRate,
@@ -654,6 +679,91 @@ class PollService {
         guestToken,
       },
     });
+  }
+  public async getDashboardItems(userId: string): Promise<DashboardPollsResult> {
+    const rows = await db
+      .select({
+        pollId: polls.pollId,
+        title: polls.title,
+        description: polls.description,
+        slug: polls.slug,
+        status: polls.status,
+        createdAt: polls.createdAt,
+        totalVotes: count(pollVotes.pollVoteId),
+      })
+      .from(polls)
+      .leftJoin(pollQuestions, eq(pollQuestions.pollId, polls.pollId))
+      .leftJoin(pollVotes, eq(pollVotes.questionId, pollQuestions.pollQuestionId))
+      .where(eq(polls.userId, userId))
+      .groupBy(polls.pollId)
+      .orderBy(desc(polls.createdAt));
+
+    const pollItems = rows.map((r) => ({
+      pollId: r.pollId,
+      title: r.title,
+      description: r.description ?? null,
+      slug: r.slug,
+      status: r.status as "draft" | "active" | "archived",
+      totalVotes: Number(r.totalVotes),
+      createdAt: r.createdAt.toISOString(),
+    }));
+
+    return { polls: pollItems, total: pollItems.length };
+  }
+  public async archiveItem(userId: string, payload: ArchivePollDtoType) {
+    const data = archivePollDto.parse(payload);
+    const [existingPoll] = await db
+      .select()
+      .from(polls)
+      .where(and(eq(polls.pollId, data.pollId), eq(polls.userId, userId)));
+
+    if (!existingPoll) {
+      throw new AppError("NOT_FOUND", "Poll not found");
+    }
+
+    await db
+      .update(polls)
+      .set({ status: "archived" })
+      .where(eq(polls.pollId, existingPoll.pollId));
+
+    return { success: true };
+  }
+
+  public async activateItem(userId: string, payload: ActivatePollDtoType) {
+    const data = activatePollDto.parse(payload);
+    const [existingPoll] = await db
+      .select()
+      .from(polls)
+      .where(and(eq(polls.pollId, data.pollId), eq(polls.userId, userId)));
+
+    if (!existingPoll) {
+      throw new AppError("NOT_FOUND", "Poll not found");
+    }
+
+    await db
+      .update(polls)
+      .set({ status: "active", isPublished: true })
+      .where(eq(polls.pollId, existingPoll.pollId));
+
+    return { success: true };
+  }
+
+  public async deleteItem(userId: string, payload: DeletePollDtoType) {
+    const data = deletePollDto.parse(payload);
+    const [existingPoll] = await db
+      .select()
+      .from(polls)
+      .where(and(eq(polls.pollId, data.pollId), eq(polls.userId, userId)));
+
+    if (!existingPoll) {
+      throw new AppError("NOT_FOUND", "Poll not found");
+    }
+
+    await db
+      .delete(polls)
+      .where(eq(polls.pollId, existingPoll.pollId));
+
+    return { success: true };
   }
 }
 

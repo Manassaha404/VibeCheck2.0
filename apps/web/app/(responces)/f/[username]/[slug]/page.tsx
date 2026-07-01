@@ -8,6 +8,7 @@ import { StaticFormPanel } from "@/components/public-form/StaticFormPanel";
 import { PublicFormHeader } from "@/components/public-form/PublicFormHeader";
 import { PasswordScreen } from "@/components/public-form/PasswordScreen";
 import { FeedbackScreen } from "@/components/public-form/FeedbackScreen";
+import { ContentErrorState } from "@/components/ui/ContentErrorState";
 import { useRouter } from "next/navigation";
 
 interface PageProps {
@@ -55,16 +56,16 @@ export default function PublicFormPage({ params }: PageProps) {
 
   // ── Error / Not Found ────────────────────────────────────────────────────
   if (isError || !form) {
+    // Try to detect archived vs generic error from the tRPC error message
+    const errorMessage =
+      (isError as any)?.message ?? (isError as any)?.data?.message ?? "";
+    const isArchived = errorMessage.toLowerCase().includes("archived");
+
     return (
-      <div className="min-h-screen bg-[var(--color-canvas-cream)] flex items-center justify-center bg-dot-pattern">
-        <div className="bg-white border-4 border-[var(--color-ink-charcoal)] rounded-2xl shadow-hard-xl p-8 md:p-10 w-[90%] md:w-full max-w-md mx-auto text-center">
-          <div className="text-6xl mb-4">😕</div>
-          <h1 className="text-headline-sm mb-3">Form Not Found</h1>
-          <p className="text-body-md opacity-60">
-            This form doesn't exist or hasn't been published yet.
-          </p>
-        </div>
-      </div>
+      <ContentErrorState
+        kind="form"
+        variant={isArchived ? "archived" : "not_found"}
+      />
     );
   }
 

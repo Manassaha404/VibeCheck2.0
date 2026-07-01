@@ -3,6 +3,8 @@
 import React from 'react';
 import { ArrowRight, Wifi } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { trpc } from '@/trpc/client';
+import { Loader2, Zap } from 'lucide-react';
 
 interface AnalyticsHeaderProps {
   formTitle: string;
@@ -26,6 +28,18 @@ export function AnalyticsHeader({
 }: AnalyticsHeaderProps) {
   const router = useRouter();
   const statusClass = STATUS_COLORS[status] ?? 'bg-canvas-cream text-ink-charcoal';
+
+  const utils = trpc.useUtils();
+  const activateForm = trpc.form.activateItem.useMutation({
+    onSuccess: () => {
+      utils.form.getFormAnalytics.invalidate({ formSlug });
+      router.refresh();
+    }
+  });
+
+  const handleActivate = () => {
+    activateForm.mutate({ formSlug });
+  };
 
   return (
     <>
@@ -58,8 +72,25 @@ export function AnalyticsHeader({
           </div>
         </div>
 
-        {/* Total Responses stat */}
+        {/* Action and Stats */}
         <div className="flex gap-4 md:gap-8 flex-col sm:flex-row w-full md:w-auto relative z-30">
+          {status === 'archived' && (
+            <button
+              onClick={handleActivate}
+              disabled={activateForm.isPending}
+              className="bg-leaf-green text-ink-charcoal border-4 border-ink-charcoal shadow-[8px_8px_0px_0px_rgba(44,46,42,1)] p-6 flex flex-col items-center justify-center transform hover:-translate-y-2 transition-transform w-full sm:w-48 active:translate-x-1 active:translate-y-1 active:shadow-none disabled:opacity-50 cursor-pointer"
+            >
+              <span className="font-headline-sm text-headline-sm uppercase font-bold text-center mb-2">
+                Reactivate
+              </span>
+              {activateForm.isPending ? (
+                <Loader2 size={40} className="animate-spin" />
+              ) : (
+                <Zap size={40} strokeWidth={3} />
+              )}
+            </button>
+          )}
+
           <div className="bg-electric-sun border-4 border-ink-charcoal shadow-[8px_8px_0px_0px_rgba(44,46,42,1)] p-6 flex flex-col items-center justify-center transform hover:-translate-y-2 transition-transform w-full sm:w-48">
             <span className="font-headline-sm text-headline-sm uppercase font-bold text-center">
               Total Responses

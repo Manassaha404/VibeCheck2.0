@@ -134,6 +134,38 @@ export const agentClearSessionDto = z.object({
 });
 
 
+// ─── Dashboard ─────────────────────────────────────────────────────────────
+
+export const archiveFormDto = z.object({
+  formSlug: z.string().trim().min(1),
+});
+export type ArchiveFormDtoType = z.infer<typeof archiveFormDto>;
+
+export const activateFormDto = z.object({
+  formSlug: z.string().trim().min(1),
+});
+export type ActivateFormDtoType = z.infer<typeof activateFormDto>;
+
+export const deleteFormDto = z.object({
+  formSlug: z.string().trim().min(1),
+});
+export type DeleteFormDtoType = z.infer<typeof deleteFormDto>;
+
+export interface DashboardFormItem {
+  formId: string;
+  title: string;
+  description: string | null;
+  slug: string;
+  status: "draft" | "active" | "closed" | "archived";
+  totalResponses: number;
+  createdAt: string;
+}
+
+export type DashboardFormsResult = {
+  forms: DashboardFormItem[];
+  total: number;
+};
+
 export type DraftFormDtoType = z.infer<typeof draftFormDto>;
 export type getSavedFieldsType = z.infer<typeof getSavedFieldsDto>;
 export type SaveDraftFormDtoType = z.infer<typeof saveDraftFormDto>;

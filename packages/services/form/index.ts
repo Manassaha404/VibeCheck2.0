@@ -1,4 +1,4 @@
-import db, { eq, and, gte, sql, desc, ilike } from "@repo/database";
+import db, { eq, and, gte, sql, desc, ilike, count } from "@repo/database";
 import { forms } from "@repo/database/models/forms";
 import { AppError } from "@repo/error";
 import {
@@ -32,6 +32,13 @@ import {
   GetResumableUploadUrlDtoType,
   deleteFileDto,
   DeleteFileDtoType,
+  archiveFormDto,
+  ArchiveFormDtoType,
+  activateFormDto,
+  ActivateFormDtoType,
+  deleteFormDto,
+  DeleteFormDtoType,
+  type DashboardFormsResult,
 } from "./model";
 import { formFields } from "@repo/database/models/form-fields";
 import { formResponses } from "@repo/database/models/form-responses";
@@ -200,6 +207,10 @@ class FormServices {
       throw new AppError("NOT_FOUND", "Form not found or not published");
     }
 
+    if (form.status === "archived") {
+      throw new AppError("FORBIDDEN", "This form has been archived and is no longer accepting responses");
+    }
+
     const baseResult = {
       formId: form.formId,
       title: form.title,
@@ -306,6 +317,10 @@ class FormServices {
       .from(forms)
       .where(eq(forms.formId, formId));
     if (!form) throw new AppError("NOT_FOUND", "Form not found");
+
+    if (form.status === "archived") {
+      throw new AppError("FORBIDDEN", "This form has been archived and is no longer accepting responses");
+    }
 
     if (form.expiresAt && new Date() > form.expiresAt) {
       throw new AppError("FORBIDDEN", "Form has expired");
@@ -916,6 +931,93 @@ class FormServices {
       console.error("deleteFile service error:", error);
       throw new AppError("INTERNAL_SERVER_ERROR", "Failed to delete file from Google Drive");
     }
+  }
+
+
+  public async getDashboardItems(userId: string): Promise<DashboardFormsResult> {
+    const rows = await db
+      .select({
+        formId: forms.formId,
+        title: forms.title,
+        description: forms.description,
+        slug: forms.slug,
+        status: forms.status,
+        createdAt: forms.createdAt,
+        totalResponses: count(formResponses.responseId),
+      })
+      .from(forms)
+      .leftJoin(formResponses, eq(formResponses.formId, forms.formId))
+      .where(eq(forms.userId, userId))
+      .groupBy(forms.formId)
+      .orderBy(desc(forms.createdAt));
+
+    const formItems = rows.map((r) => ({
+      formId: r.formId,
+      title: r.title,
+      description: r.description ?? null,
+      slug: r.slug,
+      status: r.status as "draft" | "active" | "closed" | "archived",
+      totalResponses: Number(r.totalResponses),
+      createdAt: r.createdAt.toISOString(),
+    }));
+
+    return { forms: formItems, total: formItems.length };
+  }
+
+  public async archiveItem(userId: string, payload: ArchiveFormDtoType) {
+    const data = archiveFormDto.parse(payload);
+    const [existingForm] = await db
+      .select()
+      .from(forms)
+      .where(and(eq(forms.slug, data.formSlug), eq(forms.userId, userId)));
+
+    if (!existingForm) {
+      throw new AppError("NOT_FOUND", "Form not found");
+    }
+
+    await db
+      .update(forms)
+      .set({ status: "archived", updatedAt: new Date() })
+      .where(eq(forms.formId, existingForm.formId));
+
+    return { success: true };
+  }
+
+  public async activateItem(userId: string, payload: ActivateFormDtoType) {
+    const data = activateFormDto.parse(payload);
+    const [existingForm] = await db
+      .select()
+      .from(forms)
+      .where(and(eq(forms.slug, data.formSlug), eq(forms.userId, userId)));
+
+    if (!existingForm) {
+      throw new AppError("NOT_FOUND", "Form not found");
+    }
+
+    await db
+      .update(forms)
+      .set({ status: "active", isPublished: true, updatedAt: new Date() })
+      .where(eq(forms.formId, existingForm.formId));
+
+    return { success: true };
+  }
+
+  public async deleteItem(userId: string, payload: DeleteFormDtoType) {
+    const data = deleteFormDto.parse(payload);
+    const [existingForm] = await db
+      .select()
+      .from(forms)
+      .where(and(eq(forms.slug, data.formSlug), eq(forms.userId, userId)));
+
+    if (!existingForm) {
+      throw new AppError("NOT_FOUND", "Form not found");
+    }
+
+    await db
+      .delete(forms)
+      .where(eq(forms.formId, existingForm.formId));
+
+    return { success: true };
   }
 
 }

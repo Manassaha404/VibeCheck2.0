@@ -10,6 +10,7 @@ import { PublicComments } from "@/components/public-poll/PublicComments";
 import { Loader2, Smile } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useGetPublicPoll } from "@/hook/poll/useGetPublicPoll";
+import { ContentErrorState } from "@/components/ui/ContentErrorState";
 import socket from "@/lib/socket";
 
 export default function PublicPollPage() {
@@ -53,15 +54,13 @@ export default function PublicPollPage() {
   }
 
   if (error || !data) {
+    const errorMessage = (error as any)?.message ?? "";
+    const isArchived = errorMessage.toLowerCase().includes("archived");
     return (
-      <div className="bg-canvas-cream text-ink-charcoal min-h-screen flex items-center justify-center flex-col gap-4">
-        <h1 className="font-display-lg text-headline-lg" style={{ color: "var(--color-error)" }}>
-          Oops!
-        </h1>
-        <p className="font-body-lg">
-          We couldn't find this poll. It may have been deleted or the link is incorrect.
-        </p>
-      </div>
+      <ContentErrorState
+        kind="poll"
+        variant={isArchived ? "archived" : "not_found"}
+      />
     );
   }
 

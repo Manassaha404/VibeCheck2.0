@@ -1,5 +1,13 @@
 import { protectedProcedure, publicProcedure, router } from "../../trpc";
-import { createPollDto, savePollDraftDto, getPollAnalyticsDto, submitVoteDto } from "@repo/services/poll/model";
+import {
+  createPollDto,
+  savePollDraftDto,
+  getPollAnalyticsDto,
+  submitVoteDto,
+  archivePollDto,
+  deletePollDto,
+  activatePollDto,
+} from "@repo/services/poll/model";
 import { pollService } from "../../services";
 import { handleRouteError } from "../../utils/error";
 import { z } from "zod";
@@ -110,6 +118,45 @@ export const pollRouter = router({
         const guestToken = ctx.guestToken ?? null;
         await pollService.newView(input.pollId, userId, guestToken);
         return { success: true };
+      } catch (error) {
+        handleRouteError(error);
+      }
+    }),
+
+  getDashboard: protectedProcedure
+    .query(async ({ ctx }) => {
+      try {
+        return await pollService.getDashboardItems(ctx.user.id);
+      } catch (error) {
+        handleRouteError(error);
+      }
+    }),
+
+  archiveItem: protectedProcedure
+    .input(archivePollDto)
+    .mutation(async ({ input, ctx }) => {
+      try {
+        return await pollService.archiveItem(ctx.user.id, input);
+      } catch (error) {
+        handleRouteError(error);
+      }
+    }),
+
+  activateItem: protectedProcedure
+    .input(activatePollDto)
+    .mutation(async ({ input, ctx }) => {
+      try {
+        return await pollService.activateItem(ctx.user.id, input);
+      } catch (error) {
+        handleRouteError(error);
+      }
+    }),
+
+  deleteItem: protectedProcedure
+    .input(deletePollDto)
+    .mutation(async ({ input, ctx }) => {
+      try {
+        return await pollService.deleteItem(ctx.user.id, input);
       } catch (error) {
         handleRouteError(error);
       }

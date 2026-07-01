@@ -1,24 +1,48 @@
 import React from "react";
-import { Loader2 } from "lucide-react";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 
-export function PageLoader({ message = "Loading..." }: { message?: string }) {
+export default function PageLoader() {
   return (
-    <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-canvas-cream bg-dot-pattern theme-transition">
-      <div className="flex flex-col items-center gap-10 animate-pop-in">
-        {/* Floating Box */}
-        <div className="animate-float-slow">
-          <div className="bg-electric-sun border-4 border-ink-charcoal shadow-[8px_8px_0px_0px_rgba(44,46,42,1)] rounded-2xl p-8 flex items-center justify-center rotate-3 animate-wiggle">
-            <Loader2 className="w-16 h-16 text-ink-charcoal animate-spin" strokeWidth={3} />
+    <div className="bg-[var(--color-canvas-cream)] text-[var(--color-ink-charcoal)] font-body antialiased min-h-screen flex flex-col">
+      <Navbar />
+      <main className="flex-grow w-full max-w-[1280px] mx-auto px-4 md:px-10 py-12 space-y-10">
+        <div className="animate-pulse flex flex-col gap-8 w-full">
+          {/* Header Skeleton */}
+          <div className="flex flex-col gap-4 mb-6">
+            <div className="h-10 w-1/3 bg-[var(--color-surface-container-high)] rounded-lg"></div>
+            <div className="h-6 w-1/4 bg-[var(--color-surface-container)] rounded-lg"></div>
+          </div>
+          
+          {/* Main Content Area Skeleton */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="md:col-span-2 h-64 bg-[var(--color-pure-white)] border-2 border-[var(--color-outline-variant)] rounded-xl"></div>
+            <div className="h-64 bg-[var(--color-pure-white)] border-2 border-[var(--color-outline-variant)] rounded-xl"></div>
+          </div>
+          
+          {/* Grid Skeleton */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5 mt-6">
+            {[1, 2, 3, 4, 5, 6].map((i) => (
+              <div key={i} className="h-[260px] bg-[var(--color-pure-white)] border-2 border-[var(--color-outline-variant)] rounded-xl p-5 flex flex-col gap-4">
+                <div className="flex gap-2">
+                  <div className="h-6 w-16 rounded-md bg-[var(--color-surface-container-high)]" />
+                  <div className="h-6 w-14 rounded-md bg-[var(--color-surface-container-high)]" />
+                </div>
+                <div className="flex flex-col gap-2">
+                  <div className="h-5 w-3/4 rounded bg-[var(--color-surface-container-high)]" />
+                  <div className="h-4 w-full rounded bg-[var(--color-surface-container)]" />
+                </div>
+                <div className="h-px bg-[var(--color-outline-variant)] mt-auto" />
+                <div className="flex justify-between">
+                  <div className="h-4 w-28 rounded bg-[var(--color-surface-container)]" />
+                  <div className="h-4 w-10 rounded bg-[var(--color-surface-container)]" />
+                </div>
+              </div>
+            ))}
           </div>
         </div>
-
-        {/* Loading Text */}
-        <div className="bg-pure-white border-4 border-ink-charcoal shadow-[6px_6px_0px_0px_rgba(44,46,42,1)] px-8 py-3 rounded-full hover:-translate-y-1 hover:shadow-[8px_8px_0px_0px_rgba(44,46,42,1)] transition-all">
-          <h2 className="text-headline-sm font-bold uppercase tracking-wider text-ink-charcoal animate-pulse">
-            {message}
-          </h2>
-        </div>
-      </div>
+      </main>
+      <Footer />
     </div>
   );
 }

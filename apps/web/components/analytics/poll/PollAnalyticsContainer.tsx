@@ -19,6 +19,7 @@ export interface PollAnalyticsData {
   question: string;
   startedAt?: string;
   isLive?: boolean;
+  status?: string;
   totalVotes: number;
   engagementRate: number;
   topAnswer: string;
@@ -65,6 +66,7 @@ export function PollAnalyticsContainer({ data }: PollAnalyticsContainerProps) {
         username={data.username}
         startedAt={data.startedAt}
         isLive={data.isLive}
+        status={data.status}
       />
 
       {/* Stats bento */}

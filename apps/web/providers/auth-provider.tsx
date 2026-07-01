@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { trpc } from "@/trpc/client";
 import { useUserInfoStore } from "@/store/userInfoStore";
-import { PageLoader } from "@/components/PageLoader";
+import PageLoader from "@/components/PageLoader";
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter();

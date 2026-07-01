@@ -1,17 +1,18 @@
 "use client";
-import React from 'react';
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
-import LiveBanner from '@/components/analytics/petition/LiveBanner';
-import HeaderSection from '@/components/analytics/petition/HeaderSection';
-import OverviewCard from '@/components/analytics/petition/OverviewCard';
-import GrowthChart from '@/components/analytics/petition/GrowthChart';
-import LiveVibeFeed from '@/components/analytics/petition/LiveVibeFeed';
-import TopHubsMap from '@/components/analytics/petition/TopHubsMap';
-import PetitionNotFound from '@/components/analytics/petition/PetitionNotFound';
-import ShareComponent from '@/components/analytics/petition/ShareComponent';
-import { useParams } from 'next/navigation';
-import { usePetitionAnalytics } from '@/hook/petition/usePetitionAnalytics';
+import React from "react";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
+import LiveBanner from "@/components/analytics/petition/LiveBanner";
+import HeaderSection from "@/components/analytics/petition/HeaderSection";
+import OverviewCard from "@/components/analytics/petition/OverviewCard";
+import GrowthChart from "@/components/analytics/petition/GrowthChart";
+import LiveVibeFeed from "@/components/analytics/petition/LiveVibeFeed";
+import TopHubsMap from "@/components/analytics/petition/TopHubsMap";
+import { DashboardError } from "@/components/Dashboard/DashboardError";
+import ShareComponent from "@/components/analytics/petition/ShareComponent";
+import { useParams } from "next/navigation";
+import { usePetitionAnalytics } from "@/hook/petition/usePetitionAnalytics";
+import PageLoader from "@/components/PageLoader";
 
 export default function PetitionAnalyticsPage() {
   const params = useParams<{ slug: string }>();
@@ -19,26 +20,33 @@ export default function PetitionAnalyticsPage() {
   const { analytics, isLoading, isError } = usePetitionAnalytics(slug);
 
   if (isLoading) {
-    return (
-      <div className="min-h-screen flex flex-col font-body bg-dot-pattern relative overflow-x-hidden justify-center items-center">
-        <p className="font-display text-headline-md text-[var(--color-ink-charcoal)]">Loading Analytics...</p>
-      </div>
-    );
+    return <PageLoader />;
   }
 
   if (isError || !analytics) {
-    return <PetitionNotFound />;
+    return (
+      <>
+        <Navbar />
+        <DashboardError
+          title="Error loading petition analytics"
+          message="There was an error loading the petition analytics. Please try again later."
+        />
+        <Footer />
+      </>
+    );
   }
 
   const { petition, growth, recentSignatures, topHubs } = analytics;
 
   return (
     <div className="min-h-screen flex flex-col font-body bg-dot-pattern relative overflow-x-hidden">
-      <div className="fixed inset-0 pointer-events-none z-0 opacity-5"
+      <div
+        className="fixed inset-0 pointer-events-none z-0 opacity-5"
         style={{
-          backgroundImage: 'radial-gradient(circle, var(--color-ink-charcoal) 2px, transparent 2.5px)',
-          backgroundSize: '16px 16px',
-          backgroundPosition: '0 0, 8px 8px'
+          backgroundImage:
+            "radial-gradient(circle, var(--color-ink-charcoal) 2px, transparent 2.5px)",
+          backgroundSize: "16px 16px",
+          backgroundPosition: "0 0, 8px 8px",
         }}
       />
 
@@ -48,6 +56,7 @@ export default function PetitionAnalyticsPage() {
         <div className="space-y-6">
           <LiveBanner />
           <HeaderSection
+            petitionId={petition.petitionId}
             title={petition.title}
             status={petition.status}
             totalSignatures={petition.totalSignatures}

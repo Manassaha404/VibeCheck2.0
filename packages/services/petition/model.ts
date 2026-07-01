@@ -1,5 +1,38 @@
 import { z } from "zod";
 
+// ─── Dashboard ─────────────────────────────────────────────────────────────
+
+export const archivePetitionDto = z.object({
+  petitionId: z.string().uuid(),
+});
+export type ArchivePetitionDtoType = z.infer<typeof archivePetitionDto>;
+
+export const activatePetitionDto = z.object({
+  petitionId: z.string().uuid(),
+});
+export type ActivatePetitionDtoType = z.infer<typeof activatePetitionDto>;
+
+export const deletePetitionDto = z.object({
+  petitionId: z.string().uuid(),
+});
+export type DeletePetitionDtoType = z.infer<typeof deletePetitionDto>;
+
+export interface DashboardPetitionItem {
+  petitionId: string;
+  title: string;
+  description: string | null;
+  slug: string;
+  status: "draft" | "active" | "closed" | "archived";
+  totalSignatures: number;
+  signaturesTarget: number;
+  createdAt: string;
+}
+
+export type DashboardPetitionsResult = {
+  petitions: DashboardPetitionItem[];
+  total: number;
+};
+
 export const createPetitionDto = z.object({
   title: z.string().trim().min(1, "Title is required").max(100, "Title is too long").describe("title of the petition"),
   description: z.string().trim().min(1, "Description is required").max(1000, "Description is too long").describe("description of the petition"),
@@ -18,6 +51,7 @@ export type getAnalyticsType = z.infer<typeof getAnalyticsDto>;
 
 export type GetAnalyticsResponseType = {
   petition: {
+    petitionId: string;
     title: string;
     slug: string;
     status: string;

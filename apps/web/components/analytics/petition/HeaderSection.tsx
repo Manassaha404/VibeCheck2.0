@@ -3,10 +3,24 @@
 import React from 'react';
 import { ArrowRight, Wifi } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { trpc } from '@/trpc/client';
+import { Loader2, Zap } from 'lucide-react';
 
-export default function HeaderSection({ title, status, totalSignatures }: { title: string, status: string, totalSignatures: number }) {
+export default function HeaderSection({ title, status, totalSignatures, petitionId }: { title: string, status: string, totalSignatures: number, petitionId: string }) {
   const router = useRouter();
   const statusClass = status === 'active' ? 'bg-[var(--color-leaf-green)] text-[var(--color-ink-charcoal)]' : 'bg-gray-300 text-gray-700';
+
+  const utils = trpc.useUtils();
+  const activatePetition = trpc.petition.activateItem.useMutation({
+    onSuccess: () => {
+      utils.petition.getAnalytics.invalidate();
+      router.refresh();
+    }
+  });
+
+  const handleActivate = () => {
+    activatePetition.mutate({ petitionId });
+  };
 
   return (
     <div className="mb-16">
@@ -41,6 +55,17 @@ export default function HeaderSection({ title, status, totalSignatures }: { titl
 
         {/* Total Responses stat */}
         <div className="flex gap-4 md:gap-8 flex-col sm:flex-row w-full md:w-auto relative z-30">
+          {status === 'archived' && (
+            <button
+              onClick={handleActivate}
+              disabled={activatePetition.isPending}
+              className="bg-[var(--color-leaf-green)] text-[var(--color-ink-charcoal)] font-display-lg text-2xl uppercase font-black px-6 py-4 border-4 border-[var(--color-ink-charcoal)] shadow-[8px_8px_0px_0px_rgba(44,46,42,1)] hover:-translate-y-2 hover:shadow-[12px_12px_0px_0px_rgba(44,46,42,1)] active:translate-x-1 active:translate-y-1 active:shadow-none flex items-center justify-center gap-2 transition-all duration-200 disabled:opacity-50"
+            >
+              {activatePetition.isPending ? <Loader2 size={24} className="animate-spin" /> : <Zap size={24} strokeWidth={3} />}
+              ACTIVATE
+            </button>
+          )}
+
           <div className="bg-[var(--color-electric-sun)] border-4 border-[var(--color-ink-charcoal)] shadow-[8px_8px_0px_0px_rgba(44,46,42,1)] p-6 flex flex-col items-center justify-center transform hover:-translate-y-2 transition-transform w-full sm:w-48">
             <span className="font-headline-sm text-headline-sm uppercase font-bold text-center text-[var(--color-ink-charcoal)]">
               Total Signatures

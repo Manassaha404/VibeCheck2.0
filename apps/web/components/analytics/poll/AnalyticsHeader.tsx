@@ -2,9 +2,11 @@
 
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Share2, QrCode, X, Copy, Check, ExternalLink } from "lucide-react";
+import { Share2, QrCode, X, Copy, Check, ExternalLink, Loader2, Zap } from "lucide-react";
 import QRCode from "react-qr-code";
 import { toast } from "sonner";
+import { trpc } from "@/trpc/client";
+import { useRouter } from "next/navigation";
 
 interface AnalyticsHeaderProps {
   question: string;
@@ -13,6 +15,7 @@ interface AnalyticsHeaderProps {
   username: string;
   startedAt?: string;
   isLive?: boolean;
+  status?: string;
 }
 
 export function AnalyticsHeader({
@@ -22,10 +25,24 @@ export function AnalyticsHeader({
   username,
   startedAt,
   isLive = true,
+  status,
 }: AnalyticsHeaderProps) {
   const [showQR, setShowQR] = useState(false);
   const [showShare, setShowShare] = useState(false);
   const [copied, setCopied] = useState(false);
+  
+  const router = useRouter();
+  const utils = trpc.useUtils();
+  const activatePoll = trpc.poll.activateItem.useMutation({
+    onSuccess: () => {
+      utils.poll.getAnalytics.invalidate({ slug });
+      router.refresh();
+    }
+  });
+
+  const handleActivate = () => {
+    activatePoll.mutate({ pollId });
+  };
 
   const shareUrl =
     typeof window !== "undefined"
@@ -87,8 +104,18 @@ export function AnalyticsHeader({
         initial={{ opacity: 0, x: 20 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.4, delay: 0.2 }}
-        className="flex items-center gap-4 w-full md:w-auto"
+        className="flex items-center gap-4 w-full md:w-auto flex-wrap md:flex-nowrap"
       >
+        {status === "archived" && (
+          <button
+            onClick={handleActivate}
+            disabled={activatePoll.isPending}
+            className="flex-grow md:flex-grow-0 bg-leaf-green text-ink-charcoal border-2 border-ink-charcoal font-headline-sm text-headline-sm px-6 py-4 rounded-xl shadow-hard transition-all hover-lift flex justify-center items-center gap-2 whitespace-nowrap disabled:opacity-50"
+          >
+            {activatePoll.isPending ? <Loader2 size={20} className="animate-spin" /> : <Zap size={20} strokeWidth={3} />}
+            Activate
+          </button>
+        )}
         {/* QR Code Toggle */}
         <button
           id="qr-toggle-btn"

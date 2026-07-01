@@ -10,6 +10,9 @@ import {
   submitStaticFormDto,
   getResumableUploadUrlDto,
   deleteFileDto,
+  archiveFormDto,
+  deleteFormDto,
+  activateFormDto,
 } from "@repo/services/form/model";
 import { formServices } from "../../services";
 import { handleRouteError } from "../../utils/error";
@@ -126,6 +129,45 @@ export const formRouter = router({
     .mutation(async ({ input }) => {
       try {
         return await formServices.deleteFile(input);
+      } catch (error) {
+        handleRouteError(error);
+      }
+    }),
+
+  getDashboard: protectedProcedure
+    .query(async ({ ctx }) => {
+      try {
+        return await formServices.getDashboardItems(ctx.user.id);
+      } catch (error) {
+        handleRouteError(error);
+      }
+    }),
+
+  archiveItem: protectedProcedure
+    .input(archiveFormDto)
+    .mutation(async ({ input, ctx }) => {
+      try {
+        return await formServices.archiveItem(ctx.user.id, input);
+      } catch (error) {
+        handleRouteError(error);
+      }
+    }),
+
+  activateItem: protectedProcedure
+    .input(activateFormDto)
+    .mutation(async ({ input, ctx }) => {
+      try {
+        return await formServices.activateItem(ctx.user.id, input);
+      } catch (error) {
+        handleRouteError(error);
+      }
+    }),
+
+  deleteItem: protectedProcedure
+    .input(deleteFormDto)
+    .mutation(async ({ input, ctx }) => {
+      try {
+        return await formServices.deleteItem(ctx.user.id, input);
       } catch (error) {
         handleRouteError(error);
       }

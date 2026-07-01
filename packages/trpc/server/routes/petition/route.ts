@@ -1,5 +1,13 @@
 import { protectedProcedure, publicProcedure, router } from "../../trpc";
-import { createPetitionDto, getAnalyticsDto, getPetitionForSignDto, signPetitionDto } from "@repo/services/petition/model";
+import {
+  createPetitionDto,
+  getAnalyticsDto,
+  getPetitionForSignDto,
+  signPetitionDto,
+  archivePetitionDto,
+  deletePetitionDto,
+  activatePetitionDto,
+} from "@repo/services/petition/model";
 import { petitionService } from "../../services";
 import { handleRouteError } from "../../utils/error";
 
@@ -38,6 +46,45 @@ export const petitionRouter = router({
     .mutation(async ({ input, ctx }) => {
       try {
         return await petitionService.signPetition(input, ctx.user?.id, ctx.guestToken);
+      } catch (error) {
+        handleRouteError(error);
+      }
+    }),
+
+  getDashboard: protectedProcedure
+    .query(async ({ ctx }) => {
+      try {
+        return await petitionService.getDashboardItems(ctx.user.id);
+      } catch (error) {
+        handleRouteError(error);
+      }
+    }),
+
+  archiveItem: protectedProcedure
+    .input(archivePetitionDto)
+    .mutation(async ({ input, ctx }) => {
+      try {
+        return await petitionService.archiveItem(ctx.user.id, input);
+      } catch (error) {
+        handleRouteError(error);
+      }
+    }),
+
+  activateItem: protectedProcedure
+    .input(activatePetitionDto)
+    .mutation(async ({ input, ctx }) => {
+      try {
+        return await petitionService.activateItem(ctx.user.id, input);
+      } catch (error) {
+        handleRouteError(error);
+      }
+    }),
+
+  deleteItem: protectedProcedure
+    .input(deletePetitionDto)
+    .mutation(async ({ input, ctx }) => {
+      try {
+        return await petitionService.deleteItem(ctx.user.id, input);
       } catch (error) {
         handleRouteError(error);
       }
