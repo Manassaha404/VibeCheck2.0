@@ -57,7 +57,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [data, isLoading, isError, pathname, router, setInitialized, setUserInfo]);
 
   if (!useUserInfoStore.getState().isInitialized && isLoading) {
-    return <PageLoader />;
+    return <>
+    </>;
   }
   return <>{children}</>;
 }

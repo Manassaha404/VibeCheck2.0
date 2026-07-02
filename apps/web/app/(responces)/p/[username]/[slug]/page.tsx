@@ -12,6 +12,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useGetPublicPoll } from "@/hook/poll/useGetPublicPoll";
 import { ContentErrorState } from "@/components/ui/ContentErrorState";
 import socket from "@/lib/socket";
+import { ContentLoadingState } from "@/components/ui/ContentLoadingState";
 
 export default function PublicPollPage() {
   const params = useParams();
@@ -38,7 +39,7 @@ export default function PublicPollPage() {
     socket.connect();
     socket.emit("join:poll", pollId);
     socket.emit("view:poll", pollId);
-    
+
     return () => {
       socket.emit("leave:poll", pollId);
       socket.disconnect();
@@ -46,11 +47,7 @@ export default function PublicPollPage() {
   }, [pollId]);
 
   if (isLoading) {
-    return (
-      <div className="bg-canvas-cream text-ink-charcoal min-h-screen flex items-center justify-center">
-        <Loader2 className="w-12 h-12 animate-spin text-leaf-green" />
-      </div>
-    );
+    return <ContentLoadingState />;
   }
 
   if (error || !data) {
@@ -64,15 +61,14 @@ export default function PublicPollPage() {
     );
   }
 
-
-
   return (
     <div className="bg-canvas-cream text-ink-charcoal font-body-md min-h-screen flex flex-col relative overflow-x-hidden">
       {/* Background dot pattern */}
       <div
         className="absolute inset-0 z-0 pointer-events-none"
         style={{
-          backgroundImage: "radial-gradient(circle, #2C2E2A 1.5px, transparent 1.5px)",
+          backgroundImage:
+            "radial-gradient(circle, #2C2E2A 1.5px, transparent 1.5px)",
           backgroundSize: "24px 24px",
           opacity: 0.06,
         }}
@@ -91,11 +87,15 @@ export default function PublicPollPage() {
               exit={{ opacity: 0, y: -50, scale: 0.95 }}
               transition={{ duration: 0.5, ease: "easeInOut" }}
               className="max-w-3xl w-full mx-auto relative"
-            > 
+            >
               {/* Decorative: Smile circle (bottom-left) */}
               <div className="absolute -bottom-12 -left-12 hidden md:block z-20">
                 <div className="w-28 h-28 bg-leaf-green border-4 border-ink-charcoal rounded-full flex items-center justify-center hard-shadow animate-pulse">
-                  <Smile size={56} strokeWidth={2.5} className="text-ink-charcoal" />
+                  <Smile
+                    size={56}
+                    strokeWidth={2.5}
+                    className="text-ink-charcoal"
+                  />
                 </div>
               </div>
 
@@ -125,9 +125,9 @@ export default function PublicPollPage() {
                 totalVotes={localTotalVotes}
                 selectedOptionId={selectedOptionId}
               />
-              
+
               {data.poll.isCommentsAllowed && (
-                <PublicComments 
+                <PublicComments
                   username={username}
                   slug={slug}
                   pollId={data.poll.pollId}

@@ -6,10 +6,6 @@ import db, { eq, and } from "@repo/database";
 import { formBuilderAgentConversation } from "@repo/database/models/agent-conversations";
 
 class FormBuilderAgentServices {
-  /**
-   * Run the form-maker agent with full conversation history for (userId, formId).
-   * History is loaded from DB before the run and persisted after.
-   */
   public async runFormMakerAgent(
     userId: string,
     formId: string,
