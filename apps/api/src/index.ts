@@ -6,7 +6,7 @@ import logger from "@repo/logger/logger";
 import { app as expressApplication } from "./server";
 import { env } from "./env";
 import "@repo/services/email/emailWorker";
-import { attachSocketServer } from "@repo/services/socket/pollSocket";
+import { attachSocketServer } from "@repo/services/socket";
 
 async function init() {
   try {

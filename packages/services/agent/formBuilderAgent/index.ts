@@ -1,25 +1,23 @@
 import { run } from "@openai/agents";
 import type { AgentInputItem } from "@openai/agents";
-import { GeneratedForm } from "./model";
+import { clearHistoryDto, ClearHistoryType, GeneratedForm, runFormMakerAgentDto, RunFormMakerAgentType } from "./model";
 import { formMakerAgent } from "./createAgent";
 import db, { eq, and } from "@repo/database";
 import { formBuilderAgentConversation } from "@repo/database/models/agent-conversations";
+import { z } from "zod";
+
+
+
+
 
 class FormBuilderAgentServices {
-  public async runFormMakerAgent(
-    userId: string,
-    formId: string,
-    prompt: string,
-    currentFields?: Array<{
-      label: string;
-      type: string;
-      placeholder?: string;
-      helperText?: string;
-      isRequired: boolean;
-      isPrimary: boolean;
-      options?: { id: string; value: string }[];
-    }>,
+  static async runFormMakerAgent(
+    payload: RunFormMakerAgentType
   ): Promise<GeneratedForm> {
+    const { userId, formId, prompt, currentFields } = await runFormMakerAgentDto.parseAsync({
+      payload,
+    });
+
     // 1. Load existing history from DB
     const [existing] = await db
       .select()
@@ -72,7 +70,9 @@ class FormBuilderAgentServices {
     return result.finalOutput;
   }
 
-  public async clearHistory(userId: string, formId: string): Promise<void> {
+  public async clearHistory(payload: ClearHistoryType): Promise<void> {
+    const { userId, formId } = await clearHistoryDto.parseAsync(payload);
+
     await db
       .delete(formBuilderAgentConversation)
       .where(

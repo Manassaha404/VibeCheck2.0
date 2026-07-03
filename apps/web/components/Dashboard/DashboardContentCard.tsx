@@ -219,7 +219,7 @@ export function DashboardContentCard({
   let ActionIcon = BarChart2;
 
   if (item.status === "draft") {
-    actionHref = `/create/${item.type}/draft/${item.id}`;
+    actionHref = `/create/${item.type}/draft/${item.slug}`;
     actionLabel = "Edit Draft";
     ActionIcon = FileText;
   }

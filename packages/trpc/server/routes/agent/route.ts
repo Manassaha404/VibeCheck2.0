@@ -1,52 +1,95 @@
 import { AppError } from "@repo/error";
+import * as crypto from "node:crypto";
 import { protectedProcedure, publicProcedure, router } from "../../trpc";
-import { formBuilderAgentServices, formRespondentAgentService } from "../../services";
-import { generateFormDto, clearHistoryDto } from "./model";
-import { agentChatDto, agentClearSessionDto, agentGetSessionDto } from "@repo/services/form/model";
+import {
+  formBuilderAgentServices,
+  formRespondentAgentService,
+} from "../../services";
+import { generateFormDto, clearHistoryDto, getRealTimeTokenDto } from "./model";
+import {
+  agentChatDto,
+  agentClearSessionDto,
+  agentGetSessionDto,
+} from "@repo/services/form/model";
 import { handleRouteError } from "../../utils/error";
+import { inngest, getClientSubscriptionToken } from "@repo/services/inngest";
+import { agentChannel } from "@repo/services/inngest/agent-functions";
 
 export const agentRouter = router({
   generateForm: protectedProcedure
     .input(generateFormDto)
     .mutation(async ({ input, ctx }) => {
       try {
-        const form = await formBuilderAgentServices.runFormMakerAgent(
-          ctx.user.id,
-          input.formId,
-          input.prompt,
-          input.currentFields,
-        );
-        return { form };
+        const jobId = crypto.randomUUID();
+        await inngest.send({
+          name: "form-builder-agent/run",
+          data: {
+            jobId,
+            prompt: input.prompt,
+            userId: ctx.user.id,
+            formId: input.formId,
+            currentFields: input.currentFields,
+          },
+        });
+        return {
+          jobId,
+          message:
+            "Agent is processing your request. You will receive updates on the status of the job.",
+        };
       } catch (error) {
-        if (
-          error instanceof Error &&
-          (error.constructor.name === "InputGuardrailTripwireTriggered" ||
-            error.constructor.name === "OutputGuardrailTripwireTriggered")
-        ) {
-          throw new AppError("BAD_REQUEST", error.message);
-        }
-        throw error;
+        handleRouteError(error);
+      }
+    }),
+  getRealTimeToken: publicProcedure
+    .input(getRealTimeTokenDto)
+    .query(async ({ input }) => {
+      try {
+        const { jobId } = input;
+        const token = await getClientSubscriptionToken(inngest, {
+          channel: agentChannel({ jobId }),
+          topics: ["status"],
+        });
+        return {
+          token,
+          message:
+            "Token generated successfully. Use this token to subscribe to the agent's status updates.",
+        };
+      } catch (error) {
+        handleRouteError(error);
       }
     }),
 
   clearFormBuilderAgentHistory: protectedProcedure
     .input(clearHistoryDto)
     .mutation(async ({ input, ctx }) => {
-      await formBuilderAgentServices.clearHistory(ctx.user.id, input.formId);
-      return { message: "Conversation history cleared" };
+      try {
+        await formBuilderAgentServices.clearHistory({ userId: ctx.user.id, formId: input.formId });
+        return { message: "Conversation history cleared" };
+      } catch (error) {
+        handleRouteError(error);
+      }
     }),
-  
+
   respondentAgentChat: publicProcedure
     .input(agentChatDto)
     .mutation(async ({ input, ctx }) => {
       try {
         const guestToken = ctx.guestToken;
-        if (!guestToken) throw new Error("Guest token missing");
-        return await formRespondentAgentService.chat(
-          input.formId,
-          guestToken,
-          input.message,
-        );
+        const jobId = crypto.randomUUID();
+        await inngest.send({
+          name: "form-respondent-agent/run",
+          data: {
+            jobId,
+            formId: input.formId,
+            guestToken,
+            userMessage: input.message,
+          },
+        });
+        return {
+          jobId,
+          message:
+            "Agent is processing your request. You will receive updates on the status of the job.",
+        };
       } catch (error) {
         handleRouteError(error);
       }
@@ -57,8 +100,17 @@ export const agentRouter = router({
     .query(async ({ input, ctx }) => {
       try {
         const guestToken = ctx.guestToken;
-        if (!guestToken) return { hasSession: false, isCompleted: false, collectedAnswers: [], currentFieldId: null };
-        return await formRespondentAgentService.getSession(input.formId, guestToken);
+        if (!guestToken)
+          return {
+            hasSession: false,
+            isCompleted: false,
+            collectedAnswers: [],
+            currentFieldId: null,
+          };
+        return await formRespondentAgentService.getSession({
+          formId: input.formId,
+          guestToken,
+        });
       } catch (error) {
         handleRouteError(error);
       }
@@ -70,7 +122,7 @@ export const agentRouter = router({
       try {
         const guestToken = ctx.guestToken;
         if (!guestToken) return { message: "No session to clear" };
-        await formRespondentAgentService.clearSession(input.formId, guestToken);
+        await formRespondentAgentService.clearSession({ formId: input.formId, guestToken });
         return { message: "Session cleared" };
       } catch (error) {
         handleRouteError(error);

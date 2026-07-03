@@ -17,7 +17,7 @@ import { useSaveDraftForm } from "@/hook/form/useSaveDraftForm";
 import { useLoadDraftForm } from "@/hook/form/useLoadDraftForm";
 import { usePublishForm } from "@/hook/form/usePublishForm";
 import { toast } from "sonner";
-import { PageLoader } from "@/components/PageLoader";
+import PageLoader from "@/components/PageLoader";
 export default function FormDraftBuilderPage() {
   const router = useRouter();
   const { viewMode, setViewMode } = useFormBuilderStore();
@@ -106,7 +106,7 @@ export default function FormDraftBuilderPage() {
   };
 
   if (isLoading) {
-    return <PageLoader message="Loading Draft..." />;
+    return <PageLoader />;
   }
 
   if (apiError) {

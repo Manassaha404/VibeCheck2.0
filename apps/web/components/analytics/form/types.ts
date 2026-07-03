@@ -1,5 +1,3 @@
-// Shared analytics types used across the analytics dashboard components.
-// These mirror the backend types from @repo/services/form/model.
 
 export type FieldType =
   | 'short_text'

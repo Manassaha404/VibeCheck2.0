@@ -24,6 +24,11 @@ export const clearHistoryDto = z.object({
   formId: z.string().uuid("formId must be a valid UUID"),
 });
 
+
+export const getRealTimeTokenDto = z.object({
+  jobId:z.string()
+})
+
 export type generateFormType = z.infer<typeof generateFormDto>;
 export type clearHistoryType = z.infer<typeof clearHistoryDto>;
 export type CurrentFieldType = z.infer<typeof currentFieldSchema>;

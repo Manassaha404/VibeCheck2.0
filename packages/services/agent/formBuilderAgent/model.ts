@@ -71,7 +71,38 @@ export const GuardrailResultSchema = z.object({
     .describe("If isValid is false, explain why. If isValid is true, set this to null."),
 });
 
+
+
+export const runFormMakerAgentDto = z.object({
+  userId: z.string(),
+  formId: z.string(),
+  prompt: z.string(),
+  currentFields: z
+    .array(
+      z.object({
+        label: z.string(),
+        type: z.string(),
+        placeholder: z.string().optional(),
+        helperText: z.string().optional(),
+        isRequired: z.boolean(),
+        isPrimary: z.boolean(),
+        options: z
+          .array(z.object({ id: z.string(), value: z.string() }))
+          .optional(),
+      })
+    )
+    .optional(),
+});
+
+export const clearHistoryDto = z.object({
+  userId: z.string(),
+  formId: z.string(),
+});
+
+
 export type GeneratedForm = z.infer<typeof FormGenerationSchema>;
 export type GeneratedFormField = z.infer<typeof FormFieldSchema>;
 export type GeneratedFieldType = z.infer<typeof FieldTypeSchema>;
 export type GuardrailResult = z.infer<typeof GuardrailResultSchema>;
+export type RunFormMakerAgentType = z.infer<typeof runFormMakerAgentDto>;
+export type ClearHistoryType = z.infer<typeof clearHistoryDto>;

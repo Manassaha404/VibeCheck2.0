@@ -11,6 +11,12 @@ import {
   CollectedAnswer,
   RespondentAgentChatResult,
   RespondentFormField,
+  RespondentAgentChatType,
+  RespondentAgentChatDto,
+  RespondentAgentGetSessionType,
+  RespondentAgentGetSessionDto,
+  RespondentAgentClearSessionType,
+  RespondentAgentClearSessionDto,
 } from "./model";
 import { AppError } from "@repo/error";
 
@@ -41,7 +47,7 @@ class FormRespondentAgentService {
   //The DB is only touched once — when `isCompleted` flips to true.
 
   // build full context for agent, 
-  private buildContextBlock(
+  private static buildContextBlock(
     title: string,
     description: string | undefined,
     fields: RespondentFormField[],
@@ -84,7 +90,7 @@ class FormRespondentAgentService {
 
 
   //store response in the db
-  private async submitResponse(
+  private static async submitResponse(
     formId: string,
     guestToken: string,
     collectedAnswers: CollectedAnswer[],
@@ -126,11 +132,10 @@ class FormRespondentAgentService {
 
 
 
-  public async chat(
-    formId: string,
-    guestToken: string,
-    userMessage: string,
+  static async chat(
+    payload: RespondentAgentChatType
   ): Promise<RespondentAgentChatResult> {
+    const { formId, guestToken, userMessage } = await RespondentAgentChatDto.parseAsync(payload);
     
     const [form] = await db
       .select()
@@ -254,8 +259,7 @@ class FormRespondentAgentService {
 
   
   public async getSession(
-    formId: string,
-    guestToken: string,
+    payload: RespondentAgentGetSessionType
   ): Promise<{
     hasSession: boolean;
     isCompleted: boolean;
@@ -263,6 +267,7 @@ class FormRespondentAgentService {
     currentFieldId: string | null;
     responseId?: string;
   }> {
+    const { formId, guestToken } = await RespondentAgentGetSessionDto.parseAsync(payload);
     const raw = await redis.get(SESSION_KEY(formId, guestToken));
     
     if (!raw) {
@@ -285,7 +290,8 @@ class FormRespondentAgentService {
   }
 
   
-  public async clearSession(formId: string, guestToken: string): Promise<void> {
+  public async clearSession(payload: RespondentAgentClearSessionType): Promise<void> {
+    const { formId, guestToken } = await RespondentAgentClearSessionDto.parseAsync(payload);
     await Promise.all([
       redis.del(SESSION_KEY(formId, guestToken)),
       redis.del(HISTORY_KEY(formId, guestToken)),

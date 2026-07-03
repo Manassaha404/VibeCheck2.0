@@ -1,5 +1,6 @@
 import { publicProcedure, protectedProcedure, router } from "../../trpc";
 import { tagService } from "../../services";
+import TagService from "@repo/services/tag";
 import { z } from "zod";
 import { handleRouteError } from "../../utils/error";
 
@@ -15,7 +16,7 @@ export const tagRouter = router({
     .input(z.object({ tag: z.string().trim().min(1) }))
     .mutation(async ({ input }) => {
       try {
-        return await tagService.createNewTag(input.tag);
+        return await TagService.createNewTag(input.tag);
       } catch (error) {
         handleRouteError(error);
       }

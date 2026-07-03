@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { MessageSquare, Send, X, Bot, User, Loader2, Trash2 } from "lucide-react";
-import { useAgentChat } from "@/hook/agent/useAgentChat";
+import { useAgentChat } from "@/hook/agent/useFormBuilderAgentChat";
 
 export function AgentChat() {
   const [isOpen, setIsOpen] = useState(false);

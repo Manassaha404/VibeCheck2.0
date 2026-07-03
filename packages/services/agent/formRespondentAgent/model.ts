@@ -102,3 +102,22 @@ export type RespondentAgentChatResult = {
   currentFieldId: string | null;
   responseId?: string;
 };
+
+export const RespondentAgentChatDto = z.object({
+  formId: z.string(),
+  guestToken: z.string(),
+  userMessage: z.string(),
+});
+export type RespondentAgentChatType = z.infer<typeof RespondentAgentChatDto>;
+
+export const RespondentAgentGetSessionDto = z.object({
+  formId: z.string(),
+  guestToken: z.string(),
+});
+export type RespondentAgentGetSessionType = z.infer<typeof RespondentAgentGetSessionDto>;
+
+export const RespondentAgentClearSessionDto = z.object({
+  formId: z.string(),
+  guestToken: z.string(),
+});
+export type RespondentAgentClearSessionType = z.infer<typeof RespondentAgentClearSessionDto>;

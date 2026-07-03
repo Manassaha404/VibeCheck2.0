@@ -1,6 +1,7 @@
-import { Server } from "socket.io";
+
 import { publisher, subscriber } from "../redis/pubsub.js";
-import { env } from "../env.js";
+import { io } from "./index.js";
+
 
 //channel;
 const SUBMIT_VOTE_CHANNEL_NAME = "redis:poll:submit-vote";
@@ -11,18 +12,6 @@ const ON_SOCKET_SERVER_VIEW_POLL_EVENT_NAME = "view:poll";
 //client;
 const ON_SOCKET_CLIENT_VOTE_UPDATE_NAME = "update:vote";
 const ON_SOCKET_CLIENT_VIEW_UPDATE_NAME = "update:view";
-
-
-
-const io = new Server({
-  cors: {
-    origin: env.CLIENT_URL,
-  },
-});
-
-export const attachSocketServer = (httpServer: any) => {
-  io.attach(httpServer);
-};
 
 
 async function subscribe() {

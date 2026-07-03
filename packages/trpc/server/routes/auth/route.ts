@@ -49,28 +49,32 @@ export const authRouter = router({
   verifySignUpOtp: publicProcedure
     .input(verifySignUpOtpDto)
     .mutation(async ({ input, ctx }) => {
-      const { id, otp } = await verifySignUpOtpDto.parseAsync(input);
-      const userData = await redis.hgetall(id);
-      if (Object.keys(userData).length === 0) {
-        throw new Error("Invalid or expired OTP");
+      try {
+        const { id, otp } = await verifySignUpOtpDto.parseAsync(input);
+        const userData = await redis.hgetall(id);
+        if (Object.keys(userData).length === 0) {
+          throw new Error("Invalid or expired OTP");
+        }
+        if (userData.verificationOtp !== otp) {
+          throw new Error("Invalid OTP");
+        }
+        const { firstName, lastName, email, username, password } = userData;
+        const user = await authService.createVerifiedUser({
+          firstName,
+          lastName,
+          email,
+          username,
+          password,
+        } as any);
+        const accessToken = generateAccessToken(user.userId);
+        const refreshToken = generateRefreshToken(user.userId);
+        ctx.setCookie("accessToken", accessToken);
+        ctx.setCookie("refreshToken", refreshToken);
+        redis.del(id);
+        return { message: "User verified and logged in successfully", user };
+      } catch (error) {
+        handleRouteError(error);
       }
-      if (userData.verificationOtp !== otp) {
-        throw new Error("Invalid OTP");
-      }
-      const { firstName, lastName, email, username, password } = userData;
-      const user = await authService.createVerifiedUser({
-        firstName,
-        lastName,
-        email,
-        username,
-        password,
-      } as any);
-      const accessToken = generateAccessToken(user.userId);
-      const refreshToken = generateRefreshToken(user.userId);
-      ctx.setCookie("accessToken", accessToken);
-      ctx.setCookie("refreshToken", refreshToken);
-      redis.del(id);
-      return { message: "User verified and logged in successfully", user };
     }),
   loginWithEmailAndPass: publicProcedure
     .input(loginWithEmailAndPasswordDto)
@@ -99,9 +103,13 @@ export const authRouter = router({
     }
   }),
   logout: protectedProcedure.mutation(async ({ ctx }) => {
-    ctx.clearCookie("accessToken");
-    ctx.clearCookie("refreshToken");
-    return { message: "Logged out successfully" };
+    try {
+      ctx.clearCookie("accessToken");
+      ctx.clearCookie("refreshToken");
+      return { message: "Logged out successfully" };
+    } catch (error) {
+      handleRouteError(error);
+    }
   }),
   forgotPassword: publicProcedure
     .input(forgotPasswordDto)
