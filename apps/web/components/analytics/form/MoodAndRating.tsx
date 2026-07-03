@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import type { MoodFieldAnalytics, NumericFieldAnalytics } from './types';
+import type { MoodFieldAnalytics, NumericFieldAnalytics } from './schema';
 
 export type { MoodFieldAnalytics as MoodFieldData, NumericFieldAnalytics as NumericFieldData };
 

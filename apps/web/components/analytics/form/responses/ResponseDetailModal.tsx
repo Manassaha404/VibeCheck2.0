@@ -2,14 +2,9 @@
 
 import React, { useEffect } from 'react';
 import { X, Star, Calendar, Hash, FileText, CheckSquare, Smile } from 'lucide-react';
+import { formatTimestamp, formatValue } from './utils';
 
-interface FormResponseAnswer {
-  fieldId: string;
-  fieldLabel: string;
-  fieldType: string;
-  isPrimary: boolean;
-  value: unknown;
-}
+import { FormResponseAnswer } from '@repo/services/form/model';
 
 interface ResponseDetailModalProps {
   responseId: string;
@@ -19,6 +14,9 @@ interface ResponseDetailModalProps {
   answers: FormResponseAnswer[];
   onClose: () => void;
 }
+
+
+
 
 function FieldTypeIcon({ type }: { type: string }) {
   const cls = 'shrink-0 mt-0.5';
@@ -38,34 +36,6 @@ function FieldTypeIcon({ type }: { type: string }) {
     default:
       return <FileText size={14} className={cls} strokeWidth={2.5} />;
   }
-}
-
-function formatValue(value: unknown, type: string): string {
-  if (value == null) return '—';
-  if (Array.isArray(value)) return (value as string[]).join(', ');
-  if (type === 'date') {
-    try {
-      return new Date(String(value)).toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-      });
-    } catch {
-      return String(value);
-    }
-  }
-  return String(value);
-}
-
-function formatTimestamp(iso: string): string {
-  return new Date(iso).toLocaleString('en-US', {
-    weekday: 'long',
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-  });
 }
 
 export function ResponseDetailModal({

@@ -5,21 +5,7 @@ import { Wind } from 'lucide-react';
 import { ResponseRow } from './ResponseRow';
 import { ResponsesPagination } from './ResponsesPagination';
 
-interface FormResponseAnswer {
-  fieldId: string;
-  fieldLabel: string;
-  fieldType: string;
-  isPrimary: boolean;
-  value: unknown;
-}
-
-interface FormResponseItem {
-  responseId: string;
-  respondentIdentity: string;
-  respondentAvatar: string;
-  submittedAt: string;
-  answers: FormResponseAnswer[];
-}
+import { FormResponseItem, FormResponseAnswer } from '@repo/services/form/model';
 
 interface ResponsesTableProps {
   responses: FormResponseItem[];

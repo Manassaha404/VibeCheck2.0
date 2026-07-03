@@ -16,7 +16,7 @@ import type {
   NumericFieldAnalytics,
   AnalyticsFieldItem,
   FieldAnalyticsData,
-} from '@/components/analytics/form/types';
+} from '@/components/analytics/form/schema';
 import PageLoader from '@/components/PageLoader';
 import { DashboardError } from '@/components/Dashboard/DashboardError';
 

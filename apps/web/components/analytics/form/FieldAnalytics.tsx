@@ -26,7 +26,7 @@ import type {
   FileFieldAnalytics,
   DateFieldAnalytics,
   AnalyticsFieldItem,
-} from './types';
+} from './schema';
 
 export type { AnalyticsFieldItem };
 

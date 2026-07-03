@@ -1,6 +1,8 @@
 'use client';
 
 import React from 'react';
+import { formatTimestamp, getPreviewText } from './utils';
+import { FormResponseAnswer } from '@repo/services/form/model';
 
 // Pastel avatar background colors — cycle by index
 const AVATAR_COLORS = [
@@ -14,13 +16,7 @@ const AVATAR_COLORS = [
   '#DDA0DD', // plum
 ];
 
-interface FormResponseAnswer {
-  fieldId: string;
-  fieldLabel: string;
-  fieldType: string;
-  isPrimary: boolean;
-  value: unknown;
-}
+
 
 interface ResponseRowProps {
   responseId: string;
@@ -32,43 +28,7 @@ interface ResponseRowProps {
   onClick: () => void;
 }
 
-function formatTimestamp(iso: string): string {
-  const d = new Date(iso);
-  return d.toLocaleString('en-US', {
-    month: 'short',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-  });
-}
 
-function getPreviewText(answers: FormResponseAnswer[]): string {
-  // Show first non-primary text answer as preview
-  const firstText = answers.find(
-    (a) =>
-      !a.isPrimary &&
-      (a.fieldType === 'short_text' ||
-        a.fieldType === 'long_text' ||
-        a.fieldType === 'email' ||
-        a.fieldType === 'number') &&
-      a.value,
-  );
-  if (firstText) {
-    const val = String(firstText.value);
-    return val.length > 80 ? val.slice(0, 80) + '…' : val;
-  }
-
-  // Fall back to any answer
-  const any = answers.find((a) => !a.isPrimary && a.value != null);
-  if (any) {
-    const val = Array.isArray(any.value)
-      ? (any.value as string[]).join(', ')
-      : String(any.value);
-    return val.length > 80 ? val.slice(0, 80) + '…' : val;
-  }
-
-  return '—';
-}
 
 export function ResponseRow({
   respondentIdentity,

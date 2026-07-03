@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Download, Loader2 } from 'lucide-react';
-import type { FieldType, FieldAnalyticsData } from './types';
+import type { FieldType, FieldAnalyticsData } from './schema';
 import { useFormExport } from '@/hook/form/useFormExport';
 
 export type { FieldAnalyticsData };
