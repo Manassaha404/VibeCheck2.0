@@ -57,6 +57,7 @@ export const useAgentChat = () => {
   const tokenFactory = useCallback(async () => {
     if (!activeJobId) throw new Error("No active job");
     const result = await trpcUtils.agent.getRealTimeToken.fetch({ jobId: activeJobId });
+    if (!result) throw new Error("Failed to get token");
     return result.token;
   }, [activeJobId, trpcUtils]);
 
@@ -209,6 +210,7 @@ export const useAgentChat = () => {
         formId,
         currentFields: currentFields.length > 0 ? currentFields : undefined,
       });
+      if (!response) throw new Error("Failed to generate form");
 
       // Mutation returns immediately with a jobId — useRealtime picks it up.
       setActiveJobId(response.jobId);

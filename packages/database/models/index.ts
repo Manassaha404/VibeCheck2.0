@@ -33,3 +33,7 @@ export * from "./agent-conversations";
 
 // Saves
 export * from "./saves";
+
+// Quizzes
+export * from "./quizzes";
+export * from "./quiz-questions";

@@ -7,6 +7,8 @@ import { agentRouter } from "./routes/agent/route";
 import { pollRouter } from "./routes/poll/route";
 import { tagRouter } from "./routes/tag/route";
 import { petitionRouter } from "./routes/petition/route";
+import { uploadRouter } from "./routes/upload/route";
+import { quizRouter } from "./routes/quiz/route";
 
 export const serverRouter = router({
   health: healthRouter,
@@ -16,6 +18,8 @@ export const serverRouter = router({
   poll: pollRouter,
   tag: tagRouter,
   petition: petitionRouter,
+  upload: uploadRouter,
+  quiz: quizRouter,
 });
 
 export { createContext } from "./context";

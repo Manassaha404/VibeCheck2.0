@@ -355,6 +355,17 @@
   .text-shadow-yellow {
     text-shadow: 4px 4px 0px var(--color-electric-sun);
   }
+
+  /* border-3 utility (between border-2 and border-4) */
+  .border-3 {
+    border-width: 3px;
+  }
+  .border-r-3 {
+    border-right-width: 3px;
+  }
+  .border-l-3 {
+    border-left-width: 3px;
+  }
 } /* end @layer utilities */
 
 /* ─── Keyframe Animations ───────────────────────────────────── */
@@ -404,6 +415,42 @@
 .animate-marquee      { animation: marquee 28s linear infinite; }
 .animate-theme-pop    { animation: theme-pop 0.4s cubic-bezier(0.175,0.885,0.32,1.275); }
 .animate-pop-in       { animation: pop-in 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+
+@keyframes color-shift {
+  0% { background-color: var(--color-leaf-green); }
+  25% { background-color: var(--color-sky-blue); }
+  50% { background-color: var(--color-vivid-coral); }
+  75% { background-color: var(--color-electric-sun); }
+  100% { background-color: var(--color-leaf-green); }
+}
+
+@keyframes border-shift {
+  0% { border-color: var(--color-leaf-green); }
+  25% { border-color: var(--color-sky-blue); }
+  50% { border-color: var(--color-vivid-coral); }
+  75% { border-color: var(--color-electric-sun); }
+  100% { border-color: var(--color-leaf-green); }
+}
+
+@keyframes text-color-shift {
+  0% { color: var(--color-leaf-green); }
+  25% { color: var(--color-sky-blue); }
+  50% { color: var(--color-vivid-coral); }
+  75% { color: var(--color-electric-sun); }
+  100% { color: var(--color-leaf-green); }
+}
+
+.animate-color-shift {
+  animation: color-shift 6s ease-in-out infinite;
+}
+
+.animate-border-shift {
+  animation: border-shift 6s ease-in-out infinite;
+}
+
+.animate-text-shift {
+  animation: text-color-shift 6s ease-in-out infinite;
+}
 
 /* ─── Anchor scroll offset (accounts for sticky navbar) ────────── */
 [id] {

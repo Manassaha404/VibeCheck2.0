@@ -43,6 +43,27 @@
       "when": 1782840842175,
       "tag": "0005_fuzzy_zemo",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1783180206963,
+      "tag": "0006_burly_ben_grimm",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1783180526818,
+      "tag": "0007_tough_winter_soldier",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1783181867566,
+      "tag": "0008_messy_robin_chapel",
+      "breakpoints": true
     }
   ]
 }

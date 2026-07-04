@@ -7,6 +7,8 @@ import EmailServices from "@repo/services/email";
 import PollService from "@repo/services/poll";
 import TagService from "@repo/services/tag";
 import PetitionService from "@repo/services/petition";
+import UploadService from "@repo/services/upload";
+import QuizService from "@repo/services/quiz";
 
 export const authService = new AuthServices();
 export const oAuthService = new OauthService();
@@ -17,3 +19,5 @@ export const emailServices = new EmailServices();
 export const pollService = new PollService();
 export const tagService = new TagService();
 export const petitionService = new PetitionService();
+export const uploadService = new UploadService();
+export const quizService = new QuizService();

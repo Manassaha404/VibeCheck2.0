@@ -50,6 +50,7 @@ export function useAgentChat(
   const tokenFactory = useCallback(async () => {
     if (!activeJobId) throw new Error("No active job");
     const result = await utils.agent.getRealTimeToken.fetch({ jobId: activeJobId });
+    if (!result) throw new Error("Failed to get token");
     return result.token;
   }, [activeJobId, utils]);
 

@@ -11,11 +11,7 @@ import {
 } from "drizzle-orm/pg-core";
 import { users } from "./users";
 
-export const formStatusEnum = pgEnum("form_status", [
-  "draft",
-  "active",
-  "closed",
-]);
+export const quizStatusEnum = pgEnum("quiz_status", ["active", "archived"]);
 
 export const quizzes = pgTable(
   "quizzes",
@@ -26,10 +22,9 @@ export const quizzes = pgTable(
       .references(() => users.userId, { onDelete: "cascade" }),
     title: varchar("title", { length: 255 }).notNull(),
     description: text("description"),
-    status: formStatusEnum("status").default("draft").notNull(),
+    status: quizStatusEnum("status").default("active").notNull(),
     passwordNeeded: boolean("password_needed").default(false).notNull(),
     password: varchar("password", { length: 255 }),
-    joinCode: varchar("join_code", { length: 10 }).notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at")
       .defaultNow()
@@ -39,6 +34,6 @@ export const quizzes = pgTable(
   (t) => [
     index("quiz_user_id_idx").on(t.userId),
     index("quiz_status_idx").on(t.status),
-    uniqueIndex("quiz_join_code_idx").on(t.joinCode),
+    
   ],
 );
