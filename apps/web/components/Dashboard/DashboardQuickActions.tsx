@@ -2,7 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
-import { BarChart2, FileText, Megaphone, Lightbulb, ArrowRight } from "lucide-react";
+import { BarChart2, FileText, Megaphone, Brain, ArrowRight } from "lucide-react";
 
 interface QuickAction {
   title: string;
@@ -47,7 +47,7 @@ const actions: QuickAction[] = [
     title: "New Quiz",
     description: "Test knowledge & engage",
     href: "/create/quiz",
-    icon: <Lightbulb size={20} strokeWidth={2.5} />,
+    icon: <Brain size={20} strokeWidth={2.5} />,
     accentClass: "hover:border-[var(--color-lavender)]",
     iconBgClass: "bg-[var(--color-lavender)]",
   },

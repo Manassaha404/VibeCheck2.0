@@ -1,12 +1,13 @@
 "use client";
 
 import React from "react";
-import { BarChart2, FileText, Megaphone, TrendingUp } from "lucide-react";
+import { BarChart2, FileText, Megaphone, TrendingUp, Brain } from "lucide-react";
 
 interface DashboardStatsBarProps {
   totalPolls: number;
   totalForms: number;
   totalPetitions: number;
+  totalQuizzes: number;
   totalResponses: number;
   isLoading?: boolean;
 }
@@ -15,6 +16,7 @@ export function DashboardStatsBar({
   totalPolls,
   totalForms,
   totalPetitions,
+  totalQuizzes,
   totalResponses,
   isLoading = false,
 }: DashboardStatsBarProps) {
@@ -41,11 +43,11 @@ export function DashboardStatsBar({
       id: "stat-petitions",
     },
     {
-      label: "Total Responses",
-      value: totalResponses,
-      icon: <TrendingUp size={22} strokeWidth={2.5} />,
+      label: "Quizzes",
+      value: totalQuizzes,
+      icon: <Brain size={22} strokeWidth={2.5} />,
       accentClass: "bg-[var(--color-lavender)]",
-      id: "stat-total-responses",
+      id: "stat-quizzes",
     },
   ];
 

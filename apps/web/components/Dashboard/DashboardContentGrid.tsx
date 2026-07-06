@@ -9,7 +9,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 
-type FilterTab = "all" | "poll" | "form" | "petition" | "archived";
+type FilterTab = "all" | "poll" | "form" | "petition" | "quiz" | "archived";
 
 interface DashboardContentGridProps {
   items: DashboardItem[];
@@ -23,6 +23,7 @@ const filterTabs: { key: FilterTab; label: string }[] = [
   { key: "poll", label: "Polls" },
   { key: "form", label: "Forms" },
   { key: "petition", label: "Petitions" },
+  { key: "quiz", label: "Quizzes" },
   { key: "archived", label: "Archived" },
 ];
 

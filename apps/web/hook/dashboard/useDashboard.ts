@@ -12,28 +12,34 @@ import { trpc } from "@/trpc/client";
 export function useDashboard() {
   // useQueries fires all three in parallel — same as Promise.all semantics
   // but hook-safe (no await, no async wrapper needed)
-  const [pollsQuery, formsQuery, petitionsQuery] = trpc.useQueries((t) => [
+  const [pollsQuery, formsQuery, petitionsQuery, quizzesQuery] = trpc.useQueries((t) => [
     t.poll.getDashboard(undefined, { staleTime: 1000 * 60 * 2, retry: 1 }),
     t.form.getDashboard(undefined, { staleTime: 1000 * 60 * 2, retry: 1 }),
     t.petition.getDashboard(undefined, { staleTime: 1000 * 60 * 2, retry: 1 }),
+    t.quiz.getDashboard(undefined, { staleTime: 1000 * 60 * 2, retry: 1 }),
   ]);
 
   const isLoading =
-    pollsQuery.isLoading || formsQuery.isLoading || petitionsQuery.isLoading;
+    pollsQuery.isLoading || formsQuery.isLoading || petitionsQuery.isLoading || quizzesQuery.isLoading;
 
   const isError =
-    pollsQuery.isError || formsQuery.isError || petitionsQuery.isError;
+    pollsQuery.isError || formsQuery.isError || petitionsQuery.isError || quizzesQuery.isError;
 
   // ── Aggregate stats ────────────────────────────────────────────
   const totalPolls = pollsQuery.data?.total ?? 0;
   const totalForms = formsQuery.data?.total ?? 0;
   const totalPetitions = petitionsQuery.data?.total ?? 0;
+  const totalQuizzes = quizzesQuery.data?.total ?? 0;
 
   const totalResponses =
     (pollsQuery.data?.polls ?? []).reduce((s, p) => s + p.totalVotes, 0) +
     (formsQuery.data?.forms ?? []).reduce((s, f) => s + f.totalResponses, 0) +
     (petitionsQuery.data?.petitions ?? []).reduce(
       (s, p) => s + p.totalSignatures,
+      0,
+    ) +
+    (quizzesQuery.data?.quizzes ?? []).reduce(
+      (s, q) => s + q.totalParticipants,
       0,
     );
 
@@ -71,6 +77,16 @@ export function useDashboard() {
       responses: p.totalSignatures,
       createdAt: p.createdAt,
     })),
+    ...(quizzesQuery.data?.quizzes ?? []).map((q) => ({
+      id: q.quizId,
+      type: "quiz" as const,
+      title: q.title,
+      description: q.description,
+      slug: q.slug, // using quizId for link building
+      status: q.status as ContentStatus,
+      responses: q.totalParticipants,
+      createdAt: q.createdAt,
+    })),
   ].sort(
     (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
   );
@@ -80,6 +96,7 @@ export function useDashboard() {
     polls: pollsQuery.data?.polls ?? [],
     forms: formsQuery.data?.forms ?? [],
     petitions: petitionsQuery.data?.petitions ?? [],
+    quizzes: quizzesQuery.data?.quizzes ?? [],
 
     // Unified + sorted list
     allItems,
@@ -88,6 +105,7 @@ export function useDashboard() {
     totalPolls,
     totalForms,
     totalPetitions,
+    totalQuizzes,
     totalResponses,
 
     // Loading / error states
@@ -99,6 +117,7 @@ export function useDashboard() {
       pollsQuery.refetch();
       formsQuery.refetch();
       petitionsQuery.refetch();
+      quizzesQuery.refetch();
     },
   };
 }

@@ -15,10 +15,11 @@ import {
   Trash2,
   Loader2,
   Zap,
+  Brain,
 } from "lucide-react";
 import { trpc } from "@/trpc/client";
 
-export type ContentType = "poll" | "form" | "petition";
+export type ContentType = "poll" | "form" | "petition" | "quiz";
 export type ContentStatus = "draft" | "active" | "closed" | "archived";
 
 export interface DashboardItem {
@@ -59,6 +60,12 @@ const typeConfig: Record<
     label: "Petition",
     color: "text-[var(--color-ink-charcoal)]",
     bg: "bg-[var(--color-sky-blue)]",
+  },
+  quiz: {
+    icon: <Brain size={16} strokeWidth={2.5} />,
+    label: "Quiz",
+    color: "text-[var(--color-ink-charcoal)]",
+    bg: "bg-[var(--color-lavender)]",
   },
 };
 
@@ -134,6 +141,7 @@ export function DashboardContentCard({
     utils.form.getDashboard.invalidate();
     utils.poll.getDashboard.invalidate();
     utils.petition.getDashboard.invalidate();
+    utils.quiz.getDashboard.invalidate();
   };
 
   // Form mutations
@@ -169,16 +177,29 @@ export function DashboardContentCard({
     onSuccess: () => { invalidateDashboard(); onActionSuccess?.(); setDropdownOpen(false); setConfirmDelete(false); },
   });
 
+  // Quiz mutations
+  const archiveQuiz = trpc.quiz.archiveItem.useMutation({
+    onSuccess: () => { invalidateDashboard(); onActionSuccess?.(); setDropdownOpen(false); },
+  });
+  const activateQuiz = trpc.quiz.activateItem.useMutation({
+    onSuccess: () => { invalidateDashboard(); onActionSuccess?.(); setDropdownOpen(false); },
+  });
+  const deleteQuiz = trpc.quiz.deleteItem.useMutation({
+    onSuccess: () => { invalidateDashboard(); onActionSuccess?.(); setDropdownOpen(false); setConfirmDelete(false); },
+  });
+
   const isArchiving =
-    archiveForm.isPending || archivePoll.isPending || archivePetition.isPending;
+    archiveForm.isPending || archivePoll.isPending || archivePetition.isPending || archiveQuiz.isPending;
   const isActivating =
-    activateForm.isPending || activatePoll.isPending || activatePetition.isPending;
+    activateForm.isPending || activatePoll.isPending || activatePetition.isPending || activateQuiz.isPending;
   const isDeleting =
-    deleteForm.isPending || deletePoll.isPending || deletePetition.isPending;
+    deleteForm.isPending || deletePoll.isPending || deletePetition.isPending || deleteQuiz.isPending;
   const isMutating = isArchiving || isActivating || isDeleting;
 
   function handleArchive() {
-    if (item.type === "form") {
+    if (item.type === "quiz") {
+      archiveQuiz.mutate({ quizId: item.id });
+    } else if (item.type === "form") {
       archiveForm.mutate({ formSlug: item.slug });
     } else if (item.type === "poll") {
       archivePoll.mutate({ pollId: item.id });
@@ -188,7 +209,9 @@ export function DashboardContentCard({
   }
 
   function handleActivate() {
-    if (item.type === "form") {
+    if (item.type === "quiz") {
+      activateQuiz.mutate({ quizId: item.id });
+    } else if (item.type === "form") {
       activateForm.mutate({ formSlug: item.slug });
     } else if (item.type === "poll") {
       activatePoll.mutate({ pollId: item.id });
@@ -202,7 +225,9 @@ export function DashboardContentCard({
       setConfirmDelete(true);
       return;
     }
-    if (item.type === "form") {
+    if (item.type === "quiz") {
+      deleteQuiz.mutate({ quizId: item.id });
+    } else if (item.type === "form") {
       deleteForm.mutate({ formSlug: item.slug });
     } else if (item.type === "poll") {
       deletePoll.mutate({ pollId: item.id });
@@ -212,16 +237,18 @@ export function DashboardContentCard({
   }
 
   const responseLabel =
-    item.type === "petition" ? "signatures" : item.type === "form" ? "responses" : "votes";
+    item.type === "petition" ? "signatures" : item.type === "form" ? "responses" : item.type === "quiz" ? "participants" : "votes";
 
-  let actionHref = `/dashboard/analytics/${item.type}/${item.slug}`;
-  let actionLabel = "Analytics";
-  let ActionIcon = BarChart2;
+  let actionHref = item.type === "quiz" ? `/dashboard/quiz/${item.slug}` : `/dashboard/analytics/${item.type}/${item.slug}`;
+  let actionLabel = item.type === "quiz" ? "Dashboard" : "Analytics";
+  let ActionIcon = item.type === "quiz" ? Brain : BarChart2;
+  let actionColorClass = "text-[var(--color-primary)]";
 
   if (item.status === "draft") {
     actionHref = `/create/${item.type}/draft/${item.slug}`;
     actionLabel = "Edit Draft";
     ActionIcon = FileText;
+    actionColorClass = "text-[var(--color-primary)]";
   }
 
   return (
@@ -365,7 +392,7 @@ export function DashboardContentCard({
 
         <Link
           href={actionHref}
-          className="inline-flex items-center gap-1.5 text-label-sm font-bold text-[var(--color-primary)] hover:underline"
+          className={`inline-flex items-center gap-1.5 text-label-sm font-bold ${actionColorClass} hover:underline`}
         >
           <ActionIcon size={13} />
           {actionLabel}

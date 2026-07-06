@@ -20,6 +20,11 @@ export function uuidToNumber(uuid: string): string {
  * @returns The standard UUID string (e.g., "123e4567-e89b-12d3-a456-426614174000")
  */
 export function numberToUuid(num: string | bigint): string {
+  // If it already looks like a UUID (contains dashes), return it directly
+  if (typeof num === "string" && num.includes("-")) {
+    return num;
+  }
+
   // Convert the number back to a hexadecimal string
   let hexStr = BigInt(num).toString(16);
   

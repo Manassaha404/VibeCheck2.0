@@ -4,10 +4,10 @@ import { z } from "zod";
 import logger from "@repo/logger/logger";
 
 export const handleRouteError = (error: unknown): never => {
-  if (error instanceof AppError) {
+  if (error instanceof AppError || (error instanceof Error && error.name === "AppError")) {
     throw new TRPCError({
-      code: error.code,
-      message: error.message,
+      code: (error as AppError).code as any,
+      message: (error as Error).message,
     });
   }
   if (error instanceof z.ZodError) {

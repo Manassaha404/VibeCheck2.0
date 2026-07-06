@@ -34,3 +34,9 @@ export const createQuizDto = z.object({
 });
 
 export type CreateQuizInput = z.infer<typeof createQuizDto>;
+
+export const updateQuizDto = createQuizDto.extend({
+  quizId: z.string().uuid(),
+});
+
+export type UpdateQuizInput = z.infer<typeof updateQuizDto>;

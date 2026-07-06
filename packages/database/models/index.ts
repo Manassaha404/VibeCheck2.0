@@ -37,3 +37,6 @@ export * from "./saves";
 // Quizzes
 export * from "./quizzes";
 export * from "./quiz-questions";
+export * from "./quiz-sessions";
+export * from "./quiz-participants";
+export * from "./quiz-sessions-result";

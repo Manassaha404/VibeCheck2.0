@@ -17,6 +17,7 @@ export function DashboardBody() {
     totalPolls,
     totalForms,
     totalPetitions,
+    totalQuizzes,
     totalResponses,
     isLoading,
     isError,
@@ -33,6 +34,7 @@ export function DashboardBody() {
         totalPolls={totalPolls}
         totalForms={totalForms}
         totalPetitions={totalPetitions}
+        totalQuizzes={totalQuizzes}
         totalResponses={totalResponses}
         isLoading={isLoading}
       />
