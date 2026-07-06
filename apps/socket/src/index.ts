@@ -2,18 +2,17 @@ import "dotenv/config";
 import "@repo/logger/instrumentation.js";
 import http from "node:http";
 import logger from "@repo/logger/logger";
-import { app as expressApplication } from "./server";
 import { env } from "./env";
-import "@repo/services/email/emailWorker";
-
+import { attachSocketServer } from "@repo/services/socket";
 
 async function init() {
   try {
-    const server = http.createServer(expressApplication);
+    const server = http.createServer();
+    attachSocketServer(server);
     
-    const PORT: number = env.PORT ? +env.PORT : 8000;
+    const PORT: number = env.PORT ? +env.PORT : 9000;
     server.listen(PORT, () => {
-      logger.info(`http server is running on PORT ${PORT}`);
+      logger.info(`Socket server is running on PORT ${PORT}`);
     });
   } catch (err) {
     logger.error(`Error creating http server`, { err });
