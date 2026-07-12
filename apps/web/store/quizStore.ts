@@ -1,5 +1,4 @@
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -117,36 +116,22 @@ interface QuizStore {
 
 const INITIAL_QUESTIONS: Question[] = [
   {
-    id: "q-init-1",
+    id: `q-init-${Date.now()}`,
     type: "multiple_choice",
     text: "",
     options: [
-      { id: "opt-1a", text: "Radical", isCorrect: false },
-      { id: "opt-1b", text: "Tubular", isCorrect: true },
-      { id: "opt-1c", text: "", isCorrect: false },
+      { id: "opt-1", text: "", isCorrect: false },
+      { id: "opt-2", text: "", isCorrect: false },
     ],
     acceptedAnswers: "",
     timeLimit: DEFAULT_GLOBAL.defaultTimeLimit,
     points: DEFAULT_GLOBAL.defaultPoints,
     collapsed: false,
     allowMultipleCorrect: false,
-  },
-  {
-    id: "q-init-2",
-    type: "text_entry",
-    text: "What is the ultimate answer to life, the universe, and everything?",
-    options: [],
-    acceptedAnswers: "42",
-    timeLimit: 60,
-    points: 20,
-    collapsed: false,
-    allowMultipleCorrect: false,
-  },
+  }
 ];
 
-export const useQuizStore = create<QuizStore>()(
-  persist(
-    (set, get) => ({
+export const useQuizStore = create<QuizStore>()((set, get) => ({
       info: DEFAULT_INFO,
       globalSettings: DEFAULT_GLOBAL,
       questions: INITIAL_QUESTIONS,
@@ -292,7 +277,4 @@ export const useQuizStore = create<QuizStore>()(
           globalSettings: DEFAULT_GLOBAL,
           questions: [],
         }),
-    }),
-    { name: "vibecheck-quiz-store" }
-  )
-);
+    }));

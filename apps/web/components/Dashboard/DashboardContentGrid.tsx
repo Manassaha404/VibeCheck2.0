@@ -58,15 +58,18 @@ export function DashboardContentGrid({
   const [searchQuery, setSearchQuery] = useState("");
   const sectionRef = useRef<HTMLElement>(null);
 
-  useGSAP(() => {
-    gsap.from(".gsap-stagger-item", {
-      y: 30,
-      opacity: 0,
-      duration: 0.6,
-      stagger: 0.1,
-      ease: "power3.out",
-    });
-  }, { scope: sectionRef });
+  useGSAP(
+    () => {
+      gsap.from(".gsap-stagger-item", {
+        y: 30,
+        opacity: 0,
+        duration: 0.6,
+        stagger: 0.1,
+        ease: "power3.out",
+      });
+    },
+    { scope: sectionRef },
+  );
 
   const filtered = items.filter((item) => {
     let matchesFilter = false;
@@ -120,7 +123,10 @@ export function DashboardContentGrid({
               aria-label="Refresh content"
               className="p-2 border-2 border-[var(--color-ink-charcoal)] rounded-lg hover:bg-[var(--color-surface-container)] transition-colors"
             >
-              <RefreshCw size={15} className="text-[var(--color-ink-charcoal)]" />
+              <RefreshCw
+                size={15}
+                className="text-[var(--color-ink-charcoal)]"
+              />
             </button>
           )}
 
@@ -135,7 +141,11 @@ export function DashboardContentGrid({
       </div>
 
       {/* Filter tabs */}
-      <div className="gsap-stagger-item flex gap-2 mb-5 flex-wrap" role="tablist" aria-label="Content type filter">
+      <div
+        className="gsap-stagger-item flex gap-2 mb-5 flex-wrap"
+        role="tablist"
+        aria-label="Content type filter"
+      >
         {filterTabs.map((tab) => {
           const isActive = activeFilter === tab.key;
           return (
@@ -198,7 +208,9 @@ export function DashboardContentGrid({
       {!isLoading && !isError && filtered.length === 0 && (
         <div className="flex flex-col items-center justify-center py-20 text-center border-2 border-dashed border-[var(--color-outline-variant)] rounded-xl">
           <p className="text-headline-sm font-display text-[var(--color-on-surface-variant)]">
-            {items.length === 0 ? "Nothing here yet" : "No results match your filter"}
+            {items.length === 0
+              ? "Nothing here yet"
+              : "No results match your filter"}
           </p>
           <p className="text-body-md text-[var(--color-on-surface-variant)] mt-2 mb-6">
             {items.length === 0

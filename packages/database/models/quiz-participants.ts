@@ -22,11 +22,7 @@ export const quizParticipants = pgTable(
       onDelete: "set null",
     }),
     score: integer("score").default(0).notNull(),
-    correctCount: integer("correct_count").default(0).notNull(),
-    answers: jsonb("answers")
-      .$type<{ questionId: string; answer: string; isCorrect: boolean }[]>()
-      .default([]),
-    isHost: boolean("is_host").default(false).notNull(),
+    correctCount: integer("correct_count").default(0),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at")
       .defaultNow()

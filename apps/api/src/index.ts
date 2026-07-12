@@ -5,7 +5,7 @@ import logger from "@repo/logger/logger";
 import { app as expressApplication } from "./server";
 import { env } from "./env";
 import "@repo/services/email/emailWorker";
-
+import "@repo/services/quiz/worker";
 
 async function init() {
   try {

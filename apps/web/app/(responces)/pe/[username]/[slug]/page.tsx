@@ -36,7 +36,7 @@ export default function PetitionSignPage({
   const { petition, totalSignatures, recentSignatures, hasSigned } = data;
 
   return (
-    <div className="bg-canvas-cream text-ink-charcoal min-h-screen flex flex-col font-body-lg antialiased bg-dot-pattern">
+    <div className="bg-canvas-cream text-ink-charcoal min-h-screen flex flex-col font-body-lg antialiased">
       <Navbar />
 
       <main className="flex-grow w-full max-w-[1280px] mx-auto px-4 md:px-10 py-16 relative z-10">

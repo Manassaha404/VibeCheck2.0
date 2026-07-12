@@ -111,7 +111,7 @@ export default function FormDraftBuilderPage() {
 
   if (apiError) {
     return (
-      <div className="bg-canvas-cream h-screen flex flex-col items-center justify-center font-body-md text-ink-charcoal selection:bg-electric-sun selection:text-ink-charcoal p-6 relative overflow-hidden">
+      <div className="bg-canvas-cream bg-dot-pattern h-screen flex flex-col items-center justify-center font-body-md text-ink-charcoal selection:bg-electric-sun selection:text-ink-charcoal p-6 relative overflow-hidden">
         {/* Background decorative elements */}
         <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-leaf-green/20 rounded-full blur-3xl" />
         <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-electric-sun/20 rounded-full blur-3xl" />
@@ -146,7 +146,7 @@ export default function FormDraftBuilderPage() {
   }
 
   return (
-    <div className="bg-canvas-cream h-screen overflow-hidden flex flex-col font-body-md text-ink-charcoal selection:bg-electric-sun selection:text-ink-charcoal">
+    <div className="bg-canvas-cream bg-dot-pattern h-screen overflow-hidden flex flex-col font-body-md text-ink-charcoal selection:bg-electric-sun selection:text-ink-charcoal">
       {/* Top Navigation */}
       <Navbar />
 

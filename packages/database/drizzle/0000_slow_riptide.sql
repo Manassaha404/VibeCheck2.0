@@ -2,8 +2,10 @@ CREATE TYPE "public"."user_plan" AS ENUM('free', 'pro', 'premium');--> statement
 CREATE TYPE "public"."user_roles" AS ENUM('admin', 'user');--> statement-breakpoint
 CREATE TYPE "public"."form_status" AS ENUM('draft', 'active', 'closed', 'archived');--> statement-breakpoint
 CREATE TYPE "public"."field_type" AS ENUM('short_text', 'long_text', 'number', 'email', 'phone', 'date', 'select', 'multi_select', 'radio', 'checkbox', 'file', 'rating', 'scale', 'mood');--> statement-breakpoint
-CREATE TYPE "public"."poll_status" AS ENUM('draft', 'active', 'closed', 'archived');--> statement-breakpoint
+CREATE TYPE "public"."poll_status" AS ENUM('draft', 'active', 'archived');--> statement-breakpoint
 CREATE TYPE "public"."petition_status" AS ENUM('draft', 'active', 'closed', 'archived');--> statement-breakpoint
+CREATE TYPE "public"."quiz_status" AS ENUM('active', 'archived');--> statement-breakpoint
+CREATE TYPE "public"."session_status" AS ENUM('waiting', 'active', 'ended');--> statement-breakpoint
 CREATE TABLE "auths" (
 	"auth_id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"user_id" uuid NOT NULL,
@@ -90,6 +92,7 @@ CREATE TABLE "polls" (
 	"user_id" uuid NOT NULL,
 	"title" varchar(255) NOT NULL,
 	"description" text,
+	"slug" varchar(255) NOT NULL,
 	"is_public" boolean DEFAULT true NOT NULL,
 	"is_published" boolean DEFAULT false NOT NULL,
 	"status" "poll_status" DEFAULT 'draft' NOT NULL,
@@ -104,7 +107,6 @@ CREATE TABLE "poll_questions" (
 	"poll_question_id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"poll_id" uuid NOT NULL,
 	"text" varchar(500) NOT NULL,
-	"order_index" integer NOT NULL,
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	"updated_at" timestamp DEFAULT now() NOT NULL
 );
@@ -152,6 +154,8 @@ CREATE TABLE "petitions" (
 	"user_id" uuid NOT NULL,
 	"title" varchar(255) NOT NULL,
 	"description" text,
+	"slug" varchar(255) NOT NULL,
+	"target_authority" varchar(255),
 	"signatures_target" integer NOT NULL,
 	"is_published" boolean DEFAULT false NOT NULL,
 	"status" "petition_status" DEFAULT 'draft' NOT NULL,
@@ -170,7 +174,7 @@ CREATE TABLE "petition_signatures" (
 	"user_id" uuid,
 	"city" varchar(255),
 	"country" varchar(255),
-	"guest_token" uuid,
+	"guest_token" uuid NOT NULL,
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	"updated_at" timestamp DEFAULT now() NOT NULL
 );
@@ -178,8 +182,7 @@ CREATE TABLE "petition_signatures" (
 CREATE TABLE "tags" (
 	"tag_id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"text" varchar(100) NOT NULL,
-	"slug" varchar(100) NOT NULL,
-	CONSTRAINT "tags_slug_unique" UNIQUE("slug")
+	CONSTRAINT "tags_text_unique" UNIQUE("text")
 );
 --> statement-breakpoint
 CREATE TABLE "poll_tags" (
@@ -226,6 +229,67 @@ CREATE TABLE "saves" (
 	"updated_at" timestamp DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
+CREATE TABLE "quizzes" (
+	"quiz_id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"user_id" uuid NOT NULL,
+	"title" varchar(255) NOT NULL,
+	"description" text,
+	"status" "quiz_status" DEFAULT 'active' NOT NULL,
+	"password_needed" boolean DEFAULT false NOT NULL,
+	"password" varchar(255),
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE "quiz_questions" (
+	"question_id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"quiz_id" uuid NOT NULL,
+	"order_index" integer NOT NULL,
+	"text" varchar(1000) NOT NULL,
+	"options" jsonb,
+	"accepted_answers" varchar(1000),
+	"is_text_answer" boolean DEFAULT false NOT NULL,
+	"allow_multiple_correct" boolean DEFAULT false NOT NULL,
+	"media_url" varchar(1000),
+	"time_limit_secs" integer DEFAULT 30 NOT NULL,
+	"points" integer DEFAULT 1000 NOT NULL,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE "quiz_sessions" (
+	"session_id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"quiz_id" uuid NOT NULL,
+	"name" varchar(255) NOT NULL,
+	"current_question_index" integer DEFAULT -1 NOT NULL,
+	"status" "session_status" DEFAULT 'waiting' NOT NULL,
+	"join_code" varchar(10) NOT NULL,
+	"started_at" timestamp,
+	"ended_at" timestamp,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE "quiz_participants" (
+	"participant_id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"session_id" uuid NOT NULL,
+	"user_id" uuid,
+	"score" integer DEFAULT 0 NOT NULL,
+	"correct_count" integer DEFAULT 0,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE "session_results" (
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"session_id" uuid NOT NULL,
+	"final_leaderboard" jsonb NOT NULL,
+	"question_stats" jsonb NOT NULL,
+	"total_participants" integer NOT NULL,
+	"avg_score" integer NOT NULL,
+	"completed_at" timestamp DEFAULT now() NOT NULL
+);
+--> statement-breakpoint
 ALTER TABLE "auths" ADD CONSTRAINT "auths_user_id_users_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("user_id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "forms" ADD CONSTRAINT "forms_user_id_users_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("user_id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "form_fields" ADD CONSTRAINT "form_fields_form_id_forms_form_id_fk" FOREIGN KEY ("form_id") REFERENCES "public"."forms"("form_id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
@@ -258,6 +322,12 @@ ALTER TABLE "saves" ADD CONSTRAINT "saves_user_id_users_user_id_fk" FOREIGN KEY 
 ALTER TABLE "saves" ADD CONSTRAINT "saves_form_id_forms_form_id_fk" FOREIGN KEY ("form_id") REFERENCES "public"."forms"("form_id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "saves" ADD CONSTRAINT "saves_petition_id_petitions_petition_id_fk" FOREIGN KEY ("petition_id") REFERENCES "public"."petitions"("petition_id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "saves" ADD CONSTRAINT "saves_poll_id_polls_poll_id_fk" FOREIGN KEY ("poll_id") REFERENCES "public"."polls"("poll_id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "quizzes" ADD CONSTRAINT "quizzes_user_id_users_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("user_id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "quiz_questions" ADD CONSTRAINT "quiz_questions_quiz_id_quizzes_quiz_id_fk" FOREIGN KEY ("quiz_id") REFERENCES "public"."quizzes"("quiz_id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "quiz_sessions" ADD CONSTRAINT "quiz_sessions_quiz_id_quizzes_quiz_id_fk" FOREIGN KEY ("quiz_id") REFERENCES "public"."quizzes"("quiz_id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "quiz_participants" ADD CONSTRAINT "quiz_participants_session_id_quiz_sessions_session_id_fk" FOREIGN KEY ("session_id") REFERENCES "public"."quiz_sessions"("session_id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "quiz_participants" ADD CONSTRAINT "quiz_participants_user_id_users_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("user_id") ON DELETE set null ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "session_results" ADD CONSTRAINT "session_results_session_id_quiz_sessions_session_id_fk" FOREIGN KEY ("session_id") REFERENCES "public"."quiz_sessions"("session_id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 CREATE INDEX "auth_user_id_idx" ON "auths" USING btree ("user_id");--> statement-breakpoint
 CREATE UNIQUE INDEX "user_email_idx" ON "users" USING btree ("email");--> statement-breakpoint
 CREATE UNIQUE INDEX "user_username_idx" ON "users" USING btree ("username");--> statement-breakpoint
@@ -272,6 +342,7 @@ CREATE INDEX "form_response_guest_token_idx" ON "form_responses" USING btree ("g
 CREATE INDEX "form_answer_field_id_idx" ON "form_answers" USING btree ("field_id");--> statement-breakpoint
 CREATE INDEX "form_answer_response_id_idx" ON "form_answers" USING btree ("response_id");--> statement-breakpoint
 CREATE INDEX "poll_user_id_idx" ON "polls" USING btree ("user_id");--> statement-breakpoint
+CREATE UNIQUE INDEX "poll_user_slug_unique_idx" ON "polls" USING btree ("user_id","slug");--> statement-breakpoint
 CREATE INDEX "poll_question_poll_id_idx" ON "poll_questions" USING btree ("poll_id");--> statement-breakpoint
 CREATE INDEX "poll_option_question_id_idx" ON "poll_options" USING btree ("question_id");--> statement-breakpoint
 CREATE INDEX "poll_view_poll_id_idx" ON "poll_views" USING btree ("poll_id");--> statement-breakpoint
@@ -283,10 +354,11 @@ CREATE INDEX "poll_vote_user_id_idx" ON "poll_votes" USING btree ("user_id");-->
 CREATE INDEX "poll_vote_guest_token_idx" ON "poll_votes" USING btree ("guest_token");--> statement-breakpoint
 CREATE INDEX "poll_comment_poll_id_idx" ON "poll_comments" USING btree ("poll_id");--> statement-breakpoint
 CREATE INDEX "petition_user_id_idx" ON "petitions" USING btree ("user_id");--> statement-breakpoint
+CREATE UNIQUE INDEX "petition_user_slug_idx" ON "petitions" USING btree ("user_id","slug");--> statement-breakpoint
 CREATE INDEX "petition_signature_petition_id_idx" ON "petition_signatures" USING btree ("petition_id");--> statement-breakpoint
 CREATE INDEX "petition_signature_user_id_idx" ON "petition_signatures" USING btree ("user_id");--> statement-breakpoint
 CREATE INDEX "petition_signature_guest_token_idx" ON "petition_signatures" USING btree ("guest_token");--> statement-breakpoint
-CREATE UNIQUE INDEX "tag_slug_idx" ON "tags" USING btree ("slug");--> statement-breakpoint
+CREATE UNIQUE INDEX "tag_text_idx" ON "tags" USING btree ("text");--> statement-breakpoint
 CREATE UNIQUE INDEX "poll_tag_poll_id_tag_id_idx" ON "poll_tags" USING btree ("poll_id","tag_id");--> statement-breakpoint
 CREATE INDEX "poll_tag_tag_id_idx" ON "poll_tags" USING btree ("tag_id");--> statement-breakpoint
 CREATE UNIQUE INDEX "petition_tag_petition_id_tag_id_idx" ON "petition_tags" USING btree ("petition_id","tag_id");--> statement-breakpoint
@@ -299,4 +371,15 @@ CREATE INDEX "agent_conv_user_idx" ON "form_building_agent_conversations" USING 
 CREATE INDEX "save_user_id_idx" ON "saves" USING btree ("user_id");--> statement-breakpoint
 CREATE UNIQUE INDEX "save_user_form_idx" ON "saves" USING btree ("user_id","form_id");--> statement-breakpoint
 CREATE UNIQUE INDEX "save_user_petition_idx" ON "saves" USING btree ("user_id","petition_id");--> statement-breakpoint
-CREATE UNIQUE INDEX "save_user_poll_idx" ON "saves" USING btree ("user_id","poll_id");
+CREATE UNIQUE INDEX "save_user_poll_idx" ON "saves" USING btree ("user_id","poll_id");--> statement-breakpoint
+CREATE INDEX "quiz_user_id_idx" ON "quizzes" USING btree ("user_id");--> statement-breakpoint
+CREATE INDEX "quiz_status_idx" ON "quizzes" USING btree ("status");--> statement-breakpoint
+CREATE INDEX "quiz_question_quiz_id_idx" ON "quiz_questions" USING btree ("quiz_id");--> statement-breakpoint
+CREATE UNIQUE INDEX "quiz_question_quiz_id_order_index_idx" ON "quiz_questions" USING btree ("quiz_id","order_index");--> statement-breakpoint
+CREATE INDEX "quiz_session_quiz_id_idx" ON "quiz_sessions" USING btree ("quiz_id");--> statement-breakpoint
+CREATE INDEX "quiz_session_status_idx" ON "quiz_sessions" USING btree ("status");--> statement-breakpoint
+CREATE UNIQUE INDEX "quiz_join_code_idx" ON "quiz_sessions" USING btree ("join_code");--> statement-breakpoint
+CREATE INDEX "quiz_participant_session_id_idx" ON "quiz_participants" USING btree ("session_id");--> statement-breakpoint
+CREATE INDEX "quiz_participant_user_id_idx" ON "quiz_participants" USING btree ("user_id");--> statement-breakpoint
+CREATE UNIQUE INDEX "quiz_participant_session_user_idx" ON "quiz_participants" USING btree ("session_id","user_id");--> statement-breakpoint
+CREATE UNIQUE INDEX "session_result_session_id_idx" ON "session_results" USING btree ("session_id");

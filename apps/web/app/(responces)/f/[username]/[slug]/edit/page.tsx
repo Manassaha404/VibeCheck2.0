@@ -51,7 +51,7 @@ export default function FormEditPage({ params }: PageProps) {
   // ── Access Checks ────────────────────────────────────────────────────────
   if (form.access === "password_required") {
     return (
-      <div className="min-h-screen bg-[var(--color-canvas-cream)] bg-dot-pattern flex flex-col">
+      <div className="min-h-screen bg-[var(--color-canvas-cream)] flex flex-col">
         <PasswordScreen
           onSubmit={setPassword}
           error={
@@ -70,7 +70,7 @@ export default function FormEditPage({ params }: PageProps) {
     form.access === "already_responded"
   ) {
     return (
-      <div className="min-h-screen bg-[var(--color-canvas-cream)] bg-dot-pattern flex flex-col">
+      <div className="min-h-screen bg-[var(--color-canvas-cream)] flex flex-col">
         <FeedbackScreen
           state={form.access}
           allowEdit={
@@ -92,7 +92,7 @@ export default function FormEditPage({ params }: PageProps) {
   }
 
   return (
-    <div className="min-h-screen bg-[var(--color-canvas-cream)] bg-dot-pattern flex flex-col text-[var(--color-ink-charcoal)] selection:bg-[var(--color-electric-sun)] selection:text-[var(--color-ink-charcoal)]">
+    <div className="min-h-screen bg-[var(--color-canvas-cream)] flex flex-col text-[var(--color-ink-charcoal)] selection:bg-[var(--color-electric-sun)] selection:text-[var(--color-ink-charcoal)]">
       {/* ── Header ──────────────────────────────────────────────────────── */}
       <PublicFormHeader
         mode="form"

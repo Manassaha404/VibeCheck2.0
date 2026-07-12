@@ -20,7 +20,7 @@ export default function PollAnalyticsPage() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen bg-canvas-cream bg-dot-pattern">
+    <div className="flex flex-col min-h-screen bg-canvas-cream">
       <Navbar
         links={[
           { label: "Explore",   href: "/explore" },

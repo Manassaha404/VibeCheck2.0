@@ -10,6 +10,7 @@ export function useUpdateQuiz(quizId: string) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const quizStore = useQuizStore();
   const updateQuizMutation = trpc.quiz.updateQuiz.useMutation();
+  const trpcUtils = trpc.useUtils();
 
   const submitQuiz = async () => {
     // Basic validation
@@ -53,6 +54,10 @@ export function useUpdateQuiz(quizId: string) {
       }
       
       quizStore.reset();
+      
+      trpcUtils.quiz.getDashboard.invalidate();
+      trpcUtils.quiz.getQuizDashboard.invalidate({ quizId });
+      trpcUtils.quiz.getQuizForEdit.invalidate({ quizId });
       
       const quizIdURL = uuidToNumber(quizId);
       router.push(`/dashboard/quiz/${quizIdURL}`);

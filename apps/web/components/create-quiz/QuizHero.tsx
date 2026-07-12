@@ -1,5 +1,5 @@
-import React from 'react';
-import { Zap } from 'lucide-react';
+import React from "react";
+import { Zap } from "lucide-react";
 
 export default function QuizHero() {
   return (
@@ -9,7 +9,10 @@ export default function QuizHero() {
           QUIZ MASTER
         </h1>
         {/* Decorative element behind title */}
-        <div aria-hidden="true" className="absolute -top-4 -right-6 text-pure-white rotate-12 z-0 opacity-80">
+        <div
+          aria-hidden="true"
+          className="absolute -top-4 -right-6 text-pure-white rotate-12 z-0 opacity-80"
+        >
           <Zap size={80} fill="currentColor" strokeWidth={1} />
         </div>
       </div>

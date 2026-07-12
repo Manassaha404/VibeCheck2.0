@@ -72,8 +72,7 @@ const typeConfig: Record<
 const statusConfig: Record<ContentStatus, { label: string; class: string }> = {
   active: {
     label: "Active",
-    class:
-      "bg-[var(--color-leaf-green)] text-[var(--color-ink-charcoal)]",
+    class: "bg-[var(--color-leaf-green)] text-[var(--color-ink-charcoal)]",
   },
   draft: {
     label: "Draft",
@@ -146,54 +145,115 @@ export function DashboardContentCard({
 
   // Form mutations
   const archiveForm = trpc.form.archiveItem.useMutation({
-    onSuccess: () => { invalidateDashboard(); onActionSuccess?.(); setDropdownOpen(false); },
+    onSuccess: () => {
+      invalidateDashboard();
+      onActionSuccess?.();
+      setDropdownOpen(false);
+    },
   });
   const activateForm = trpc.form.activateItem.useMutation({
-    onSuccess: () => { invalidateDashboard(); onActionSuccess?.(); setDropdownOpen(false); },
+    onSuccess: () => {
+      invalidateDashboard();
+      onActionSuccess?.();
+      setDropdownOpen(false);
+    },
   });
   const deleteForm = trpc.form.deleteItem.useMutation({
-    onSuccess: () => { invalidateDashboard(); onActionSuccess?.(); setDropdownOpen(false); setConfirmDelete(false); },
+    onSuccess: () => {
+      invalidateDashboard();
+      onActionSuccess?.();
+      setDropdownOpen(false);
+      setConfirmDelete(false);
+    },
   });
 
   // Poll mutations
   const archivePoll = trpc.poll.archiveItem.useMutation({
-    onSuccess: () => { invalidateDashboard(); onActionSuccess?.(); setDropdownOpen(false); },
+    onSuccess: () => {
+      invalidateDashboard();
+      onActionSuccess?.();
+      setDropdownOpen(false);
+    },
   });
   const activatePoll = trpc.poll.activateItem.useMutation({
-    onSuccess: () => { invalidateDashboard(); onActionSuccess?.(); setDropdownOpen(false); },
+    onSuccess: () => {
+      invalidateDashboard();
+      onActionSuccess?.();
+      setDropdownOpen(false);
+    },
   });
   const deletePoll = trpc.poll.deleteItem.useMutation({
-    onSuccess: () => { invalidateDashboard(); onActionSuccess?.(); setDropdownOpen(false); setConfirmDelete(false); },
+    onSuccess: () => {
+      invalidateDashboard();
+      onActionSuccess?.();
+      setDropdownOpen(false);
+      setConfirmDelete(false);
+    },
   });
 
   // Petition mutations
   const archivePetition = trpc.petition.archiveItem.useMutation({
-    onSuccess: () => { invalidateDashboard(); onActionSuccess?.(); setDropdownOpen(false); },
+    onSuccess: () => {
+      invalidateDashboard();
+      onActionSuccess?.();
+      setDropdownOpen(false);
+    },
   });
   const activatePetition = trpc.petition.activateItem.useMutation({
-    onSuccess: () => { invalidateDashboard(); onActionSuccess?.(); setDropdownOpen(false); },
+    onSuccess: () => {
+      invalidateDashboard();
+      onActionSuccess?.();
+      setDropdownOpen(false);
+    },
   });
   const deletePetition = trpc.petition.deleteItem.useMutation({
-    onSuccess: () => { invalidateDashboard(); onActionSuccess?.(); setDropdownOpen(false); setConfirmDelete(false); },
+    onSuccess: () => {
+      invalidateDashboard();
+      onActionSuccess?.();
+      setDropdownOpen(false);
+      setConfirmDelete(false);
+    },
   });
 
   // Quiz mutations
   const archiveQuiz = trpc.quiz.archiveItem.useMutation({
-    onSuccess: () => { invalidateDashboard(); onActionSuccess?.(); setDropdownOpen(false); },
+    onSuccess: () => {
+      invalidateDashboard();
+      onActionSuccess?.();
+      setDropdownOpen(false);
+    },
   });
   const activateQuiz = trpc.quiz.activateItem.useMutation({
-    onSuccess: () => { invalidateDashboard(); onActionSuccess?.(); setDropdownOpen(false); },
+    onSuccess: () => {
+      invalidateDashboard();
+      onActionSuccess?.();
+      setDropdownOpen(false);
+    },
   });
   const deleteQuiz = trpc.quiz.deleteItem.useMutation({
-    onSuccess: () => { invalidateDashboard(); onActionSuccess?.(); setDropdownOpen(false); setConfirmDelete(false); },
+    onSuccess: () => {
+      invalidateDashboard();
+      onActionSuccess?.();
+      setDropdownOpen(false);
+      setConfirmDelete(false);
+    },
   });
 
   const isArchiving =
-    archiveForm.isPending || archivePoll.isPending || archivePetition.isPending || archiveQuiz.isPending;
+    archiveForm.isPending ||
+    archivePoll.isPending ||
+    archivePetition.isPending ||
+    archiveQuiz.isPending;
   const isActivating =
-    activateForm.isPending || activatePoll.isPending || activatePetition.isPending || activateQuiz.isPending;
+    activateForm.isPending ||
+    activatePoll.isPending ||
+    activatePetition.isPending ||
+    activateQuiz.isPending;
   const isDeleting =
-    deleteForm.isPending || deletePoll.isPending || deletePetition.isPending || deleteQuiz.isPending;
+    deleteForm.isPending ||
+    deletePoll.isPending ||
+    deletePetition.isPending ||
+    deleteQuiz.isPending;
   const isMutating = isArchiving || isActivating || isDeleting;
 
   function handleArchive() {
@@ -237,9 +297,18 @@ export function DashboardContentCard({
   }
 
   const responseLabel =
-    item.type === "petition" ? "signatures" : item.type === "form" ? "responses" : item.type === "quiz" ? "participants" : "votes";
+    item.type === "petition"
+      ? "signatures"
+      : item.type === "form"
+        ? "responses"
+        : item.type === "quiz"
+          ? "participants"
+          : "votes";
 
-  let actionHref = item.type === "quiz" ? `/dashboard/quiz/${item.slug}` : `/dashboard/analytics/${item.type}/${item.slug}`;
+  let actionHref =
+    item.type === "quiz"
+      ? `/dashboard/quiz/${item.slug}`
+      : `/dashboard/analytics/${item.type}/${item.slug}`;
   let actionLabel = item.type === "quiz" ? "Dashboard" : "Analytics";
   let ActionIcon = item.type === "quiz" ? Brain : BarChart2;
   let actionColorClass = "text-[var(--color-primary)]";

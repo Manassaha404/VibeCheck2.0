@@ -1,6 +1,13 @@
-import { protectedProcedure, router } from "../../trpc";
+import { protectedProcedure, publicProcedure, router } from "../../trpc";
 import { z } from "zod";
-import { createQuizDto, updateQuizDto } from "@repo/services/quiz/model";
+import { 
+  createQuizDto, updateQuizDto,
+  archiveItemDto, activateItemDto, deleteItemDto, makeQuizSessionDto,
+  getSessionAnalyticsDto, getSessionForHostDto, emitQuestionDto,
+  manuallyActivateSessionDto, endSessionDto, getSessionInfoForParticipantDto,
+  verifySessionPasswordDto, getLeaderboardForSessionDto, addBonusPointsDto,
+  getQuizDashboardDto, getQuizForEditDto
+} from "@repo/services/quiz/model";
 import { quizService } from "../../services";
 import { handleRouteError } from "../../utils/error";
 import { AppError } from "@repo/error";
@@ -26,10 +33,10 @@ export const quizRouter = router({
       }
     }),
   getQuizDashboard: protectedProcedure
-    .input(z.object({ quizId: z.string().uuid() }))
+    .input(getQuizDashboardDto)
     .query(async ({ input, ctx }) => {
       try {
-        const result = await quizService.getQuizDashboard(input.quizId);
+        const result = await quizService.getQuizDashboard(input);
         if (result.quiz.userId !== ctx.user.id) {
           throw new AppError("UNAUTHORIZED", "Unauthorized to view this quiz dashboard");
         }
@@ -39,10 +46,10 @@ export const quizRouter = router({
       }
     }),
   getQuizForEdit: protectedProcedure
-    .input(z.object({ quizId: z.string().uuid() }))
+    .input(getQuizForEditDto)
     .query(async ({ input, ctx }) => {
       try {
-        const result = await quizService.getQuizForEdit(input.quizId);
+        const result = await quizService.getQuizForEdit(input);
         if (result.quiz.userId !== ctx.user.id) {
           throw new AppError("UNAUTHORIZED", "Unauthorized to view this quiz");
         }
@@ -62,31 +69,137 @@ export const quizRouter = router({
       }
     }),
   archiveItem: protectedProcedure
-    .input(z.object({ quizId: z.string().uuid() }))
+    .input(archiveItemDto)
     .mutation(async ({ input, ctx }) => {
       try {
-        const result = await quizService.archiveItem(ctx.user.id, input.quizId);
+        const result = await quizService.archiveItem(ctx.user.id, input);
         return { message: "Quiz archived successfully", ...result };
       } catch (error) {
         handleRouteError(error);
       }
     }),
   activateItem: protectedProcedure
-    .input(z.object({ quizId: z.string().uuid() }))
+    .input(activateItemDto)
     .mutation(async ({ input, ctx }) => {
       try {
-        const result = await quizService.activateItem(ctx.user.id, input.quizId);
+        const result = await quizService.activateItem(ctx.user.id, input);
         return { message: "Quiz activated successfully", ...result };
       } catch (error) {
         handleRouteError(error);
       }
     }),
   deleteItem: protectedProcedure
-    .input(z.object({ quizId: z.string().uuid() }))
+    .input(deleteItemDto)
     .mutation(async ({ input, ctx }) => {
       try {
-        const result = await quizService.deleteItem(ctx.user.id, input.quizId);
+        const result = await quizService.deleteItem(ctx.user.id, input);
         return { message: "Quiz deleted successfully", ...result };
+      } catch (error) {
+        handleRouteError(error);
+      }
+    }),
+  makeQuizSession: protectedProcedure
+    .input(makeQuizSessionDto)
+    .mutation(async ({ input, ctx }) => {
+      try {
+        const result = await quizService.makeQuizSession(ctx.user.id, input);
+        return { message: "Quiz session created successfully", ...result };
+      } catch (error) {
+        handleRouteError(error);
+      }
+    }),
+  getSessionAnalytics: protectedProcedure
+    .input(getSessionAnalyticsDto)
+    .query(async ({ input, ctx }) => {
+      try {
+        const result = await quizService.getSessionAnalytics(input);
+        if (result.quiz.userId !== ctx.user.id) {
+          throw new AppError("UNAUTHORIZED", "Unauthorized to view this session's analytics");
+        }
+        return result;
+      } catch (error) {
+        handleRouteError(error);
+      }
+    }),
+  getSessionForHost: protectedProcedure
+    .input(getSessionForHostDto)
+    .query(async ({ input, ctx }) => {
+      try {
+        const result = await quizService.getSessionForHost(input);
+        if (result.quiz.userId !== ctx.user.id) {
+          throw new AppError("UNAUTHORIZED", "Unauthorized to view this session");
+        }
+        return result;
+      } catch (error) {
+        handleRouteError(error);
+      }
+    }),
+  emitQuestion: protectedProcedure
+    .input(emitQuestionDto)
+    .mutation(async ({ input, ctx }) => {
+      try {
+        const result = await quizService.emitQuestion(ctx.user.id, input);
+        return { message: "Question emitted successfully", ...result };
+      } catch (error) {
+        handleRouteError(error);
+      }
+    }),
+  manuallyActivateSession: protectedProcedure
+    .input(manuallyActivateSessionDto)
+    .mutation(async ({ input, ctx }) => {
+      try {
+        const result = await quizService.manuallyActivateSession(ctx.user.id, input);
+        return { message: "Session activated successfully", ...result };
+      } catch (error) {
+        handleRouteError(error);
+      }
+    }),
+  endSession: protectedProcedure
+    .input(endSessionDto)
+    .mutation(async ({ input, ctx }) => {
+      try {
+        const result = await quizService.endSession(ctx.user.id, input);
+        return { message: "Session ended successfully", ...result };
+      } catch (error) {
+        handleRouteError(error);
+      }
+    }),
+  getSessionInfoForParticipant: protectedProcedure
+    .input(getSessionInfoForParticipantDto)
+    .query(async ({ input, ctx }) => {
+      try {
+        const result = await quizService.getSessionInfoForParticipant(ctx.user.id, input);
+        return result;
+      } catch (error) {
+        handleRouteError(error);
+      }
+    }),
+  verifySessionPassword: protectedProcedure
+    .input(verifySessionPasswordDto)
+    .mutation(async ({ input, ctx }) => {
+      try {
+        const result = await quizService.verifySessionPassword(ctx.user.id, input);
+        return result;
+      } catch (error) {
+        handleRouteError(error);
+      }
+    }),
+  getLeaderboardForSession: protectedProcedure
+    .input(getLeaderboardForSessionDto)
+    .query(async ({ input, ctx }) => {
+      try {
+        const result = await quizService.getLeaderboardForSession(input);
+        return result;
+      } catch (error) {
+        handleRouteError(error);
+      }
+    }),
+  submitBonusPoints: protectedProcedure
+    .input(addBonusPointsDto)
+    .mutation(async ({ input, ctx }) => {
+      try {
+        const result = await quizService.addBonusPointsIfCorrect(ctx.user.id, input);
+        return { message: "Bonus points processed", ...result };
       } catch (error) {
         handleRouteError(error);
       }

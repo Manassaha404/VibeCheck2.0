@@ -5,64 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1781976489994,
-      "tag": "0000_windy_doctor_strange",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1782204644080,
-      "tag": "0001_flippant_shockwave",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1782288741373,
-      "tag": "0002_absent_ghost_rider",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "7",
-      "when": 1782636729944,
-      "tag": "0003_safe_junta",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "7",
-      "when": 1782837450149,
-      "tag": "0004_flaky_senator_kelly",
-      "breakpoints": true
-    },
-    {
-      "idx": 5,
-      "version": "7",
-      "when": 1782840842175,
-      "tag": "0005_fuzzy_zemo",
-      "breakpoints": true
-    },
-    {
-      "idx": 6,
-      "version": "7",
-      "when": 1783180206963,
-      "tag": "0006_burly_ben_grimm",
-      "breakpoints": true
-    },
-    {
-      "idx": 7,
-      "version": "7",
-      "when": 1783180526818,
-      "tag": "0007_tough_winter_soldier",
-      "breakpoints": true
-    },
-    {
-      "idx": 8,
-      "version": "7",
-      "when": 1783181867566,
-      "tag": "0008_messy_robin_chapel",
+      "when": 1783676909659,
+      "tag": "0000_slow_riptide",
       "breakpoints": true
     }
   ]

@@ -15,7 +15,11 @@ export function DashboardError({
   return (
     <div className="flex flex-col items-center justify-center min-h-[60vh] gap-8">
       <div className="bg-[#FF007F] border-4 border-ink-charcoal shadow-[12px_12px_0px_0px_rgba(44,46,42,1)] p-12 text-center max-w-lg rotate-1">
-        <AlertTriangle size={64} strokeWidth={2} className="text-pure-white mx-auto mb-4" />
+        <AlertTriangle
+          size={64}
+          strokeWidth={2}
+          className="text-pure-white mx-auto mb-4"
+        />
         <h2 className="font-display-lg text-[48px] font-black uppercase text-pure-white mb-4 leading-none">
           {title}
         </h2>

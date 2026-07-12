@@ -1,7 +1,13 @@
 "use client";
 
 import React from "react";
-import { BarChart2, FileText, Megaphone, TrendingUp, Brain } from "lucide-react";
+import {
+  BarChart2,
+  FileText,
+  Megaphone,
+  TrendingUp,
+  Brain,
+} from "lucide-react";
 
 interface DashboardStatsBarProps {
   totalPolls: number;
@@ -63,7 +69,9 @@ export function DashboardStatsBar({
           <div
             className={`w-10 h-10 rounded-lg border-2 border-[var(--color-ink-charcoal)] flex items-center justify-center shrink-0 ${stat.accentClass}`}
           >
-            <span className="text-[var(--color-ink-charcoal)]">{stat.icon}</span>
+            <span className="text-[var(--color-ink-charcoal)]">
+              {stat.icon}
+            </span>
           </div>
 
           {/* Value */}

@@ -40,3 +40,91 @@ export const updateQuizDto = createQuizDto.extend({
 });
 
 export type UpdateQuizInput = z.infer<typeof updateQuizDto>;
+
+export const getQuizDashboardDto = z.object({
+  quizId: z.string().uuid(),
+});
+export type GetQuizDashboardDtoType = z.infer<typeof getQuizDashboardDto>;
+
+export const getQuizForEditDto = z.object({
+  quizId: z.string().uuid(),
+});
+export type GetQuizForEditDtoType = z.infer<typeof getQuizForEditDto>;
+
+export const archiveItemDto = z.object({
+  quizId: z.string().uuid(),
+});
+export type ArchiveItemDtoType = z.infer<typeof archiveItemDto>;
+
+export const activateItemDto = z.object({
+  quizId: z.string().uuid(),
+});
+export type ActivateItemDtoType = z.infer<typeof activateItemDto>;
+
+export const deleteItemDto = z.object({
+  quizId: z.string().uuid(),
+});
+export type DeleteItemDtoType = z.infer<typeof deleteItemDto>;
+
+export const makeQuizSessionDto = z.object({
+  quizId: z.string().uuid(),
+  sessionName: z.string().min(1, "Session name is required"),
+});
+export type MakeQuizSessionDtoType = z.infer<typeof makeQuizSessionDto>;
+
+export const getSessionAnalyticsDto = z.object({
+  sessionId: z.string().uuid(),
+});
+export type GetSessionAnalyticsDtoType = z.infer<typeof getSessionAnalyticsDto>;
+
+export const getSessionForHostDto = z.object({
+  sessionId: z.string().uuid(),
+});
+export type GetSessionForHostDtoType = z.infer<typeof getSessionForHostDto>;
+
+export const emitQuestionDto = z.object({
+  sessionId: z.string().uuid(),
+  questionIndex: z.number().int().min(0),
+});
+export type EmitQuestionDtoType = z.infer<typeof emitQuestionDto>;
+
+export const manuallyActivateSessionDto = z.object({
+  sessionId: z.string().uuid(),
+});
+export type ManuallyActivateSessionDtoType = z.infer<typeof manuallyActivateSessionDto>;
+
+export const endSessionDto = z.object({
+  sessionId: z.string().uuid(),
+});
+export type EndSessionDtoType = z.infer<typeof endSessionDto>;
+
+export const getSessionInfoForParticipantDto = z.object({
+  sessionId: z.string().uuid(),
+});
+export type GetSessionInfoForParticipantDtoType = z.infer<typeof getSessionInfoForParticipantDto>;
+
+export const verifySessionPasswordDto = z.object({
+  sessionId: z.string().uuid(),
+  password: z.string(),
+});
+export type VerifySessionPasswordDtoType = z.infer<typeof verifySessionPasswordDto>;
+
+export const getLeaderboardForSessionDto = z.object({
+  sessionId: z.string().uuid(),
+});
+export type GetLeaderboardForSessionDtoType = z.infer<typeof getLeaderboardForSessionDto>;
+
+export const addBonusPointsDto = z.object({
+  sessionId: z.string().uuid(),
+  questionId: z.string().uuid(),
+  optionIds: z.array(z.string()),
+  bonusPoints: z.number().min(0),
+});
+export type AddBonusPointsDtoType = z.infer<typeof addBonusPointsDto>;
+
+export const recordAnswerDto = z.object({
+  sessionId: z.string().uuid(),
+  questionId: z.string().uuid(),
+  optionIds: z.array(z.string()),
+});
+export type RecordAnswerDtoType = z.infer<typeof recordAnswerDto>;

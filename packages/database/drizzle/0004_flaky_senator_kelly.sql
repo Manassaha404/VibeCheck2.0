@@ -1,1 +1,0 @@
-ALTER TABLE "petition_signatures" ALTER COLUMN "guest_token" SET NOT NULL;

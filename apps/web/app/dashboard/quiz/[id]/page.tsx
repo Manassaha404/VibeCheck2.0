@@ -2,7 +2,7 @@
 
 import React from "react";
 import { useParams } from "next/navigation";
-import { useGetQuizDashboard } from "@/hook/quiz/useGetQuizDashboard";
+import { useGetQuizDashboard } from "@/hook/quiz/host/useGetQuizDashboard";
 import { numberToUuid } from "@/utils/uuid";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -17,7 +17,8 @@ import { DashboardError } from "@/components/Dashboard/DashboardError";
 export default function QuizSessionHub() {
   const params = useParams();
   const quizId = numberToUuid(params.id as string);
-  const { data, isLoading, isError,refetch,error } = useGetQuizDashboard(quizId);
+  const { data, isLoading, isError, refetch, error } =
+    useGetQuizDashboard(quizId);
 
   if (isLoading) {
     return <PageLoader />;
@@ -35,13 +36,13 @@ export default function QuizSessionHub() {
   const { quiz, stats, previousSessions, leaderboard } = data;
 
   return (
-    <div className="bg-[var(--color-canvas-cream)] text-[var(--color-ink-charcoal)] min-h-screen flex flex-col bg-dot-pattern">
+    <div className="bg-[var(--color-canvas-cream)] text-[var(--color-ink-charcoal)] min-h-screen flex flex-col">
       <Navbar />
       <main className="flex-grow max-w-[1280px] mx-auto w-full px-4 md:px-10 pt-24 pb-12 flex flex-col gap-16">
-        <QuizSessionHeader 
-          quizId={quiz.quizId} 
-          status={quiz.status} 
-          onStatusChange={refetch} 
+        <QuizSessionHeader
+          quizId={quiz.quizId}
+          status={quiz.status}
+          onStatusChange={refetch}
         />
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
@@ -55,7 +56,10 @@ export default function QuizSessionHub() {
               totalQuestions={stats.totalQuestions}
               totalParticipants={stats.totalParticipants}
             />
-            <PreviousSessions sessions={previousSessions} />
+            <PreviousSessions
+              sessions={previousSessions}
+              quizIdStr={params.id as string}
+            />
           </div>
 
           <div className="lg:col-span-4 flex flex-col gap-6">

@@ -39,7 +39,7 @@ export default function FormAnalyticsPage() {
     analytics?.fields.filter((f) => f.type !== 'mood') ?? [];
 
   return (
-    <div className="text-ink-charcoal min-h-screen flex flex-col bg-dot-pattern">
+    <div className="text-ink-charcoal min-h-screen flex flex-col">
       <Navbar />
 
       <main className="flex-grow w-full max-w-[1280px] mx-auto px-4 md:px-10 py-12 space-y-16">

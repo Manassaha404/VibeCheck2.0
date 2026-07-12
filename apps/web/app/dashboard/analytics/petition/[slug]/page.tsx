@@ -39,7 +39,7 @@ export default function PetitionAnalyticsPage() {
   const { petition, growth, recentSignatures, topHubs } = analytics;
 
   return (
-    <div className="min-h-screen flex flex-col font-body bg-dot-pattern relative overflow-x-hidden">
+    <div className="min-h-screen flex flex-col font-body relative overflow-x-hidden">
       <div
         className="fixed inset-0 pointer-events-none z-0 opacity-5"
         style={{

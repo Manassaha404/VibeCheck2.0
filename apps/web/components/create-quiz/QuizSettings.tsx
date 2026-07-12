@@ -1,14 +1,16 @@
 "use client";
 
-import React from 'react';
-import { Lock, Settings, Zap } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { useQuizStore } from '@/store/quizStore';
+import React from "react";
+import { Lock, Settings, Zap } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { useQuizStore } from "@/store/quizStore";
 
 export default function QuizSettings() {
   const globalSettings = useQuizStore((s) => s.globalSettings);
   const setGlobalSettings = useQuizStore((s) => s.setGlobalSettings);
-  const applyGlobalToAllQuestions = useQuizStore((s) => s.applyGlobalToAllQuestions);
+  const applyGlobalToAllQuestions = useQuizStore(
+    (s) => s.applyGlobalToAllQuestions,
+  );
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -18,17 +20,25 @@ export default function QuizSettings() {
           <Lock size={16} /> Security
         </div>
         <div className="flex items-center justify-between mt-4 bg-pure-white p-4 border-2 border-ink-charcoal">
-          <span className="font-headline-sm text-headline-sm font-bold">Password Protect</span>
+          <span className="font-headline-sm text-headline-sm font-bold">
+            Password Protect
+          </span>
           <label className="relative inline-flex items-center cursor-pointer">
             <input
               className="sr-only peer neubrutal-toggle"
               id="toggle-password"
               type="checkbox"
               checked={globalSettings.passwordProtect}
-              onChange={(e) => setGlobalSettings({ passwordProtect: e.target.checked })}
+              onChange={(e) =>
+                setGlobalSettings({ passwordProtect: e.target.checked })
+              }
             />
-            <div className={`w-16 h-8 border-2 border-ink-charcoal peer-focus:outline-none rounded-none shadow-hard-sm relative transition-colors ${globalSettings.passwordProtect ? 'bg-leaf-green' : 'bg-surface-container-highest'}`}>
-              <div className={`absolute top-[2px] bg-ink-charcoal border-2 border-ink-charcoal h-6 w-7 transition-transform ${globalSettings.passwordProtect ? 'translate-x-[26px] left-[2px]' : 'left-[2px]'}`} />
+            <div
+              className={`w-16 h-8 border-2 border-ink-charcoal peer-focus:outline-none rounded-none shadow-hard-sm relative transition-colors ${globalSettings.passwordProtect ? "bg-leaf-green" : "bg-surface-container-highest"}`}
+            >
+              <div
+                className={`absolute top-[2px] bg-ink-charcoal border-2 border-ink-charcoal h-6 w-7 transition-transform ${globalSettings.passwordProtect ? "translate-x-[26px] left-[2px]" : "left-[2px]"}`}
+              />
             </div>
           </label>
         </div>
@@ -38,19 +48,26 @@ export default function QuizSettings() {
             <motion.div
               key="pwd-field"
               initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
+              animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.2 }}
               className="flex flex-col gap-3 overflow-hidden"
             >
-              <label className="font-label-md text-label-md uppercase" htmlFor="quiz-pwd">Set Password</label>
+              <label
+                className="font-label-md text-label-md uppercase"
+                htmlFor="quiz-pwd"
+              >
+                Set Password
+              </label>
               <input
                 className="w-full bg-pure-white border-2 border-ink-charcoal p-3 font-body-lg text-body-lg focus:outline-none focus:border-electric-sun shadow-hard-sm"
                 id="quiz-pwd"
                 placeholder="Enter secret code..."
                 type="password"
                 value={globalSettings.password}
-                onChange={(e) => setGlobalSettings({ password: e.target.value })}
+                onChange={(e) =>
+                  setGlobalSettings({ password: e.target.value })
+                }
               />
             </motion.div>
           )}
@@ -64,21 +81,31 @@ export default function QuizSettings() {
         </div>
 
         <div className="flex flex-col gap-3 mt-4">
-          <label className="font-headline-sm text-headline-sm font-bold flex justify-between" htmlFor="global-time">
+          <label
+            className="font-headline-sm text-headline-sm font-bold flex justify-between"
+            htmlFor="global-time"
+          >
             Time per Question
-            <span className="text-on-surface-variant font-body-md font-normal ml-2">(Secs)</span>
+            <span className="text-on-surface-variant font-body-md font-normal ml-2">
+              (Secs)
+            </span>
           </label>
           <input
             className="w-full bg-pure-white border-2 border-ink-charcoal p-3 font-headline-md text-headline-md text-center focus:outline-none focus:border-electric-sun shadow-hard-sm"
             id="global-time"
             type="number"
             value={globalSettings.defaultTimeLimit}
-            onChange={(e) => setGlobalSettings({ defaultTimeLimit: Number(e.target.value) })}
+            onChange={(e) =>
+              setGlobalSettings({ defaultTimeLimit: Number(e.target.value) })
+            }
           />
         </div>
 
         <div className="flex flex-col gap-3">
-          <label className="font-headline-sm text-headline-sm font-bold flex justify-between" htmlFor="global-points">
+          <label
+            className="font-headline-sm text-headline-sm font-bold flex justify-between"
+            htmlFor="global-points"
+          >
             Points per Answer
           </label>
           <input
@@ -86,15 +113,21 @@ export default function QuizSettings() {
             id="global-points"
             type="number"
             value={globalSettings.defaultPoints}
-            onChange={(e) => setGlobalSettings({ defaultPoints: Number(e.target.value) })}
+            onChange={(e) =>
+              setGlobalSettings({ defaultPoints: Number(e.target.value) })
+            }
           />
         </div>
 
         {/* ── Auto-sync toggle ── */}
         <div className="flex items-center justify-between bg-pure-white p-4 border-2 border-ink-charcoal">
           <div className="flex flex-col gap-0.5">
-            <span className="font-headline-sm text-headline-sm font-bold">Auto-sync All Questions</span>
-            <span className="text-xs text-outline font-medium">Changes here instantly update every card</span>
+            <span className="font-headline-sm text-headline-sm font-bold">
+              Auto-sync All Questions
+            </span>
+            <span className="text-xs text-outline font-medium">
+              Changes here instantly update every card
+            </span>
           </div>
           <label className="relative inline-flex items-center cursor-pointer">
             <input
@@ -102,10 +135,16 @@ export default function QuizSettings() {
               id="toggle-sync"
               type="checkbox"
               checked={globalSettings.syncAllQuestions}
-              onChange={(e) => setGlobalSettings({ syncAllQuestions: e.target.checked })}
+              onChange={(e) =>
+                setGlobalSettings({ syncAllQuestions: e.target.checked })
+              }
             />
-            <div className={`w-16 h-8 border-2 border-ink-charcoal peer-focus:outline-none rounded-none shadow-hard-sm relative transition-colors ${globalSettings.syncAllQuestions ? 'bg-vivid-coral' : 'bg-surface-container-highest'}`}>
-              <div className={`absolute top-[2px] bg-ink-charcoal border-2 border-ink-charcoal h-6 w-7 transition-transform ${globalSettings.syncAllQuestions ? 'translate-x-[26px] left-[2px]' : 'left-[2px]'}`} />
+            <div
+              className={`w-16 h-8 border-2 border-ink-charcoal peer-focus:outline-none rounded-none shadow-hard-sm relative transition-colors ${globalSettings.syncAllQuestions ? "bg-vivid-coral" : "bg-surface-container-highest"}`}
+            >
+              <div
+                className={`absolute top-[2px] bg-ink-charcoal border-2 border-ink-charcoal h-6 w-7 transition-transform ${globalSettings.syncAllQuestions ? "translate-x-[26px] left-[2px]" : "left-[2px]"}`}
+              />
             </div>
           </label>
         </div>

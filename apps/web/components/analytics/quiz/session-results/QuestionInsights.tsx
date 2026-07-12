@@ -5,6 +5,7 @@ type Insight = {
   title: string;
   status: 'High Pass' | 'Pass' | 'Fail' | 'Warning';
   percentage: number;
+  isTextAnswer?: boolean;
 };
 
 export function QuestionInsights({ insights }: { insights: Insight[] }) {
@@ -30,9 +31,15 @@ export function QuestionInsights({ insights }: { insights: Insight[] }) {
             <div key={insight.id} className={`bg-[var(--color-pure-white)] border-2 border-ink-charcoal shadow-hard card-lift rounded-lg p-6 flex flex-col gap-4 relative overflow-hidden group transition-colors ${colors.bg}`}>
               <div className="flex justify-between items-start">
                 <span className="font-display-lg text-headline-md">Q{idx + 1}</span>
-                <span className={`font-label-md text-label-md px-2 py-1 rounded border-2 border-ink-charcoal shadow-hard-sm ${colors.badgeBg} ${colors.badgeText}`}>
-                  {insight.percentage}% {insight.status.toUpperCase()}
-                </span>
+                {insight.isTextAnswer ? (
+                  <span className="font-label-md text-label-md px-2 py-1 rounded border-2 border-ink-charcoal shadow-hard-sm bg-[var(--color-sky-blue)] text-ink-charcoal">
+                    OPEN ENDED
+                  </span>
+                ) : (
+                  <span className={`font-label-md text-label-md px-2 py-1 rounded border-2 border-ink-charcoal shadow-hard-sm ${colors.badgeBg} ${colors.badgeText}`}>
+                    {insight.percentage}% {insight.status.toUpperCase()}
+                  </span>
+                )}
               </div>
               <p className="font-body-md text-body-md font-bold line-clamp-2">{insight.title}</p>
             </div>

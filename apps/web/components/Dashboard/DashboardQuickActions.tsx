@@ -2,7 +2,13 @@
 
 import React from "react";
 import Link from "next/link";
-import { BarChart2, FileText, Megaphone, Brain, ArrowRight } from "lucide-react";
+import {
+  BarChart2,
+  FileText,
+  Megaphone,
+  Brain,
+  ArrowRight,
+} from "lucide-react";
 
 interface QuickAction {
   title: string;
@@ -82,7 +88,9 @@ export function DashboardQuickActions() {
             <div
               className={`w-10 h-10 rounded-lg border-2 border-[var(--color-ink-charcoal)] flex items-center justify-center ${action.iconBgClass} shadow-hard-sm group-hover:shadow-none group-hover:translate-x-0.5 group-hover:translate-y-0.5 transition-all`}
             >
-              <span className="text-[var(--color-ink-charcoal)]">{action.icon}</span>
+              <span className="text-[var(--color-ink-charcoal)]">
+                {action.icon}
+              </span>
             </div>
             <div>
               <p className="text-label-md font-bold text-[var(--color-ink-charcoal)]">

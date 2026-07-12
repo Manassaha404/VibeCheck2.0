@@ -81,15 +81,15 @@ authRouter.get("/google/callback", async (req: Request, res: Response) => {
     res.cookie("refreshToken", refreshToken, cookieOptions);
 
     if (isNewUser) {
-      const redirectUrl = new URL(`${env.FRONTEND_URL}/username`);
+      const redirectUrl = new URL(`${env.CLIENT_URL}/username`);
       if (basePath) redirectUrl.searchParams.set("returnTo", basePath);
       return res.redirect(redirectUrl.toString());
     }
 
-    return res.redirect(`${env.FRONTEND_URL}${basePath}`);
+    return res.redirect(`${env.CLIENT_URL}${basePath}`);
   } catch (err) {
     logger.error("Google OAuth error:", err);
-    const redirectUrl = new URL(`${env.FRONTEND_URL}/login`);
+    const redirectUrl = new URL(`${env.CLIENT_URL}/login`);
     redirectUrl.searchParams.set("error", "server_error");
     if (basePath) redirectUrl.searchParams.set("returnTo", basePath);
     return res.redirect(redirectUrl.toString());
@@ -125,7 +125,7 @@ authRouter.get("/google/drive", async (req: Request, res: Response) => {
         typeof returnTo === "string" && returnTo.startsWith("/")
           ? returnTo
           : "/";
-      const redirectUrl = new URL(`${env.FRONTEND_URL}${basePath}`);
+      const redirectUrl = new URL(`${env.CLIENT_URL}${basePath}`);
       redirectUrl.searchParams.set("info", "drive_already_connected");
       return res.redirect(redirectUrl.toString());
     }
@@ -144,7 +144,7 @@ authRouter.get(
     const token = req.cookies?.refreshToken;
 
     if (!token) {
-      return res.redirect(`${env.FRONTEND_URL}/login?error=unauthorized`);
+      return res.redirect(`${env.CLIENT_URL}/login?error=unauthorized`);
     }
 
     const returnTo = req.cookies?.driveReturnTo;
@@ -160,7 +160,7 @@ authRouter.get(
         : "/settings";
 
     if (error || !code) {
-      const redirectUrl = new URL(`${env.FRONTEND_URL}${basePath}`);
+      const redirectUrl = new URL(`${env.CLIENT_URL}${basePath}`);
       redirectUrl.searchParams.set("error", "drive_cancelled");
       return res.redirect(redirectUrl.toString());
     }
@@ -181,12 +181,12 @@ authRouter.get(
         });
       }
 
-      const redirectUrl = new URL(`${env.FRONTEND_URL}${basePath}`);
+      const redirectUrl = new URL(`${env.CLIENT_URL}${basePath}`);
       redirectUrl.searchParams.set("success", "drive_connected");
       return res.redirect(redirectUrl.toString());
     } catch (err) {
       logger.error("Google Drive OAuth error:", err);
-      const redirectUrl = new URL(`${env.FRONTEND_URL}${basePath}`);
+      const redirectUrl = new URL(`${env.CLIENT_URL}${basePath}`);
       redirectUrl.searchParams.set("error", "server_error");
       return res.redirect(redirectUrl.toString());
     }

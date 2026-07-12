@@ -8,7 +8,9 @@ interface DashboardHeaderProps {
   userName?: string;
 }
 
-export function DashboardHeader({ userName = "Creator" }: DashboardHeaderProps) {
+export function DashboardHeader({
+  userName = "Creator",
+}: DashboardHeaderProps) {
   const now = new Date();
   const hour = now.getHours();
   const greeting =

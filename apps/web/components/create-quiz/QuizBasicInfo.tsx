@@ -1,7 +1,7 @@
 "use client";
 
-import React from 'react';
-import { useQuizStore } from '@/store/quizStore';
+import React from "react";
+import { useQuizStore } from "@/store/quizStore";
 
 export default function QuizBasicInfo() {
   const info = useQuizStore((s) => s.info);
