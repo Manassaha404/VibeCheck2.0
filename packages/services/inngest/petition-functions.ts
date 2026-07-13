@@ -34,16 +34,19 @@ const petitionView = inngest.createFunction(
     ],
   },
   async ({ event, step }) => {
-    const { petitionId, userId} = event.data;
-    
-    const [tagText = [], tagId = []] = (await step.run("get-petition-tags", async () => {
-      const results = await db
-        .select({text:tagsModel.text, id:tagsModel.tagId})
-        .from(petitionTags)
-        .innerJoin(tagsModel, eq(tagsModel.tagId, petitionTags.tagId))
-        .where(eq(petitionTags.petitionId, petitionId));
-      return [results.map((r) => r.text), results.map((r) => r.id)];
-    })) || [[], []];
+    const { petitionId, userId } = event.data;
+
+    const [tagText = [], tagId = []] = (await step.run(
+      "get-petition-tags",
+      async () => {
+        const results = await db
+          .select({ text: tagsModel.text, id: tagsModel.tagId })
+          .from(petitionTags)
+          .innerJoin(tagsModel, eq(tagsModel.tagId, petitionTags.tagId))
+          .where(eq(petitionTags.petitionId, petitionId));
+        return [results.map((r) => r.text), results.map((r) => r.id)];
+      },
+    )) || [[], []];
 
     await step.run("increment-tags-score", async () => {
       if (tagText && tagText.length > 0) {
@@ -54,15 +57,15 @@ const petitionView = inngest.createFunction(
     });
 
     if (userId && tagId && tagId.length > 0) {
-        await step.run("user-tag-preferences-increase", async () => {
-            await TagService.incrementUserTagPreference(userId, tagId, "view");
-        });
+      await step.run("user-tag-preferences-increase", async () => {
+        await TagService.incrementUserTagPreference(userId, tagId, "view");
+      });
     }
   },
 );
 
-
-const signPetition = inngest.createFunction({
+const signPetition = inngest.createFunction(
+  {
     id: "petition-sign",
     triggers: [
       {
@@ -71,15 +74,18 @@ const signPetition = inngest.createFunction({
     ],
   },
   async ({ event, step }) => {
-    const { petitionId, userId} = event.data;
-   const [tagText = [], tagId = []] = (await step.run("get-petition-tags", async () => {
-      const results = await db
-        .select({text:tagsModel.text, id:tagsModel.tagId})
-        .from(petitionTags)
-        .innerJoin(tagsModel, eq(tagsModel.tagId, petitionTags.tagId))
-        .where(eq(petitionTags.petitionId, petitionId));
-      return [results.map((r) => r.text), results.map((r) => r.id)];
-    })) || [[], []];
+    const { petitionId, userId } = event.data;
+    const [tagText = [], tagId = []] = (await step.run(
+      "get-petition-tags",
+      async () => {
+        const results = await db
+          .select({ text: tagsModel.text, id: tagsModel.tagId })
+          .from(petitionTags)
+          .innerJoin(tagsModel, eq(tagsModel.tagId, petitionTags.tagId))
+          .where(eq(petitionTags.petitionId, petitionId));
+        return [results.map((r) => r.text), results.map((r) => r.id)];
+      },
+    )) || [[], []];
     await step.run("increment-tags-score", async () => {
       if (tagText && tagText.length > 0) {
         await Promise.all(
@@ -88,10 +94,11 @@ const signPetition = inngest.createFunction({
       }
     });
     if (userId && tagId && tagId.length > 0) {
-        await step.run("user-tag-preferences-increase", async () => {
-            await TagService.incrementUserTagPreference(userId, tagId, "submit");
-        });
+      await step.run("user-tag-preferences-increase", async () => {
+        await TagService.incrementUserTagPreference(userId, tagId, "submit");
+      });
     }
-  },)
-const petitionFunctions = [createPetition,petitionView,signPetition];
+  },
+);
+const petitionFunctions = [createPetition, petitionView, signPetition];
 export default petitionFunctions;

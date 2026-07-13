@@ -7,7 +7,13 @@ export function usePublicForm(
 ) {
   const { password, editMode } = options || {};
 
-  const { data: form, isLoading, isError, refetch, isFetching } = trpc.form.getPublicForm.useQuery(
+  const {
+    data: form,
+    isLoading,
+    isError,
+    refetch,
+    isFetching,
+  } = trpc.form.getPublicForm.useQuery(
     { username, slug, password, editMode },
     { staleTime: 1000 * 60 * 5 },
   );
@@ -19,4 +25,3 @@ export function usePublicForm(
 
   return { form, isLoading, isError, refetch, session, isFetching };
 }
-

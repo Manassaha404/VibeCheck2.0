@@ -115,7 +115,10 @@ class FormServices {
           );
         } catch (error) {
           console.error("Google Drive API error:", error);
-          throw new AppError("BAD_REQUEST", "Failed to access Google Drive. Please reconnect your account.");
+          throw new AppError(
+            "BAD_REQUEST",
+            "Failed to access Google Drive. Please reconnect your account.",
+          );
         }
         await db
           .update(forms)
@@ -144,9 +147,12 @@ class FormServices {
     return existingForm;
   }
 
-  public async updateFormSettings(userId: string, payload: UpdateFormSettingsDtoType) {
+  public async updateFormSettings(
+    userId: string,
+    payload: UpdateFormSettingsDtoType,
+  ) {
     const data = updateFormSettingsDto.parse(payload);
-    
+
     const [existingForm] = await db
       .select()
       .from(forms)
@@ -157,11 +163,15 @@ class FormServices {
     }
 
     const updates: Partial<typeof forms.$inferInsert> = {};
-    if (data.passwordNeeded !== undefined) updates.passwordNeeded = data.passwordNeeded;
+    if (data.passwordNeeded !== undefined)
+      updates.passwordNeeded = data.passwordNeeded;
     if (data.password !== undefined) updates.password = data.password;
-    if (data.expiresAt !== undefined) updates.expiresAt = data.expiresAt ? new Date(data.expiresAt) : null;
-    if (data.responseLimit !== undefined) updates.responseLimit = data.responseLimit;
-    if (data.allowResponseEdit !== undefined) updates.allowResponseEdit = data.allowResponseEdit;
+    if (data.expiresAt !== undefined)
+      updates.expiresAt = data.expiresAt ? new Date(data.expiresAt) : null;
+    if (data.responseLimit !== undefined)
+      updates.responseLimit = data.responseLimit;
+    if (data.allowResponseEdit !== undefined)
+      updates.allowResponseEdit = data.allowResponseEdit;
 
     if (Object.keys(updates).length > 0) {
       await db
@@ -172,7 +182,6 @@ class FormServices {
 
     return existingForm;
   }
-
 
   public async getPublicForm(
     payload: GetPublicFormDtoType,
@@ -208,7 +217,10 @@ class FormServices {
     }
 
     if (form.status === "archived") {
-      throw new AppError("FORBIDDEN", "This form has been archived and is no longer accepting responses");
+      throw new AppError(
+        "FORBIDDEN",
+        "This form has been archived and is no longer accepting responses",
+      );
     }
 
     const baseResult = {
@@ -319,7 +331,10 @@ class FormServices {
     if (!form) throw new AppError("NOT_FOUND", "Form not found");
 
     if (form.status === "archived") {
-      throw new AppError("FORBIDDEN", "This form has been archived and is no longer accepting responses");
+      throw new AppError(
+        "FORBIDDEN",
+        "This form has been archived and is no longer accepting responses",
+      );
     }
 
     if (form.expiresAt && new Date() > form.expiresAt) {
@@ -545,6 +560,15 @@ class FormServices {
       // Mood field
       else if (type === "mood") {
         const tally: Record<string, number> = {};
+
+        // Pre-populate from field options
+        const fieldOptions = Array.isArray(field.options)
+          ? (field.options as { id: string; value: string }[])
+          : [];
+        for (const opt of fieldOptions) {
+          tally[String(opt.id)] = 0;
+        }
+
         for (const v of rawAnswers) {
           const key = typeof v === "string" ? v : JSON.stringify(v);
           tally[key] = (tally[key] ?? 0) + 1;
@@ -558,6 +582,7 @@ class FormServices {
         analytics = {
           kind: "mood",
           distribution,
+          options: fieldOptions.length > 0 ? fieldOptions : undefined,
           totalAnswered: rawAnswers.length,
         };
       }
@@ -875,7 +900,10 @@ class FormServices {
     }
 
     if (!form.googleDriveFolderId) {
-      throw new AppError("BAD_REQUEST", "Form does not have a Google Drive folder configured.");
+      throw new AppError(
+        "BAD_REQUEST",
+        "Form does not have a Google Drive folder configured.",
+      );
     }
 
     const [userAuth] = await db
@@ -884,19 +912,25 @@ class FormServices {
       .where(eq(auths.userId, form.userId));
 
     if (!userAuth || !userAuth.googleDriveRefreshToken) {
-      throw new AppError("BAD_REQUEST", "Form owner has not connected Google Drive.");
+      throw new AppError(
+        "BAD_REQUEST",
+        "Form owner has not connected Google Drive.",
+      );
     }
 
     try {
       const uploadUrl = await googleDriveService.getResumableUploadUrl(
         userAuth.googleDriveRefreshToken,
         form.googleDriveFolderId,
-        data.file
+        data.file,
       );
       return { uploadUrl };
     } catch (error: any) {
       console.error("Failed to get resumable upload URL:", error);
-      throw new AppError("INTERNAL_SERVER_ERROR", error.message || "Failed to initiate file upload.");
+      throw new AppError(
+        "INTERNAL_SERVER_ERROR",
+        error.message || "Failed to initiate file upload.",
+      );
     }
   }
 
@@ -918,23 +952,30 @@ class FormServices {
       .where(eq(auths.userId, form.userId));
 
     if (!userAuth || !userAuth.googleDriveRefreshToken) {
-      throw new AppError("BAD_REQUEST", "Form owner has not connected Google Drive.");
+      throw new AppError(
+        "BAD_REQUEST",
+        "Form owner has not connected Google Drive.",
+      );
     }
 
     try {
       await googleDriveService.deleteFile(
         userAuth.googleDriveRefreshToken,
-        data.fileId
+        data.fileId,
       );
       return { success: true };
     } catch (error) {
       console.error("deleteFile service error:", error);
-      throw new AppError("INTERNAL_SERVER_ERROR", "Failed to delete file from Google Drive");
+      throw new AppError(
+        "INTERNAL_SERVER_ERROR",
+        "Failed to delete file from Google Drive",
+      );
     }
   }
 
-
-  public async getDashboardItems(userId: string): Promise<DashboardFormsResult> {
+  public async getDashboardItems(
+    userId: string,
+  ): Promise<DashboardFormsResult> {
     const rows = await db
       .select({
         formId: forms.formId,
@@ -1013,13 +1054,10 @@ class FormServices {
       throw new AppError("NOT_FOUND", "Form not found");
     }
 
-    await db
-      .delete(forms)
-      .where(eq(forms.formId, existingForm.formId));
+    await db.delete(forms).where(eq(forms.formId, existingForm.formId));
 
     return { success: true };
   }
-
 }
 
 export default FormServices;

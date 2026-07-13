@@ -1,10 +1,18 @@
-'use client';
+"use client";
 
-import React, { useEffect } from 'react';
-import { X, Star, Calendar, Hash, FileText, CheckSquare, Smile } from 'lucide-react';
-import { formatTimestamp, formatValue } from './utils';
+import React, { useEffect } from "react";
+import {
+  X,
+  Star,
+  Calendar,
+  Hash,
+  FileText,
+  CheckSquare,
+  Smile,
+} from "lucide-react";
+import { formatTimestamp, formatValue } from "./utils";
 
-import { FormResponseAnswer } from '@repo/services/form/model';
+import { FormResponseAnswer } from "@repo/services/form/model";
 
 interface ResponseDetailModalProps {
   responseId: string;
@@ -15,23 +23,20 @@ interface ResponseDetailModalProps {
   onClose: () => void;
 }
 
-
-
-
 function FieldTypeIcon({ type }: { type: string }) {
-  const cls = 'shrink-0 mt-0.5';
+  const cls = "shrink-0 mt-0.5";
   switch (type) {
-    case 'rating':
-    case 'scale':
+    case "rating":
+    case "scale":
       return <Star size={14} className={cls} strokeWidth={2.5} />;
-    case 'date':
+    case "date":
       return <Calendar size={14} className={cls} strokeWidth={2.5} />;
-    case 'number':
+    case "number":
       return <Hash size={14} className={cls} strokeWidth={2.5} />;
-    case 'checkbox':
-    case 'multi_select':
+    case "checkbox":
+    case "multi_select":
       return <CheckSquare size={14} className={cls} strokeWidth={2.5} />;
-    case 'mood':
+    case "mood":
       return <Smile size={14} className={cls} strokeWidth={2.5} />;
     default:
       return <FileText size={14} className={cls} strokeWidth={2.5} />;
@@ -48,10 +53,10 @@ export function ResponseDetailModal({
   // Close on Escape
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
+      if (e.key === "Escape") onClose();
     };
-    window.addEventListener('keydown', handler);
-    return () => window.removeEventListener('keydown', handler);
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
   }, [onClose]);
 
   const primaryAnswer = answers.find((a) => a.isPrimary);
@@ -127,9 +132,13 @@ export function ResponseDetailModal({
                   </p>
                 </div>
                 <p className="font-bold text-base text-ink-charcoal break-words whitespace-pre-wrap">
-                  {answer.value == null
-                    ? <span className="text-ink-charcoal/30 italic">No answer</span>
-                    : formatValue(answer.value, answer.fieldType)}
+                  {answer.value == null ? (
+                    <span className="text-ink-charcoal/30 italic">
+                      No answer
+                    </span>
+                  ) : (
+                    formatValue(answer.value, answer.fieldType)
+                  )}
                 </p>
               </div>
             ))

@@ -1,6 +1,12 @@
-import React from 'react';
+import React from "react";
 
-export default function SignHeader({ title, description }: { title: string, description: string | null }) {
+export default function SignHeader({
+  title,
+  description,
+}: {
+  title: string;
+  description: string | null;
+}) {
   return (
     <div className="text-center mb-16 relative">
       <h1 className="font-display-lg text-display-lg text-ink-charcoal uppercase tracking-tighter mb-4 transform -rotate-2">

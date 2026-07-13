@@ -1,34 +1,30 @@
-'use client';
+"use client";
 
-import React from 'react';
-import { formatTimestamp, getPreviewText } from './utils';
-import { FormResponseAnswer } from '@repo/services/form/model';
+import React from "react";
+import { formatTimestamp, getPreviewText } from "./utils";
+import { FormResponseAnswer } from "@repo/services/form/model";
 
 // Pastel avatar background colors — cycle by index
 const AVATAR_COLORS = [
-  '#F5E211', // electric-sun
-  '#ffb3e6', // pink
-  '#a3defe', // sky blue
-  '#c1c9b6', // sage
-  '#8ED462', // leaf green
-  '#FFD700', // gold
-  '#F4A460', // sandy
-  '#DDA0DD', // plum
+  "#F5E211", // electric-sun
+  "#ffb3e6", // pink
+  "#a3defe", // sky blue
+  "#c1c9b6", // sage
+  "#8ED462", // leaf green
+  "#FFD700", // gold
+  "#F4A460", // sandy
+  "#DDA0DD", // plum
 ];
-
-
 
 interface ResponseRowProps {
   responseId: string;
   respondentIdentity: string;
-  respondentAvatar: string;   // 1-2 initials
-  submittedAt: string;        // ISO string
+  respondentAvatar: string; // 1-2 initials
+  submittedAt: string; // ISO string
   answers: FormResponseAnswer[];
-  index: number;              // for cycling avatar color
+  index: number; // for cycling avatar color
   onClick: () => void;
 }
-
-
 
 export function ResponseRow({
   respondentIdentity,
@@ -46,7 +42,7 @@ export function ResponseRow({
       role="button"
       tabIndex={0}
       onClick={onClick}
-      onKeyDown={(e) => e.key === 'Enter' && onClick()}
+      onKeyDown={(e) => e.key === "Enter" && onClick()}
       className="grid grid-cols-1 md:grid-cols-12 gap-4 p-4 items-center bg-pure-white hover:bg-canvas-cream transition-colors cursor-pointer group"
     >
       {/* Avatar + identity */}

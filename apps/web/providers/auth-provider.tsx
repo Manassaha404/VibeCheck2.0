@@ -20,9 +20,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       publicRoutes.includes(pathname) ||
       pathname.startsWith("/signup") ||
       pathname.startsWith("/reset-password/") ||
-      pathname.startsWith("/f/") || 
-      pathname.startsWith("/p/") || 
-      pathname.startsWith("/pe/")
+      pathname.startsWith("/f/") ||
+      pathname.startsWith("/p/") ||
+      pathname.startsWith("/pe/");
 
     if (isError || !data?.users?.userId) {
       setInitialized(true);
@@ -57,8 +57,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [data, isLoading, isError, pathname, router, setInitialized, setUserInfo]);
 
   if (!useUserInfoStore.getState().isInitialized && isLoading) {
-    return <>
-    </>;
+    return <></>;
   }
   return <>{children}</>;
 }

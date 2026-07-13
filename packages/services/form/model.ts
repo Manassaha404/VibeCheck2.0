@@ -26,8 +26,6 @@ export const draftFormDto = z.object({
     .describe("is user edit their response or not"),
 });
 
-
-
 export const saveDraftFormDto = z.object({
   formSlug: z.string().trim(),
   fields: z
@@ -78,8 +76,6 @@ export const updateFormSettingsDto = z.object({
   allowResponseEdit: z.boolean().optional(),
 });
 
-
-
 export const getFormAnalyticsDto = z.object({
   formSlug: z.string().trim(),
 });
@@ -118,8 +114,6 @@ export const deleteFileDto = z.object({
   fileId: z.string(),
 });
 
-
-
 export const agentChatDto = z.object({
   formId: z.string().uuid(),
   message: z.string().min(1).max(2000),
@@ -132,7 +126,6 @@ export const agentGetSessionDto = z.object({
 export const agentClearSessionDto = z.object({
   formId: z.string().uuid(),
 });
-
 
 // ─── Dashboard ─────────────────────────────────────────────────────────────
 
@@ -178,9 +171,10 @@ export type AgentChatDtoType = z.infer<typeof agentChatDto>;
 export type AgentGetSessionDtoType = z.infer<typeof agentGetSessionDto>;
 export type AgentClearSessionDtoType = z.infer<typeof agentClearSessionDto>;
 export type SubmitStaticFormDtoType = z.infer<typeof submitStaticFormDto>;
-export type GetResumableUploadUrlDtoType = z.infer<typeof getResumableUploadUrlDto>;
+export type GetResumableUploadUrlDtoType = z.infer<
+  typeof getResumableUploadUrlDto
+>;
 export type DeleteFileDtoType = z.infer<typeof deleteFileDto>;
-
 
 // ── Public form result type ─────────────────────────────────────
 export type PublicFormField = {
@@ -201,11 +195,20 @@ export type PublicFormResult = {
   description: string | null;
   slug: string;
 } & (
-  | { access: "granted"; fields: PublicFormField[]; previousAnswers?: Record<string, unknown>; responseId?: string }
+  | {
+      access: "granted";
+      fields: PublicFormField[];
+      previousAnswers?: Record<string, unknown>;
+      responseId?: string;
+    }
   | { access: "password_required" }
   | { access: "expired" }
   | { access: "limit_reached" }
-  | { access: "already_responded"; allowResponseEdit: boolean; responseId: string }
+  | {
+      access: "already_responded";
+      allowResponseEdit: boolean;
+      responseId: string;
+    }
 );
 
 // ── Analytics result types ──────────────────────────────────────
@@ -249,6 +252,7 @@ export type NumericFieldAnalytics = {
 export type MoodFieldAnalytics = {
   kind: "mood";
   distribution: { mood: string; count: number; pct: number }[];
+  options?: { id: string; value: string }[];
   totalAnswered: number;
 };
 
@@ -296,8 +300,8 @@ export type FormResponseAnswer = {
 export type FormResponseItem = {
   responseId: string;
   respondentIdentity: string; // value of the primary field, or fallback
-  respondentAvatar: string;   // initials derived from identity
-  submittedAt: string;        // ISO string
+  respondentAvatar: string; // initials derived from identity
+  submittedAt: string; // ISO string
   answers: FormResponseAnswer[];
 };
 

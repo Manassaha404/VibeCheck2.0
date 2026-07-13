@@ -21,10 +21,9 @@ const ACCENT_COLORS = [
 
 export function LeaderboardTable({ data = [] }: { data?: TableData[] }) {
   if (data.length === 0) return null;
-  
+
   return (
     <section className="flex flex-col gap-4 max-w-4xl mx-auto w-full mb-16">
-
       {/* Section heading */}
       <div className="flex items-center gap-4 border-b-4 border-[var(--color-ink-charcoal)] pb-3">
         <div className="w-3 h-8 bg-[var(--color-leaf-green)] border-2 border-[var(--color-ink-charcoal)]" />
@@ -57,40 +56,57 @@ export function LeaderboardTable({ data = [] }: { data?: TableData[] }) {
             {data.map((row, i) => {
               const accentColor = ACCENT_COLORS[i % ACCENT_COLORS.length];
               return (
-              <tr
-                key={row.rank}
-                className={[
-                  "group transition-colors duration-150",
-                  "hover:bg-[var(--color-electric-sun)]",
-                  i < data.length - 1 ? "border-b-4 border-[var(--color-ink-charcoal)]" : "",
-                ].join(" ")}
-              >
-                {/* Rank cell with accent bar */}
-                <td className="p-0 border-r-4 border-[var(--color-ink-charcoal)] text-center relative w-24">
-                  <div className="flex items-stretch h-full">
-                    {/* Colored left accent strip */}
-                    <div className={["w-2 flex-shrink-0 self-stretch", accentColor].join(" ")} />
-                    <span className="flex-1 flex items-center justify-center py-5 font-display font-black text-headline-sm">
-                      #{row.rank}
-                    </span>
-                  </div>
-                </td>
+                <tr
+                  key={row.rank}
+                  className={[
+                    "group transition-colors duration-150",
+                    "hover:bg-[var(--color-electric-sun)]",
+                    i < data.length - 1
+                      ? "border-b-4 border-[var(--color-ink-charcoal)]"
+                      : "",
+                  ].join(" ")}
+                >
+                  {/* Rank cell with accent bar */}
+                  <td className="p-0 border-r-4 border-[var(--color-ink-charcoal)] text-center relative w-24">
+                    <div className="flex items-stretch h-full">
+                      {/* Colored left accent strip */}
+                      <div
+                        className={[
+                          "w-2 flex-shrink-0 self-stretch",
+                          accentColor,
+                        ].join(" ")}
+                      />
+                      <span className="flex-1 flex items-center justify-center py-5 font-display font-black text-headline-sm">
+                        #{row.rank}
+                      </span>
+                    </div>
+                  </td>
 
-                {/* Username */}
-                <td className="px-6 py-5 border-r-4 border-[var(--color-ink-charcoal)]">
-                  <div className="flex items-center gap-3">
-                    {/* Avatar placeholder circle */}
-                    <img src={row.avatar} alt={row.username} className={["w-9 h-9 rounded-full border-2 border-[var(--color-ink-charcoal)] flex-shrink-0 shadow-hard-sm object-cover bg-white", accentColor].join(" ")} />
-                    <span className="font-body font-bold text-body-lg">{row.username}</span>
-                  </div>
-                </td>
+                  {/* Username */}
+                  <td className="px-6 py-5 border-r-4 border-[var(--color-ink-charcoal)]">
+                    <div className="flex items-center gap-3">
+                      {/* Avatar placeholder circle */}
+                      <img
+                        src={row.avatar}
+                        alt={row.username}
+                        className={[
+                          "w-9 h-9 rounded-full border-2 border-[var(--color-ink-charcoal)] flex-shrink-0 shadow-hard-sm object-cover bg-white",
+                          accentColor,
+                        ].join(" ")}
+                      />
+                      <span className="font-body font-bold text-body-lg">
+                        {row.username}
+                      </span>
+                    </div>
+                  </td>
 
-                {/* Score */}
-                <td className="px-6 py-5 text-right font-display font-black text-headline-sm">
-                  {row.score.toLocaleString()}
-                </td>
-              </tr>
-            )})}
+                  {/* Score */}
+                  <td className="px-6 py-5 text-right font-display font-black text-headline-sm">
+                    {row.score.toLocaleString()}
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>
@@ -106,7 +122,6 @@ export function LeaderboardTable({ data = [] }: { data?: TableData[] }) {
           />
         </button>
       </div> */}
-
     </section>
   );
 }

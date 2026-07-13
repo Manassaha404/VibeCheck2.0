@@ -30,7 +30,7 @@ export default class UploadService {
 
     if (!cloudName || !apiKey || !apiSecret) {
       throw new Error(
-        "Cloudinary credentials are missing. Set CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, and CLOUDINARY_API_SECRET."
+        "Cloudinary credentials are missing. Set CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, and CLOUDINARY_API_SECRET.",
       );
     }
 
@@ -46,7 +46,10 @@ export default class UploadService {
       paramsToSign.public_id = input.publicId;
     }
 
-    const signature = cloudinary.utils.api_sign_request(paramsToSign, apiSecret);
+    const signature = cloudinary.utils.api_sign_request(
+      paramsToSign,
+      apiSecret,
+    );
 
     return {
       signature,

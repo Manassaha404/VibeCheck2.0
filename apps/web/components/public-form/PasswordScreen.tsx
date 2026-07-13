@@ -13,15 +13,21 @@ export function PasswordScreen({
   return (
     <div className="bg-white border-[3px] border-[var(--color-ink-charcoal)] shadow-hard-lg w-[90%] md:w-full max-w-md p-6 md:p-12 text-center relative z-10 flex flex-col items-center justify-center animate-pop-in mx-auto mt-12 md:mt-20">
       <div className="w-20 h-20 bg-[var(--color-electric-sun)] rounded-2xl border-[3px] border-[var(--color-ink-charcoal)] shadow-hard mb-6 flex items-center justify-center">
-        <Lock size={40} strokeWidth={2.5} className="text-[var(--color-ink-charcoal)]" />
+        <Lock
+          size={40}
+          strokeWidth={2.5}
+          className="text-[var(--color-ink-charcoal)]"
+        />
       </div>
 
-      <h2 className="font-headline-lg text-[var(--color-ink-charcoal)] mb-3">Password Required</h2>
+      <h2 className="font-headline-lg text-[var(--color-ink-charcoal)] mb-3">
+        Password Required
+      </h2>
       <p className="text-body-md opacity-80 mb-8">
         This form is password protected. Please enter the password to access it.
       </p>
 
-      <form 
+      <form
         onSubmit={(e) => {
           e.preventDefault();
           if (password) onSubmit(password);
@@ -38,11 +44,11 @@ export function PasswordScreen({
             autoFocus
           />
         </div>
-        
+
         {error && (
           <p className="text-[#FF4444] font-bold text-sm text-left">{error}</p>
         )}
-        
+
         <button
           type="submit"
           disabled={!password}

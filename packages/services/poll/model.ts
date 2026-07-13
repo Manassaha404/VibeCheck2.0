@@ -1,7 +1,12 @@
 import { z } from "zod";
 
 export const createPollDto = z.object({
-  title: z.string().trim().min(1, "Title is required").max(255, "Title is too long").describe("the title of the poll"),
+  title: z
+    .string()
+    .trim()
+    .min(1, "Title is required")
+    .max(255, "Title is too long")
+    .describe("the title of the poll"),
   description: z
     .string()
     .trim()
@@ -28,26 +33,52 @@ export type CreatePollDtoType = z.infer<typeof createPollDto>;
 export const savePollDraftDto = z.object({
   question: z
     .object({
-      id: z.string().optional().describe("the id of the question if it already exists"),
-      text: z.string().trim().min(1, "Question text is required").max(500, "Question text is too long"),
+      id: z
+        .string()
+        .optional()
+        .describe("the id of the question if it already exists"),
+      text: z
+        .string()
+        .trim()
+        .min(1, "Question text is required")
+        .max(500, "Question text is too long"),
       options: z
         .array(
           z.object({
-            id: z.string().optional().describe("the id of the option if it already exists"),
-            text: z.string().trim().min(1, "Option text is required").max(500, "Option text is too long"),
-            orderIndex: z.number().int().describe("the display order of the option"),
-          })
+            id: z
+              .string()
+              .optional()
+              .describe("the id of the option if it already exists"),
+            text: z
+              .string()
+              .trim()
+              .min(1, "Option text is required")
+              .max(500, "Option text is too long"),
+            orderIndex: z
+              .number()
+              .int()
+              .describe("the display order of the option"),
+          }),
         )
         .min(2, "At least two options are required")
         .describe("the options for the question"),
     })
     .describe("the question for the poll"),
   isPublic: z.boolean().optional().describe("is the poll visible to everyone"),
-  isCommentsAllowed: z.boolean().optional().describe("can viewers comment on the poll"),
-  isMultipleOptionVoteAllowed: z.boolean().optional().describe("can voters select multiple options"),
+  isCommentsAllowed: z
+    .boolean()
+    .optional()
+    .describe("can viewers comment on the poll"),
+  isMultipleOptionVoteAllowed: z
+    .boolean()
+    .optional()
+    .describe("can voters select multiple options"),
   tags: z.array(z.string()).optional().describe("tags for the poll"),
   isPublished: z.boolean().optional().describe("is the poll published"),
-  status: z.enum(["draft", "active", "archived"]).optional().describe("the status of the poll"),
+  status: z
+    .enum(["draft", "active", "archived"])
+    .optional()
+    .describe("the status of the poll"),
 });
 
 export type SavePollDraftDtoType = z.infer<typeof savePollDraftDto>;

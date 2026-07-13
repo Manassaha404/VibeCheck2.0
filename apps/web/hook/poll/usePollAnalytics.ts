@@ -9,7 +9,7 @@ export const usePollAnalytics = (slug: string, enabled: boolean = true) => {
     { slug },
     {
       enabled: enabled && !!slug,
-    }
+    },
   );
 
   const trpcUtils = trpc.useUtils();
@@ -21,8 +21,7 @@ export const usePollAnalytics = (slug: string, enabled: boolean = true) => {
     socket.connect();
     socket.emit("join:poll", pollId);
 
-
-    //function for vote updates 
+    //function for vote updates
     const handleVoteUpdate = (payload: any) => {
       const { pollId: eventPollId, pollData } = payload;
       if (eventPollId === pollId && pollData?.optionId) {
@@ -31,23 +30,33 @@ export const usePollAnalytics = (slug: string, enabled: boolean = true) => {
           if (!oldData) return oldData;
 
           const newOptions = oldData.options.map((opt) =>
-            opt.id === pollData.optionId ? { ...opt, votes: opt.votes + 1 } : opt
+            opt.id === pollData.optionId
+              ? { ...opt, votes: opt.votes + 1 }
+              : opt,
           );
 
           const totalVotes = oldData.totalVotes + 1;
-          const engagementRate = oldData.totalViews > 0 
-            ? Math.min(100, Math.round((totalVotes / oldData.totalViews) * 100))
-            : 0;
+          const engagementRate =
+            oldData.totalViews > 0
+              ? Math.min(
+                  100,
+                  Math.round((totalVotes / oldData.totalViews) * 100),
+                )
+              : 0;
 
           const newOptionsWithPercentages = newOptions.map((opt) => ({
             ...opt,
-            percentage: totalVotes > 0 ? Math.round((opt.votes / totalVotes) * 100) : 0,
+            percentage:
+              totalVotes > 0 ? Math.round((opt.votes / totalVotes) * 100) : 0,
           }));
 
-          const topAnswer = [...newOptionsWithPercentages].sort((a, b) => b.votes - a.votes)[0]?.text ?? "";
+          const topAnswer =
+            [...newOptionsWithPercentages].sort((a, b) => b.votes - a.votes)[0]
+              ?.text ?? "";
 
           const newDemographicData = newOptionsWithPercentages.map((opt) => ({
-            label: opt.text.length > 20 ? opt.text.slice(0, 20) + "…" : opt.text,
+            label:
+              opt.text.length > 20 ? opt.text.slice(0, 20) + "…" : opt.text,
             value: opt.percentage,
           }));
 
@@ -76,7 +85,10 @@ export const usePollAnalytics = (slug: string, enabled: boolean = true) => {
             }
           } else {
             currentTimeline.push({
-              time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+              time: new Date().toLocaleTimeString([], {
+                hour: "2-digit",
+                minute: "2-digit",
+              }),
               votes: 1,
               cumulative: 1,
             });
@@ -100,7 +112,10 @@ export const usePollAnalytics = (slug: string, enabled: boolean = true) => {
       trpcUtils.poll.getAnalytics.setData({ slug }, (oldData) => {
         if (!oldData) return oldData;
         const totalViews = oldData.totalViews + 1;
-        const engagementRate = Math.min(100, Math.round((oldData.totalVotes / totalViews) * 100));
+        const engagementRate = Math.min(
+          100,
+          Math.round((oldData.totalVotes / totalViews) * 100),
+        );
         return {
           ...oldData,
           totalViews,

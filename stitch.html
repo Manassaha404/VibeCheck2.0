@@ -1,0 +1,665 @@
+<!doctype html>
+<html class="light" lang="en" style="">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Explore - VibeCheck</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&amp;family=Hanken+Grotesk:wght@400..700&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
+    />
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "tertiary-fixed": "#e6e2d6",
+              "pure-white": "#FFFFFF",
+              "primary-container": "#8ed462",
+              "leaf-green": "#8ED462",
+              tertiary: "#605f55",
+              "primary-fixed": "#adf67f",
+              "on-background": "#1a1c19",
+              "canvas-cream": "#F5F1E4",
+              "surface-tint": "#2e6c00",
+              "on-secondary-fixed-variant": "#4f4800",
+              "outline-variant": "#c1c9b6",
+              "surface-container": "#eeeee8",
+              "tertiary-fixed-dim": "#cac6ba",
+              "surface-container-low": "#f4f4ee",
+              "secondary-fixed": "#f8e518",
+              "on-tertiary-fixed": "#1c1c14",
+              "surface-dim": "#dadad4",
+              "on-surface-variant": "#41493a",
+              "tertiary-container": "#c5c2b6",
+              "on-primary-fixed-variant": "#215100",
+              "on-tertiary-container": "#515046",
+              "error-container": "#ffdad6",
+              "surface-container-lowest": "#ffffff",
+              "on-primary": "#ffffff",
+              outline: "#717a69",
+              "on-secondary-container": "#6d6400",
+              "surface-bright": "#fafaf3",
+              "on-error": "#ffffff",
+              "on-tertiary-fixed-variant": "#48473e",
+              surface: "#fafaf3",
+              "surface-container-highest": "#e3e3dd",
+              "surface-variant": "#e3e3dd",
+              "surface-container-high": "#e8e9e2",
+              "on-tertiary": "#ffffff",
+              "on-secondary": "#ffffff",
+              "on-primary-fixed": "#092100",
+              "electric-sun": "#F5E211",
+              "inverse-surface": "#2f312d",
+              secondary: "#686000",
+              "on-primary-container": "#265b00",
+              background: "#fafaf3",
+              "inverse-on-surface": "#f1f1eb",
+              "on-surface": "#1a1c19",
+              "inverse-primary": "#93d966",
+              primary: "#2e6c00",
+              "ink-charcoal": "#2C2E2A",
+              "on-secondary-fixed": "#1f1c00",
+              "on-error-container": "#93000a",
+              error: "#ba1a1a",
+              "secondary-fixed-dim": "#dac900",
+              "primary-fixed-dim": "#93d966",
+              "secondary-container": "#f5e212",
+            },
+            borderRadius: {
+              DEFAULT: "0.25rem",
+              lg: "0.5rem",
+              xl: "0.75rem",
+              full: "9999px",
+            },
+            spacing: {
+              "margin-mobile": "16px",
+              gutter: "24px",
+              "container-max": "1280px",
+              "margin-desktop": "40px",
+              unit: "8px",
+            },
+            fontFamily: {
+              "headline-lg-mobile": ["Bricolage Grotesque"],
+              "headline-lg": ["Bricolage Grotesque"],
+              "label-sm": ["Hanken Grotesk"],
+              "body-md": ["Hanken Grotesk"],
+              "headline-sm": ["Bricolage Grotesque"],
+              "body-lg": ["Hanken Grotesk"],
+              "label-md": ["Hanken Grotesk"],
+              "headline-md": ["Bricolage Grotesque"],
+              "display-lg": ["Bricolage Grotesque"],
+            },
+            fontSize: {
+              "headline-lg-mobile": [
+                "32px",
+                {
+                  lineHeight: "36px",
+                  letterSpacing: "-0.02em",
+                  fontWeight: "800",
+                },
+              ],
+              "headline-lg": [
+                "48px",
+                {
+                  lineHeight: "52px",
+                  letterSpacing: "-0.02em",
+                  fontWeight: "800",
+                },
+              ],
+              "label-sm": [
+                "12px",
+                {
+                  lineHeight: "16px",
+                  letterSpacing: "0.05em",
+                  fontWeight: "700",
+                },
+              ],
+              "body-md": [
+                "16px",
+                {
+                  lineHeight: "24px",
+                  fontWeight: "400",
+                },
+              ],
+              "headline-sm": [
+                "24px",
+                {
+                  lineHeight: "30px",
+                  fontWeight: "700",
+                },
+              ],
+              "body-lg": [
+                "18px",
+                {
+                  lineHeight: "28px",
+                  fontWeight: "400",
+                },
+              ],
+              "label-md": [
+                "14px",
+                {
+                  lineHeight: "20px",
+                  letterSpacing: "0.02em",
+                  fontWeight: "600",
+                },
+              ],
+              "headline-md": [
+                "32px",
+                {
+                  lineHeight: "38px",
+                  fontWeight: "700",
+                },
+              ],
+              "display-lg": [
+                "72px",
+                {
+                  lineHeight: "76px",
+                  letterSpacing: "-0.04em",
+                  fontWeight: "800",
+                },
+              ],
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      .material-symbols-outlined {
+        font-variation-settings:
+          "FILL" 0,
+          "wght" 400,
+          "GRAD" 0,
+          "opsz" 24;
+      }
+      .neubrutalist-shadow {
+        box-shadow: 4px 4px 0px 0px rgba(44, 46, 42, 1);
+      }
+      .neubrutalist-shadow-hover:hover {
+        box-shadow: 0px 0px 0px 0px rgba(44, 46, 42, 1);
+        transform: translate(4px, 4px);
+      }
+    </style>
+    <style>
+      .bg-dot-pattern {
+        background-image: radial-gradient(circle, #717a69 1px, transparent 1px);
+        background-size: 24px 24px;
+      }
+    </style>
+  </head>
+  <body
+    class="bg-canvas-cream text-ink-charcoal font-body-md antialiased min-h-screen flex flex-col"
+  >
+    <!-- TopNavBar -->
+    <header
+      class="bg-canvas-cream dark:bg-on-background w-full sticky top-0 z-50 border-b-2 border-ink-charcoal dark:border-pure-white shadow-[4px_4px_0px_0px_rgba(44,46,42,1)]"
+    >
+      <div
+        class="flex justify-between items-center px-margin-desktop py-4 w-full max-w-container-max mx-auto md:flex hidden"
+      >
+        <div
+          class="text-headline-md font-headline-md font-black text-ink-charcoal dark:text-canvas-cream"
+        >
+          VibeCheck
+        </div>
+        <nav class="flex gap-8 font-headline-sm text-headline-sm">
+          <a
+            class="text-ink-charcoal dark:text-surface-variant hover:text-primary dark:hover:text-leaf-green transition-colors"
+            href="#"
+            >Explore</a
+          >
+          <a
+            class="text-ink-charcoal dark:text-surface-variant hover:text-primary dark:hover:text-leaf-green transition-colors"
+            href="#"
+            >Create</a
+          >
+          <a
+            class="text-primary dark:text-primary-fixed-dim border-b-4 border-electric-sun pb-1 hover:text-primary dark:hover:text-leaf-green transition-colors"
+            href="#"
+            >Dashboard</a
+          >
+        </nav>
+        <div class="flex items-center gap-6 font-headline-sm text-headline-sm">
+          <a
+            class="text-ink-charcoal dark:text-surface-variant hover:text-primary dark:hover:text-leaf-green transition-colors"
+            href="#"
+            >Sign In</a
+          >
+          <a
+            class="text-ink-charcoal dark:text-surface-variant hover:text-primary dark:hover:text-leaf-green transition-colors"
+            href="#"
+            >Saved</a
+          >
+          <button
+            class="bg-electric-sun text-ink-charcoal border-2 border-ink-charcoal px-6 py-2 font-headline-sm text-headline-sm neubrutalist-shadow transition-all hover:text-primary active:translate-y-1 active:shadow-none"
+          >
+            Get Started
+          </button>
+        </div>
+      </div>
+      <div
+        class="flex md:hidden justify-between items-center px-margin-mobile py-4"
+      >
+        <div
+          class="text-headline-lg-mobile font-headline-lg-mobile font-black text-ink-charcoal"
+        >
+          VibeCheck
+        </div>
+        <button class="material-symbols-outlined text-ink-charcoal">
+          menu
+        </button>
+      </div>
+    </header>
+    <div class="flex flex-1 max-w-container-max mx-auto w-full">
+      <!-- SideNavBar -->
+      <aside
+        class="bg-pure-white dark:bg-ink-charcoal h-screen w-64 border-r-2 border-ink-charcoal flat hidden lg:flex flex-col p-4 gap-4 sticky top-[74px]"
+      >
+        <nav class="flex flex-col gap-2">
+          <a
+            class="flex items-center gap-3 px-4 py-3 rounded-lg bg-leaf-green text-ink-charcoal font-bold border-2 border-ink-charcoal shadow-[2px_2px_0px_0px_rgba(44,46,42,1)] active:scale-95 transition-transform"
+            href="#"
+          >
+            <span
+              class="material-symbols-outlined"
+              style="font-variation-settings: &quot;FILL&quot; 1"
+              >trending_up</span
+            >
+            <span class="font-label-md text-label-md">Trending</span>
+          </a>
+          <a
+            class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-canvas-cream dark:hover:bg-on-surface-variant active:scale-95 transition-transform"
+            href="#"
+          >
+            <span class="material-symbols-outlined">new_releases</span>
+            <span class="font-label-md text-label-md">Fresh</span>
+          </a>
+          <a
+            class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-canvas-cream dark:hover:bg-on-surface-variant active:scale-95 transition-transform"
+            href="#"
+          >
+            <span class="material-symbols-outlined">timer</span>
+            <span class="font-label-md text-label-md">Ending Soon</span>
+          </a>
+          <a
+            class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-canvas-cream dark:hover:bg-on-surface-variant active:scale-95 transition-transform"
+            href="#"
+          >
+            <span class="material-symbols-outlined">how_to_vote</span>
+            <span class="font-label-md text-label-md">My Votes</span> </a
+          ><a
+            class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-canvas-cream dark:hover:bg-on-surface-variant active:scale-95 transition-transform"
+            href="#"
+            ><span class="material-symbols-outlined">poll</span
+            ><span class="font-label-md text-label-md">Polls</span></a
+          ><a
+            class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-canvas-cream dark:hover:bg-on-surface-variant active:scale-95 transition-transform"
+            href="#"
+            ><span class="material-symbols-outlined">assignment</span
+            ><span class="font-label-md text-label-md">Petitions</span></a
+          >
+        </nav>
+        <div class="mt-auto">
+          <button
+            class="w-full bg-electric-sun text-ink-charcoal font-bold px-4 py-3 rounded-lg border-2 border-ink-charcoal shadow-[4px_4px_0px_0px_rgba(44,46,42,1)] hover:shadow-[2px_2px_0px_0px_rgba(44,46,42,1)] hover:translate-y-[2px] hover:translate-x-[2px] transition-all flex items-center justify-center gap-2"
+          >
+            <span class="material-symbols-outlined">star</span>
+            Go Pro
+          </button>
+        </div>
+      </aside>
+      <!-- Main Content -->
+      <main
+        class="flex-1 p-margin-mobile md:p-margin-desktop overflow-y-auto bg-dot-pattern"
+      >
+        <!-- Search Area -->
+        <div class="mb-12">
+          <div class="relative w-full max-w-3xl mx-auto">
+            <input
+              class="w-full bg-pure-white border-4 border-ink-charcoal rounded-full py-4 px-6 pl-14 font-body-lg text-body-lg focus:outline-none focus:border-electric-sun focus:ring-0 neubrutalist-shadow placeholder:text-outline transition-colors"
+              placeholder="Search polls, quizzes, vibes..."
+              type="text"
+            />
+            <span
+              class="material-symbols-outlined absolute left-5 top-1/2 -translate-y-1/2 text-ink-charcoal text-3xl"
+              >search</span
+            >
+          </div>
+        </div>
+        <!-- Trending Section (Bento Grid) -->
+        <section class="mb-16">
+          <h2
+            class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg font-extrabold text-ink-charcoal mb-8 tracking-tight"
+          >
+            Trending Now
+          </h2>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- Featured Large Card -->
+            <div
+              class="md:col-span-2 bg-leaf-green border-4 border-ink-charcoal rounded-2xl p-8 neubrutalist-shadow flex flex-col justify-between relative overflow-hidden group"
+            >
+              <div class="relative z-10">
+                <span
+                  class="inline-block bg-pure-white border-2 border-ink-charcoal font-label-sm text-label-sm px-3 py-1 rounded-full mb-4 font-bold shadow-[2px_2px_0px_0px_rgba(44,46,42,1)]"
+                  >HOT 🔥</span
+                >
+                <h3
+                  class="font-display-lg text-display-lg font-extrabold text-ink-charcoal leading-tight mb-4"
+                >
+                  Is Remote Work Actually Working?
+                </h3>
+                <p
+                  class="font-body-lg text-body-lg text-ink-charcoal mb-8 max-w-md font-semibold"
+                >
+                  Join the largest tech community poll this week. Over 50k votes
+                  and counting.
+                </p>
+              </div>
+              <div class="flex items-center justify-between relative z-10">
+                <div
+                  class="flex items-center gap-2 text-ink-charcoal font-bold"
+                >
+                  <span
+                    class="material-symbols-outlined"
+                    style="font-variation-settings: &quot;FILL&quot; 1"
+                    >groups</span
+                  >
+                  52.4k Votes
+                </div>
+                <button
+                  class="bg-electric-sun border-4 border-ink-charcoal px-8 py-3 rounded-full font-headline-sm text-headline-sm font-bold shadow-[4px_4px_0px_0px_rgba(44,46,42,1)] hover:translate-y-1 hover:translate-x-1 hover:shadow-none transition-all"
+                >
+                  Vote Now
+                </button>
+              </div>
+              <!-- Decorative Element -->
+            </div>
+            <!-- Side Cards -->
+            <div class="flex flex-col gap-6">
+              <div
+                class="bg-electric-sun border-4 border-ink-charcoal rounded-2xl p-6 neubrutalist-shadow flex flex-col justify-between h-full hover:-translate-y-1 transition-transform"
+              >
+                <div>
+                  <h4
+                    class="font-headline-md text-headline-md font-bold text-ink-charcoal mb-2 leading-tight"
+                  >
+                    Best Frontend Framework 2024?
+                  </h4>
+                  <div
+                    class="flex items-center gap-1 text-ink-charcoal font-semibold mb-4"
+                  >
+                    <span class="material-symbols-outlined text-sm"
+                      >schedule</span
+                    >
+                    Ends in 2h
+                  </div>
+                </div>
+                <div class="flex items-center justify-between mt-4">
+                  <span class="font-bold">12k Votes</span>
+                  <button
+                    class="bg-pure-white border-2 border-ink-charcoal px-4 py-2 rounded-full font-bold shadow-[2px_2px_0px_0px_rgba(44,46,42,1)] hover:shadow-none hover:translate-y-[2px] transition-all"
+                  >
+                    Vote
+                  </button>
+                </div>
+              </div>
+              <div
+                class="bg-tertiary-fixed border-4 border-ink-charcoal rounded-2xl p-6 neubrutalist-shadow flex flex-col justify-between h-full hover:-translate-y-1 transition-transform"
+              >
+                <div>
+                  <h4
+                    class="font-headline-sm text-headline-sm font-bold text-ink-charcoal mb-2 leading-tight"
+                  >
+                    Coffee vs Energy Drinks
+                  </h4>
+                  <div
+                    class="flex items-center gap-1 text-ink-charcoal font-semibold mb-4"
+                  >
+                    <span class="material-symbols-outlined text-sm"
+                      >schedule</span
+                    >
+                    2 days left
+                  </div>
+                </div>
+                <div class="flex items-center justify-between mt-4">
+                  <span class="font-bold">8.5k Votes</span>
+                  <button
+                    class="bg-pure-white border-2 border-ink-charcoal px-4 py-2 rounded-full font-bold shadow-[2px_2px_0px_0px_rgba(44,46,42,1)] hover:shadow-none hover:translate-y-[2px] transition-all"
+                  >
+                    Vote
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        <!-- Public Grid Section -->
+        <section>
+          <div
+            class="flex justify-between items-end mb-8 border-b-4 border-ink-charcoal pb-4"
+          >
+            <h2
+              class="font-headline-md text-headline-md font-extrabold text-ink-charcoal"
+            >
+              Public Polls &amp; Partitions
+            </h2>
+            <div class="flex gap-2 hidden md:flex">
+              <button
+                class="border-2 border-ink-charcoal bg-pure-white px-4 py-1 rounded-full font-bold hover:bg-leaf-green transition-colors"
+              >
+                Latest
+              </button>
+              <button
+                class="border-2 border-ink-charcoal bg-pure-white px-4 py-1 rounded-full font-bold hover:bg-leaf-green transition-colors"
+              >
+                Most Discussed
+              </button>
+            </div>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Card 1 -->
+            <article
+              class="bg-pure-white border-4 border-ink-charcoal rounded-xl neubrutalist-shadow hover:translate-y-[-4px] hover:shadow-[8px_8px_0px_0px_rgba(44,46,42,1)] transition-all duration-300 flex flex-col"
+            >
+              <div class="p-6 flex-1 flex flex-col relative overflow-hidden">
+                <span
+                  class="inline-block bg-canvas-cream border-2 border-ink-charcoal font-label-sm text-label-sm px-2 py-1 rounded-md mb-3 font-bold w-fit"
+                  >Tech</span
+                >
+                <h3
+                  class="font-headline-sm text-headline-sm font-bold text-ink-charcoal mb-4 leading-tight z-10"
+                >
+                  Will AI replace designers in 5 years?
+                </h3>
+                <!-- Progress Bar visual -->
+                <div class="mt-auto z-10">
+                  <div class="flex justify-between font-bold text-sm mb-1">
+                    <span class="">Yes (65%)</span>
+                    <span class="">No (35%)</span>
+                  </div>
+                  <div
+                    class="w-full h-4 bg-canvas-cream border-2 border-ink-charcoal rounded-full overflow-hidden flex"
+                  >
+                    <div
+                      class="w-[65%] bg-electric-sun border-r-2 border-ink-charcoal h-full"
+                    ></div>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="border-t-4 border-ink-charcoal p-4 bg-canvas-cream flex justify-between items-center rounded-b-lg"
+              >
+                <span class="font-bold flex items-center gap-1"
+                  ><span class="material-symbols-outlined text-sm">groups</span>
+                  3,402</span
+                >
+                <button
+                  class="bg-leaf-green border-2 border-ink-charcoal px-4 py-2 rounded-full font-bold shadow-[2px_2px_0px_0px_rgba(44,46,42,1)] hover:shadow-none hover:translate-y-[2px] transition-all"
+                >
+                  Vote
+                </button>
+              </div>
+            </article>
+            <!-- Card 2 -->
+            <article
+              class="bg-pure-white border-4 border-ink-charcoal rounded-xl neubrutalist-shadow hover:translate-y-[-4px] hover:shadow-[8px_8px_0px_0px_rgba(44,46,42,1)] transition-all duration-300 flex flex-col"
+            >
+              <div class="p-6 flex-1 flex flex-col relative overflow-hidden">
+                <span
+                  class="inline-block bg-canvas-cream border-2 border-ink-charcoal font-label-sm text-label-sm px-2 py-1 rounded-md mb-3 font-bold w-fit"
+                  >Gaming</span
+                >
+                <h3
+                  class="font-headline-sm text-headline-sm font-bold text-ink-charcoal mb-4 leading-tight z-10"
+                >
+                  Favorite Console Generation?
+                </h3>
+                <!-- Options list visual -->
+                <div class="mt-auto z-10 flex flex-col gap-2">
+                  <div class="flex items-center gap-2">
+                    <div
+                      class="w-4 h-4 rounded-full border-2 border-ink-charcoal bg-leaf-green"
+                    ></div>
+                    <span class="font-bold text-sm">PS2/Xbox Era</span>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <div
+                      class="w-4 h-4 rounded-full border-2 border-ink-charcoal bg-canvas-cream"
+                    ></div>
+                    <span class="font-bold text-sm">Current Gen</span>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="border-t-4 border-ink-charcoal p-4 bg-electric-sun flex justify-between items-center rounded-b-lg"
+              >
+                <span class="font-bold flex items-center gap-1"
+                  ><span class="material-symbols-outlined text-sm">groups</span>
+                  12,890</span
+                >
+                <button
+                  class="bg-pure-white border-2 border-ink-charcoal px-4 py-2 rounded-full font-bold shadow-[2px_2px_0px_0px_rgba(44,46,42,1)] hover:shadow-none hover:translate-y-[2px] transition-all"
+                >
+                  Vote
+                </button>
+              </div>
+            </article>
+            <!-- Card 3 -->
+            <article
+              class="bg-pure-white border-4 border-ink-charcoal rounded-xl neubrutalist-shadow hover:translate-y-[-4px] hover:shadow-[8px_8px_0px_0px_rgba(44,46,42,1)] transition-all duration-300 flex flex-col"
+            >
+              <div class="p-6 flex-1 flex flex-col relative overflow-hidden">
+                <span
+                  class="inline-block bg-canvas-cream border-2 border-ink-charcoal font-label-sm text-label-sm px-2 py-1 rounded-md mb-3 font-bold w-fit"
+                  >Lifestyle</span
+                >
+                <h3
+                  class="font-headline-sm text-headline-sm font-bold text-ink-charcoal mb-4 leading-tight z-10"
+                >
+                  Best time to wake up for maximum productivity?
+                </h3>
+                <div class="mt-auto z-10 grid grid-cols-2 gap-2">
+                  <div
+                    class="border-2 border-ink-charcoal bg-canvas-cream text-center py-1 font-bold rounded"
+                  >
+                    5 AM
+                  </div>
+                  <div
+                    class="border-2 border-ink-charcoal bg-canvas-cream text-center py-1 font-bold rounded"
+                  >
+                    7 AM
+                  </div>
+                  <div
+                    class="border-2 border-ink-charcoal bg-canvas-cream text-center py-1 font-bold rounded"
+                  >
+                    9 AM
+                  </div>
+                  <div
+                    class="border-2 border-ink-charcoal bg-canvas-cream text-center py-1 font-bold rounded"
+                  >
+                    Whenever
+                  </div>
+                </div>
+              </div>
+              <div
+                class="border-t-4 border-ink-charcoal p-4 bg-canvas-cream flex justify-between items-center rounded-b-lg"
+              >
+                <span class="font-bold flex items-center gap-1"
+                  ><span class="material-symbols-outlined text-sm">groups</span>
+                  5,112</span
+                >
+                <button
+                  class="bg-leaf-green border-2 border-ink-charcoal px-4 py-2 rounded-full font-bold shadow-[2px_2px_0px_0px_rgba(44,46,42,1)] hover:shadow-none hover:translate-y-[2px] transition-all"
+                >
+                  Vote
+                </button>
+              </div>
+            </article>
+          </div>
+        </section>
+      </main>
+    </div>
+    <!-- Footer -->
+    <footer
+      class="bg-ink-charcoal dark:bg-on-background w-full mt-20 border-t-4 border-leaf-green flat"
+    >
+      <div
+        class="flex flex-col md:flex-row justify-between items-center px-margin-desktop py-gutter w-full max-w-container-max mx-auto gap-4"
+      >
+        <div class="font-headline-sm text-headline-sm text-leaf-green shrink-0">
+          Vibe Check
+        </div>
+        <div
+          class="flex flex-col md:flex-row items-center gap-4 md:gap-8 flex-grow justify-end"
+        >
+          <div
+            class="font-body-md text-body-md text-pure-white dark:text-ink-charcoal opacity-80"
+          >
+            © 2024 Vibe Check
+          </div>
+          <nav class="flex gap-6 font-label-md text-label-md">
+            <a
+              class="text-pure-white dark:text-ink-charcoal hover:text-electric-sun transition-colors"
+              href="#"
+              >Instagram</a
+            >
+            <a
+              class="text-pure-white dark:text-ink-charcoal hover:text-electric-sun transition-colors"
+              href="#"
+            >
+              X</a
+            >
+            <a
+              class="text-pure-white dark:text-ink-charcoal hover:text-electric-sun transition-colors"
+              href="#"
+            >
+              Privacy</a
+            >
+            <a
+              class="text-pure-white dark:text-ink-charcoal hover:text-electric-sun transition-colors"
+              href="#"
+            >
+              Terms</a
+            >
+            <a
+              class="text-pure-white dark:text-ink-charcoal hover:text-electric-sun transition-colors"
+              href="#"
+            >
+              Support</a
+            >
+          </nav>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -25,13 +25,21 @@ interface RecentCommentsProps {
   comments: Comment[];
 }
 
-function CommentAvatar({ username, color }: { username: string; color: string }) {
+function CommentAvatar({
+  username,
+  color,
+}: {
+  username: string;
+  color: string;
+}) {
   const initial = username.replace("@", "").charAt(0).toUpperCase();
   return (
     <div
       className={`w-12 h-12 rounded-full ${color} border-2 border-ink-charcoal flex-shrink-0 flex items-center justify-center`}
     >
-      <span className="font-headline-sm text-ink-charcoal text-lg font-black">{initial}</span>
+      <span className="font-headline-sm text-ink-charcoal text-lg font-black">
+        {initial}
+      </span>
     </div>
   );
 }
@@ -69,7 +77,11 @@ export function RecentComments({ comments }: RecentCommentsProps) {
           >
             <CommentAvatar
               username={comment.username}
-              color={comment.avatarColor ?? (AVATAR_COLORS[i % AVATAR_COLORS.length] ?? "bg-electric-sun")}
+              color={
+                comment.avatarColor ??
+                AVATAR_COLORS[i % AVATAR_COLORS.length] ??
+                "bg-electric-sun"
+              }
             />
             <div className="flex flex-col gap-1 flex-1 min-w-0">
               <div className="flex items-center gap-2">

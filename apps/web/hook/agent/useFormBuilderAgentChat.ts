@@ -1,6 +1,9 @@
 import { useState, useCallback, useRef, useEffect, useMemo } from "react";
 import { trpc } from "@/trpc/client";
-import { useFormBuilderStore, FieldNode } from "@/store/formStore/formBuilderStore";
+import {
+  useFormBuilderStore,
+  FieldNode,
+} from "@/store/formStore/formBuilderStore";
 import { useRealtime } from "inngest/react";
 import { realtime } from "inngest";
 import { z } from "zod";
@@ -26,12 +29,13 @@ export type ChatMessage = {
 };
 
 export const useAgentChat = () => {
-  //message initial state  
+  //message initial state
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       id: "1",
       role: "agent",
-      content: "Hello! Describe the form you want to build, and I'll generate the fields for you.",
+      content:
+        "Hello! Describe the form you want to build, and I'll generate the fields for you.",
     },
   ]);
   //initial state of input
@@ -47,22 +51,26 @@ export const useAgentChat = () => {
 
   const { nodes, setNodes, syncLinearEdges, formId } = useFormBuilderStore();
   //generate form called to add a job in inngest queue
-  const { mutateAsync: generateFormMutation } = trpc.agent.generateForm.useMutation();
-  //clear the history of conversation 
-  const { mutateAsync: clearHistoryMutation } = trpc.agent.clearFormBuilderAgentHistory.useMutation();
+  const { mutateAsync: generateFormMutation } =
+    trpc.agent.generateForm.useMutation();
+  //clear the history of conversation
+  const { mutateAsync: clearHistoryMutation } =
+    trpc.agent.clearFormBuilderAgentHistory.useMutation();
 
   const trpcUtils = trpc.useUtils();
 
-  // to generate realtime token token 
+  // to generate realtime token token
   const tokenFactory = useCallback(async () => {
     if (!activeJobId) throw new Error("No active job");
-    const result = await trpcUtils.agent.getRealTimeToken.fetch({ jobId: activeJobId });
+    const result = await trpcUtils.agent.getRealTimeToken.fetch({
+      jobId: activeJobId,
+    });
     if (!result) throw new Error("Failed to get token");
     return result.token;
   }, [activeJobId, trpcUtils]);
 
   const topics = ["status"] as const;
-  //to generate channel 
+  //to generate channel
   const channel = useMemo(
     () =>
       activeJobId
@@ -70,7 +78,7 @@ export const useAgentChat = () => {
         : agentChannel({ jobId: "__none__" }),
     [activeJobId],
   );
-  //call realtime hook 
+  //call realtime hook
   const { messages: realtimeMessages } = useRealtime({
     channel,
     topics,
@@ -80,10 +88,9 @@ export const useAgentChat = () => {
     autoCloseOnTerminal: false,
   });
 
-  
   const latestStatusMsg = realtimeMessages.byTopic.status;
   console.log(latestStatusMsg);
-  
+
   useEffect(() => {
     if (!latestStatusMsg || !activeJobId) return;
     if (processedJobIds.current.has(activeJobId)) return;
@@ -95,16 +102,20 @@ export const useAgentChat = () => {
     processedJobIds.current.add(activeJobId);
 
     const result = payload.result;
-    
+
     if (result?.error) {
-      let displayMessage = "Sorry, I encountered an error while processing your request.";
+      let displayMessage =
+        "Sorry, I encountered an error while processing your request.";
       if (result.message) {
         if (
           result.message.startsWith("Input guardrail triggered: ") ||
           result.message.startsWith("Output guardrail triggered: ")
         ) {
           try {
-            const jsonStr = result.message.replace(/^.*?guardrail triggered: /, "");
+            const jsonStr = result.message.replace(
+              /^.*?guardrail triggered: /,
+              "",
+            );
             const parsed = JSON.parse(jsonStr);
             displayMessage = parsed.reason ?? result.message;
           } catch {
@@ -119,25 +130,27 @@ export const useAgentChat = () => {
         { id: crypto.randomUUID(), role: "agent", content: displayMessage },
       ]);
     } else if (result?.fields) {
-      const newNodes: FieldNode[] = result.fields.map((field: any, index: number) => ({
-        id: crypto.randomUUID(),
-        type: "fieldNode",
-        position: { x: 350, y: 50 + index * 250 },
-        data: {
-          label: field.label,
-          type: field.type,
-          placeholder: field.placeholder ?? undefined,
-          helperText: field.helperText ?? undefined,
-          isRequired: field.isRequired,
-          isPrimary: field.isPrimary,
-          options: field.options
-            ? field.options.map((opt: any) => ({
-                id: opt.id || crypto.randomUUID(),
-                value: opt.value,
-              }))
-            : undefined,
-        },
-      }));
+      const newNodes: FieldNode[] = result.fields.map(
+        (field: any, index: number) => ({
+          id: crypto.randomUUID(),
+          type: "fieldNode",
+          position: { x: 350, y: 50 + index * 250 },
+          data: {
+            label: field.label,
+            type: field.type,
+            placeholder: field.placeholder ?? undefined,
+            helperText: field.helperText ?? undefined,
+            isRequired: field.isRequired,
+            isPrimary: field.isPrimary,
+            options: field.options
+              ? field.options.map((opt: any) => ({
+                  id: opt.id || crypto.randomUUID(),
+                  value: opt.value,
+                }))
+              : undefined,
+          },
+        }),
+      );
 
       setNodes(newNodes);
       syncLinearEdges();
@@ -147,7 +160,8 @@ export const useAgentChat = () => {
         {
           id: crypto.randomUUID(),
           role: "agent",
-          content: "Done! I've updated the form on your canvas. How does it look?",
+          content:
+            "Done! I've updated the form on your canvas. How does it look?",
         },
       ]);
     } else {
@@ -165,7 +179,7 @@ export const useAgentChat = () => {
     // Tear down the subscription and clear the loading state.
     setActiveJobId(null);
     setIsGenerating(false);
-  }, [latestStatusMsg, activeJobId]); 
+  }, [latestStatusMsg, activeJobId]);
 
   //handel send function
   const handleSend = async () => {
@@ -177,7 +191,8 @@ export const useAgentChat = () => {
         {
           id: crypto.randomUUID(),
           role: "agent",
-          content: "Please wait — the form is still loading. Try again in a moment.",
+          content:
+            "Please wait — the form is still loading. Try again in a moment.",
         },
       ]);
       return;
@@ -215,7 +230,9 @@ export const useAgentChat = () => {
       // Mutation returns immediately with a jobId — useRealtime picks it up.
       setActiveJobId(response.jobId);
     } catch (error: any) {
-      const displayMessage = error.message || "Sorry, I encountered an error while starting the agent.";
+      const displayMessage =
+        error.message ||
+        "Sorry, I encountered an error while starting the agent.";
 
       setMessages((prev) => [
         ...prev,
@@ -225,7 +242,6 @@ export const useAgentChat = () => {
     }
   };
 
-  
   const handleClearHistory = async () => {
     if (!formId) return;
     try {
@@ -234,12 +250,11 @@ export const useAgentChat = () => {
         {
           id: crypto.randomUUID(),
           role: "agent",
-          content: "Conversation history cleared. Start fresh — describe the form you want!",
+          content:
+            "Conversation history cleared. Start fresh — describe the form you want!",
         },
       ]);
-    } catch {
-      
-    }
+    } catch {}
   };
 
   return {

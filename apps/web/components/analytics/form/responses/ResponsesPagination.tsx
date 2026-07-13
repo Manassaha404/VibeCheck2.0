@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import React from 'react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import React from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 interface ResponsesPaginationProps {
   page: number;
@@ -28,7 +28,7 @@ export function ResponsesPagination({
       {/* Info */}
       <span className="font-bold text-sm uppercase tracking-wide text-ink-charcoal">
         {total === 0
-          ? 'No responses'
+          ? "No responses"
           : `Showing ${from}–${to} of ${total.toLocaleString()}`}
       </span>
 
@@ -39,8 +39,8 @@ export function ResponsesPagination({
           disabled={!canPrev}
           className={`flex items-center gap-1 px-4 py-2 font-black text-sm uppercase border-4 border-ink-charcoal shadow-[4px_4px_0px_0px_rgba(44,46,42,1)] transition-all ${
             canPrev
-              ? 'bg-pure-white text-ink-charcoal hover:shadow-none hover:translate-x-1 hover:translate-y-1 cursor-pointer'
-              : 'bg-pure-white/50 text-ink-charcoal/30 cursor-not-allowed shadow-none'
+              ? "bg-pure-white text-ink-charcoal hover:shadow-none hover:translate-x-1 hover:translate-y-1 cursor-pointer"
+              : "bg-pure-white/50 text-ink-charcoal/30 cursor-not-allowed shadow-none"
           }`}
         >
           <ChevronLeft size={16} strokeWidth={3} />
@@ -57,8 +57,8 @@ export function ResponsesPagination({
           disabled={!canNext}
           className={`flex items-center gap-1 px-4 py-2 font-black text-sm uppercase border-4 border-ink-charcoal shadow-[4px_4px_0px_0px_rgba(44,46,42,1)] transition-all ${
             canNext
-              ? 'bg-leaf-green text-ink-charcoal hover:shadow-none hover:translate-x-1 hover:translate-y-1 cursor-pointer'
-              : 'bg-leaf-green/30 text-ink-charcoal/30 cursor-not-allowed shadow-none'
+              ? "bg-leaf-green text-ink-charcoal hover:shadow-none hover:translate-x-1 hover:translate-y-1 cursor-pointer"
+              : "bg-leaf-green/30 text-ink-charcoal/30 cursor-not-allowed shadow-none"
           }`}
         >
           Next

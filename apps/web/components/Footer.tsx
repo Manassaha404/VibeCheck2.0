@@ -24,25 +24,25 @@ const defaultSections: FooterSection[] = [
   {
     heading: "Product",
     links: [
-      { label: "Explore",    href: "/explore"    },
-      { label: "Create",     href: "/create"     },
-      { label: "Dashboard",  href: "/dashboard"},
+      { label: "Explore", href: "/explore" },
+      { label: "Create", href: "/create" },
+      { label: "Dashboard", href: "/dashboard" },
     ],
   },
   {
     heading: "Company",
     links: [
-      { label: "About",   href: "/about"   },
-      { label: "Blog",    href: "/blog"    },
+      { label: "About", href: "/about" },
+      { label: "Blog", href: "/blog" },
       { label: "Careers", href: "/careers" },
-      { label: "Press",   href: "/press"   },
+      { label: "Press", href: "/press" },
     ],
   },
   {
     heading: "Legal",
     links: [
       { label: "Privacy", href: "/privacy" },
-      { label: "Terms",   href: "/terms"   },
+      { label: "Terms", href: "/terms" },
       { label: "Support", href: "/support" },
     ],
   },
@@ -50,9 +50,8 @@ const defaultSections: FooterSection[] = [
 
 const socialLinks = [
   { label: "Instagram", href: "#", icon: Camera },
-  { label: "X",         href: "#", icon: Hash },
+  { label: "X", href: "#", icon: Hash },
 ];
-
 
 export default function Footer({
   sections = defaultSections,

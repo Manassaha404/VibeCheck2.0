@@ -1,42 +1,43 @@
-'use client';
+"use client";
 
-import React from 'react';
-import { useParams } from 'next/navigation';
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
-import { AnalyticsHeader } from '@/components/analytics/form/AnalyticsHeader';
-import { MoodAndRating } from '@/components/analytics/form/MoodAndRating';
-import { VibesOverTime } from '@/components/analytics/form/VibesOverTime';
-import { FieldAnalytics } from '@/components/analytics/form/FieldAnalytics';
-import { ShareActions } from '@/components/analytics/form/ShareActions';
-import { ExportSection } from '@/components/analytics/form/ExportSection';
-import { useFormAnalytics } from '@/hook/form/useFormAnalytics';
+import React from "react";
+import { useParams } from "next/navigation";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
+import { AnalyticsHeader } from "@/components/analytics/form/AnalyticsHeader";
+import { MoodAndRating } from "@/components/analytics/form/MoodAndRating";
+import { VibesOverTime } from "@/components/analytics/form/VibesOverTime";
+import { FieldAnalytics } from "@/components/analytics/form/FieldAnalytics";
+import { ShareActions } from "@/components/analytics/form/ShareActions";
+import { ExportSection } from "@/components/analytics/form/ExportSection";
+import { useFormAnalytics } from "@/hook/form/useFormAnalytics";
 import type {
   MoodFieldAnalytics,
   NumericFieldAnalytics,
   AnalyticsFieldItem,
   FieldAnalyticsData,
-} from '@/components/analytics/form/schema';
-import PageLoader from '@/components/PageLoader';
-import { DashboardError } from '@/components/Dashboard/DashboardError';
+} from "@/components/analytics/form/schema";
+import PageLoader from "@/components/PageLoader";
+import { DashboardError } from "@/components/Dashboard/DashboardError";
 
 // ── Main Page ───────────────────────────────────────────────────
 export default function FormAnalyticsPage() {
   const params = useParams();
   const formSlug = params?.id as string;
 
-  const { analytics, isLoading, isError, error, refetch } = useFormAnalytics(formSlug);
+  const { analytics, isLoading, isError, error, refetch } =
+    useFormAnalytics(formSlug);
 
   if (isLoading) {
     return <PageLoader />;
   }
 
   // Carve out mood field for the dedicated MoodAndRating panel
-  const moodField = analytics?.fields.find((f) => f.type === 'mood');
+  const moodField = analytics?.fields.find((f) => f.type === "mood");
 
   // All other fields go to FieldAnalytics
   const otherFields: AnalyticsFieldItem[] =
-    analytics?.fields.filter((f) => f.type !== 'mood') ?? [];
+    analytics?.fields.filter((f) => f.type !== "mood") ?? [];
 
   return (
     <div className="text-ink-charcoal min-h-screen flex flex-col">
@@ -47,7 +48,7 @@ export default function FormAnalyticsPage() {
           <DashboardError
             message={
               (error as { message?: string })?.message ??
-              'Could not load analytics for this form.'
+              "Could not load analytics for this form."
             }
             onRetry={refetch}
           />
@@ -68,7 +69,7 @@ export default function FormAnalyticsPage() {
             {moodField && (
               <MoodAndRating
                 moodField={
-                  moodField.analytics.kind === 'mood'
+                  moodField.analytics.kind === "mood"
                     ? (moodField.analytics as MoodFieldAnalytics)
                     : undefined
                 }

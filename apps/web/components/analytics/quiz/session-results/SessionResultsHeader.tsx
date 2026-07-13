@@ -1,7 +1,15 @@
-import React from 'react';
-import { Calendar, Hash } from 'lucide-react';
+import React from "react";
+import { Calendar, Hash } from "lucide-react";
 
-export function SessionResultsHeader({ title, date, id }: { title: string; date: string; id: string }) {
+export function SessionResultsHeader({
+  title,
+  date,
+  id,
+}: {
+  title: string;
+  date: string;
+  id: string;
+}) {
   return (
     <header className="relative flex flex-col md:flex-row items-start md:items-end justify-between gap-8 mb-4">
       <div className="relative z-10 flex flex-col items-start gap-4">

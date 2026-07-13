@@ -17,7 +17,13 @@ const PODIUM_STYLES = [
     bg: "bg-[var(--color-electric-sun)]",
     accentColor: "text-[var(--color-ink-charcoal)]",
     badgeBg: "bg-[var(--color-electric-sun)]",
-    icon: <Crown size={22} strokeWidth={2.5} className="text-[var(--color-ink-charcoal)]" />,
+    icon: (
+      <Crown
+        size={22}
+        strokeWidth={2.5}
+        className="text-[var(--color-ink-charcoal)]"
+      />
+    ),
     rotation: "rotate-0",
     height: "h-[320px] md:h-[340px]",
     avatarSize: "w-28 h-28",
@@ -29,7 +35,13 @@ const PODIUM_STYLES = [
     bg: "bg-[var(--color-sky-blue)]",
     accentColor: "text-[var(--color-ink-charcoal)]",
     badgeBg: "bg-[var(--color-sky-blue)]",
-    icon: <Medal size={18} strokeWidth={2.5} className="text-[var(--color-ink-charcoal)]" />,
+    icon: (
+      <Medal
+        size={18}
+        strokeWidth={2.5}
+        className="text-[var(--color-ink-charcoal)]"
+      />
+    ),
     rotation: "-rotate-2",
     height: "h-[260px] md:h-[270px]",
     avatarSize: "w-20 h-20",
@@ -41,7 +53,13 @@ const PODIUM_STYLES = [
     bg: "bg-[var(--color-vivid-coral)]",
     accentColor: "text-[var(--color-pure-white)]",
     badgeBg: "bg-[var(--color-vivid-coral)]",
-    icon: <Medal size={16} strokeWidth={2.5} className="text-[var(--color-pure-white)]" />,
+    icon: (
+      <Medal
+        size={16}
+        strokeWidth={2.5}
+        className="text-[var(--color-pure-white)]"
+      />
+    ),
     rotation: "rotate-2",
     height: "h-[240px] md:h-[250px]",
     avatarSize: "w-16 h-16",
@@ -66,7 +84,7 @@ export function LeaderboardPodium({ data = [] }: { data?: PodiumData[] }) {
       </div>
     );
   }
-  
+
   // Create an array up to 3 elements long with their respective styles
   const podiumEntries = data.slice(0, 3).map((entry, idx) => ({
     ...entry,
@@ -103,7 +121,12 @@ export function LeaderboardPodium({ data = [] }: { data?: PodiumData[] }) {
             ].join(" ")}
           >
             {entry.icon}
-            <span className={["font-black font-display leading-none text-sm", entry.accentColor].join(" ")}>
+            <span
+              className={[
+                "font-black font-display leading-none text-sm",
+                entry.accentColor,
+              ].join(" ")}
+            >
               #{entry.rank}
             </span>
           </div>
@@ -119,7 +142,9 @@ export function LeaderboardPodium({ data = [] }: { data?: PodiumData[] }) {
               entry.avatarSize,
               "rounded-full border-4 border-[var(--color-ink-charcoal)]",
               "bg-[var(--color-pure-white)] shadow-hard mb-4 object-cover",
-              entry.rankIdx === 0 ? "ring-4 ring-[var(--color-pure-white)] ring-offset-2 ring-offset-[var(--color-electric-sun)]" : "",
+              entry.rankIdx === 0
+                ? "ring-4 ring-[var(--color-pure-white)] ring-offset-2 ring-offset-[var(--color-electric-sun)]"
+                : "",
             ].join(" ")}
           />
 

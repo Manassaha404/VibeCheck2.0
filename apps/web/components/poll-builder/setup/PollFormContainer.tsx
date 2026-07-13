@@ -6,7 +6,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { createPollDto } from "@repo/services/poll/model";
 import { useCreatePoll } from "@/hook/poll/useCreatePoll";
-import { toast } from "sonner";
 
 import { usePollStore } from "@/store/pollStore";
 import { useRouter } from "next/navigation";
@@ -43,11 +42,10 @@ export function PollFormContainer({ children }: { children: React.ReactNode }) {
     setSetup(data);
     const result = await handleCreate(data);
     if (result) {
-      toast.success("Poll created! Redirecting to the builder...");
       // router.push(`/create/poll/draft/${result.id}`); // Or similar redirect
     } else {
       // For local demo, pretend it succeeded and redirect to a dummy draft
-      toast.success("Saved! Moving to draft builder...");
+
       router.push(`/create/poll/draft/draft-123`);
     }
   };

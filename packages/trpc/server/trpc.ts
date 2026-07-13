@@ -1,13 +1,12 @@
 import { initTRPC, TRPCError } from "@trpc/server";
 import { OpenApiMeta } from "trpc-to-openapi";
 import { createContext } from "./context";
-import { 
-  verifyAccessToken, 
-  verifyRefreshToken, 
-  generateAccessToken, 
-  generateRefreshToken
-} from "./utils/jwt"; 
-
+import {
+  verifyAccessToken,
+  verifyRefreshToken,
+  generateAccessToken,
+  generateRefreshToken,
+} from "./utils/jwt";
 
 export const tRPCContext = initTRPC
   .context<typeof createContext>()
@@ -16,13 +15,12 @@ export const tRPCContext = initTRPC
 
 export const router = tRPCContext.router;
 
-
 const isProduction = process.env.NODE_ENV === "production";
 
-const getGuestToken = tRPCContext.middleware(({ctx, next}) => {
+const getGuestToken = tRPCContext.middleware(({ ctx, next }) => {
   let guestToken;
   guestToken = ctx.getCookie("guestToken");
-  if(!guestToken){
+  if (!guestToken) {
     guestToken = crypto.randomUUID();
     ctx.setCookie("guestToken", guestToken, {
       httpOnly: true,
@@ -32,8 +30,8 @@ const getGuestToken = tRPCContext.middleware(({ctx, next}) => {
       path: "/",
     });
   }
-  return next({ctx: {...ctx, guestToken}});
-})
+  return next({ ctx: { ...ctx, guestToken } });
+});
 
 const getOptionalUser = tRPCContext.middleware(({ ctx, next }) => {
   const accessToken = ctx.getCookie("accessToken");
@@ -72,8 +70,9 @@ const getOptionalUser = tRPCContext.middleware(({ ctx, next }) => {
   });
 });
 
-export const publicProcedure = tRPCContext.procedure.use(getGuestToken).use(getOptionalUser);
-
+export const publicProcedure = tRPCContext.procedure
+  .use(getGuestToken)
+  .use(getOptionalUser);
 
 const isAuthed = tRPCContext.middleware(({ ctx, next }) => {
   const accessToken = ctx.getCookie("accessToken");

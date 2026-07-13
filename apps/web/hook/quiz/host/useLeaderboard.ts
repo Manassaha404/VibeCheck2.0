@@ -8,7 +8,7 @@ export const useLeaderboard = (sessionId: string) => {
     { sessionId },
     {
       enabled: !!sessionId,
-    }
+    },
   );
 
   const [revealedInfo, setRevealedInfo] = useState<{
@@ -33,7 +33,10 @@ export const useLeaderboard = (sessionId: string) => {
     socket.emit("join:participant:session", { sessionId });
     joinedRef.current = true;
 
-    const onReveal = (data: { questionId: string; correctOptionIds: string[] }) => {
+    const onReveal = (data: {
+      questionId: string;
+      correctOptionIds: string[];
+    }) => {
       setRevealedInfo(data);
       trpcUtils.quiz.getLeaderboardForSession.invalidate({ sessionId });
     };

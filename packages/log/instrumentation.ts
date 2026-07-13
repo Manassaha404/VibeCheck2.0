@@ -73,7 +73,7 @@ process.on("SIGTERM", () => {
     .shutdown()
     .then(() => console.log("OpenTelemetry SDK shut down successfully"))
     .catch((error) =>
-      console.error("Error shutting down OpenTelemetry:", error)
+      console.error("Error shutting down OpenTelemetry:", error),
     )
     .finally(() => process.exit(0));
 });

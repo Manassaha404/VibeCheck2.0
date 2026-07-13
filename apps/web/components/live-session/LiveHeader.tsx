@@ -1,13 +1,18 @@
-import React from 'react';
+import React from "react";
 
 interface LiveHeaderProps {
   title: React.ReactNode;
   sessionId: string;
   description?: string;
-  status?: 'waiting' | 'active' | 'ended';
+  status?: "waiting" | "active" | "ended";
 }
 
-export default function LiveHeader({ title, sessionId, description, status = 'active' }: LiveHeaderProps) {
+export default function LiveHeader({
+  title,
+  sessionId,
+  description,
+  status = "active",
+}: LiveHeaderProps) {
   return (
     <div className="flex flex-col items-center gap-4">
       {/* Live pill */}
@@ -15,11 +20,15 @@ export default function LiveHeader({ title, sessionId, description, status = 'ac
         <span className="font-label text-label-sm uppercase tracking-widest text-[var(--color-primary)] flex items-center gap-2 font-bold">
           <span
             className={[
-              'w-3 h-3 rounded-full animate-pulse',
-              status === 'waiting' ? 'bg-[var(--color-electric-sun)]' : 'bg-[var(--color-error)]',
-            ].join(' ')}
+              "w-3 h-3 rounded-full animate-pulse",
+              status === "waiting"
+                ? "bg-[var(--color-electric-sun)]"
+                : "bg-[var(--color-error)]",
+            ].join(" ")}
           />
-          {status === 'waiting' ? 'Waiting for players…' : 'Live Session Active'}
+          {status === "waiting"
+            ? "Waiting for players…"
+            : "Live Session Active"}
         </span>
       </div>
 

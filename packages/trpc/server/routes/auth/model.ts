@@ -17,8 +17,6 @@ export const resendOtpDto = z.object({
     .describe("the random nanoid key for retrieving user data from redis"),
 });
 
-
-
 export const forgotPasswordDto = z.object({
   id: z
     .string()

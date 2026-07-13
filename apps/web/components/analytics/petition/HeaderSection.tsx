@@ -1,21 +1,34 @@
-'use client';
+"use client";
 
-import React from 'react';
-import { ArrowRight, Wifi } from 'lucide-react';
-import { useRouter } from 'next/navigation';
-import { trpc } from '@/trpc/client';
-import { Loader2, Zap } from 'lucide-react';
+import React from "react";
+import { ArrowRight, Wifi } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { trpc } from "@/trpc/client";
+import { Loader2, Zap } from "lucide-react";
 
-export default function HeaderSection({ title, status, totalSignatures, petitionId }: { title: string, status: string, totalSignatures: number, petitionId: string }) {
+export default function HeaderSection({
+  title,
+  status,
+  totalSignatures,
+  petitionId,
+}: {
+  title: string;
+  status: string;
+  totalSignatures: number;
+  petitionId: string;
+}) {
   const router = useRouter();
-  const statusClass = status === 'active' ? 'bg-[var(--color-leaf-green)] text-[var(--color-ink-charcoal)]' : 'bg-gray-300 text-gray-700';
+  const statusClass =
+    status === "active"
+      ? "bg-[var(--color-leaf-green)] text-[var(--color-ink-charcoal)]"
+      : "bg-gray-300 text-gray-700";
 
   const utils = trpc.useUtils();
   const activatePetition = trpc.petition.activateItem.useMutation({
     onSuccess: () => {
       utils.petition.getAnalytics.invalidate();
       router.refresh();
-    }
+    },
   });
 
   const handleActivate = () => {
@@ -55,13 +68,17 @@ export default function HeaderSection({ title, status, totalSignatures, petition
 
         {/* Total Responses stat */}
         <div className="flex gap-4 md:gap-8 flex-col sm:flex-row w-full md:w-auto relative z-30">
-          {status === 'archived' && (
+          {status === "archived" && (
             <button
               onClick={handleActivate}
               disabled={activatePetition.isPending}
               className="bg-[var(--color-leaf-green)] text-[var(--color-ink-charcoal)] font-display-lg text-2xl uppercase font-black px-6 py-4 border-4 border-[var(--color-ink-charcoal)] shadow-[8px_8px_0px_0px_rgba(44,46,42,1)] hover:-translate-y-2 hover:shadow-[12px_12px_0px_0px_rgba(44,46,42,1)] active:translate-x-1 active:translate-y-1 active:shadow-none flex items-center justify-center gap-2 transition-all duration-200 disabled:opacity-50"
             >
-              {activatePetition.isPending ? <Loader2 size={24} className="animate-spin" /> : <Zap size={24} strokeWidth={3} />}
+              {activatePetition.isPending ? (
+                <Loader2 size={24} className="animate-spin" />
+              ) : (
+                <Zap size={24} strokeWidth={3} />
+              )}
               ACTIVATE
             </button>
           )}

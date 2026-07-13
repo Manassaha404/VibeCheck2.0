@@ -7,7 +7,7 @@ export const pollDraftSchema = z.object({
       z.object({
         id: z.string(),
         text: z.string().min(1, "Option text is required"),
-      })
+      }),
     )
     .min(2, "At least two options are required"),
   tags: z.array(z.string()).max(10, "Maximum 10 tags allowed"),

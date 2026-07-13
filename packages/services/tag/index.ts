@@ -45,25 +45,27 @@ class TagService {
 
     const requestedTags = Array.from(
       new Set(
-        (tagsArray || [])
-          .map((t) => t.trim())
-          .filter((t) => t.length > 0)
-      )
+        (tagsArray || []).map((t) => t.trim()).filter((t) => t.length > 0),
+      ),
     );
 
-    const tagsToAdd = requestedTags.filter((t) => !existingTagTexts.includes(t));
+    const tagsToAdd = requestedTags.filter(
+      (t) => !existingTagTexts.includes(t),
+    );
     const tagsToRemove = existingPollTags.filter(
-      (t) => !requestedTags.includes(t.text)
+      (t) => !requestedTags.includes(t.text),
     );
 
     if (tagsToRemove.length > 0) {
       const idsToRemove = tagsToRemove.map((t) => t.tagId);
-      await db.delete(pollTags).where(
-        and(
-          eq(pollTags.pollId, pollId),
-          inArray(pollTags.tagId, idsToRemove)
-        )
-      );
+      await db
+        .delete(pollTags)
+        .where(
+          and(
+            eq(pollTags.pollId, pollId),
+            inArray(pollTags.tagId, idsToRemove),
+          ),
+        );
     }
 
     if (tagsToAdd.length > 0) {
@@ -81,9 +83,9 @@ class TagService {
 
       if (newTagIds.length > 0) {
         const uniqueTagIds = Array.from(new Set(newTagIds));
-        await db.insert(pollTags).values(
-          uniqueTagIds.map((tagId) => ({ pollId, tagId }))
-        );
+        await db
+          .insert(pollTags)
+          .values(uniqueTagIds.map((tagId) => ({ pollId, tagId })));
       }
     }
   }
@@ -99,25 +101,27 @@ class TagService {
 
     const requestedTags = Array.from(
       new Set(
-        (tagsArray || [])
-          .map((t) => t.trim())
-          .filter((t) => t.length > 0)
-      )
+        (tagsArray || []).map((t) => t.trim()).filter((t) => t.length > 0),
+      ),
     );
 
-    const tagsToAdd = requestedTags.filter((t) => !existingTagTexts.includes(t));
+    const tagsToAdd = requestedTags.filter(
+      (t) => !existingTagTexts.includes(t),
+    );
     const tagsToRemove = existingPetitionTags.filter(
-      (t) => !requestedTags.includes(t.text)
+      (t) => !requestedTags.includes(t.text),
     );
 
     if (tagsToRemove.length > 0) {
       const idsToRemove = tagsToRemove.map((t) => t.tagId);
-      await db.delete(petitionTags).where(
-        and(
-          eq(petitionTags.petitionId, petitionId),
-          inArray(petitionTags.tagId, idsToRemove)
-        )
-      );
+      await db
+        .delete(petitionTags)
+        .where(
+          and(
+            eq(petitionTags.petitionId, petitionId),
+            inArray(petitionTags.tagId, idsToRemove),
+          ),
+        );
     }
 
     if (tagsToAdd.length > 0) {
@@ -135,9 +139,9 @@ class TagService {
 
       if (newTagIds.length > 0) {
         const uniqueTagIds = Array.from(new Set(newTagIds));
-        await db.insert(petitionTags).values(
-          uniqueTagIds.map((tagId) => ({ petitionId, tagId }))
-        );
+        await db
+          .insert(petitionTags)
+          .values(uniqueTagIds.map((tagId) => ({ petitionId, tagId })));
       }
     }
   }

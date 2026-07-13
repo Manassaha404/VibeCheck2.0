@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { trpc } from "@/trpc/client";
-import { toast } from "sonner";
+
 import socket from "@/lib/socket";
 
 export interface LocalResult {
@@ -20,7 +20,7 @@ export const useGetPublicPoll = (username: string, slug: string) => {
 
   const query = trpc.poll.getPublicPollBySlug.useQuery(
     { username, slug },
-    { enabled: !!username && !!slug }
+    { enabled: !!username && !!slug },
   );
 
   // Synchronize state if user has already voted
@@ -28,40 +28,53 @@ export const useGetPublicPoll = (username: string, slug: string) => {
     if (query.data?.userVoteId && query.data?.results) {
       setVoted(true);
       setSelectedOptionId(query.data.userVoteId);
-      
+
       const results = query.data.results as any[];
-      const total = results.reduce((s: number, o: any) => s + (o.votes || 0), 0);
+      const total = results.reduce(
+        (s: number, o: any) => s + (o.votes || 0),
+        0,
+      );
       setLocalTotalVotes(total);
-      
-      setLocalResults(results.map((o: any) => ({
-        pollOptionId: o.pollOptionId ?? o.id,
-        text: o.text,
-        votes: o.votes || 0,
-        percentage: total > 0 ? Math.round(((o.votes || 0) / total) * 100) : 0,
-      })));
+
+      setLocalResults(
+        results.map((o: any) => ({
+          pollOptionId: o.pollOptionId ?? o.id,
+          text: o.text,
+          votes: o.votes || 0,
+          percentage:
+            total > 0 ? Math.round(((o.votes || 0) / total) * 100) : 0,
+        })),
+      );
     }
   }, [query.data?.userVoteId, query.data?.results]);
 
-  
   useEffect(() => {
     //function for update vote count
     const handleVoteUpdate = (payload: any) => {
       const { pollId, pollData } = payload;
       if (pollId === query.data?.poll?.pollId && pollData?.optionId) {
         setLocalResults((prev) => {
-          const base = prev.length > 0 ? prev : (query.data?.options?.map(o => ({...o, votes: 0, percentage: 0})) ?? []);
+          const base =
+            prev.length > 0
+              ? prev
+              : (query.data?.options?.map((o) => ({
+                  ...o,
+                  votes: 0,
+                  percentage: 0,
+                })) ?? []);
           const updated = base.map((o) =>
             o.pollOptionId === pollData.optionId
               ? { ...o, votes: (o.votes || 0) + 1 }
-              : o
+              : o,
           );
           const total = updated.reduce((s, o) => s + (o.votes || 0), 0);
-          
+
           setLocalTotalVotes(total); // Keep total in sync
-          
+
           return updated.map((o) => ({
             ...o,
-            percentage: total > 0 ? Math.round(((o.votes || 0) / total) * 100) : 0,
+            percentage:
+              total > 0 ? Math.round(((o.votes || 0) / total) * 100) : 0,
           }));
         });
       }
@@ -87,22 +100,38 @@ export const useGetPublicPoll = (username: string, slug: string) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [query.data?.poll?.pollId, hasViewed]);
 
-  const handleSubmitVote = async (voteData: { optionId: string; comment: string }) => {
+  const handleSubmitVote = async (voteData: {
+    optionId: string;
+    comment: string;
+  }) => {
     setIsSubmitting(true);
     try {
       //fetch form from database
-      const realResults = await trpcContext.client.poll.getPublicPollResultsBySlug.query({ username, slug });
-      
+      const realResults =
+        await trpcContext.client.poll.getPublicPollResultsBySlug.query({
+          username,
+          slug,
+        });
+
       // Optimistic update: use the real results as the base, and add the user's new vote
       setLocalResults((prev) => {
-        const base = realResults && realResults.length > 0 ? realResults : (query.data?.options?.map(o => ({...o, votes: 0, percentage: 0})) ?? []);
+        const base =
+          realResults && realResults.length > 0
+            ? realResults
+            : (query.data?.options?.map((o) => ({
+                ...o,
+                votes: 0,
+                percentage: 0,
+              })) ?? []);
         const updated = base.map((o) =>
-          o.pollOptionId === voteData.optionId ? { ...o, votes: (o.votes || 0) + 1 } : o
+          o.pollOptionId === voteData.optionId
+            ? { ...o, votes: (o.votes || 0) + 1 }
+            : o,
         );
         const total = updated.reduce((s, o) => s + o.votes, 0);
-        
+
         setLocalTotalVotes(total);
-        
+
         return updated.map((o) => ({
           ...o,
           percentage: total > 0 ? Math.round((o.votes / total) * 100) : 0,
@@ -126,12 +155,10 @@ export const useGetPublicPoll = (username: string, slug: string) => {
         comment: voteData.comment,
       });
 
-      
       window.scrollTo({ top: 0, behavior: "smooth" });
       await new Promise((r) => setTimeout(r, 350));
       setVoted(true);
     } catch {
-      toast.error("Failed to submit vote. Please try again.");
     } finally {
       setIsSubmitting(false);
     }

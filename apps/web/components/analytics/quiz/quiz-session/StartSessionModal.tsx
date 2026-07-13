@@ -27,7 +27,11 @@ const ACCENT_ICONS = [
   { icon: Sparkles, color: "var(--color-sky-blue)", label: "Fun" },
 ];
 
-export function StartSessionModal({ isOpen, onClose, quizIdStr }: StartSessionModalProps) {
+export function StartSessionModal({
+  isOpen,
+  onClose,
+  quizIdStr,
+}: StartSessionModalProps) {
   const [sessionName, setSessionName] = useState("");
   const [isFocused, setIsFocused] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -55,8 +59,8 @@ export function StartSessionModal({ isOpen, onClose, quizIdStr }: StartSessionMo
     charRatio > 0.9
       ? "var(--color-vivid-coral)"
       : charRatio > 0.65
-      ? "var(--color-tangerine)"
-      : "var(--color-leaf-green)";
+        ? "var(--color-tangerine)"
+        : "var(--color-leaf-green)";
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
@@ -69,7 +73,6 @@ export function StartSessionModal({ isOpen, onClose, quizIdStr }: StartSessionMo
           backgroundSize: "24px 24px",
         }}
       >
-
         {/* ── Colourful top accent bar ────────────────────────── */}
         <div className="flex h-2 w-full">
           <div className="flex-1 bg-[var(--color-leaf-green)]" />
@@ -80,7 +83,6 @@ export function StartSessionModal({ isOpen, onClose, quizIdStr }: StartSessionMo
         </div>
 
         <div className="p-8 flex flex-col gap-7">
-
           {/* ── Header ──────────────────────────────────────────── */}
           <DialogHeader className="gap-3">
             {/* Badge row */}
@@ -98,7 +100,10 @@ export function StartSessionModal({ isOpen, onClose, quizIdStr }: StartSessionMo
                     className="w-8 h-8 border-2 border-[var(--color-ink-charcoal)] flex items-center justify-center shadow-hard-sm hover-lift cursor-default"
                     style={{ backgroundColor: color }}
                   >
-                    <Icon className="w-3.5 h-3.5 text-[var(--color-ink-charcoal)]" strokeWidth={2.5} />
+                    <Icon
+                      className="w-3.5 h-3.5 text-[var(--color-ink-charcoal)]"
+                      strokeWidth={2.5}
+                    />
                   </div>
                 ))}
               </div>
@@ -173,9 +178,10 @@ export function StartSessionModal({ isOpen, onClose, quizIdStr }: StartSessionMo
               <span
                 className="text-label-sm font-body tabular-nums"
                 style={{
-                  color: charRatio > 0.9
-                    ? "var(--color-vivid-coral)"
-                    : "var(--color-ink-charcoal)",
+                  color:
+                    charRatio > 0.9
+                      ? "var(--color-vivid-coral)"
+                      : "var(--color-ink-charcoal)",
                   opacity: sessionName.length > 0 ? 1 : 0.35,
                 }}
               >
@@ -185,7 +191,6 @@ export function StartSessionModal({ isOpen, onClose, quizIdStr }: StartSessionMo
           </div>
 
           {/* ── Tip chip ────────────────────────────────────────── */}
-          
 
           {/* ── Footer ──────────────────────────────────────────── */}
           <DialogFooter className="sm:justify-end gap-3 flex-col-reverse sm:flex-row mt-1">
@@ -200,7 +205,9 @@ export function StartSessionModal({ isOpen, onClose, quizIdStr }: StartSessionMo
             <button
               id="start-session-btn"
               onClick={handleStartSession}
-              disabled={!sessionName.trim() || makeQuizSessionMutation.isPending}
+              disabled={
+                !sessionName.trim() || makeQuizSessionMutation.isPending
+              }
               className="relative overflow-hidden bg-[var(--color-leaf-green)] disabled:opacity-40 disabled:cursor-not-allowed disabled:shadow-none disabled:[transform:none] text-label-md font-display font-bold text-[var(--color-ink-charcoal)] px-8 py-4 border-4 border-[var(--color-ink-charcoal)] shadow-hard btn-press transition-all flex items-center justify-center w-full sm:w-auto gap-2 uppercase tracking-widest"
             >
               {/* Animated shimmer on hover (CSS-only via pseudo, handled via group) */}

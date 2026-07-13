@@ -15,21 +15,19 @@ import {
   Link2,
   Smartphone,
   Zap,
-  Globe
+  Globe,
 } from "lucide-react";
 
-import Navbar          from "@/components/Navbar";
-import Footer              from "@/components/Footer";
-import HeroSection     from "@/components/Landing/HeroSection";
-import TrendingCard    from "@/components/Landing/TrendingCard";
-import PollCard        from "@/components/Landing/PollCard";
-import CreateCard      from "@/components/Landing/CreateCard";
-import TestimonialCard     from "@/components/Landing/TestimonialCard";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
+import HeroSection from "@/components/Landing/HeroSection";
+import TrendingCard from "@/components/Landing/TrendingCard";
+import PollCard from "@/components/Landing/PollCard";
+import CreateCard from "@/components/Landing/CreateCard";
+import TestimonialCard from "@/components/Landing/TestimonialCard";
 
-import HowItWorksSection     from "@/components/Landing/HowItWorksSection";
-import SeeItInActionSection  from "@/components/Landing/SeeItInActionSection";
-
-
+import HowItWorksSection from "@/components/Landing/HowItWorksSection";
+import SeeItInActionSection from "@/components/Landing/SeeItInActionSection";
 
 const createCards = [
   {
@@ -92,7 +90,8 @@ const trendingPolls = [
 
 const testimonials = [
   {
-    quote: "We ran our entire product survey on VibeCheck — 4,000 responses in a single afternoon. Insane.",
+    quote:
+      "We ran our entire product survey on VibeCheck — 4,000 responses in a single afternoon. Insane.",
     author: "Priya M.",
     role: "Product Manager @ Notion",
     avatar: "🚀",
@@ -100,7 +99,8 @@ const testimonials = [
     id: "testimonial-1",
   },
   {
-    quote: "The neubrutalist design made our student council polls go viral on campus Instagram. 10/10.",
+    quote:
+      "The neubrutalist design made our student council polls go viral on campus Instagram. 10/10.",
     author: "Jordan K.",
     role: "Student Council President",
     avatar: "⚡",
@@ -108,7 +108,8 @@ const testimonials = [
     id: "testimonial-2",
   },
   {
-    quote: "Creating a petition used to mean Google Forms + manual counting. VibeCheck eliminated both.",
+    quote:
+      "Creating a petition used to mean Google Forms + manual counting. VibeCheck eliminated both.",
     author: "Aisha L.",
     role: "Community Organiser",
     avatar: "🌿",
@@ -127,14 +128,17 @@ const accentStrip = [
   "var(--color-lavender)",
 ];
 
-
 export default function LandingPage() {
   return (
     <>
       <Navbar />
       <div className="w-full flex h-2 overflow-hidden">
         {accentStrip.map((c, i) => (
-          <div key={i} className="flex-1 h-full" style={{ backgroundColor: c }} />
+          <div
+            key={i}
+            className="flex-1 h-full"
+            style={{ backgroundColor: c }}
+          />
         ))}
       </div>
 
@@ -155,7 +159,8 @@ export default function LandingPage() {
                 What will you create?
               </h2>
               <p className="text-body-lg text-[var(--color-on-surface-variant)] max-w-xl">
-                Pick your format and go live in seconds — no account required for the first one.
+                Pick your format and go live in seconds — no account required
+                for the first one.
               </p>
             </div>
 
@@ -165,7 +170,12 @@ export default function LandingPage() {
                   key={c.id}
                   initial={{ opacity: 0, y: 40, rotate: i % 2 === 0 ? -3 : 3 }}
                   whileInView={{ opacity: 1, y: 0, rotate: 0 }}
-                  transition={{ type: "spring", stiffness: 110, damping: 14, delay: i * 0.1 }}
+                  transition={{
+                    type: "spring",
+                    stiffness: 110,
+                    damping: 14,
+                    delay: i * 0.1,
+                  }}
                   viewport={{ once: true, amount: 0.2 }}
                 >
                   <CreateCard {...c} />
@@ -297,7 +307,10 @@ export default function LandingPage() {
                   <button
                     key={filter}
                     className="border-2 border-[var(--color-ink-charcoal)] px-4 py-1 rounded-full text-label-md font-bold hover:bg-[var(--color-leaf-green)] transition-colors theme-transition"
-                    style={{ backgroundColor: "var(--color-pure-white)", color: "var(--color-ink-charcoal)" }}
+                    style={{
+                      backgroundColor: "var(--color-pure-white)",
+                      color: "var(--color-ink-charcoal)",
+                    }}
                   >
                     {filter}
                   </button>
@@ -327,7 +340,8 @@ export default function LandingPage() {
               Creators love it.
             </h2>
             <p className="text-body-lg text-[var(--color-on-surface-variant)]">
-              Thousands of communities, classrooms, and companies vibe with VibeCheck daily.
+              Thousands of communities, classrooms, and companies vibe with
+              VibeCheck daily.
             </p>
           </div>
 
@@ -352,14 +366,46 @@ export default function LandingPage() {
             </h2>
             <div className="flex flex-wrap justify-center gap-4">
               {[
-                { icon: <Vote size={20} />, label: "Real-time Results", color: "var(--color-leaf-green)" },
-                { icon: <Lock size={20} />, label: "Privacy Controls", color: "var(--color-electric-sun)" },
-                { icon: <BarChart size={20} />, label: "Live Analytics", color: "var(--color-vivid-coral)" },
-                { icon: <Palette size={20} />, label: "Custom Themes", color: "var(--color-sky-blue)" },
-                { icon: <Link2 size={20} />, label: "Shareable Links", color: "var(--color-mint)" },
-                { icon: <Smartphone size={20} />, label: "Mobile First", color: "var(--color-lavender)" },
-                { icon: <Zap size={20} />, label: "No Signup Needed", color: "var(--color-electric-sun)" },
-                { icon: <Globe size={20} />, label: "Multilingual", color: "var(--color-leaf-green)" },
+                {
+                  icon: <Vote size={20} />,
+                  label: "Real-time Results",
+                  color: "var(--color-leaf-green)",
+                },
+                {
+                  icon: <Lock size={20} />,
+                  label: "Privacy Controls",
+                  color: "var(--color-electric-sun)",
+                },
+                {
+                  icon: <BarChart size={20} />,
+                  label: "Live Analytics",
+                  color: "var(--color-vivid-coral)",
+                },
+                {
+                  icon: <Palette size={20} />,
+                  label: "Custom Themes",
+                  color: "var(--color-sky-blue)",
+                },
+                {
+                  icon: <Link2 size={20} />,
+                  label: "Shareable Links",
+                  color: "var(--color-mint)",
+                },
+                {
+                  icon: <Smartphone size={20} />,
+                  label: "Mobile First",
+                  color: "var(--color-lavender)",
+                },
+                {
+                  icon: <Zap size={20} />,
+                  label: "No Signup Needed",
+                  color: "var(--color-electric-sun)",
+                },
+                {
+                  icon: <Globe size={20} />,
+                  label: "Multilingual",
+                  color: "var(--color-leaf-green)",
+                },
               ].map(({ icon, label, color }) => (
                 <motion.div
                   key={label}
@@ -368,7 +414,9 @@ export default function LandingPage() {
                   className="flex items-center gap-2 border-2 border-[var(--color-ink-dark)] px-5 py-3 shadow-hard font-bold text-[var(--color-ink-dark)] text-label-md cursor-pointer"
                   style={{ backgroundColor: color }}
                 >
-                  <span className="text-[var(--color-ink-dark)] leading-none flex items-center">{icon}</span>
+                  <span className="text-[var(--color-ink-dark)] leading-none flex items-center">
+                    {icon}
+                  </span>
                   {label}
                 </motion.div>
               ))}
@@ -405,20 +453,29 @@ export default function LandingPage() {
               transition={{ delay: 0.25, duration: 0.5 }}
               viewport={{ once: true }}
             >
-              Create your first poll, quiz, or form — free, no credit card needed.
+              Create your first poll, quiz, or form — free, no credit card
+              needed.
             </motion.p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.96, x: 3, y: 3 }}>
+              <motion.div
+                whileHover={{ scale: 1.04 }}
+                whileTap={{ scale: 0.96, x: 3, y: 3 }}
+              >
                 <Link
                   href="/auth/signup"
                   id="cta-get-started"
                   className="bg-[var(--color-ink-charcoal)] text-[var(--color-canvas-cream)] border-4 border-[var(--color-ink-charcoal)] px-10 py-4 text-headline-sm font-display font-bold shadow-hard inline-block"
-                  style={{ boxShadow: "4px 4px 0px 0px var(--color-canvas-cream)" }}
+                  style={{
+                    boxShadow: "4px 4px 0px 0px var(--color-canvas-cream)",
+                  }}
                 >
                   Get Started Free
                 </Link>
               </motion.div>
-              <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.96, x: 3, y: 3 }}>
+              <motion.div
+                whileHover={{ scale: 1.04 }}
+                whileTap={{ scale: 0.96, x: 3, y: 3 }}
+              >
                 <Link
                   href="/explore"
                   id="cta-explore"
@@ -427,7 +484,10 @@ export default function LandingPage() {
                   Explore Vibes
                 </Link>
               </motion.div>
-              <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.96, x: 3, y: 3 }}>
+              <motion.div
+                whileHover={{ scale: 1.04 }}
+                whileTap={{ scale: 0.96, x: 3, y: 3 }}
+              >
                 <Link
                   href="/create"
                   id="cta-create"

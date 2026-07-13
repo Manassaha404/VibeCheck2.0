@@ -44,10 +44,18 @@ export function DemographicInsights({ data }: DemographicInsightsProps) {
           <PolarGrid stroke="#2C2E2A" strokeOpacity={0.15} />
           <PolarAngleAxis
             dataKey="label"
-            tick={{ fontSize: 12, fontFamily: "Hanken Grotesk", fill: "#2C2E2A" }}
+            tick={{
+              fontSize: 12,
+              fontFamily: "Hanken Grotesk",
+              fill: "#2C2E2A",
+            }}
           />
           <PolarRadiusAxis
-            tick={{ fontSize: 10, fontFamily: "Hanken Grotesk", fill: "#2C2E2A" }}
+            tick={{
+              fontSize: 10,
+              fontFamily: "Hanken Grotesk",
+              fill: "#2C2E2A",
+            }}
             axisLine={false}
           />
           <Radar
@@ -59,7 +67,10 @@ export function DemographicInsights({ data }: DemographicInsightsProps) {
             strokeWidth={2}
           />
           <Tooltip
-            formatter={(value) => [typeof value === "number" ? `${value}%` : value, "Share"]}
+            formatter={(value) => [
+              typeof value === "number" ? `${value}%` : value,
+              "Share",
+            ]}
             contentStyle={{
               background: "#FFFFFF",
               border: "2px solid #2C2E2A",

@@ -1,8 +1,13 @@
-import L from 'leaflet';
-import { useMap } from 'react-leaflet/hooks';
+import L from "leaflet";
+import { useMap } from "react-leaflet/hooks";
 
-
-export const createCustomIcon = (name: string, count: string, heatLevel: number, color: string, shadowColor: string) => {
+export const createCustomIcon = (
+  name: string,
+  count: string,
+  heatLevel: number,
+  color: string,
+  shadowColor: string,
+) => {
   const html = `
     <div style="position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; transform: translate(-50%, -50%); pointer-events: none;">
       <div style="
@@ -51,9 +56,8 @@ export const createCustomIcon = (name: string, count: string, heatLevel: number,
   `;
   return L.divIcon({
     html,
-    className: 'custom-leaflet-icon',
+    className: "custom-leaflet-icon",
     iconSize: [0, 0],
     iconAnchor: [0, 0],
   });
 };
-

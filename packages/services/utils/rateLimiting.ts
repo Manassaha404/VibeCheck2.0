@@ -3,7 +3,7 @@ import redis from "../redis";
 const WINDOW_SIZE_IN_SECONDS = 60;
 const MAX_REQUESTS = 100;
 
-const rateLimiter = async (req: Request, res: Response, next:NextFunction) => {
+const rateLimiter = async (req: Request, res: Response, next: NextFunction) => {
   const ip = req.ip || req.socket.remoteAddress;
   const key = `rate-limit-${ip}`;
   const now = new Date();
@@ -21,13 +21,13 @@ const rateLimiter = async (req: Request, res: Response, next:NextFunction) => {
     const requestCount = (results?.[2]?.[1] as number) ?? 0;
     if (requestCount > MAX_REQUESTS) {
       return res.status(429).json({
-        error: 'Too many requests. Please try again later.',
-        retryAfter: WINDOW_SIZE_IN_SECONDS
+        error: "Too many requests. Please try again later.",
+        retryAfter: WINDOW_SIZE_IN_SECONDS,
       });
     }
     next();
   } catch (error) {
-    console.error('Rate limiting error:', error);
+    console.error("Rate limiting error:", error);
     // Fail open: If Redis goes down, allow the request so API doesn't crash
     next();
   }

@@ -16,7 +16,10 @@ export const petitionRouter = router({
     .input(createPetitionDto)
     .mutation(async ({ input, ctx }) => {
       try {
-        const petition = await petitionService.createPetition(ctx.user.id, input);
+        const petition = await petitionService.createPetition(
+          ctx.user.id,
+          input,
+        );
         return { message: "Petition created successfully", petition };
       } catch (error) {
         handleRouteError(error);
@@ -34,9 +37,14 @@ export const petitionRouter = router({
     }),
   getPetitionForSign: publicProcedure
     .input(getPetitionForSignDto)
-    .query(async ({ input,ctx }) => {
+    .query(async ({ input, ctx }) => {
       try {
-        return await petitionService.getPetitionForSign(input.username, input.slug, ctx.user?.id, ctx.guestToken);
+        return await petitionService.getPetitionForSign(
+          input.username,
+          input.slug,
+          ctx.user?.id,
+          ctx.guestToken,
+        );
       } catch (error) {
         handleRouteError(error);
       }
@@ -45,20 +53,23 @@ export const petitionRouter = router({
     .input(signPetitionDto)
     .mutation(async ({ input, ctx }) => {
       try {
-        return await petitionService.signPetition(input, ctx.user?.id, ctx.guestToken);
+        return await petitionService.signPetition(
+          input,
+          ctx.user?.id,
+          ctx.guestToken,
+        );
       } catch (error) {
         handleRouteError(error);
       }
     }),
 
-  getDashboard: protectedProcedure
-    .query(async ({ ctx }) => {
-      try {
-        return await petitionService.getDashboardItems(ctx.user.id);
-      } catch (error) {
-        handleRouteError(error);
-      }
-    }),
+  getDashboard: protectedProcedure.query(async ({ ctx }) => {
+    try {
+      return await petitionService.getDashboardItems(ctx.user.id);
+    } catch (error) {
+      handleRouteError(error);
+    }
+  }),
 
   archiveItem: protectedProcedure
     .input(archivePetitionDto)

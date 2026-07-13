@@ -10,7 +10,7 @@ export const useGetQuizDashboard = (quizId: string | null) => {
         enabled: !!quizId,
         staleTime: 1000 * 60 * 2,
         retry: 1,
-      }
+      },
     );
 
   return {

@@ -1,11 +1,37 @@
 import React, { useState } from "react";
-import { User, Mail, MessageSquare, Hash, Phone, Calendar, CheckSquare, List, CircleDot, Star, Smile, Upload, File as FileIcon, Loader2 } from "lucide-react";
+import {
+  User,
+  Mail,
+  MessageSquare,
+  Hash,
+  Phone,
+  Calendar,
+  CheckSquare,
+  List,
+  CircleDot,
+  Star,
+  Smile,
+  Upload,
+  File as FileIcon,
+  Loader2,
+} from "lucide-react";
 import { trpc } from "@/trpc/client";
 
 export type FieldType =
-  | "short_text" | "long_text" | "number" | "email" | "phone"
-  | "date" | "select" | "multi_select" | "radio" | "checkbox"
-  | "rating" | "scale" | "mood" | "file";
+  | "short_text"
+  | "long_text"
+  | "number"
+  | "email"
+  | "phone"
+  | "date"
+  | "select"
+  | "multi_select"
+  | "radio"
+  | "checkbox"
+  | "rating"
+  | "scale"
+  | "mood"
+  | "file";
 
 export interface Field {
   fieldId: string;
@@ -28,21 +54,34 @@ const MOOD_OPTIONS = [
 
 function getFieldIcon(type: FieldType) {
   switch (type) {
-    case "short_text": return <User size={20} />;
-    case "long_text": return <MessageSquare size={20} />;
-    case "email": return <Mail size={20} />;
-    case "number": return <Hash size={20} />;
-    case "phone": return <Phone size={20} />;
-    case "date": return <Calendar size={20} />;
+    case "short_text":
+      return <User size={20} />;
+    case "long_text":
+      return <MessageSquare size={20} />;
+    case "email":
+      return <Mail size={20} />;
+    case "number":
+      return <Hash size={20} />;
+    case "phone":
+      return <Phone size={20} />;
+    case "date":
+      return <Calendar size={20} />;
     case "checkbox":
-    case "multi_select": return <CheckSquare size={20} />;
-    case "select": return <List size={20} />;
-    case "radio": return <CircleDot size={20} />;
+    case "multi_select":
+      return <CheckSquare size={20} />;
+    case "select":
+      return <List size={20} />;
+    case "radio":
+      return <CircleDot size={20} />;
     case "rating":
-    case "scale": return <Star size={20} />;
-    case "mood": return <Smile size={20} />;
-    case "file": return <Upload size={20} />;
-    default: return null;
+    case "scale":
+      return <Star size={20} />;
+    case "mood":
+      return <Smile size={20} />;
+    case "file":
+      return <Upload size={20} />;
+    default:
+      return null;
   }
 }
 
@@ -67,22 +106,35 @@ export function FieldInput({
     "border-[3px] border-[var(--color-ink-charcoal)] bg-white shadow-hard-sm transition-all focus-within:border-[var(--color-electric-sun)] focus-within:shadow-[0_0_0_4px_var(--color-electric-sun),4px_4px_0px_0px_var(--color-ink-charcoal)] relative overflow-hidden";
 
   return (
-    <div id={`field-container-${field.fieldId}`} className="space-y-3 group animate-fade-up">
+    <div
+      id={`field-container-${field.fieldId}`}
+      className="space-y-3 group animate-fade-up"
+    >
       <label className="text-headline-sm font-bold text-[var(--color-ink-charcoal)] block group-hover:text-[var(--color-primary)] transition-colors flex items-center gap-2">
         {getFieldIcon(field.type)}
         {field.label}
-        {field.isRequired && <span className="text-[var(--color-error)]">*</span>}
+        {field.isRequired && (
+          <span className="text-[var(--color-error)]">*</span>
+        )}
       </label>
       {field.helperText && (
         <p className="text-body-md opacity-70 mt-1">{field.helperText}</p>
       )}
 
       {/* ── Text types ── */}
-      {(field.type === "short_text" || field.type === "email" || field.type === "phone") && (
+      {(field.type === "short_text" ||
+        field.type === "email" ||
+        field.type === "phone") && (
         <div className={inputWrapper}>
           <input
             id={`field-${field.fieldId}`}
-            type={field.type === "email" ? "email" : field.type === "phone" ? "tel" : "text"}
+            type={
+              field.type === "email"
+                ? "email"
+                : field.type === "phone"
+                  ? "tel"
+                  : "text"
+            }
             placeholder={field.placeholder ?? ""}
             value={(value as string) ?? ""}
             onChange={(e) => onChange(e.target.value)}
@@ -137,25 +189,31 @@ export function FieldInput({
           >
             <option value="">Choose an option…</option>
             {field.options?.map((opt) => (
-              <option key={opt.id} value={opt.id}>{opt.value}</option>
+              <option key={opt.id} value={opt.id}>
+                {opt.value}
+              </option>
             ))}
           </select>
         </div>
       )}
 
       {/* ── Radio / Checkbox / Multi Select ── */}
-      {(field.type === "radio" || field.type === "checkbox" || field.type === "multi_select") && (
+      {(field.type === "radio" ||
+        field.type === "checkbox" ||
+        field.type === "multi_select") && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {field.options?.map((opt) => {
             const isRadio = field.type === "radio";
             const selected = isRadio
               ? value === opt.id
-              : Array.isArray(value) ? (value as string[]).includes(opt.id) : false;
+              : Array.isArray(value)
+                ? (value as string[]).includes(opt.id)
+                : false;
 
             return (
               <label
                 key={opt.id}
-                id={`${isRadio ? 'radio' : 'check'}-${field.fieldId}-${opt.id}`}
+                id={`${isRadio ? "radio" : "check"}-${field.fieldId}-${opt.id}`}
                 className="cursor-pointer group/opt"
               >
                 <input
@@ -167,19 +225,32 @@ export function FieldInput({
                     if (isRadio) {
                       onChange(opt.id);
                     } else {
-                      const cur = Array.isArray(value) ? (value as string[]) : [];
-                      onChange(selected ? cur.filter((v) => v !== opt.id) : [...cur, opt.id]);
+                      const cur = Array.isArray(value)
+                        ? (value as string[])
+                        : [];
+                      onChange(
+                        selected
+                          ? cur.filter((v) => v !== opt.id)
+                          : [...cur, opt.id],
+                      );
                     }
                   }}
                   className="peer sr-only"
                 />
-                <div className={`border-[3px] border-[var(--color-ink-charcoal)] bg-white p-4 transition-all flex items-center gap-3 ${selected
-                    ? "bg-[var(--color-electric-sun)] shadow-hard"
-                    : "hover:bg-[var(--color-canvas-cream)]"
-                  }`}>
-                  <div className={`w-5 h-5 border-[3px] border-[var(--color-ink-charcoal)] flex items-center justify-center flex-shrink-0 bg-white ${isRadio ? "rounded-full" : "rounded"}`}>
+                <div
+                  className={`border-[3px] border-[var(--color-ink-charcoal)] bg-white p-4 transition-all flex items-center gap-3 ${
+                    selected
+                      ? "bg-[var(--color-electric-sun)] shadow-hard"
+                      : "hover:bg-[var(--color-canvas-cream)]"
+                  }`}
+                >
+                  <div
+                    className={`w-5 h-5 border-[3px] border-[var(--color-ink-charcoal)] flex items-center justify-center flex-shrink-0 bg-white ${isRadio ? "rounded-full" : "rounded"}`}
+                  >
                     {selected && (
-                      <div className={`bg-[var(--color-ink-charcoal)] ${isRadio ? "w-2.5 h-2.5 rounded-full" : "w-2.5 h-2.5"}`} />
+                      <div
+                        className={`bg-[var(--color-ink-charcoal)] ${isRadio ? "w-2.5 h-2.5 rounded-full" : "w-2.5 h-2.5"}`}
+                      />
                     )}
                   </div>
                   <span className="text-body-lg font-bold">{opt.value}</span>
@@ -203,7 +274,9 @@ export function FieldInput({
                 onChange={() => onChange(n)}
                 className="peer sr-only"
               />
-              <div className={`border-[3px] border-[var(--color-ink-charcoal)] bg-white w-14 h-14 flex flex-col items-center justify-center transition-all peer-checked:bg-[var(--color-electric-sun)] peer-checked:shadow-hard hover:bg-[var(--color-canvas-cream)]`}>
+              <div
+                className={`border-[3px] border-[var(--color-ink-charcoal)] bg-white w-14 h-14 flex flex-col items-center justify-center transition-all peer-checked:bg-[var(--color-electric-sun)] peer-checked:shadow-hard hover:bg-[var(--color-canvas-cream)]`}
+              >
                 <span className="text-2xl">⭐</span>
               </div>
             </label>
@@ -224,7 +297,9 @@ export function FieldInput({
                 onChange={() => onChange(n)}
                 className="peer sr-only"
               />
-              <div className={`border-[3px] border-[var(--color-ink-charcoal)] bg-white w-12 h-12 flex items-center justify-center transition-all text-body-lg font-bold peer-checked:bg-[var(--color-leaf-green)] peer-checked:shadow-hard hover:bg-[var(--color-canvas-cream)]`}>
+              <div
+                className={`border-[3px] border-[var(--color-ink-charcoal)] bg-white w-12 h-12 flex items-center justify-center transition-all text-body-lg font-bold peer-checked:bg-[var(--color-leaf-green)] peer-checked:shadow-hard hover:bg-[var(--color-canvas-cream)]`}
+              >
                 {n}
               </div>
             </label>
@@ -235,7 +310,14 @@ export function FieldInput({
       {/* ── Mood ── */}
       {field.type === "mood" && (
         <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-          {MOOD_OPTIONS.map((m) => (
+          {(field.options && field.options.length > 0
+            ? field.options.map((o) => ({
+                id: o.id,
+                emoji: o.id,
+                value: o.value,
+              }))
+            : MOOD_OPTIONS
+          ).map((m) => (
             <label key={m.id} className="cursor-pointer">
               <input
                 type="radio"
@@ -245,9 +327,13 @@ export function FieldInput({
                 onChange={() => onChange(m.id)}
                 className="peer sr-only"
               />
-              <div className={`border-[3px] border-[var(--color-ink-charcoal)] bg-white p-4 flex flex-col items-center gap-2 transition-all peer-checked:bg-[var(--color-electric-sun)] peer-checked:shadow-hard hover:bg-[var(--color-canvas-cream)]`}>
+              <div
+                className={`border-[3px] border-[var(--color-ink-charcoal)] bg-white p-4 flex flex-col items-center gap-2 transition-all peer-checked:bg-[var(--color-electric-sun)] peer-checked:shadow-hard hover:bg-[var(--color-canvas-cream)]`}
+              >
                 <span className="text-4xl">{m.emoji}</span>
-                <span className="text-label-md font-bold text-[var(--color-ink-charcoal)]">{m.value}</span>
+                <span className="text-label-md font-bold text-[var(--color-ink-charcoal)] text-center">
+                  {m.value}
+                </span>
               </div>
             </label>
           ))}
@@ -259,7 +345,10 @@ export function FieldInput({
         <div className={inputWrapper + " flex items-center p-4 gap-4"}>
           {value ? (
             <div className="flex items-center gap-3 w-full">
-              <FileIcon size={24} className="text-[var(--color-ink-charcoal)]" />
+              <FileIcon
+                size={24}
+                className="text-[var(--color-ink-charcoal)]"
+              />
               <span className="text-body-lg font-bold truncate flex-1">
                 {value instanceof File ? value.name : String(value)}
               </span>
@@ -276,7 +365,9 @@ export function FieldInput({
           ) : (
             <label className="cursor-pointer flex items-center gap-3 w-full hover:opacity-80 transition-opacity">
               <Upload size={24} className="text-[var(--color-ink-charcoal)]" />
-              <span className="text-body-lg font-bold text-[var(--color-ink-charcoal)] placeholder">Click to upload a file</span>
+              <span className="text-body-lg font-bold text-[var(--color-ink-charcoal)] placeholder">
+                Click to upload a file
+              </span>
               <input
                 type="file"
                 className="hidden"

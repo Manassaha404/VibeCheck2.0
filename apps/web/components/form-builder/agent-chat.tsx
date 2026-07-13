@@ -1,5 +1,13 @@
 import React, { useState, useRef, useEffect } from "react";
-import { MessageSquare, Send, X, Bot, User, Loader2, Trash2 } from "lucide-react";
+import {
+  MessageSquare,
+  Send,
+  X,
+  Bot,
+  User,
+  Loader2,
+  Trash2,
+} from "lucide-react";
 import { useAgentChat } from "@/hook/agent/useFormBuilderAgentChat";
 
 export function AgentChat() {
@@ -80,7 +88,9 @@ export function AgentChat() {
                     msg.role === "user" ? "flex-row-reverse" : "flex-row"
                   }`}
                 >
-                  <div className={`flex-shrink-0 w-8 h-8 rounded border-2 border-ink-charcoal flex items-center justify-center ${msg.role === "user" ? "bg-mint" : "bg-lavender"}`}>
+                  <div
+                    className={`flex-shrink-0 w-8 h-8 rounded border-2 border-ink-charcoal flex items-center justify-center ${msg.role === "user" ? "bg-mint" : "bg-lavender"}`}
+                  >
                     {msg.role === "user" ? (
                       <User className="w-5 h-5 text-ink-charcoal" />
                     ) : (
@@ -130,7 +140,9 @@ export function AgentChat() {
                     handleSend();
                   }
                 }}
-                placeholder={isReady ? "Ask agent to build..." : "Loading form..."}
+                placeholder={
+                  isReady ? "Ask agent to build..." : "Loading form..."
+                }
                 className="flex-1 bg-surface-container-low border-2 border-ink-charcoal rounded px-3 py-2 font-body-md focus:outline-none focus:ring-2 focus:ring-electric-sun focus:border-ink-charcoal transition-all placeholder:text-ink-charcoal/50"
                 disabled={isGenerating || !isReady}
               />
@@ -148,4 +160,3 @@ export function AgentChat() {
     </>
   );
 }
-

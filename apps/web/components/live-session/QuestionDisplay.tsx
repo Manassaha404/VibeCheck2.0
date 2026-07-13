@@ -1,5 +1,5 @@
-import React from 'react';
-import Image from 'next/image';
+import React from "react";
+import Image from "next/image";
 
 interface QuestionDisplayProps {
   currentQuestionIndex: number;
@@ -28,7 +28,7 @@ export default function QuestionDisplay({
         </div>
         <h2
           className="font-display font-black text-[var(--color-ink-charcoal)] mb-6 mt-4 uppercase max-w-4xl leading-tight"
-          style={{ fontSize: 'clamp(2rem, 4vw, 3.5rem)', lineHeight: 1.05 }}
+          style={{ fontSize: "clamp(2rem, 4vw, 3.5rem)", lineHeight: 1.05 }}
         >
           {questionText}
         </h2>

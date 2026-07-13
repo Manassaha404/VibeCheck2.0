@@ -18,17 +18,15 @@ const defaultDraft: PetitionDraftFormValues = {
   visibility: "public",
 };
 
-export const usePetitionStore = create<PetitionState>()(
-  (set) => ({
-    draft: null,
-    currentPetition: null,
-    setDraft: (newDraft) =>
-      set((state) => ({
-        draft: state.draft
-          ? { ...state.draft, ...newDraft }
-          : { ...defaultDraft, ...newDraft },
-      })),
-    setCurrentPetition: (petition) => set({ currentPetition: petition }),
-    reset: () => set({ draft: null, currentPetition: null }),
-  })
-);
+export const usePetitionStore = create<PetitionState>()((set) => ({
+  draft: null,
+  currentPetition: null,
+  setDraft: (newDraft) =>
+    set((state) => ({
+      draft: state.draft
+        ? { ...state.draft, ...newDraft }
+        : { ...defaultDraft, ...newDraft },
+    })),
+  setCurrentPetition: (petition) => set({ currentPetition: petition }),
+  reset: () => set({ draft: null, currentPetition: null }),
+}));

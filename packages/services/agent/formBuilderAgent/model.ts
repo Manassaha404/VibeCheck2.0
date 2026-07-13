@@ -23,11 +23,15 @@ export const FormFieldSchema = z.object({
   placeholder: z
     .string()
     .nullable()
-    .describe("Placeholder text for the field input. Set to null if not applicable."),
+    .describe(
+      "Placeholder text for the field input. Set to null if not applicable.",
+    ),
   helperText: z
     .string()
     .nullable()
-    .describe("Additional helper text or description for the field. Set to null if not needed."),
+    .describe(
+      "Additional helper text or description for the field. Set to null if not needed.",
+    ),
   isRequired: z
     .boolean()
     .default(false)
@@ -44,14 +48,18 @@ export const FormFieldSchema = z.object({
         id: z
           .string()
           .describe(
-            "A unique identifier for the option (can be a short slug or uuid)",
+            "A unique identifier for the option (can be a short slug or uuid, or an emoji for mood fields)",
           ),
-        value: z.string().describe("The display value of the option"),
+        value: z
+          .string()
+          .describe(
+            "The display value of the option (e.g. the label for a mood emoji)",
+          ),
       }),
     )
     .nullable()
     .describe(
-      "Options for select, multi_select, radio, and checkbox fields. Set to null for all other types.",
+      "Options for select, multi_select, radio, checkbox, and mood fields. Set to null for all other types.",
     ),
 });
 
@@ -64,14 +72,16 @@ export const FormGenerationSchema = z.object({
 export const GuardrailResultSchema = z.object({
   isValid: z
     .boolean()
-    .describe("Whether the content passes the guardrail checks. Must be true or false."),
+    .describe(
+      "Whether the content passes the guardrail checks. Must be true or false.",
+    ),
   reason: z
     .string()
     .nullable()
-    .describe("If isValid is false, explain why. If isValid is true, set this to null."),
+    .describe(
+      "If isValid is false, explain why. If isValid is true, set this to null.",
+    ),
 });
-
-
 
 export const runFormMakerAgentDto = z.object({
   userId: z.string(),
@@ -89,7 +99,7 @@ export const runFormMakerAgentDto = z.object({
         options: z
           .array(z.object({ id: z.string(), value: z.string() }))
           .optional(),
-      })
+      }),
     )
     .optional(),
 });
@@ -98,7 +108,6 @@ export const clearHistoryDto = z.object({
   userId: z.string(),
   formId: z.string(),
 });
-
 
 export type GeneratedForm = z.infer<typeof FormGenerationSchema>;
 export type GeneratedFormField = z.infer<typeof FormFieldSchema>;

@@ -10,15 +10,24 @@ export function PollSettingsPanel() {
   const visibility = watch("visibility");
 
   return (
-    <div className="bg-pure-white border-2 border-ink-charcoal shadow-hard-lg p-6 rounded-xl flex flex-col gap-6 relative overflow-hidden card-lift animate-fade-up" style={{ animationDelay: '300ms' }}>
+    <div
+      className="bg-pure-white border-2 border-ink-charcoal shadow-hard-lg p-6 rounded-xl flex flex-col gap-6 relative overflow-hidden card-lift animate-fade-up"
+      style={{ animationDelay: "300ms" }}
+    >
       <div className="absolute top-0 left-0 w-full h-2 bg-[var(--color-lavender)] border-b-2 border-ink-charcoal"></div>
-      <h2 className="font-headline-sm text-headline-sm text-ink-charcoal mt-2">Settings</h2>
-      
+      <h2 className="font-headline-sm text-headline-sm text-ink-charcoal mt-2">
+        Settings
+      </h2>
+
       {/* Toggle: Allow Multiple Votes */}
       <div className="flex items-center justify-between">
         <div>
-          <div className="font-label-md text-label-md text-ink-charcoal">Allow Multiple Votes</div>
-          <div className="font-label-sm text-label-sm text-on-surface-variant">Users can select more than one option.</div>
+          <div className="font-label-md text-label-md text-ink-charcoal">
+            Allow Multiple Votes
+          </div>
+          <div className="font-label-sm text-label-sm text-on-surface-variant">
+            Users can select more than one option.
+          </div>
         </div>
         <label className="relative inline-flex items-center cursor-pointer">
           <input
@@ -33,8 +42,12 @@ export function PollSettingsPanel() {
       {/* Visibility Settings */}
       <div className="flex items-center justify-between">
         <div>
-          <div className="font-label-md text-label-md text-ink-charcoal">Visibility</div>
-          <div className="font-label-sm text-label-sm text-on-surface-variant">Select public or unlisted.</div>
+          <div className="font-label-md text-label-md text-ink-charcoal">
+            Visibility
+          </div>
+          <div className="font-label-sm text-label-sm text-on-surface-variant">
+            Select public or unlisted.
+          </div>
         </div>
         <div className="flex bg-surface-container p-1 rounded-xl border-2 border-ink-charcoal shadow-hard-sm">
           <button

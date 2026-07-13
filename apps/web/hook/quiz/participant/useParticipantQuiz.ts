@@ -8,65 +8,47 @@ import { useUserInfoStore } from "@/store/userInfoStore";
 export function useParticipantQuiz(sessionId: string) {
   const userId = useUserInfoStore((s) => s.userId) ?? null;
 
-
-
-
   //password state
   const [passwordInput, setPasswordInput] = useState("");
-  const [submittedPassword, setSubmittedPassword] = useState<string | undefined>(undefined);
+  const [submittedPassword, setSubmittedPassword] = useState<
+    string | undefined
+  >(undefined);
   const [showPassword, setShowPassword] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
 
-
-
-
-
-
-  //store and all actions 
+  //store and all actions
   const store = useParticipantStore();
 
-
-
-
-
-  //sessionInfo 
-  const { data, isLoading, isError, error, refetch } = useGetSessionInfoForParticipant(sessionId);
+  //sessionInfo
+  const { data, isLoading, isError, error, refetch } =
+    useGetSessionInfoForParticipant(sessionId);
   const verifyPasswordMutation = trpc.quiz.verifySessionPassword.useMutation();
-
-
-
-
 
   //set session data to store
   useEffect(() => {
     if (data?.session.status) {
-      store.setSessionStatus(data.session.status as "waiting" | "active" | "ended");
+      store.setSessionStatus(
+        data.session.status as "waiting" | "active" | "ended",
+      );
     }
   }, [data?.session.status]);
-
-
-
-
 
   //set rank and score to store
   useEffect(() => {
     if (data?.participantData) {
-      store.setRankAndScore(data.participantData.rank, data.participantData.score);
+      store.setRankAndScore(
+        data.participantData.rank,
+        data.participantData.score,
+      );
     }
   }, [data?.participantData]);
 
-
-
-
-  //set quiz title to the document 
+  //set quiz title to the document
   useEffect(() => {
     if (data?.quiz.title) {
       document.title = `${data.quiz.title} | VibeCheck`;
     }
   }, [data?.quiz.title]);
-
-
-
 
   //timer effect
   useEffect(() => {
@@ -78,15 +60,14 @@ export function useParticipantQuiz(sessionId: string) {
     return () => clearTimeout(tick);
   }, [store.timerActive, store.timeLeft, store.tickTimer, store.stopTimer]);
 
-
-
-
-
-  // socket callbacks 
-  const handleQuestion = useCallback((question: LiveQuestion, index: number) => {
-    store.resetQuestionState();
-    store.setQuestion(question, index);
-  }, [store]);
+  // socket callbacks
+  const handleQuestion = useCallback(
+    (question: LiveQuestion, index: number) => {
+      store.resetQuestionState();
+      store.setQuestion(question, index);
+    },
+    [store],
+  );
 
   const handleSessionEnd = useCallback(() => {
     store.setSessionStatus("ended");
@@ -97,9 +78,12 @@ export function useParticipantQuiz(sessionId: string) {
     refetch();
   }, [refetch]);
 
-  const handleRevealAnswer = useCallback((correctOptionIds: string[]) => {
-    store.setRevealedAnswer(correctOptionIds);
-  }, [store]);
+  const handleRevealAnswer = useCallback(
+    (correctOptionIds: string[]) => {
+      store.setRevealedAnswer(correctOptionIds);
+    },
+    [store],
+  );
 
   const handleActivateSession = useCallback(() => {
     store.setSessionStatus("active");
@@ -110,11 +94,7 @@ export function useParticipantQuiz(sessionId: string) {
     refetch();
   }, [refetch]);
 
-
-
-
-  
-  // wire up to socket 
+  // wire up to socket
   const { submitAnswer, submitOpenEnded } = useParticipantSocket(
     sessionId,
     userId,
@@ -123,7 +103,7 @@ export function useParticipantQuiz(sessionId: string) {
     handleRankUpdate,
     handleRevealAnswer,
     handleActivateSession,
-    handleParticipantJoin
+    handleParticipantJoin,
   );
 
   //all actions
@@ -139,7 +119,10 @@ export function useParticipantQuiz(sessionId: string) {
       setSubmittedPassword(passwordInput.trim());
       refetch();
     } catch (err: any) {
-      if (err.message?.includes("started") || err.message?.includes("FORBIDDEN")) {
+      if (
+        err.message?.includes("started") ||
+        err.message?.includes("FORBIDDEN")
+      ) {
         refetch();
       } else {
         setPasswordError(true);
@@ -156,8 +139,8 @@ export function useParticipantQuiz(sessionId: string) {
     const idsToSubmit = store.currentQuestion.allowMultipleCorrect
       ? store.selectedIds
       : store.selectedId
-      ? [store.selectedId]
-      : [];
+        ? [store.selectedId]
+        : [];
 
     submitAnswer(sessionId, store.currentQuestion!.questionId, idsToSubmit);
 
@@ -165,14 +148,16 @@ export function useParticipantQuiz(sessionId: string) {
     if (store.questionStartTime) {
       const timeElapsedMs = Date.now() - store.questionStartTime;
       const timeLimitMs = store.currentQuestion.timeLimitSecs * 1000;
-      const bonusPoints = Math.floor(Math.max(0, timeLimitMs - timeElapsedMs) / 1000);
+      const bonusPoints = Math.floor(
+        Math.max(0, timeLimitMs - timeElapsedMs) / 1000,
+      );
 
       if (bonusPoints > 0) {
         submitBonusPointsMutation.mutate({
           sessionId,
           questionId: store.currentQuestion.questionId,
           optionIds: idsToSubmit,
-          bonusPoints
+          bonusPoints,
         });
       }
     }

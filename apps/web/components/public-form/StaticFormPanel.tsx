@@ -9,35 +9,66 @@ import { useFileUpload } from "../../hook/form/useFileUpload";
 const buildFormSchema = (fields: Field[]) => {
   const shape: Record<string, z.ZodTypeAny> = {};
 
-  fields.forEach(f => {
+  fields.forEach((f) => {
     let fieldSchema: z.ZodTypeAny;
 
-    if (f.type === 'email') {
-      fieldSchema = f.isRequired 
-        ? z.string().min(1, "This field is required").email("Invalid email format")
-        : z.union([z.literal(""), z.string().email("Invalid email format")]).optional().nullable();
-    } else if (f.type === 'checkbox' || f.type === 'multi_select') {
+    if (f.type === "email") {
+      fieldSchema = f.isRequired
+        ? z
+            .string()
+            .min(1, "This field is required")
+            .email("Invalid email format")
+        : z
+            .union([z.literal(""), z.string().email("Invalid email format")])
+            .optional()
+            .nullable();
+    } else if (f.type === "checkbox" || f.type === "multi_select") {
       fieldSchema = f.isRequired
         ? z.array(z.string()).min(1, "Please select at least one option")
         : z.array(z.string()).optional().nullable();
-    } else if (f.type === 'number' || f.type === 'rating' || f.type === 'scale') {
+    } else if (
+      f.type === "number" ||
+      f.type === "rating" ||
+      f.type === "scale"
+    ) {
       fieldSchema = f.isRequired
         ? z.union([z.number(), z.string().min(1, "This field is required")])
         : z.union([z.number(), z.string()]).optional().nullable();
-    } else if (f.type === 'file') {
+    } else if (f.type === "file") {
       fieldSchema = f.isRequired
-        ? z.custom<File | string>((val) => val instanceof File || (typeof val === 'string' && val.length > 0), "Please upload a file")
-        : z.custom<File | string | null | undefined>((val) => val === undefined || val === null || val === "" || val instanceof File || typeof val === 'string').optional().nullable();
+        ? z.custom<File | string>(
+            (val) =>
+              val instanceof File ||
+              (typeof val === "string" && val.length > 0),
+            "Please upload a file",
+          )
+        : z
+            .custom<File | string | null | undefined>(
+              (val) =>
+                val === undefined ||
+                val === null ||
+                val === "" ||
+                val instanceof File ||
+                typeof val === "string",
+            )
+            .optional()
+            .nullable();
     } else {
       fieldSchema = f.isRequired
         ? z.string().min(1, "This field is required")
-        : z.union([z.literal(""), z.string()]).optional().nullable();
+        : z
+            .union([z.literal(""), z.string()])
+            .optional()
+            .nullable();
     }
-    
-    if (f.type === 'checkbox' || f.type === 'multi_select') {
+
+    if (f.type === "checkbox" || f.type === "multi_select") {
       shape[f.fieldId] = z.preprocess((v) => v || [], fieldSchema);
     } else {
-      shape[f.fieldId] = z.preprocess((v) => (v === undefined || v === null ? "" : v), fieldSchema);
+      shape[f.fieldId] = z.preprocess(
+        (v) => (v === undefined || v === null ? "" : v),
+        fieldSchema,
+      );
     }
   });
 
@@ -65,7 +96,9 @@ export function StaticFormPanel({
   onSuccess?: () => void;
   hideAiMode?: boolean;
 }) {
-  const [answers, setAnswers] = useState<Record<string, unknown>>(previousAnswers || {});
+  const [answers, setAnswers] = useState<Record<string, unknown>>(
+    previousAnswers || {},
+  );
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitted, setSubmitted] = useState(false);
   const [isUploadingFiles, setIsUploadingFiles] = useState(false);
@@ -80,19 +113,24 @@ export function StaticFormPanel({
     onError: (error) => {
       console.error(error);
       alert(error.message || "Failed to submit form");
-    }
+    },
   });
 
   useEffect(() => {
     if (previousAnswers) {
-      setAnswers(prev => ({ ...previousAnswers, ...prev }));
+      setAnswers((prev) => ({ ...previousAnswers, ...prev }));
     }
   }, [previousAnswers]);
 
   if (!form) return null;
 
   if (submitted) {
-    return <SuccessScreen formTitle={form.title} onReset={() => setSubmitted(false)} />;
+    return (
+      <SuccessScreen
+        formTitle={form.title}
+        onReset={() => setSubmitted(false)}
+      />
+    );
   }
 
   return (
@@ -104,20 +142,32 @@ export function StaticFormPanel({
           onClick={onSwitchToAgent}
           className="w-full flex items-center gap-3 bg-[var(--color-electric-sun)] border-[3px] border-[var(--color-ink-charcoal)] rounded-xl px-5 py-4 shadow-hard hover:translate-y-[4px] hover:translate-x-[4px] hover:shadow-none transition-all text-left group"
         >
-          <Sparkles size={24} className="flex-shrink-0 group-hover:scale-110 transition-transform" />
+          <Sparkles
+            size={24}
+            className="flex-shrink-0 group-hover:scale-110 transition-transform"
+          />
           <div className="flex-1 min-w-0">
-            <p className="text-headline-sm font-bold text-[var(--color-ink-charcoal)]">Try AI Mode</p>
-            <p className="text-body-md opacity-80 mt-1 font-bold">Let our AI guide you through this form conversationally</p>
+            <p className="text-headline-sm font-bold text-[var(--color-ink-charcoal)]">
+              Try AI Mode
+            </p>
+            <p className="text-body-md opacity-80 mt-1 font-bold">
+              Let our AI guide you through this form conversationally
+            </p>
           </div>
-          <ChevronRight size={24} className="flex-shrink-0 opacity-50 group-hover:opacity-100 transition-opacity" />
+          <ChevronRight
+            size={24}
+            className="flex-shrink-0 opacity-50 group-hover:opacity-100 transition-opacity"
+          />
         </button>
       )}
 
       {/* Fields */}
       <div className="space-y-8 mt-8">
         {form.fields.map((field) => {
-          const primaryField = form.fields.find(f => f.isPrimary);
-          const primaryFieldValue = primaryField ? String(answers[primaryField.fieldId] || "") : undefined;
+          const primaryField = form.fields.find((f) => f.isPrimary);
+          const primaryFieldValue = primaryField
+            ? String(answers[primaryField.fieldId] || "")
+            : undefined;
 
           return (
             <FieldInput
@@ -154,17 +204,22 @@ export function StaticFormPanel({
             if (!result.success) {
               const formatted = result.error.format();
               const newErrors: Record<string, string> = {};
-              Object.keys(formatted).forEach(key => {
-                if (key !== '_errors') {
-                  newErrors[key] = (formatted[key as keyof typeof formatted] as any)._errors[0];
+              Object.keys(formatted).forEach((key) => {
+                if (key !== "_errors") {
+                  newErrors[key] = (
+                    formatted[key as keyof typeof formatted] as any
+                  )._errors[0];
                 }
               });
               setErrors(newErrors);
-              
+
               const firstErrorFieldId = Object.keys(newErrors)[0];
               if (firstErrorFieldId) {
-                 const el = document.getElementById(`field-container-${firstErrorFieldId}`);
-                 if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
+                const el = document.getElementById(
+                  `field-container-${firstErrorFieldId}`,
+                );
+                if (el)
+                  el.scrollIntoView({ behavior: "smooth", block: "center" });
               }
               return;
             }
@@ -177,17 +232,28 @@ export function StaticFormPanel({
               for (const field of form.fields) {
                 if (field.type === "file") {
                   const val = finalAnswers[field.fieldId];
-                  const prevFileId = previousAnswers?.[field.fieldId] as string | undefined;
+                  const prevFileId = previousAnswers?.[field.fieldId] as
+                    string | undefined;
 
                   if (val instanceof File) {
-                    if (prevFileId && typeof prevFileId === 'string') {
+                    if (prevFileId && typeof prevFileId === "string") {
                       await deleteExistingFile(form.formId, prevFileId);
                     }
-                    const primaryField = form.fields.find(f => f.isPrimary);
-                    const primaryFieldValue = primaryField ? String(finalAnswers[primaryField.fieldId] || "") : undefined;
-                    const newFileId = await uploadFile(form.formId, val, primaryFieldValue);
+                    const primaryField = form.fields.find((f) => f.isPrimary);
+                    const primaryFieldValue = primaryField
+                      ? String(finalAnswers[primaryField.fieldId] || "")
+                      : undefined;
+                    const newFileId = await uploadFile(
+                      form.formId,
+                      val,
+                      primaryFieldValue,
+                    );
                     finalAnswers[field.fieldId] = newFileId;
-                  } else if (val === "" && prevFileId && typeof prevFileId === 'string') {
+                  } else if (
+                    val === "" &&
+                    prevFileId &&
+                    typeof prevFileId === "string"
+                  ) {
                     await deleteExistingFile(form.formId, prevFileId);
                   }
                 }
@@ -208,9 +274,13 @@ export function StaticFormPanel({
           className="w-full md:w-auto md:min-w-[240px] bg-[var(--color-leaf-green)] text-[var(--color-ink-charcoal)] font-bold text-headline-sm py-4 px-8 border-[3px] border-[var(--color-ink-charcoal)] shadow-hard hover:translate-y-[4px] hover:translate-x-[4px] hover:shadow-none active:bg-[var(--color-primary-container)] transition-all flex items-center justify-center gap-3 disabled:opacity-60"
         >
           {submitMutation.isPending ? (
-            <><Loader2 size={24} className="animate-spin" /> Submitting…</>
+            <>
+              <Loader2 size={24} className="animate-spin" /> Submitting…
+            </>
           ) : isUploadingFiles ? (
-            <><Loader2 size={24} className="animate-spin" /> Uploading Files…</>
+            <>
+              <Loader2 size={24} className="animate-spin" /> Uploading Files…
+            </>
           ) : (
             <>
               {responseId ? "Update Feedback" : "Submit Feedback"}

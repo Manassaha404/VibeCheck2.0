@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { trpc } from "@/trpc/client";
 import { useQuizStore } from "@/store/quizStore";
-import { toast } from "sonner";
+
 import { useRouter } from "next/navigation";
 import { uuidToNumber } from "@/utils/uuid";
 
@@ -14,12 +14,10 @@ export function useCreateQuiz() {
   const submitQuiz = async () => {
     // Basic validation
     if (!quizStore.info.title.trim()) {
-      toast.error("Quiz title is required.");
       return;
     }
 
     if (quizStore.questions.length === 0) {
-      toast.error("Add at least one question to your quiz.");
       return;
     }
 
@@ -46,19 +44,18 @@ export function useCreateQuiz() {
     try {
       setIsSubmitting(true);
       const result = await createQuizMutation.mutateAsync(payload);
-      toast.success("Quiz created successfully!");
-      if(!result) {
+
+      if (!result) {
         throw new Error("Quiz ID is missing in the response.");
       }
       // Optional: reset store after successful creation
       quizStore.reset();
-      
+
       const quizId = result.quizId;
       const quizIdURL = uuidToNumber(quizId); // Convert UUID to number for URL
       router.push(`/dashboard/quiz/${quizIdURL}`); // Update with actual route later
       return result;
     } catch (error: any) {
-      toast.error(error.message || "Failed to create quiz.");
       throw error;
     } finally {
       setIsSubmitting(false);

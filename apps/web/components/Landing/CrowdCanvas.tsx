@@ -280,14 +280,16 @@ const CrowdCanvas = ({ src, rows = 15, cols = 7 }: CrowdCanvasProps) => {
       });
     };
   }, [src, rows, cols]);
-  
+
   return (
-    <canvas 
-      ref={canvasRef} 
-      className="absolute bottom-0 h-[85vh] w-full pointer-events-none opacity-60 mix-blend-multiply z-0" 
+    <canvas
+      ref={canvasRef}
+      className="absolute bottom-0 h-[85vh] w-full pointer-events-none opacity-60 mix-blend-multiply z-0"
       style={{
-        maskImage: "linear-gradient(to bottom, transparent 0%, black 25%, black 100%)",
-        WebkitMaskImage: "linear-gradient(to bottom, transparent 0%, black 25%, black 100%)"
+        maskImage:
+          "linear-gradient(to bottom, transparent 0%, black 25%, black 100%)",
+        WebkitMaskImage:
+          "linear-gradient(to bottom, transparent 0%, black 25%, black 100%)",
       }}
     />
   );

@@ -18,7 +18,11 @@ interface UseEndSessionOptions {
  * 2. On success, calls the onSuccessCallback so the caller can emit the socket event.
  * 3. Clears the liveSessionStore and redirects the host to the session analytics page.
  */
-export const useEndSession = ({ quizId, redirectPath, onSuccessCallback }: UseEndSessionOptions) => {
+export const useEndSession = ({
+  quizId,
+  redirectPath,
+  onSuccessCallback,
+}: UseEndSessionOptions) => {
   const router = useRouter();
   const reset = useLiveSessionStore((s) => s.reset);
 

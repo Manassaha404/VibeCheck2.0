@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import React from 'react';
-import { Search, X } from 'lucide-react';
+import React from "react";
+import { Search, X } from "lucide-react";
 
 interface ResponsesToolbarProps {
   search: string;
@@ -38,7 +38,7 @@ export function ResponsesToolbar({
         />
         {search && (
           <button
-            onClick={() => onSearchChange('')}
+            onClick={() => onSearchChange("")}
             className="absolute right-3 top-1/2 -translate-y-1/2 text-ink-charcoal hover:text-[#FF007F] transition-colors"
           >
             <X size={16} strokeWidth={3} />
@@ -65,8 +65,8 @@ export function ResponsesToolbar({
                 onClick={() => onLimitChange(opt)}
                 className={`px-3 py-2 font-black text-sm uppercase transition-colors ${
                   limit === opt
-                    ? 'bg-ink-charcoal text-pure-white'
-                    : 'bg-pure-white text-ink-charcoal hover:bg-canvas-cream'
+                    ? "bg-ink-charcoal text-pure-white"
+                    : "bg-pure-white text-ink-charcoal hover:bg-canvas-cream"
                 }`}
               >
                 {opt}

@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import React from 'react';
-import { ArrowLeft, Zap } from 'lucide-react';
-import { useRouter } from 'next/navigation';
-import { timeAgo } from './utils';
+import React from "react";
+import { ArrowLeft, Zap } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { timeAgo } from "./utils";
 
 interface ResponsesHeaderProps {
   formTitle: string;
@@ -11,8 +11,6 @@ interface ResponsesHeaderProps {
   totalResponses: number;
   lastResponseAt: string | null; // ISO string
 }
-
-
 
 export function ResponsesHeader({
   formTitle,
@@ -39,12 +37,14 @@ export function ResponsesHeader({
         <h1
           className="font-black uppercase text-ink-charcoal tracking-tighter leading-none"
           style={{
-            fontSize: 'clamp(40px, 6vw, 80px)',
-            lineHeight: '1',
-            textShadow: '4px 4px 0px #F5E211',
+            fontSize: "clamp(40px, 6vw, 80px)",
+            lineHeight: "1",
+            textShadow: "4px 4px 0px #F5E211",
           }}
         >
-          RESPONSES:<br />THE RAW VIBE
+          RESPONSES:
+          <br />
+          THE RAW VIBE
         </h1>
 
         {/* Form subtitle */}
@@ -71,7 +71,7 @@ export function ResponsesHeader({
             Last Response
           </span>
           <span className="font-black text-2xl text-ink-charcoal text-center mt-1 leading-tight">
-            {lastResponseAt ? timeAgo(lastResponseAt) : '—'}
+            {lastResponseAt ? timeAgo(lastResponseAt) : "—"}
           </span>
           <Zap size={18} className="mt-1 text-ink-charcoal" strokeWidth={3} />
         </div>

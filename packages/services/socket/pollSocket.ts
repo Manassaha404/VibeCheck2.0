@@ -51,7 +51,10 @@ export function registerPollSocket(io: Server) {
       },
     );
     socket.on(ON_SOCKET_SERVER_VIEW_POLL_EVENT_NAME, async (pollId) => {
-      await publisher.publish(VIEW_POLL_CHANNEL_NAME, JSON.stringify({ pollId }));
+      await publisher.publish(
+        VIEW_POLL_CHANNEL_NAME,
+        JSON.stringify({ pollId }),
+      );
     });
   });
 }

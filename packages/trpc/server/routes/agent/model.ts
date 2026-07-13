@@ -3,8 +3,20 @@ import { z } from "zod";
 const currentFieldSchema = z.object({
   label: z.string(),
   type: z.enum([
-    "short_text", "long_text", "number", "email", "phone", "date",
-    "select", "multi_select", "radio", "checkbox", "file", "rating", "scale", "mood",
+    "short_text",
+    "long_text",
+    "number",
+    "email",
+    "phone",
+    "date",
+    "select",
+    "multi_select",
+    "radio",
+    "checkbox",
+    "file",
+    "rating",
+    "scale",
+    "mood",
   ]),
   placeholder: z.string().optional(),
   helperText: z.string().optional(),
@@ -24,10 +36,9 @@ export const clearHistoryDto = z.object({
   formId: z.string().uuid("formId must be a valid UUID"),
 });
 
-
 export const getRealTimeTokenDto = z.object({
-  jobId:z.string()
-})
+  jobId: z.string(),
+});
 
 export type generateFormType = z.infer<typeof generateFormDto>;
 export type clearHistoryType = z.infer<typeof clearHistoryDto>;

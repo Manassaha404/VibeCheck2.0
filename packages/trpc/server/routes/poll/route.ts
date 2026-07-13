@@ -28,7 +28,11 @@ export const pollRouter = router({
     .input(z.object({ pollId: z.string().uuid(), data: savePollDraftDto }))
     .mutation(async ({ input, ctx }) => {
       try {
-        const result = await pollService.saveDraft(ctx.user.id, input.pollId, input.data);
+        const result = await pollService.saveDraft(
+          ctx.user.id,
+          input.pollId,
+          input.data,
+        );
         return { message: "Draft saved successfully", ...result };
       } catch (error) {
         handleRouteError(error);
@@ -39,7 +43,10 @@ export const pollRouter = router({
     .input(z.object({ pollId: z.string().uuid() }))
     .mutation(async ({ input, ctx }) => {
       try {
-        const result = await pollService.setPollActive(ctx.user.id, input.pollId);
+        const result = await pollService.setPollActive(
+          ctx.user.id,
+          input.pollId,
+        );
         return { message: "Poll published successfully", ...result };
       } catch (error) {
         handleRouteError(error);
@@ -62,7 +69,12 @@ export const pollRouter = router({
       try {
         const userId = (ctx as any).user?.id ?? null;
         const guestToken = ctx.guestToken ?? null;
-        return await pollService.getPublicPollBySlug(input.username, input.slug, userId, guestToken);
+        return await pollService.getPublicPollBySlug(
+          input.username,
+          input.slug,
+          userId,
+          guestToken,
+        );
       } catch (error) {
         handleRouteError(error);
       }
@@ -72,7 +84,10 @@ export const pollRouter = router({
     .input(z.object({ username: z.string(), slug: z.string() }))
     .query(async ({ input }) => {
       try {
-        return await pollService.getPublicPollResultsBySlug(input.username, input.slug);
+        return await pollService.getPublicPollResultsBySlug(
+          input.username,
+          input.slug,
+        );
       } catch (error) {
         handleRouteError(error);
       }
@@ -82,7 +97,10 @@ export const pollRouter = router({
     .input(z.object({ username: z.string(), slug: z.string() }))
     .query(async ({ input }) => {
       try {
-        return await pollService.getPublicPollCommentsBySlug(input.username, input.slug);
+        return await pollService.getPublicPollCommentsBySlug(
+          input.username,
+          input.slug,
+        );
       } catch (error) {
         handleRouteError(error);
       }
@@ -92,7 +110,7 @@ export const pollRouter = router({
     .input(submitVoteDto)
     .mutation(async ({ input, ctx }) => {
       try {
-        const userId = (ctx).user?.id ?? null;
+        const userId = ctx.user?.id ?? null;
         const guestToken = ctx.guestToken;
         return await pollService.submitVote(userId, guestToken, input);
       } catch (error) {
@@ -114,7 +132,7 @@ export const pollRouter = router({
     .input(z.object({ pollId: z.string().uuid() }))
     .mutation(async ({ input, ctx }) => {
       try {
-        const userId = ctx.user?.id || null
+        const userId = ctx.user?.id || null;
         const guestToken = ctx.guestToken ?? null;
         await pollService.newView(input.pollId, userId, guestToken);
         return { success: true };
@@ -123,14 +141,13 @@ export const pollRouter = router({
       }
     }),
 
-  getDashboard: protectedProcedure
-    .query(async ({ ctx }) => {
-      try {
-        return await pollService.getDashboardItems(ctx.user.id);
-      } catch (error) {
-        handleRouteError(error);
-      }
-    }),
+  getDashboard: protectedProcedure.query(async ({ ctx }) => {
+    try {
+      return await pollService.getDashboardItems(ctx.user.id);
+    } catch (error) {
+      handleRouteError(error);
+    }
+  }),
 
   archiveItem: protectedProcedure
     .input(archivePollDto)

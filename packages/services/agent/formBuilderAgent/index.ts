@@ -1,22 +1,23 @@
 import { run } from "@openai/agents";
 import type { AgentInputItem } from "@openai/agents";
-import { clearHistoryDto, ClearHistoryType, GeneratedForm, runFormMakerAgentDto, RunFormMakerAgentType } from "./model";
+import {
+  clearHistoryDto,
+  ClearHistoryType,
+  GeneratedForm,
+  runFormMakerAgentDto,
+  RunFormMakerAgentType,
+} from "./model";
 import { formMakerAgent } from "./createAgent";
 import db, { eq, and } from "@repo/database";
 import { formBuilderAgentConversation } from "@repo/database/models/agent-conversations";
 import { z } from "zod";
 
-
-
-
-
 class FormBuilderAgentServices {
   static async runFormMakerAgent(
-    payload: RunFormMakerAgentType
+    payload: RunFormMakerAgentType,
   ): Promise<GeneratedForm> {
-    const { userId, formId, prompt, currentFields } = await runFormMakerAgentDto.parseAsync({
-      payload,
-    });
+    const { userId, formId, prompt, currentFields } =
+      await runFormMakerAgentDto.parseAsync(payload);
 
     // 1. Load existing history from DB
     const [existing] = await db
@@ -41,7 +42,10 @@ class FormBuilderAgentServices {
     // 2. Build input: resume history + new user turn, or start fresh
     const input: string | AgentInputItem[] =
       previousHistory.length > 0
-        ? ([...previousHistory, { role: "user", content: effectivePrompt }] as AgentInputItem[])
+        ? ([
+            ...previousHistory,
+            { role: "user", content: effectivePrompt },
+          ] as AgentInputItem[])
         : effectivePrompt;
 
     // 3. Run the agent

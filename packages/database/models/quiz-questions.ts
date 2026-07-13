@@ -20,10 +20,15 @@ export const quizQuestions = pgTable(
       .references(() => quizzes.quizId, { onDelete: "cascade" }),
     orderIndex: integer("order_index").notNull(),
     text: varchar("text", { length: 1000 }).notNull(),
-    options: jsonb("options").$type<{ id?: string; text: string; isCorrect: boolean }[]>(),
+    options:
+      jsonb("options").$type<
+        { id?: string; text: string; isCorrect: boolean }[]
+      >(),
     acceptedAnswers: varchar("accepted_answers", { length: 1000 }),
     isTextAnswer: boolean("is_text_answer").default(false).notNull(),
-    allowMultipleCorrect: boolean("allow_multiple_correct").default(false).notNull(),
+    allowMultipleCorrect: boolean("allow_multiple_correct")
+      .default(false)
+      .notNull(),
     mediaUrl: varchar("media_url", { length: 1000 }),
     timeLimitSecs: integer("time_limit_secs").default(30).notNull(),
     points: integer("points").default(1000).notNull(),

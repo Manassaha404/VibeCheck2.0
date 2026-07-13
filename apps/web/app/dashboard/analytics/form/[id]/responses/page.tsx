@@ -1,17 +1,17 @@
-'use client';
+"use client";
 
-import React, { useState, useCallback, useMemo } from 'react';
-import { useParams } from 'next/navigation';
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
+import React, { useState, useCallback, useMemo } from "react";
+import { useParams } from "next/navigation";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 
-import { ResponsesHeader } from '@/components/analytics/form/responses/ResponsesHeader';
-import { ResponsesToolbar } from '@/components/analytics/form/responses/ResponsesToolbar';
-import { ResponsesTable } from '@/components/analytics/form/responses/ResponsesTable';
-import { ResponseDetailModal } from '@/components/analytics/form/responses/ResponseDetailModal';
-import PageLoader from '@/components/PageLoader';
-import { DashboardError } from '@/components/Dashboard/DashboardError';
-import { useFormResponses } from '@/hook/form/useFormResponses';
+import { ResponsesHeader } from "@/components/analytics/form/responses/ResponsesHeader";
+import { ResponsesToolbar } from "@/components/analytics/form/responses/ResponsesToolbar";
+import { ResponsesTable } from "@/components/analytics/form/responses/ResponsesTable";
+import { ResponseDetailModal } from "@/components/analytics/form/responses/ResponseDetailModal";
+import PageLoader from "@/components/PageLoader";
+import { DashboardError } from "@/components/Dashboard/DashboardError";
+import { useFormResponses } from "@/hook/form/useFormResponses";
 
 // ── Types ───────────────────────────────────────────────────────
 interface FormResponseAnswer {
@@ -38,8 +38,9 @@ export default function FormResponsesPage() {
   // Pagination + filter state
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
-  const [search, setSearch] = useState('');
-  const [selectedResponse, setSelectedResponse] = useState<FormResponseItem | null>(null);
+  const [search, setSearch] = useState("");
+  const [selectedResponse, setSelectedResponse] =
+    useState<FormResponseItem | null>(null);
 
   const { data, isLoading, isError, error, refetch } = useFormResponses({
     formSlug,
@@ -78,7 +79,7 @@ export default function FormResponsesPage() {
           <DashboardError
             message={
               (error as { message?: string })?.message ??
-              'Could not load responses for this form.'
+              "Could not load responses for this form."
             }
             onRetry={refetch}
           />

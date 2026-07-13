@@ -10,7 +10,7 @@ export function useParticipantSocket(
   onRankUpdate: () => void,
   onRevealAnswer: (correctOptionIds: string[]) => void,
   onActivateSession: () => void,
-  onParticipantJoin: () => void
+  onParticipantJoin: () => void,
 ) {
   const joinedRef = useRef(false);
 
@@ -36,7 +36,7 @@ export function useParticipantSocket(
     socket.emit("join:participant:session", { sessionId });
     joinedRef.current = true;
 
-    //handel emit question event by host 
+    //handel emit question event by host
     const onEmitQuestion = (data: {
       questionPayload: LiveQuestion;
       questionIndex: number;
@@ -44,22 +44,25 @@ export function useParticipantSocket(
       onQuestionRef.current(data.questionPayload, data.questionIndex);
     };
 
-    //handel emit end session event by host 
+    //handel emit end session event by host
     const onEnd = () => {
       onSessionEndRef.current();
     };
 
-    //handel emit rank update event by host 
+    //handel emit rank update event by host
     const onRank = () => {
       onRankUpdateRef.current();
     };
 
-    //handel reveal answer by event the host  
-    const onReveal = (data: { questionId: string; correctOptionIds: string[] }) => {
+    //handel reveal answer by event the host
+    const onReveal = (data: {
+      questionId: string;
+      correctOptionIds: string[];
+    }) => {
       onRevealAnswerRef.current(data.correctOptionIds);
     };
 
-    //handel activate session by event the host 
+    //handel activate session by event the host
     const onActivate = () => {
       onActivateSessionRef.current();
     };
@@ -89,12 +92,17 @@ export function useParticipantSocket(
     };
   }, [sessionId]);
 
-  // Emit MCQ answer by the event  
+  // Emit MCQ answer by the event
   const submitAnswer = useCallback(
     (sessionId: string, questionId: string, optionIds: string[]) => {
-      socket.emit("submit:answer", { sessionId, optionIds, questionId, userId });
+      socket.emit("submit:answer", {
+        sessionId,
+        optionIds,
+        questionId,
+        userId,
+      });
     },
-    [userId]
+    [userId],
   );
 
   // Emit OpenEnded answer by the event
@@ -102,7 +110,7 @@ export function useParticipantSocket(
     (sessionId: string, questionId: string, text: string) => {
       socket.emit("submit:answer", { sessionId, questionId, text, userId });
     },
-    [userId]
+    [userId],
   );
   return { submitAnswer, submitOpenEnded };
 }

@@ -3,7 +3,11 @@ import cors from "cors";
 
 import * as trpcExpress from "@trpc/server/adapters/express";
 
-import { serverRouter, createContext, openApiDocument } from "@repo/trpc/server";
+import {
+  serverRouter,
+  createContext,
+  openApiDocument,
+} from "@repo/trpc/server";
 
 import { env } from "./env";
 import cookieParser from "cookie-parser";
@@ -31,7 +35,13 @@ const inngestCors = cors({
     }
   },
   methods: ["GET", "POST", "PUT"],
-  allowedHeaders: ["Content-Type", "Authorization", "x-inngest-signature", "x-inngest-sdk", "x-inngest-expected-server-kind"],
+  allowedHeaders: [
+    "Content-Type",
+    "Authorization",
+    "x-inngest-signature",
+    "x-inngest-sdk",
+    "x-inngest-expected-server-kind",
+  ],
   credentials: false,
 });
 
@@ -58,7 +68,6 @@ app.use((req, res, next) => {
   next();
 });
 
-
 import rateLimiter from "@repo/services/utils/rateLimiting";
 import logger from "@repo/logger/logger";
 app.use((req, res, next) => {
@@ -73,11 +82,7 @@ app.get("/health", (req, res) => {
   return res.json({ message: "VibeCheck server is healthy", healthy: true });
 });
 
-
-
-
 app.use("/auth", authRouter);
-
 
 app.use(
   "/trpc",

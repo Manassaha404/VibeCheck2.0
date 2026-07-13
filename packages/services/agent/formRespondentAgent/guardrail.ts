@@ -19,8 +19,7 @@ Allow the following:
 - Questions about the form itself.
 
 You MUST always respond with a JSON object containing "isValid" (boolean) and "reason" (string | null).
-Respond with isValid: true if the message is safe, and isValid: false with a clear reason if it is not.`
-
+Respond with isValid: true if the message is safe, and isValid: false with a clear reason if it is not.`;
 
 const respondentInputGuardrailAgent = new Agent({
   name: "respondent_input_guardrail_agent",
@@ -30,7 +29,9 @@ const respondentInputGuardrailAgent = new Agent({
 });
 
 // extract users latest message from the history
-function extractLatestUserText(input: string | AgentInputItem[] | unknown): string {
+function extractLatestUserText(
+  input: string | AgentInputItem[] | unknown,
+): string {
   if (typeof input === "string") return input;
 
   if (Array.isArray(input)) {
@@ -57,7 +58,9 @@ export const respondentInputGuardrail: InputGuardrail = {
   name: "form_respondent_input_guardrail",
   runInParallel: false,
   execute: async ({ input }) => {
-    const textToCheck = extractLatestUserText(input as string | AgentInputItem[]);
+    const textToCheck = extractLatestUserText(
+      input as string | AgentInputItem[],
+    );
     const result = await run(respondentInputGuardrailAgent, textToCheck);
     return {
       outputInfo: result.finalOutput,

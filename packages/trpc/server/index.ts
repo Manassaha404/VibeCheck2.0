@@ -1,4 +1,4 @@
-import "dotenv/config"
+import "dotenv/config";
 import { healthRouter } from "./routes/health/route";
 import { authRouter } from "./routes/auth/route";
 import { router } from "./trpc";
@@ -9,6 +9,7 @@ import { tagRouter } from "./routes/tag/route";
 import { petitionRouter } from "./routes/petition/route";
 import { uploadRouter } from "./routes/upload/route";
 import { quizRouter } from "./routes/quiz/route";
+import { exploreRouter } from "./routes/explore/route";
 
 export const serverRouter = router({
   health: healthRouter,
@@ -20,6 +21,7 @@ export const serverRouter = router({
   petition: petitionRouter,
   upload: uploadRouter,
   quiz: quizRouter,
+  explore: exploreRouter,
 });
 
 export { createContext } from "./context";

@@ -7,7 +7,8 @@ export const useForgotPassword = () => {
   const router = useRouter();
   const [apiError, setApiError] = useState<string | null>(null);
   const [isSuccess, setIsSuccess] = useState<boolean>(false);
-  const { mutateAsync: forgotPasswordMutation, isPending: isSubmitting } = trpc.auth.forgotPassword.useMutation();
+  const { mutateAsync: forgotPasswordMutation, isPending: isSubmitting } =
+    trpc.auth.forgotPassword.useMutation();
 
   const handleForgotPassword = async (data: { email: string }) => {
     setApiError(null);
@@ -18,9 +19,17 @@ export const useForgotPassword = () => {
       setIsSuccess(true);
       router.push(`/reset-password/${id}`);
     } catch (error: any) {
-      setApiError(error.message || "Failed to send reset link. Please try again.");
+      setApiError(
+        error.message || "Failed to send reset link. Please try again.",
+      );
     }
   };
 
-  return { handleForgotPassword, apiError, isSubmitting, isSuccess, setApiError };
+  return {
+    handleForgotPassword,
+    apiError,
+    isSubmitting,
+    isSuccess,
+    setApiError,
+  };
 };

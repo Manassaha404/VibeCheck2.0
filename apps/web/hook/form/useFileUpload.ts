@@ -15,7 +15,7 @@ export function useFileUpload() {
     setIsUploading(true);
     try {
       console.log(primaryFieldValue);
-      
+
       const uploadName = primaryFieldValue ? `${primaryFieldValue}` : file.name;
 
       const res = await uploadUrlMutation.mutateAsync({
@@ -47,7 +47,7 @@ export function useFileUpload() {
       if (data && data.id) {
         return data.id;
       }
-      
+
       return "";
     } finally {
       setIsUploading(false);
@@ -66,7 +66,7 @@ export function useFileUpload() {
       if (!session) {
         session = await utils.agent.respondentAgentGetSession.fetch({ formId });
       }
-      
+
       console.log(session);
       const answer = session?.collectedAnswers?.find(
         (a: any) => a.fieldId === primaryFieldId,
@@ -101,5 +101,11 @@ export function useFileUpload() {
     }
   };
 
-  return { uploadFile, isUploading, fetchPrimaryFieldValue, fetchRespondentSession, deleteExistingFile };
+  return {
+    uploadFile,
+    isUploading,
+    fetchPrimaryFieldValue,
+    fetchRespondentSession,
+    deleteExistingFile,
+  };
 }

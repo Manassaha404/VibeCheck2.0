@@ -23,10 +23,10 @@ const variantDefaults: Record<
   CreateCardVariant,
   { color: string; href: string }
 > = {
-  poll:     { color: "var(--color-electric-sun)",  href: "/create/poll" },
-  quiz:     { color: "var(--color-leaf-green)",     href: "/create/quiz" },
-  form:     { color: "var(--color-tertiary-fixed)", href: "/create/form" },
-  petition: { color: "var(--color-primary-fixed)",  href: "/create/petition" },
+  poll: { color: "var(--color-electric-sun)", href: "/create/poll" },
+  quiz: { color: "var(--color-leaf-green)", href: "/create/quiz" },
+  form: { color: "var(--color-tertiary-fixed)", href: "/create/form" },
+  petition: { color: "var(--color-primary-fixed)", href: "/create/petition" },
 };
 
 export default function CreateCard({
@@ -40,8 +40,8 @@ export default function CreateCard({
   id,
 }: CreateCardProps) {
   const defaults = variantDefaults[variant];
-  const accent   = accentColor ?? defaults.color;
-  const dest     = href ?? defaults.href;
+  const accent = accentColor ?? defaults.color;
+  const dest = href ?? defaults.href;
 
   return (
     <Link
@@ -84,7 +84,11 @@ export default function CreateCard({
           }}
         >
           Create {title}
-          <ArrowRight size={16} strokeWidth={2.5} className="transition-transform duration-200 group-hover:translate-x-1" />
+          <ArrowRight
+            size={16}
+            strokeWidth={2.5}
+            className="transition-transform duration-200 group-hover:translate-x-1"
+          />
         </span>
       </div>
     </Link>

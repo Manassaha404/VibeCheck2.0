@@ -1,6 +1,6 @@
 import React, { useCallback, useRef } from "react";
-import { ReactFlow, Background, Controls, useReactFlow } from '@xyflow/react';
-import '@xyflow/react/dist/style.css';
+import { ReactFlow, Background, Controls, useReactFlow } from "@xyflow/react";
+import "@xyflow/react/dist/style.css";
 import { useFormBuilderStore } from "../../store/formStore/formBuilderStore";
 import { FieldNode } from "./nodes/FieldNode";
 import { Rocket } from "lucide-react";
@@ -10,28 +10,32 @@ const nodeTypes = {
 };
 
 const defaultEdgeOptions = {
-  type: 'smoothstep',
+  type: "smoothstep",
   animated: true,
-  style: { stroke: '#FF6B6B', strokeWidth: 4, filter: 'drop-shadow(3px 3px 0px #2C2E2A)' },
+  style: {
+    stroke: "#FF6B6B",
+    strokeWidth: 4,
+    filter: "drop-shadow(3px 3px 0px #2C2E2A)",
+  },
 };
 
 export function FormPreviewCanvas() {
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
   const { screenToFlowPosition } = useReactFlow();
-  
-  const { 
-    nodes, 
-    edges, 
-    onNodesChange, 
-    onEdgesChange, 
+
+  const {
+    nodes,
+    edges,
+    onNodesChange,
+    onEdgesChange,
     onConnect,
     addNode,
-    setSelectedNode
+    setSelectedNode,
   } = useFormBuilderStore();
 
   const onDragOver = useCallback((event: React.DragEvent) => {
     event.preventDefault();
-    event.dataTransfer.dropEffect = 'move';
+    event.dataTransfer.dropEffect = "move";
   }, []);
 
   const onDrop = useCallback(
@@ -39,8 +43,8 @@ export function FormPreviewCanvas() {
       event.preventDefault();
 
       const reactFlowBounds = reactFlowWrapper.current?.getBoundingClientRect();
-      const rawData = event.dataTransfer.getData('application/reactflow');
-      
+      const rawData = event.dataTransfer.getData("application/reactflow");
+
       if (!rawData || !reactFlowBounds) return;
 
       const data = JSON.parse(rawData);
@@ -51,34 +55,46 @@ export function FormPreviewCanvas() {
         y: event.clientY,
       });
 
-      const defaultOptions = ['radio', 'select', 'checkbox', 'multi_select'].includes(data.type) 
-        ? [
-            { id: crypto.randomUUID(), value: 'Option 1' },
-            { id: crypto.randomUUID(), value: 'Option 2' }
-          ] 
-        : undefined;
+      let defaultOptions;
+      if (["radio", "select", "checkbox", "multi_select"].includes(data.type)) {
+        defaultOptions = [
+          { id: crypto.randomUUID(), value: "Option 1" },
+          { id: crypto.randomUUID(), value: "Option 2" },
+        ];
+      } else if (data.type === "mood") {
+        defaultOptions = [
+          { id: "😄", value: "Amazing" },
+          { id: "😊", value: "Good" },
+          { id: "😐", value: "Okay" },
+          { id: "😕", value: "Not great" },
+          { id: "😞", value: "Bad" },
+        ];
+      }
 
       const newNode = {
         id: crypto.randomUUID(),
-        type: 'fieldNode',
+        type: "fieldNode",
         position,
-        data: { 
-          label: data.label, 
-          type: data.type, 
-          isRequired: false, 
+        data: {
+          label: data.label,
+          type: data.type,
+          isRequired: false,
           isPrimary: false,
-          ...(defaultOptions && { options: defaultOptions })
+          ...(defaultOptions && { options: defaultOptions }),
         },
       };
 
       addNode(newNode);
       setSelectedNode(newNode.id);
     },
-    [screenToFlowPosition, addNode, setSelectedNode]
+    [screenToFlowPosition, addNode, setSelectedNode],
   );
 
   return (
-    <section className="flex-grow overflow-hidden relative flex flex-col h-full bg-canvas-cream" ref={reactFlowWrapper}>
+    <section
+      className="flex-grow overflow-hidden relative flex flex-col h-full bg-canvas-cream"
+      ref={reactFlowWrapper}
+    >
       <ReactFlow
         nodes={nodes}
         edges={edges}
@@ -97,7 +113,6 @@ export function FormPreviewCanvas() {
         <Background gap={24} size={3} color="#2C2E2A" />
         <Controls />
       </ReactFlow>
-
     </section>
   );
 }

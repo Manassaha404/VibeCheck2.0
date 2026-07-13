@@ -21,5 +21,4 @@ export const tagRouter = router({
         handleRouteError(error);
       }
     }),
-
 });

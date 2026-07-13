@@ -1,13 +1,19 @@
-import { create } from 'zustand'
+import { create } from "zustand";
 
 interface UserInfoState {
   userId?: string;
   email?: string;
   fullName?: string;
   username?: string;
-  isGoogleDriveConnected?: boolean
+  isGoogleDriveConnected?: boolean;
   isInitialized: boolean;
-  setUserInfo: (info: { userId?: string; email?: string; fullName?: string; username?: string; isGoogleDriveConnected?: boolean }) => void;
+  setUserInfo: (info: {
+    userId?: string;
+    email?: string;
+    fullName?: string;
+    username?: string;
+    isGoogleDriveConnected?: boolean;
+  }) => void;
   setInitialized: (val: boolean) => void;
 }
 

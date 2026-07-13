@@ -3,7 +3,8 @@
 import React from "react";
 import Link from "next/link";
 
-export type PollCardAccent = "leaf-green" | "electric-sun" | "canvas-cream" | "tertiary-fixed";
+export type PollCardAccent =
+  "leaf-green" | "electric-sun" | "canvas-cream" | "tertiary-fixed";
 
 export interface PollCardProps {
   /** Category badge label */
@@ -27,10 +28,10 @@ export interface PollCardProps {
 }
 
 const accentBg: Record<PollCardAccent, string> = {
-  "leaf-green":    "var(--color-leaf-green)",
-  "electric-sun":  "var(--color-electric-sun)",
-  "canvas-cream":  "var(--color-canvas-cream)",
-  "tertiary-fixed":"var(--color-tertiary-fixed)",
+  "leaf-green": "var(--color-leaf-green)",
+  "electric-sun": "var(--color-electric-sun)",
+  "canvas-cream": "var(--color-canvas-cream)",
+  "tertiary-fixed": "var(--color-tertiary-fixed)",
 };
 
 /**
@@ -71,7 +72,12 @@ export default function PollCard({
         {/* Optional time left */}
         {timeLeft && (
           <div className="flex items-center gap-1 text-[var(--color-on-surface-variant)] text-label-md">
-            <span className="material-symbols-outlined" style={{ fontSize: "1rem" }}>schedule</span>
+            <span
+              className="material-symbols-outlined"
+              style={{ fontSize: "1rem" }}
+            >
+              schedule
+            </span>
             {timeLeft}
           </div>
         )}
@@ -80,8 +86,12 @@ export default function PollCard({
         {progressPercent !== undefined && progressLabels && (
           <div className="mt-auto">
             <div className="flex justify-between text-label-md font-bold mb-1">
-              <span>{progressLabels[0]} ({progressPercent}%)</span>
-              <span>{progressLabels[1]} ({100 - progressPercent}%)</span>
+              <span>
+                {progressLabels[0]} ({progressPercent}%)
+              </span>
+              <span>
+                {progressLabels[1]} ({100 - progressPercent}%)
+              </span>
             </div>
             <div className="w-full h-4 bg-[var(--color-canvas-cream)] border-2 border-[var(--color-ink-charcoal)] rounded-full overflow-hidden flex">
               <div
@@ -99,7 +109,12 @@ export default function PollCard({
               <div key={opt} className="flex items-center gap-2">
                 <div
                   className="w-4 h-4 rounded-full border-2 border-[var(--color-ink-charcoal)] flex-shrink-0"
-                  style={{ backgroundColor: i === 0 ? "var(--color-leaf-green)" : "var(--color-canvas-cream)" }}
+                  style={{
+                    backgroundColor:
+                      i === 0
+                        ? "var(--color-leaf-green)"
+                        : "var(--color-canvas-cream)",
+                  }}
                 />
                 <span className="text-label-md font-bold">{opt}</span>
               </div>
@@ -114,7 +129,12 @@ export default function PollCard({
         style={{ backgroundColor: accentColor }}
       >
         <span className="text-label-md font-bold flex items-center gap-1">
-          <span className="material-symbols-outlined" style={{ fontSize: "1rem" }}>groups</span>
+          <span
+            className="material-symbols-outlined"
+            style={{ fontSize: "1rem" }}
+          >
+            groups
+          </span>
           {voteCount}
         </span>
         <Link

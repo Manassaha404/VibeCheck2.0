@@ -172,7 +172,7 @@ class PollService {
           data: {
             pollId,
             tags: data.tags,
-          }
+          },
         });
       }
 
@@ -263,7 +263,10 @@ class PollService {
     }
 
     if (poll.status === "archived") {
-      throw new AppError("FORBIDDEN", "This poll has been archived and is no longer accepting votes");
+      throw new AppError(
+        "FORBIDDEN",
+        "This poll has been archived and is no longer accepting votes",
+      );
     }
 
     const [question] = await db
@@ -464,7 +467,10 @@ class PollService {
       throw new AppError("NOT_FOUND", "Poll not found");
     }
     if (pollForVote.status === "archived") {
-      throw new AppError("FORBIDDEN", "This poll has been archived and is no longer accepting votes");
+      throw new AppError(
+        "FORBIDDEN",
+        "This poll has been archived and is no longer accepting votes",
+      );
     }
 
     await db.transaction(async (tx) => {
@@ -489,7 +495,7 @@ class PollService {
         name: "poll/submit",
         data: {
           pollId: data.pollId,
-          userId
+          userId,
         },
       });
     });
@@ -680,7 +686,9 @@ class PollService {
       },
     });
   }
-  public async getDashboardItems(userId: string): Promise<DashboardPollsResult> {
+  public async getDashboardItems(
+    userId: string,
+  ): Promise<DashboardPollsResult> {
     const rows = await db
       .select({
         pollId: polls.pollId,
@@ -693,7 +701,10 @@ class PollService {
       })
       .from(polls)
       .leftJoin(pollQuestions, eq(pollQuestions.pollId, polls.pollId))
-      .leftJoin(pollVotes, eq(pollVotes.questionId, pollQuestions.pollQuestionId))
+      .leftJoin(
+        pollVotes,
+        eq(pollVotes.questionId, pollQuestions.pollQuestionId),
+      )
       .where(eq(polls.userId, userId))
       .groupBy(polls.pollId)
       .orderBy(desc(polls.createdAt));
@@ -759,9 +770,7 @@ class PollService {
       throw new AppError("NOT_FOUND", "Poll not found");
     }
 
-    await db
-      .delete(polls)
-      .where(eq(polls.pollId, existingPoll.pollId));
+    await db.delete(polls).where(eq(polls.pollId, existingPoll.pollId));
 
     return { success: true };
   }

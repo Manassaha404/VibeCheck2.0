@@ -39,7 +39,5 @@ export const sessionResults = pgTable(
     avgScore: integer("avg_score").notNull(),
     completedAt: timestamp("completed_at").defaultNow().notNull(),
   },
-  (t) => [
-    uniqueIndex("session_result_session_id_idx").on(t.sessionId),
-  ],
+  (t) => [uniqueIndex("session_result_session_id_idx").on(t.sessionId)],
 );

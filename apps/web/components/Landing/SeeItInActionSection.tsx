@@ -47,7 +47,6 @@ function WindowBar({ label }: { label: string }) {
   );
 }
 
-
 export default function SeeItInActionSection() {
   return (
     <section
@@ -56,7 +55,7 @@ export default function SeeItInActionSection() {
       aria-labelledby="see-in-action-heading"
     >
       {/* Heading */}
-      <motion.div 
+      <motion.div
         className="max-w-[1280px] mx-auto text-center mb-16"
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -77,7 +76,6 @@ export default function SeeItInActionSection() {
 
       {/* Cards — staggered entry, static tilt, hover straighten */}
       <div className="flex flex-col lg:flex-row gap-10 justify-center items-end max-w-5xl mx-auto">
-
         {/* ── Card 1: Live Poll Results — tilted left ── */}
         <motion.div
           className="flex-1 bg-[var(--color-pure-white)] border-4 border-[var(--color-ink-charcoal)] rounded-2xl overflow-hidden flex flex-col origin-bottom-right"
@@ -89,7 +87,7 @@ export default function SeeItInActionSection() {
             rotate: 0,
             y: -12,
             boxShadow: "8px 12px 0px 0px var(--color-ink-charcoal)",
-            transition: { type: "spring", stiffness: 300, damping: 20 }
+            transition: { type: "spring", stiffness: 300, damping: 20 },
           }}
           style={{ boxShadow: "6px 6px 0px 0px var(--color-ink-charcoal)" }}
         >
@@ -106,7 +104,7 @@ export default function SeeItInActionSection() {
                   What&apos;s the best remote work perk?
                 </h4>
               </div>
-              <motion.div 
+              <motion.div
                 className="text-label-md font-bold shrink-0 bg-[var(--color-pure-white)] border-2 border-[var(--color-ink-charcoal)] px-3 py-1 rounded-full shadow-hard-sm whitespace-nowrap"
                 animate={{ scale: [1, 1.05, 1] }}
                 transition={{ duration: 2, repeat: Infinity }}
@@ -117,11 +115,22 @@ export default function SeeItInActionSection() {
 
             {/* Bars */}
             <div className="space-y-4">
-              <AnswerBar label="Flexible Hours"    percent={84} color="var(--color-leaf-green)"        />
-              <AnswerBar label="No Commute"         percent={62} color="var(--color-electric-sun)"      />
-              <AnswerBar label="Home Office Budget" percent={45} color="var(--color-primary-container)" />
+              <AnswerBar
+                label="Flexible Hours"
+                percent={84}
+                color="var(--color-leaf-green)"
+              />
+              <AnswerBar
+                label="No Commute"
+                percent={62}
+                color="var(--color-electric-sun)"
+              />
+              <AnswerBar
+                label="Home Office Budget"
+                percent={45}
+                color="var(--color-primary-container)"
+              />
             </div>
-
           </div>
         </motion.div>
 
@@ -131,12 +140,17 @@ export default function SeeItInActionSection() {
           initial={{ opacity: 0, y: 60, rotate: 8 }}
           whileInView={{ opacity: 1, y: 0, rotate: 3 }}
           viewport={{ once: true, amount: 0.3 }}
-          transition={{ type: "spring", stiffness: 100, damping: 14, delay: 0.15 }}
+          transition={{
+            type: "spring",
+            stiffness: 100,
+            damping: 14,
+            delay: 0.15,
+          }}
           whileHover={{
             rotate: 0,
             y: -12,
             boxShadow: "8px 12px 0px 0px var(--color-ink-charcoal)",
-            transition: { type: "spring", stiffness: 300, damping: 20 }
+            transition: { type: "spring", stiffness: 300, damping: 20 },
           }}
           style={{ boxShadow: "6px 6px 0px 0px var(--color-ink-charcoal)" }}
         >
@@ -146,8 +160,12 @@ export default function SeeItInActionSection() {
             {/* Stats row */}
             <div className="flex justify-between items-center gap-4">
               <div className="bg-[var(--color-electric-sun)] border-2 border-[var(--color-ink-charcoal)] p-4 rounded-xl shadow-hard flex-1">
-                <p className="text-label-sm font-bold uppercase mb-1">Total Responses</p>
-                <p className="text-headline-md font-display font-black">1,287</p>
+                <p className="text-label-sm font-bold uppercase mb-1">
+                  Total Responses
+                </p>
+                <p className="text-headline-md font-display font-black">
+                  1,287
+                </p>
               </div>
               <div className="bg-[var(--color-leaf-green)] border-2 border-[var(--color-ink-charcoal)] px-4 py-2 rounded-full shadow-hard text-label-md font-bold whitespace-nowrap">
                 Engagement: 68%
@@ -156,7 +174,9 @@ export default function SeeItInActionSection() {
 
             {/* Bar chart */}
             <div className="flex flex-col flex-grow">
-              <p className="text-label-sm font-bold uppercase mb-3">Vibes Over Time</p>
+              <p className="text-label-sm font-bold uppercase mb-3">
+                Vibes Over Time
+              </p>
               <div className="flex-grow flex items-end gap-3 h-[120px] shrink-0">
                 {[
                   { h: "40%", color: "#FF71D4" },
@@ -168,10 +188,18 @@ export default function SeeItInActionSection() {
                   <motion.div
                     key={i}
                     className="flex-1 border-2 border-[var(--color-ink-charcoal)] rounded-t-lg"
-                    style={{ backgroundColor: bar.color, transformOrigin: "bottom" }}
+                    style={{
+                      backgroundColor: bar.color,
+                      transformOrigin: "bottom",
+                    }}
                     initial={{ height: "0%" }}
                     whileInView={{ height: bar.h }}
-                    transition={{ type: "spring", stiffness: 60, damping: 12, delay: 0.3 + i * 0.1 }}
+                    transition={{
+                      type: "spring",
+                      stiffness: 60,
+                      damping: 12,
+                      delay: 0.3 + i * 0.1,
+                    }}
                     viewport={{ once: true }}
                     whileHover={{ scaleY: 1.05 }}
                     aria-hidden="true"
@@ -189,10 +217,8 @@ export default function SeeItInActionSection() {
                 ))}
               </div>
             </div>
-
           </div>
         </motion.div>
-
       </div>
     </section>
   );

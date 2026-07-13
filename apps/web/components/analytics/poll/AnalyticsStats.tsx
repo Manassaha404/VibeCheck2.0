@@ -12,7 +12,13 @@ interface StatCardProps {
   index?: number;
 }
 
-function StatCard({ label, value, icon, accent = "white", index = 0 }: StatCardProps) {
+function StatCard({
+  label,
+  value,
+  icon,
+  accent = "white",
+  index = 0,
+}: StatCardProps) {
   const bgMap = {
     white: "bg-pure-white",
     green: "bg-leaf-green",

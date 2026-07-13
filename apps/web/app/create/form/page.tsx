@@ -24,14 +24,18 @@ export default function FormSetupPage() {
       return;
     }
 
-    if (formState.passwordNeeded && (!formState.password || formState.password.trim().length <= 1)) {
+    if (
+      formState.passwordNeeded &&
+      (!formState.password || formState.password.trim().length <= 1)
+    ) {
       setApiError("Password must be longer than 1 character.");
       return;
     }
 
     setApiError(null);
 
-    let currentSlug = formState.slug || `form-${crypto.randomUUID().substring(0, 8)}`;
+    let currentSlug =
+      formState.slug || `form-${crypto.randomUUID().substring(0, 8)}`;
     let success = false;
     let attempt = 0;
 
@@ -42,8 +46,12 @@ export default function FormSetupPage() {
           description: formState.description || null,
           slug: currentSlug,
           passwordNeeded: formState.passwordNeeded,
-          password: formState.passwordNeeded ? formState.password || "defaultPass" : "not_set",
-          expiresAt: formState.expiresAt ? new Date(formState.expiresAt).toISOString() : null,
+          password: formState.passwordNeeded
+            ? formState.password || "defaultPass"
+            : "not_set",
+          expiresAt: formState.expiresAt
+            ? new Date(formState.expiresAt).toISOString()
+            : null,
           responseLimit: formState.responseLimit || null,
           allowResponseEdit: formState.allowResponseEdit,
         });
@@ -51,7 +59,9 @@ export default function FormSetupPage() {
         if (error.message === "slug already exists") {
           attempt++;
           if (attempt >= 5) {
-            setApiError("Slug is consistently conflicting. Please try a completely different slug.");
+            setApiError(
+              "Slug is consistently conflicting. Please try a completely different slug.",
+            );
             break;
           }
           currentSlug = `${formState.slug || `form-${crypto.randomUUID().substring(0, 8)}`}-${crypto.randomUUID().substring(0, 4)}`;
@@ -72,7 +82,6 @@ export default function FormSetupPage() {
 
       {/* Main Content */}
       <main className="flex-grow w-full px-4 md:px-10 py-12 md:py-24 relative overflow-hidden">
-        
         {/* Decorative Floating Shapes */}
         <div className="absolute top-10 left-10 w-32 h-32 bg-vivid-coral rounded-full border-4 border-ink-charcoal hard-shadow animate-float-slow hidden md:block" />
         <div className="absolute bottom-20 left-10 w-24 h-24 bg-mint border-4 border-ink-charcoal rotate-12 hard-shadow animate-wiggle hidden md:block" />
@@ -81,12 +90,10 @@ export default function FormSetupPage() {
         <div className="absolute top-1/2 left-8 w-16 h-16 bg-lavender rounded-xl border-4 border-ink-charcoal rotate-45 hard-shadow animate-float-slow hidden md:block" />
 
         <div className="max-w-4xl mx-auto relative z-10">
-          
           <FormSetupHeader />
 
           {/* Form Builder Layout */}
           <div className="flex flex-col gap-8 relative z-10">
-            
             <GeneralDetailsSection />
 
             {/* Settings Grid */}
@@ -105,10 +112,10 @@ export default function FormSetupPage() {
                   {apiError}
                 </div>
               )}
-              <button 
+              <button
                 onClick={onDraftClick}
                 disabled={isDrafting}
-                className={`font-label-md text-label-md px-10 py-4 ${isDrafting ? 'bg-surface-variant' : 'bg-leaf-green hover:bg-primary-fixed hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[1px_1px_0px_0px_rgba(44,46,42,1)]'} text-ink-charcoal border-4 border-ink-charcoal rounded shadow-[6px_6px_0px_0px_rgba(44,46,42,1)] transition-all active:translate-x-1 active:translate-y-1 active:shadow-none whitespace-nowrap text-lg uppercase tracking-wider font-bold`}
+                className={`font-label-md text-label-md px-10 py-4 ${isDrafting ? "bg-surface-variant" : "bg-leaf-green hover:bg-primary-fixed hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[1px_1px_0px_0px_rgba(44,46,42,1)]"} text-ink-charcoal border-4 border-ink-charcoal rounded shadow-[6px_6px_0px_0px_rgba(44,46,42,1)] transition-all active:translate-x-1 active:translate-y-1 active:shadow-none whitespace-nowrap text-lg uppercase tracking-wider font-bold`}
               >
                 {isDrafting ? "Drafting..." : "Let's Draft"}
               </button>

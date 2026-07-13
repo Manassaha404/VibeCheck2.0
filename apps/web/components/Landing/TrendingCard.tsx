@@ -69,7 +69,12 @@ export default function TrendingCard({
 
       <div className="flex flex-col gap-3 relative z-10 mt-auto pt-6">
         <div className="flex items-center gap-2 text-[var(--color-ink-charcoal)] font-bold text-label-md">
-          <span className="material-symbols-outlined filled" style={{ fontSize: "1.25rem" }}>groups</span>
+          <span
+            className="material-symbols-outlined filled"
+            style={{ fontSize: "1.25rem" }}
+          >
+            groups
+          </span>
           {voteCount} Votes
         </div>
         <motion.div

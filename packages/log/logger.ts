@@ -10,7 +10,7 @@ const logger = winston.createLogger({
     }),
     winston.format.errors({ stack: true }),
     winston.format.splat(),
-    winston.format.json()
+    winston.format.json(),
   ),
   defaultMeta: {
     service: process.env.OTEL_SERVICE_NAME || "my-express",
@@ -26,7 +26,7 @@ const logger = winston.createLogger({
             msg += ` ${JSON.stringify(metadata)}`;
           }
           return msg;
-        })
+        }),
       ),
     }),
   ],

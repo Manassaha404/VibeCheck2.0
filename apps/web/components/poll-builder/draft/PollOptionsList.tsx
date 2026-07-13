@@ -33,8 +33,11 @@ function SortableOptionItem({
   remove: (index: number) => void;
   canRemove: boolean;
 }) {
-  const { register, formState: { errors } } = useFormContext<PollDraftFormValues>();
-  
+  const {
+    register,
+    formState: { errors },
+  } = useFormContext<PollDraftFormValues>();
+
   const {
     attributes,
     listeners,
@@ -92,7 +95,10 @@ function SortableOptionItem({
 }
 
 export function PollOptionsList() {
-  const { control, formState: { errors } } = useFormContext<PollDraftFormValues>();
+  const {
+    control,
+    formState: { errors },
+  } = useFormContext<PollDraftFormValues>();
   const { fields, append, remove, move } = useFieldArray({
     control,
     name: "options",
@@ -102,7 +108,7 @@ export function PollOptionsList() {
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
-    })
+    }),
   );
 
   const handleDragEnd = (event: DragEndEvent) => {
@@ -116,10 +122,15 @@ export function PollOptionsList() {
   };
 
   return (
-    <div className="bg-pure-white border-2 border-ink-charcoal shadow-hard-lg p-6 rounded-xl flex flex-col gap-4 relative overflow-hidden card-lift animate-fade-up" style={{ animationDelay: '100ms' }}>
+    <div
+      className="bg-pure-white border-2 border-ink-charcoal shadow-hard-lg p-6 rounded-xl flex flex-col gap-4 relative overflow-hidden card-lift animate-fade-up"
+      style={{ animationDelay: "100ms" }}
+    >
       <div className="absolute top-0 left-0 w-full h-2 bg-[var(--color-mint)] border-b-2 border-ink-charcoal"></div>
-      <h2 className="font-headline-sm text-headline-sm text-ink-charcoal mb-2 mt-2">Options</h2>
-      
+      <h2 className="font-headline-sm text-headline-sm text-ink-charcoal mb-2 mt-2">
+        Options
+      </h2>
+
       <DndContext
         sensors={sensors}
         collisionDetection={closestCenter}

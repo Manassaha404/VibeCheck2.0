@@ -1,6 +1,10 @@
 import { Agent, InputGuardrail, OutputGuardrail, run } from "@openai/agents";
 import type { AgentInputItem } from "@openai/agents";
-import { FormGenerationSchema, GeneratedForm, GuardrailResultSchema } from "./model";
+import {
+  FormGenerationSchema,
+  GeneratedForm,
+  GuardrailResultSchema,
+} from "./model";
 
 export const inputGuardrailAgent = new Agent({
   name: "input_guardrail_agent",
@@ -35,7 +39,9 @@ function extractUserText(input: string | AgentInputItem[] | unknown): string {
         if (typeof content === "string") return content;
         // content can also be an array of content parts
         if (Array.isArray(content)) {
-          const textPart = content.find((p: any) => p.type === "input_text" || p.type === "text");
+          const textPart = content.find(
+            (p: any) => p.type === "input_text" || p.type === "text",
+          );
           if (textPart) return textPart.text ?? textPart.content ?? "";
         }
       }

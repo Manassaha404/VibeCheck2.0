@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { trpc } from "@/trpc/client";
 import { useQuizStore } from "@/store/quizStore";
-import { toast } from "sonner";
+
 import { useRouter } from "next/navigation";
 import { uuidToNumber } from "@/utils/uuid";
 
@@ -15,12 +15,10 @@ export function useUpdateQuiz(quizId: string) {
   const submitQuiz = async () => {
     // Basic validation
     if (!quizStore.info.title.trim()) {
-      toast.error("Quiz title is required.");
       return;
     }
 
     if (quizStore.questions.length === 0) {
-      toast.error("Add at least one question to your quiz.");
       return;
     }
 
@@ -48,22 +46,21 @@ export function useUpdateQuiz(quizId: string) {
     try {
       setIsSubmitting(true);
       const result = await updateQuizMutation.mutateAsync(payload);
-      toast.success("Quiz updated successfully!");
-      if(!result) {
+
+      if (!result) {
         throw new Error("Quiz ID is missing in the response.");
       }
-      
+
       quizStore.reset();
-      
+
       trpcUtils.quiz.getDashboard.invalidate();
       trpcUtils.quiz.getQuizDashboard.invalidate({ quizId });
       trpcUtils.quiz.getQuizForEdit.invalidate({ quizId });
-      
+
       const quizIdURL = uuidToNumber(quizId);
       router.push(`/dashboard/quiz/${quizIdURL}`);
       return result;
     } catch (error: any) {
-      toast.error(error.message || "Failed to update quiz.");
       throw error;
     } finally {
       setIsSubmitting(false);

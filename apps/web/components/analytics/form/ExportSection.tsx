@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import React from 'react';
-import { Download, Loader2 } from 'lucide-react';
-import type { FieldType, FieldAnalyticsData } from './schema';
-import { useFormExport } from '@/hook/form/useFormExport';
+import React from "react";
+import { Download, Loader2 } from "lucide-react";
+import type { FieldType, FieldAnalyticsData } from "./schema";
+import { useFormExport } from "@/hook/form/useFormExport";
 
 export type { FieldAnalyticsData };
 
@@ -19,7 +19,7 @@ export interface ExportSectionProps {
   fields: ExportField[];
 }
 
-export type TimePeriod = '7d' | '14d' | '30d' | 'all';
+export type TimePeriod = "7d" | "14d" | "30d" | "all";
 
 export function ExportSection({ formSlug, fields }: ExportSectionProps) {
   const {
@@ -64,12 +64,14 @@ export function ExportSection({ formSlug, fields }: ExportSectionProps) {
               }
               className="text-xs font-black uppercase border-2 border-ink-charcoal px-3 py-1 bg-pure-white hover:bg-electric-sun transition-colors"
             >
-              {selectedFields.size === fields.length ? 'None' : 'All'}
+              {selectedFields.size === fields.length ? "None" : "All"}
             </button>
           </div>
 
           {fields.length === 0 ? (
-            <p className="text-center font-bold opacity-40 uppercase py-4">No fields</p>
+            <p className="text-center font-bold opacity-40 uppercase py-4">
+              No fields
+            </p>
           ) : (
             <div className="space-y-3 font-bold text-base uppercase flex flex-col max-h-60 overflow-y-auto custom-scrollbar">
               {fields.map((field) => (
@@ -87,7 +89,7 @@ export function ExportSection({ formSlug, fields }: ExportSectionProps) {
                     {field.label}
                   </span>
                   <span className="ml-auto text-xs font-normal opacity-50 shrink-0">
-                    {field.type.replace('_', ' ')}
+                    {field.type.replace("_", " ")}
                   </span>
                 </label>
               ))}
@@ -111,12 +113,16 @@ export function ExportSection({ formSlug, fields }: ExportSectionProps) {
             <option value="all">All Time</option>
           </select>
 
-          {timePeriod === 'all' ? (
-            <p className="font-bold text-sm uppercase opacity-60 mt-auto">Exporting all responses</p>
+          {timePeriod === "all" ? (
+            <p className="font-bold text-sm uppercase opacity-60 mt-auto">
+              Exporting all responses
+            </p>
           ) : (
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block font-black uppercase text-sm mb-1">Start Date</label>
+                <label className="block font-black uppercase text-sm mb-1">
+                  Start Date
+                </label>
                 <input
                   className="w-full bg-pure-white border-4 border-ink-charcoal p-3 font-bold uppercase focus:ring-0 focus:outline-none shadow-[4px_4px_0px_0px_rgba(44,46,42,1)]"
                   type="date"
@@ -125,7 +131,9 @@ export function ExportSection({ formSlug, fields }: ExportSectionProps) {
                 />
               </div>
               <div>
-                <label className="block font-black uppercase text-sm mb-1">End Date</label>
+                <label className="block font-black uppercase text-sm mb-1">
+                  End Date
+                </label>
                 <input
                   className="w-full bg-pure-white border-4 border-ink-charcoal p-3 font-bold uppercase focus:ring-0 focus:outline-none shadow-[4px_4px_0px_0px_rgba(44,46,42,1)]"
                   type="date"
@@ -156,8 +164,6 @@ export function ExportSection({ formSlug, fields }: ExportSectionProps) {
               <Download size={48} strokeWidth={3} />
             </>
           )}
-
-
         </button>
 
         {selectedFields.size === 0 && (

@@ -20,12 +20,16 @@ export const useCreatePetition = () => {
     try {
       const response = await createPetitionMutation(data);
       if (response?.petition) {
-        router.replace(`/dashboard/analytics/petition/${response.petition.slug}`);
+        router.replace(
+          `/dashboard/analytics/petition/${response.petition.slug}`,
+        );
         return response.petition;
       }
       return null;
     } catch (error: any) {
-      setApiError(error.message || "Failed to create petition. Please try again.");
+      setApiError(
+        error.message || "Failed to create petition. Please try again.",
+      );
       return null;
     }
   };

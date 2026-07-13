@@ -19,7 +19,9 @@ export const useSignPetition = () => {
       const response = await signPetitionMutation(data);
       return response;
     } catch (error: any) {
-      setApiError(error.message || "Failed to sign petition. Please try again.");
+      setApiError(
+        error.message || "Failed to sign petition. Please try again.",
+      );
       return null;
     }
   };

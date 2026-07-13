@@ -3,19 +3,50 @@ import { quizzes } from "@repo/database/models/quizzes";
 import { quizQuestions } from "@repo/database/models/quiz-questions";
 import { QuizSessions } from "@repo/database/models/quiz-sessions";
 import { quizParticipants } from "@repo/database/models/quiz-participants";
-import { sessionResults, LeaderboardEntry, QuestionStat } from "@repo/database/models/quiz-sessions-result";
+import {
+  sessionResults,
+  LeaderboardEntry,
+  QuestionStat,
+} from "@repo/database/models/quiz-sessions-result";
 import { users } from "@repo/database/models/users";
 import { AppError } from "@repo/error";
-import { 
-  createQuizDto, CreateQuizInput, updateQuizDto, UpdateQuizInput,
-  archiveItemDto, ArchiveItemDtoType, activateItemDto, ActivateItemDtoType, deleteItemDto, DeleteItemDtoType,
-  makeQuizSessionDto, MakeQuizSessionDtoType, getSessionAnalyticsDto, GetSessionAnalyticsDtoType,
-  getSessionForHostDto, GetSessionForHostDtoType, emitQuestionDto, EmitQuestionDtoType,
-  manuallyActivateSessionDto, ManuallyActivateSessionDtoType, endSessionDto, EndSessionDtoType,
-  getSessionInfoForParticipantDto, GetSessionInfoForParticipantDtoType, verifySessionPasswordDto, VerifySessionPasswordDtoType,
-  getLeaderboardForSessionDto, GetLeaderboardForSessionDtoType, addBonusPointsDto, AddBonusPointsDtoType,
-  recordAnswerDto, RecordAnswerDtoType, getQuizDashboardDto, GetQuizDashboardDtoType,
-  getQuizForEditDto, GetQuizForEditDtoType
+import {
+  createQuizDto,
+  CreateQuizInput,
+  updateQuizDto,
+  UpdateQuizInput,
+  archiveItemDto,
+  ArchiveItemDtoType,
+  activateItemDto,
+  ActivateItemDtoType,
+  deleteItemDto,
+  DeleteItemDtoType,
+  makeQuizSessionDto,
+  MakeQuizSessionDtoType,
+  getSessionAnalyticsDto,
+  GetSessionAnalyticsDtoType,
+  getSessionForHostDto,
+  GetSessionForHostDtoType,
+  emitQuestionDto,
+  EmitQuestionDtoType,
+  manuallyActivateSessionDto,
+  ManuallyActivateSessionDtoType,
+  endSessionDto,
+  EndSessionDtoType,
+  getSessionInfoForParticipantDto,
+  GetSessionInfoForParticipantDtoType,
+  verifySessionPasswordDto,
+  VerifySessionPasswordDtoType,
+  getLeaderboardForSessionDto,
+  GetLeaderboardForSessionDtoType,
+  addBonusPointsDto,
+  AddBonusPointsDtoType,
+  recordAnswerDto,
+  RecordAnswerDtoType,
+  getQuizDashboardDto,
+  GetQuizDashboardDtoType,
+  getQuizForEditDto,
+  GetQuizForEditDtoType,
 } from "./model";
 import { customAlphabet } from "nanoid";
 import redis from "../redis";
@@ -44,9 +75,12 @@ class QuizService {
   }
   private async updateSessionActivity(sessionId: string) {
     const redisKey = this.redisSessionInactivityKey(sessionId);
-    await redis.set(redisKey, JSON.stringify({
-      lastCreaTorActivity: new Date().toISOString(),
-    }))
+    await redis.set(
+      redisKey,
+      JSON.stringify({
+        lastCreaTorActivity: new Date().toISOString(),
+      }),
+    );
   }
   private redisLeaderboardKey(sessionId: string) {
     return `quiz:session:leaderboard:${sessionId}`;
@@ -57,15 +91,23 @@ class QuizService {
     const leaderboardKey = this.redisLeaderboardKey(sessionId);
 
     const rawLiveState = await redis.get(liveKey);
-    const liveState: LiveSessionRedisState | null = rawLiveState ? JSON.parse(rawLiveState) : null;
+    const liveState: LiveSessionRedisState | null = rawLiveState
+      ? JSON.parse(rawLiveState)
+      : null;
 
-    const participantsWithScores = await redis.zrange(leaderboardKey, 0, -1, "REV", "WITHSCORES");
+    const participantsWithScores = await redis.zrange(
+      leaderboardKey,
+      0,
+      -1,
+      "REV",
+      "WITHSCORES",
+    );
     const userScores: { userId: string; score: number }[] = [];
     for (let i = 0; i < participantsWithScores.length; i += 2) {
       const userId = participantsWithScores[i];
       const scoreStr = participantsWithScores[i + 1];
       if (userId === undefined || scoreStr === undefined) continue;
-      
+
       userScores.push({
         userId,
         score: parseFloat(scoreStr),
@@ -75,7 +117,9 @@ class QuizService {
     const totalParticipants = userScores.length;
     let avgScore = 0;
     if (totalParticipants > 0) {
-      avgScore = Math.round(userScores.reduce((sum, p) => sum + p.score, 0) / totalParticipants);
+      avgScore = Math.round(
+        userScores.reduce((sum, p) => sum + p.score, 0) / totalParticipants,
+      );
     }
 
     let finalLeaderboard: LeaderboardEntry[] = [];
@@ -102,9 +146,14 @@ class QuizService {
       const inserted = await db
         .insert(quizParticipants)
         .values(dbParticipants)
-        .returning({ participantId: quizParticipants.participantId, userId: quizParticipants.userId });
+        .returning({
+          participantId: quizParticipants.participantId,
+          userId: quizParticipants.userId,
+        });
 
-      const participantIdMap = new Map(inserted.map((i) => [i.userId, i.participantId]));
+      const participantIdMap = new Map(
+        inserted.map((i) => [i.userId, i.participantId]),
+      );
 
       finalLeaderboard = userScores.map((p, index) => {
         const user = userMap.get(p.userId);
@@ -119,7 +168,11 @@ class QuizService {
     }
 
     let questionStats: QuestionStat[] = [];
-    const questions = await db.select().from(quizQuestions).where(eq(quizQuestions.quizId, quizId)).orderBy(quizQuestions.orderIndex);
+    const questions = await db
+      .select()
+      .from(quizQuestions)
+      .where(eq(quizQuestions.quizId, quizId))
+      .orderBy(quizQuestions.orderIndex);
 
     if (liveState && liveState.voteTallies) {
       questionStats = questions.map((q) => {
@@ -127,7 +180,10 @@ class QuizService {
         let correctVotes = 0;
         let totalVotes = 0;
         const distribution: number[] = [];
-        const options = (q.options ?? []) as { id: string; isCorrect: boolean }[];
+        const options = (q.options ?? []) as {
+          id: string;
+          isCorrect: boolean;
+        }[];
 
         options.forEach((opt) => {
           const count = tallies[opt.id] || 0;
@@ -172,8 +228,6 @@ class QuizService {
     const data = createQuizDto.parse(payload);
 
     return await db.transaction(async (tx) => {
-      
-
       // 1. Insert the main quiz record
       const [newQuiz] = await tx
         .insert(quizzes)
@@ -183,7 +237,9 @@ class QuizService {
           description: data.info.description ?? null,
           status: "active",
           passwordNeeded: data.globalSettings.passwordProtect,
-          password: data.globalSettings.passwordProtect ? data.globalSettings.password : null,
+          password: data.globalSettings.passwordProtect
+            ? data.globalSettings.password
+            : null,
         })
         .returning();
 
@@ -218,12 +274,19 @@ class QuizService {
 
   public async getQuizForEdit(payload: GetQuizForEditDtoType) {
     const data = getQuizForEditDto.parse(payload);
-    const [quiz] = await db.select().from(quizzes).where(eq(quizzes.quizId, data.quizId));
+    const [quiz] = await db
+      .select()
+      .from(quizzes)
+      .where(eq(quizzes.quizId, data.quizId));
     if (!quiz) {
       throw new AppError("NOT_FOUND", "Quiz not found");
     }
 
-    const questions = await db.select().from(quizQuestions).where(eq(quizQuestions.quizId, data.quizId)).orderBy(quizQuestions.orderIndex);
+    const questions = await db
+      .select()
+      .from(quizQuestions)
+      .where(eq(quizQuestions.quizId, data.quizId))
+      .orderBy(quizQuestions.orderIndex);
 
     return {
       quiz,
@@ -236,12 +299,15 @@ class QuizService {
 
     return await db.transaction(async (tx) => {
       // 1. Verify and update the main quiz record
-      const [existingQuiz] = await tx.select().from(quizzes).where(eq(quizzes.quizId, data.quizId));
+      const [existingQuiz] = await tx
+        .select()
+        .from(quizzes)
+        .where(eq(quizzes.quizId, data.quizId));
       if (!existingQuiz) {
-         throw new AppError("NOT_FOUND", "Quiz not found");
+        throw new AppError("NOT_FOUND", "Quiz not found");
       }
       if (existingQuiz.userId !== userId) {
-         throw new AppError("UNAUTHORIZED", "Unauthorized to update this quiz");
+        throw new AppError("UNAUTHORIZED", "Unauthorized to update this quiz");
       }
 
       await tx
@@ -250,12 +316,16 @@ class QuizService {
           title: data.info.title,
           description: data.info.description ?? null,
           passwordNeeded: data.globalSettings.passwordProtect,
-          password: data.globalSettings.passwordProtect ? data.globalSettings.password : null,
+          password: data.globalSettings.passwordProtect
+            ? data.globalSettings.password
+            : null,
         })
         .where(eq(quizzes.quizId, data.quizId));
 
       // 2. Delete old questions
-      await tx.delete(quizQuestions).where(eq(quizQuestions.quizId, data.quizId));
+      await tx
+        .delete(quizQuestions)
+        .where(eq(quizQuestions.quizId, data.quizId));
 
       // 3. Insert new questions
       if (data.questions.length > 0) {
@@ -284,20 +354,25 @@ class QuizService {
 
   public async getQuizDashboard(payload: GetQuizDashboardDtoType) {
     const data = getQuizDashboardDto.parse(payload);
-    
-    const [quiz] = await db.select().from(quizzes).where(eq(quizzes.quizId, data.quizId));
+
+    const [quiz] = await db
+      .select()
+      .from(quizzes)
+      .where(eq(quizzes.quizId, data.quizId));
     if (!quiz) {
       throw new AppError("NOT_FOUND", "Quiz not found");
     }
 
-    
-    
-
-    const questions = await db.select().from(quizQuestions).where(eq(quizQuestions.quizId, data.quizId));
+    const questions = await db
+      .select()
+      .from(quizQuestions)
+      .where(eq(quizQuestions.quizId, data.quizId));
     const totalQuestions = questions.length;
-    const totalTimeLimitSecs = questions.reduce((sum, q) => sum + q.timeLimitSecs, 0);
+    const totalTimeLimitSecs = questions.reduce(
+      (sum, q) => sum + q.timeLimitSecs,
+      0,
+    );
 
-    
     let sessions: any[] = [];
     try {
       sessions = await db
@@ -307,17 +382,18 @@ class QuizService {
         .orderBy(desc(QuizSessions.createdAt));
     } catch (err: any) {
       console.error("QuizSessions Query Error:", err);
-      throw new AppError("INTERNAL_SERVER_ERROR", `QuizSessions query failed: ${err.message}`);
+      throw new AppError(
+        "INTERNAL_SERVER_ERROR",
+        `QuizSessions query failed: ${err.message}`,
+      );
     }
-
 
     let totalParticipants = 0;
     let leaderboardRaw: any[] = [];
     const previousSessions: any[] = [];
 
-    const sessionIds = sessions.map(s => s.sessionId);
+    const sessionIds = sessions.map((s) => s.sessionId);
 
-    
     if (sessionIds.length > 0) {
       let participants: any[] = [];
       try {
@@ -343,12 +419,17 @@ class QuizService {
       totalParticipants = participants.length;
 
       const uniqueParticipantsMap = new Map();
-      
+
       for (const p of participants) {
         const key = p.userId || p.participantId;
-        const displayName = p.username || (p.firstName ? `${p.firstName} ${p.lastName}` : "Guest");
-        
-        if (!uniqueParticipantsMap.has(key) || uniqueParticipantsMap.get(key).score < p.score) {
+        const displayName =
+          p.username ||
+          (p.firstName ? `${p.firstName} ${p.lastName}` : "Guest");
+
+        if (
+          !uniqueParticipantsMap.has(key) ||
+          uniqueParticipantsMap.get(key).score < p.score
+        ) {
           uniqueParticipantsMap.set(key, {
             id: key,
             name: displayName,
@@ -358,12 +439,11 @@ class QuizService {
         }
       }
 
-    
       leaderboardRaw = Array.from(uniqueParticipantsMap.values())
         .sort((a, b) => b.score - a.score)
         .slice(0, 10);
     }
-    
+
     // Include all sessions
     for (const s of sessions) {
       previousSessions.push({
@@ -398,7 +478,7 @@ class QuizService {
 
     if (total > 0) {
       const quizIds = userQuizzes.map((q) => q.quizId);
-      
+
       const sessionRecords = await db
         .select({
           quizId: QuizSessions.quizId,
@@ -406,9 +486,9 @@ class QuizService {
         })
         .from(QuizSessions)
         .where(inArray(QuizSessions.quizId, quizIds));
-        
+
       const sessionIds = sessionRecords.map((s) => s.sessionId);
-      
+
       if (sessionIds.length > 0) {
         const participants = await db
           .select({
@@ -416,14 +496,19 @@ class QuizService {
           })
           .from(quizParticipants)
           .where(inArray(quizParticipants.sessionId, sessionIds));
-          
-        const sessionParticipantCounts = participants.reduce((acc, p) => {
-          acc[p.sessionId] = (acc[p.sessionId] || 0) + 1;
-          return acc;
-        }, {} as Record<string, number>);
-        
+
+        const sessionParticipantCounts = participants.reduce(
+          (acc, p) => {
+            acc[p.sessionId] = (acc[p.sessionId] || 0) + 1;
+            return acc;
+          },
+          {} as Record<string, number>,
+        );
+
         sessionRecords.forEach((s) => {
-          quizParticipantCounts[s.quizId] = (quizParticipantCounts[s.quizId] || 0) + (sessionParticipantCounts[s.sessionId] || 0);
+          quizParticipantCounts[s.quizId] =
+            (quizParticipantCounts[s.quizId] || 0) +
+            (sessionParticipantCounts[s.sessionId] || 0);
         });
       }
     }
@@ -445,67 +530,128 @@ class QuizService {
   }
   public async archiveItem(userId: string, payload: ArchiveItemDtoType) {
     const data = archiveItemDto.parse(payload);
-    const [quiz] = await db.select().from(quizzes).where(eq(quizzes.quizId, data.quizId));
+    const [quiz] = await db
+      .select()
+      .from(quizzes)
+      .where(eq(quizzes.quizId, data.quizId));
     if (!quiz) throw new AppError("NOT_FOUND", "Quiz not found");
-    if (quiz.userId !== userId) throw new AppError("UNAUTHORIZED", "Unauthorized to archive this quiz");
-    
-    await db.update(quizzes).set({ status: "archived" }).where(eq(quizzes.quizId, data.quizId));
+    if (quiz.userId !== userId)
+      throw new AppError("UNAUTHORIZED", "Unauthorized to archive this quiz");
+
+    await db
+      .update(quizzes)
+      .set({ status: "archived" })
+      .where(eq(quizzes.quizId, data.quizId));
     return { success: true };
   }
 
   public async activateItem(userId: string, payload: ActivateItemDtoType) {
     const data = activateItemDto.parse(payload);
-    const [quiz] = await db.select().from(quizzes).where(eq(quizzes.quizId, data.quizId));
+    const [quiz] = await db
+      .select()
+      .from(quizzes)
+      .where(eq(quizzes.quizId, data.quizId));
     if (!quiz) throw new AppError("NOT_FOUND", "Quiz not found");
-    if (quiz.userId !== userId) throw new AppError("UNAUTHORIZED", "Unauthorized to activate this quiz");
-    
-    await db.update(quizzes).set({ status: "active" }).where(eq(quizzes.quizId, data.quizId));
+    if (quiz.userId !== userId)
+      throw new AppError("UNAUTHORIZED", "Unauthorized to activate this quiz");
+
+    await db
+      .update(quizzes)
+      .set({ status: "active" })
+      .where(eq(quizzes.quizId, data.quizId));
     return { success: true };
   }
 
   public async deleteItem(userId: string, payload: DeleteItemDtoType) {
     const data = deleteItemDto.parse(payload);
-    const [quiz] = await db.select().from(quizzes).where(eq(quizzes.quizId, data.quizId));
+    const [quiz] = await db
+      .select()
+      .from(quizzes)
+      .where(eq(quizzes.quizId, data.quizId));
     if (!quiz) throw new AppError("NOT_FOUND", "Quiz not found");
-    if (quiz.userId !== userId) throw new AppError("UNAUTHORIZED", "Unauthorized to delete this quiz");
-    
+    if (quiz.userId !== userId)
+      throw new AppError("UNAUTHORIZED", "Unauthorized to delete this quiz");
+
     await db.delete(quizzes).where(eq(quizzes.quizId, data.quizId));
     return { success: true };
   }
 
-  public async makeQuizSession(userId: string, payload: MakeQuizSessionDtoType) {
+  public async makeQuizSession(
+    userId: string,
+    payload: MakeQuizSessionDtoType,
+  ) {
     const data = makeQuizSessionDto.parse(payload);
-    const [quiz] = await db.select().from(quizzes).where(eq(quizzes.quizId, data.quizId));
+    const [quiz] = await db
+      .select()
+      .from(quizzes)
+      .where(eq(quizzes.quizId, data.quizId));
     if (!quiz) throw new AppError("NOT_FOUND", "Quiz not found");
-    if (quiz.userId !== userId) throw new AppError("UNAUTHORIZED", "Unauthorized to create session for this quiz");
-    const joinCode = customAlphabet('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789', 8)();
+    if (quiz.userId !== userId)
+      throw new AppError(
+        "UNAUTHORIZED",
+        "Unauthorized to create session for this quiz",
+      );
+    const joinCode = customAlphabet(
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",
+      8,
+    )();
     // Always start in "waiting" — auto-activates after 30 min via autoActiveQueue
-    const [newSession] = await db.insert(QuizSessions).values({
-      quizId: data.quizId,
-      name: data.sessionName,
-      joinCode,
-      status: "waiting",
-    }).returning();
-    if(!newSession) throw new AppError("INTERNAL_SERVER_ERROR", "Failed to create quiz session");
+    const [newSession] = await db
+      .insert(QuizSessions)
+      .values({
+        quizId: data.quizId,
+        name: data.sessionName,
+        joinCode,
+        status: "waiting",
+      })
+      .returning();
+    if (!newSession)
+      throw new AppError(
+        "INTERNAL_SERVER_ERROR",
+        "Failed to create quiz session",
+      );
     const sessionKey = this.redisSessionInactivityKey(newSession.sessionId);
-    await redis.set(sessionKey, JSON.stringify({
-      lastCreaTorActivity: new Date().toISOString(),
-    }))
+    await redis.set(
+      sessionKey,
+      JSON.stringify({
+        lastCreaTorActivity: new Date().toISOString(),
+      }),
+    );
     // Schedule inactivity cleanup after 1 hour
-    await inactivityQueue.add("check-inactivity", { sessionId: newSession.sessionId }, { delay: 60 * 60 * 1000 });
+    await inactivityQueue.add(
+      "check-inactivity",
+      { sessionId: newSession.sessionId },
+      { delay: 60 * 60 * 1000 },
+    );
     // Schedule auto-activation after 30 minutes
-    const autoActiveJob = await autoActiveQueue.add("auto-activate", { sessionId: newSession.sessionId }, { delay: 30 * 60 * 1000 });
+    const autoActiveJob = await autoActiveQueue.add(
+      "auto-activate",
+      { sessionId: newSession.sessionId },
+      { delay: 30 * 60 * 1000 },
+    );
     // Store the auto-active job ID in Redis so we can cancel it on manual activation
-    await redis.set(this.redisAutoActiveJobKey(newSession.sessionId), autoActiveJob.id ?? "");
-    return { success: true, sessionId: newSession.sessionId, joinCode, }
+    await redis.set(
+      this.redisAutoActiveJobKey(newSession.sessionId),
+      autoActiveJob.id ?? "",
+    );
+    return { success: true, sessionId: newSession.sessionId, joinCode };
   }
-  public async endQuizSessionForInactivity( sessionId:string){
-    const [session] = await db.select().from(QuizSessions).where(eq(QuizSessions.sessionId, sessionId));
+  public async endQuizSessionForInactivity(sessionId: string) {
+    const [session] = await db
+      .select()
+      .from(QuizSessions)
+      .where(eq(QuizSessions.sessionId, sessionId));
     if (!session) throw new AppError("NOT_FOUND", "Quiz session not found");
-    const [quiz] = await db.select().from(quizzes).where(eq(quizzes.quizId, session.quizId));
+    const [quiz] = await db
+      .select()
+      .from(quizzes)
+      .where(eq(quizzes.quizId, session.quizId));
     if (!quiz) throw new AppError("NOT_FOUND", "Quiz not found");
-    await db.update(QuizSessions).set({ status: "ended", endedAt: new Date() }).where(eq(QuizSessions.sessionId, sessionId));
-    
+    await db
+      .update(QuizSessions)
+      .set({ status: "ended", endedAt: new Date() })
+      .where(eq(QuizSessions.sessionId, sessionId));
+
     try {
       await this.finalizeSessionData(sessionId, session.quizId);
     } catch (err) {
@@ -528,7 +674,11 @@ class QuizService {
 
     // 2. Fetch quiz title
     const [quiz] = await db
-      .select({ title: quizzes.title, quizId: quizzes.quizId, userId: quizzes.userId })
+      .select({
+        title: quizzes.title,
+        quizId: quizzes.quizId,
+        userId: quizzes.userId,
+      })
       .from(quizzes)
       .where(eq(quizzes.quizId, session.quizId));
     if (!quiz) throw new AppError("NOT_FOUND", "Quiz not found");
@@ -571,7 +721,7 @@ class QuizService {
       totalParticipants > 0
         ? Math.round(
             participants.reduce((sum, p) => sum + p.score, 0) /
-              totalParticipants
+              totalParticipants,
           )
         : 0;
 
@@ -588,7 +738,9 @@ class QuizService {
       leaderboard = result.finalLeaderboard.map((entry) => ({
         rank: entry.rank,
         name: entry.username ?? "Guest",
-        username: entry.username ? `@${entry.username}` : `#${entry.participantId.slice(0, 6)}`,
+        username: entry.username
+          ? `@${entry.username}`
+          : `#${entry.participantId.slice(0, 6)}`,
         score: entry.totalScore,
         avatar: `https://api.dicebear.com/9.x/initials/svg?seed=${encodeURIComponent(entry.username ?? entry.participantId)}`,
       }));
@@ -599,11 +751,15 @@ class QuizService {
         .map((p, i) => {
           const displayName =
             p.username ||
-            (p.firstName ? `${p.firstName} ${p.lastName ?? ""}`.trim() : "Guest");
+            (p.firstName
+              ? `${p.firstName} ${p.lastName ?? ""}`.trim()
+              : "Guest");
           return {
             rank: i + 1,
             name: displayName,
-            username: p.username ? `@${p.username}` : `#${p.participantId.slice(0, 6)}`,
+            username: p.username
+              ? `@${p.username}`
+              : `#${p.participantId.slice(0, 6)}`,
             score: p.score,
             avatar: `https://api.dicebear.com/9.x/initials/svg?seed=${encodeURIComponent(displayName)}`,
           };
@@ -622,7 +778,9 @@ class QuizService {
     const questionInsights =
       result?.questionStats && result.questionStats.length > 0
         ? result.questionStats.map((stat) => {
-            const question = questions.find((q) => q.questionId === stat.questionId);
+            const question = questions.find(
+              (q) => q.questionId === stat.questionId,
+            );
             const percentage = Math.round(stat.correctRate * 100);
             return {
               id: stat.questionId,
@@ -660,18 +818,26 @@ class QuizService {
       questionInsights,
     };
   }
-  public async makeSessionActive({sessionId}:{sessionId:string}){
-    const [session] = await db.select().from(QuizSessions).where(eq(QuizSessions.sessionId, sessionId));
+  public async makeSessionActive({ sessionId }: { sessionId: string }) {
+    const [session] = await db
+      .select()
+      .from(QuizSessions)
+      .where(eq(QuizSessions.sessionId, sessionId));
     if (!session) throw new AppError("NOT_FOUND", "Quiz session not found");
-    await db.update(QuizSessions).set({ status: "active", startedAt: new Date() }).where(eq(QuizSessions.sessionId, sessionId));
+    await db
+      .update(QuizSessions)
+      .set({ status: "active", startedAt: new Date() })
+      .where(eq(QuizSessions.sessionId, sessionId));
     await this.updateSessionActivity(sessionId);
     // Init live state in Redis
     const liveKey = this.redisLiveSessionKey(sessionId);
-    const liveState: LiveSessionRedisState = { currentQuestionIndex: -1, voteTallies: {} };
+    const liveState: LiveSessionRedisState = {
+      currentQuestionIndex: -1,
+      voteTallies: {},
+    };
     await redis.set(liveKey, JSON.stringify(liveState));
     return { success: true };
   }
-
 
   public async getSessionForHost(payload: GetSessionForHostDtoType) {
     const data = getSessionForHostDto.parse(payload);
@@ -682,7 +848,12 @@ class QuizService {
     if (!session) throw new AppError("NOT_FOUND", "Session not found");
 
     const [quiz] = await db
-      .select({ quizId: quizzes.quizId, title: quizzes.title, description: quizzes.description, userId: quizzes.userId })
+      .select({
+        quizId: quizzes.quizId,
+        title: quizzes.title,
+        description: quizzes.description,
+        userId: quizzes.userId,
+      })
       .from(quizzes)
       .where(eq(quizzes.quizId, session.quizId));
     if (!quiz) throw new AppError("NOT_FOUND", "Quiz not found");
@@ -702,8 +873,12 @@ class QuizService {
 
     // Compute waiting-stage countdown info
     const AUTO_ACTIVE_DELAY_MS = 30 * 60 * 1000;
-    const autoActivatesAt = new Date(session.createdAt.getTime() + AUTO_ACTIVE_DELAY_MS);
-    const participantCount = await redis.zcard(this.redisLeaderboardKey(data.sessionId));
+    const autoActivatesAt = new Date(
+      session.createdAt.getTime() + AUTO_ACTIVE_DELAY_MS,
+    );
+    const participantCount = await redis.zcard(
+      this.redisLeaderboardKey(data.sessionId),
+    );
 
     return {
       session: {
@@ -727,7 +902,11 @@ class QuizService {
         questionId: q.questionId,
         orderIndex: q.orderIndex,
         text: q.text,
-        options: (q.options ?? []) as { id?: string; text: string; isCorrect: boolean }[],
+        options: (q.options ?? []) as {
+          id?: string;
+          text: string;
+          isCorrect: boolean;
+        }[],
         isTextAnswer: q.isTextAnswer,
         allowMultipleCorrect: q.allowMultipleCorrect,
         timeLimitSecs: q.timeLimitSecs,
@@ -738,29 +917,49 @@ class QuizService {
     };
   }
 
-
-  public async manuallyActivateSession(userId: string, payload: ManuallyActivateSessionDtoType) {
+  public async manuallyActivateSession(
+    userId: string,
+    payload: ManuallyActivateSessionDtoType,
+  ) {
     const data = manuallyActivateSessionDto.parse(payload);
-    const [session] = await db.select().from(QuizSessions).where(eq(QuizSessions.sessionId, data.sessionId));
+    const [session] = await db
+      .select()
+      .from(QuizSessions)
+      .where(eq(QuizSessions.sessionId, data.sessionId));
     if (!session) throw new AppError("NOT_FOUND", "Session not found");
 
-    const [quiz] = await db.select({ userId: quizzes.userId }).from(quizzes).where(eq(quizzes.quizId, session.quizId));
+    const [quiz] = await db
+      .select({ userId: quizzes.userId })
+      .from(quizzes)
+      .where(eq(quizzes.quizId, session.quizId));
     if (!quiz) throw new AppError("NOT_FOUND", "Quiz not found");
-    if (quiz.userId !== userId) throw new AppError("UNAUTHORIZED", "Unauthorized to activate this session");
+    if (quiz.userId !== userId)
+      throw new AppError(
+        "UNAUTHORIZED",
+        "Unauthorized to activate this session",
+      );
 
     if (session.status !== "waiting") {
       throw new AppError("BAD_REQUEST", "Session is not in waiting state");
     }
-    const autoActiveJobId = await redis.get(this.redisAutoActiveJobKey(data.sessionId));
+    const autoActiveJobId = await redis.get(
+      this.redisAutoActiveJobKey(data.sessionId),
+    );
     if (autoActiveJobId) {
       await autoActiveQueue.remove(autoActiveJobId);
       await redis.del(this.redisAutoActiveJobKey(data.sessionId));
     }
-    await db.update(QuizSessions).set({ status: "active", startedAt: new Date() }).where(eq(QuizSessions.sessionId, data.sessionId));
+    await db
+      .update(QuizSessions)
+      .set({ status: "active", startedAt: new Date() })
+      .where(eq(QuizSessions.sessionId, data.sessionId));
     await this.updateSessionActivity(data.sessionId);
 
     const liveKey = this.redisLiveSessionKey(data.sessionId);
-    const liveState: LiveSessionRedisState = { currentQuestionIndex: -1, voteTallies: {} };
+    const liveState: LiveSessionRedisState = {
+      currentQuestionIndex: -1,
+      voteTallies: {},
+    };
     await redis.set(liveKey, JSON.stringify(liveState));
 
     return { success: true };
@@ -769,19 +968,30 @@ class QuizService {
   //should done by inngest
   public async emitQuestion(userId: string, payload: EmitQuestionDtoType) {
     const data = emitQuestionDto.parse(payload);
-    const [session] = await db.select().from(QuizSessions).where(eq(QuizSessions.sessionId, data.sessionId));
+    const [session] = await db
+      .select()
+      .from(QuizSessions)
+      .where(eq(QuizSessions.sessionId, data.sessionId));
     if (!session) throw new AppError("NOT_FOUND", "Session not found");
 
-    const [quiz] = await db.select({ userId: quizzes.userId }).from(quizzes).where(eq(quizzes.quizId, session.quizId));
+    const [quiz] = await db
+      .select({ userId: quizzes.userId })
+      .from(quizzes)
+      .where(eq(quizzes.quizId, session.quizId));
     if (!quiz) throw new AppError("NOT_FOUND", "Quiz not found");
-    if (quiz.userId !== userId) throw new AppError("UNAUTHORIZED", "Unauthorized to emit questions in this session");
+    if (quiz.userId !== userId)
+      throw new AppError(
+        "UNAUTHORIZED",
+        "Unauthorized to emit questions in this session",
+      );
 
     if (session.status !== "active") {
       throw new AppError("BAD_REQUEST", "Session is not active");
     }
 
     // Update DB
-    await db.update(QuizSessions)
+    await db
+      .update(QuizSessions)
       .set({ currentQuestionIndex: data.questionIndex })
       .where(eq(QuizSessions.sessionId, data.sessionId));
 
@@ -796,21 +1006,31 @@ class QuizService {
     await redis.set(liveKey, JSON.stringify(current));
     await this.updateSessionActivity(data.sessionId);
 
-    return { success: true, currentQuestionIndex: data.questionIndex, liveState: current };
+    return {
+      success: true,
+      currentQuestionIndex: data.questionIndex,
+      liveState: current,
+    };
   }
 
-  
-  
   public async endSession(userId: string, payload: EndSessionDtoType) {
     const data = endSessionDto.parse(payload);
-    const [session] = await db.select().from(QuizSessions).where(eq(QuizSessions.sessionId, data.sessionId));
+    const [session] = await db
+      .select()
+      .from(QuizSessions)
+      .where(eq(QuizSessions.sessionId, data.sessionId));
     if (!session) throw new AppError("NOT_FOUND", "Session not found");
 
-    const [quiz] = await db.select({ userId: quizzes.userId }).from(quizzes).where(eq(quizzes.quizId, session.quizId));
+    const [quiz] = await db
+      .select({ userId: quizzes.userId })
+      .from(quizzes)
+      .where(eq(quizzes.quizId, session.quizId));
     if (!quiz) throw new AppError("NOT_FOUND", "Quiz not found");
-    if (quiz.userId !== userId) throw new AppError("UNAUTHORIZED", "Unauthorized to end this session");
+    if (quiz.userId !== userId)
+      throw new AppError("UNAUTHORIZED", "Unauthorized to end this session");
 
-    await db.update(QuizSessions)
+    await db
+      .update(QuizSessions)
       .set({ status: "ended", endedAt: new Date() })
       .where(eq(QuizSessions.sessionId, data.sessionId));
 
@@ -825,8 +1045,10 @@ class QuizService {
     return { success: true };
   }
 
-  
-  public async verifySessionPassword(userId: string, payload: VerifySessionPasswordDtoType) {
+  public async verifySessionPassword(
+    userId: string,
+    payload: VerifySessionPasswordDtoType,
+  ) {
     const data = verifySessionPasswordDto.parse(payload);
     const [session] = await db
       .select()
@@ -845,29 +1067,37 @@ class QuizService {
     if (!quiz) throw new AppError("NOT_FOUND", "Quiz not found");
 
     if (quiz.passwordNeeded) {
-      if (!data.password) throw new AppError("UNAUTHORIZED", "Password required");
-      if (data.password !== quiz.password) throw new AppError("UNAUTHORIZED", "Incorrect password");
+      if (!data.password)
+        throw new AppError("UNAUTHORIZED", "Password required");
+      if (data.password !== quiz.password)
+        throw new AppError("UNAUTHORIZED", "Incorrect password");
     }
 
     const redisLeaderboardKey = this.redisLeaderboardKey(data.sessionId);
     const exitingScore = await redis.zscore(redisLeaderboardKey, `${userId}`);
     const isParticipant = exitingScore !== null;
-    
+
     if (session.status === "active" && !isParticipant) {
-      throw new AppError("FORBIDDEN", "Session has already started, you cannot join now.");
+      throw new AppError(
+        "FORBIDDEN",
+        "Session has already started, you cannot join now.",
+      );
     }
-    
+
     if (!isParticipant) {
-       await redis.zadd(redisLeaderboardKey, 0, `${userId}`);
+      await redis.zadd(redisLeaderboardKey, 0, `${userId}`);
     }
 
     return { success: true };
   }
 
-  
-  public async recordAnswer(userId: string, payload: RecordAnswerDtoType): Promise<{ correct: boolean; pointsAwarded: number }> {
+  public async recordAnswer(
+    userId: string,
+    payload: RecordAnswerDtoType,
+  ): Promise<{ correct: boolean; pointsAwarded: number }> {
     const data = recordAnswerDto.parse(payload);
-    if (!data.optionIds || data.optionIds.length === 0) return { correct: false, pointsAwarded: 0 };
+    if (!data.optionIds || data.optionIds.length === 0)
+      return { correct: false, pointsAwarded: 0 };
 
     // 1. Fetch question options + points from DB
     const [question] = await db
@@ -881,13 +1111,18 @@ class QuizService {
 
     if (!question) return { correct: false, pointsAwarded: 0 };
 
-    const options = (question.options ?? []) as { id: string; isCorrect: boolean }[];
-    const correctOptionIds = options.filter(o => o.isCorrect).map(o => o.id);
+    const options = (question.options ?? []) as {
+      id: string;
+      isCorrect: boolean;
+    }[];
+    const correctOptionIds = options
+      .filter((o) => o.isCorrect)
+      .map((o) => o.id);
 
     // Calculate if exactly all correct options and no incorrect options are selected
-    const isCorrect = 
-      data.optionIds.every(id => correctOptionIds.includes(id)) && 
-      correctOptionIds.every(id => data.optionIds.includes(id));
+    const isCorrect =
+      data.optionIds.every((id) => correctOptionIds.includes(id)) &&
+      correctOptionIds.every((id) => data.optionIds.includes(id));
 
     // 2. Update vote tallies in Redis live state
     const liveKey = this.redisLiveSessionKey(data.sessionId);
@@ -913,17 +1148,28 @@ class QuizService {
     return { correct: isCorrect, pointsAwarded };
   }
 
-  public async addBonusPointsIfCorrect(userId: string, payload: AddBonusPointsDtoType): Promise<{ success: boolean; pointsAwarded: number }> {
+  public async addBonusPointsIfCorrect(
+    userId: string,
+    payload: AddBonusPointsDtoType,
+  ): Promise<{ success: boolean; pointsAwarded: number }> {
     const data = addBonusPointsDto.parse(payload);
-    if (!data.optionIds || data.optionIds.length === 0 || data.bonusPoints <= 0) return { success: false, pointsAwarded: 0 };
+    if (!data.optionIds || data.optionIds.length === 0 || data.bonusPoints <= 0)
+      return { success: false, pointsAwarded: 0 };
     const [question] = await db
       .select({ options: quizQuestions.options })
       .from(quizQuestions)
       .where(eq(quizQuestions.questionId, data.questionId));
     if (!question) return { success: false, pointsAwarded: 0 };
-    const options = (question.options ?? []) as { id: string; isCorrect: boolean }[];
-    const correctOptionIds = options.filter(o => o.isCorrect).map(o => o.id);
-    const isCorrect = data.optionIds.length === correctOptionIds.length && data.optionIds.every(id => correctOptionIds.includes(id));
+    const options = (question.options ?? []) as {
+      id: string;
+      isCorrect: boolean;
+    }[];
+    const correctOptionIds = options
+      .filter((o) => o.isCorrect)
+      .map((o) => o.id);
+    const isCorrect =
+      data.optionIds.length === correctOptionIds.length &&
+      data.optionIds.every((id) => correctOptionIds.includes(id));
     if (isCorrect) {
       const leaderboardKey = this.redisLeaderboardKey(data.sessionId);
       await redis.zincrby(leaderboardKey, data.bonusPoints, userId);
@@ -932,7 +1178,10 @@ class QuizService {
     return { success: false, pointsAwarded: 0 };
   }
 
-  public async getSessionInfoForParticipant(userId: string, payload: GetSessionInfoForParticipantDtoType) {
+  public async getSessionInfoForParticipant(
+    userId: string,
+    payload: GetSessionInfoForParticipantDtoType,
+  ) {
     const data = getSessionInfoForParticipantDto.parse(payload);
     const [session] = await db
       .select()
@@ -982,9 +1231,15 @@ class QuizService {
       rank = rankIndex !== null ? rankIndex + 1 : null;
     }
 
-    const notAllowedToJoin = (session.status === "active" || session.status === "ended") && !isParticipant;
+    const notAllowedToJoin =
+      (session.status === "active" || session.status === "ended") &&
+      !isParticipant;
 
-    if (!quiz.passwordNeeded && session.status === "waiting" && !isParticipant) {
+    if (
+      !quiz.passwordNeeded &&
+      session.status === "waiting" &&
+      !isParticipant
+    ) {
       await redis.zadd(redisLeaderboardKey, 0, `${userId}`);
       isParticipant = true;
       score = 0;
@@ -1014,22 +1269,32 @@ class QuizService {
       participantData: {
         score,
         rank,
-      }
+      },
     };
   }
 
-  public async getLeaderboardForSession(payload: GetLeaderboardForSessionDtoType) {
+  public async getLeaderboardForSession(
+    payload: GetLeaderboardForSessionDtoType,
+  ) {
     const data = getLeaderboardForSessionDto.parse(payload);
-    const [session] = await db.select().from(QuizSessions).where(eq(QuizSessions.sessionId, data.sessionId));
+    const [session] = await db
+      .select()
+      .from(QuizSessions)
+      .where(eq(QuizSessions.sessionId, data.sessionId));
     if (!session) throw new AppError("NOT_FOUND", "Session not found");
 
     if (session.status === "ended") {
-      const [result] = await db.select().from(sessionResults).where(eq(sessionResults.sessionId, data.sessionId));
+      const [result] = await db
+        .select()
+        .from(sessionResults)
+        .where(eq(sessionResults.sessionId, data.sessionId));
       if (result?.finalLeaderboard) {
         return result.finalLeaderboard.map((entry) => ({
           rank: entry.rank,
           name: entry.username ?? "Guest",
-          username: entry.username ? `@${entry.username}` : `#${entry.participantId.slice(0, 6)}`,
+          username: entry.username
+            ? `@${entry.username}`
+            : `#${entry.participantId.slice(0, 6)}`,
           score: entry.totalScore,
           avatar: `https://api.dicebear.com/9.x/initials/svg?seed=${encodeURIComponent(entry.username ?? entry.participantId)}`,
           userId: entry.participantId,
@@ -1039,8 +1304,14 @@ class QuizService {
 
     // Active or waiting or no result
     const redisLeaderboardKey = this.redisLeaderboardKey(data.sessionId);
-    const participantsWithScores = await redis.zrange(redisLeaderboardKey, 0, -1, "REV", "WITHSCORES");
-    
+    const participantsWithScores = await redis.zrange(
+      redisLeaderboardKey,
+      0,
+      -1,
+      "REV",
+      "WITHSCORES",
+    );
+
     const userScores: { userId: string; score: number }[] = [];
     for (let i = 0; i < participantsWithScores.length; i += 2) {
       const userId = participantsWithScores[i];
@@ -1052,7 +1323,7 @@ class QuizService {
 
     if (userScores.length === 0) return [];
 
-    const userIds = userScores.map(u => u.userId);
+    const userIds = userScores.map((u) => u.userId);
     const fetchedUsers = await db
       .select({
         userId: users.userId,
@@ -1063,15 +1334,21 @@ class QuizService {
       .from(users)
       .where(inArray(users.userId, userIds));
 
-    const userMap = new Map(fetchedUsers.map(u => [u.userId, u]));
+    const userMap = new Map(fetchedUsers.map((u) => [u.userId, u]));
 
     return userScores.map((p, index) => {
       const user = userMap.get(p.userId);
-      const displayName = user?.username || (user?.firstName ? `${user.firstName} ${user.lastName ?? ""}`.trim() : "Guest");
+      const displayName =
+        user?.username ||
+        (user?.firstName
+          ? `${user.firstName} ${user.lastName ?? ""}`.trim()
+          : "Guest");
       return {
         rank: index + 1,
         name: displayName,
-        username: user?.username ? `@${user.username}` : `#${p.userId.slice(0, 6)}`,
+        username: user?.username
+          ? `@${user.username}`
+          : `#${p.userId.slice(0, 6)}`,
         score: p.score,
         avatar: `https://api.dicebear.com/9.x/initials/svg?seed=${encodeURIComponent(displayName)}`,
         userId: p.userId,

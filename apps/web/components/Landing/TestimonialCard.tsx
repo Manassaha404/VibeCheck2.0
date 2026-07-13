@@ -49,7 +49,12 @@ export default function TestimonialCard({
         aria-hidden="true"
         initial={{ scale: 0, rotate: -20 }}
         whileInView={{ scale: 1, rotate: 0 }}
-        transition={{ type: "spring", stiffness: 200, damping: 12, delay: index * 0.12 + 0.2 }}
+        transition={{
+          type: "spring",
+          stiffness: 200,
+          damping: 12,
+          delay: index * 0.12 + 0.2,
+        }}
         viewport={{ once: true }}
       >
         "
@@ -70,8 +75,12 @@ export default function TestimonialCard({
           {avatar}
         </motion.div>
         <div>
-          <p className="text-label-md font-bold text-[var(--color-ink-charcoal)]">{author}</p>
-          <p className="text-label-sm text-[var(--color-on-surface-variant)]">{role}</p>
+          <p className="text-label-md font-bold text-[var(--color-ink-charcoal)]">
+            {author}
+          </p>
+          <p className="text-label-sm text-[var(--color-on-surface-variant)]">
+            {role}
+          </p>
         </div>
       </figcaption>
     </motion.figure>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 interface ParticipantQuestionCardProps {
   questionText: string;
@@ -33,7 +33,7 @@ export default function ParticipantQuestionCard({
       {/* Question text */}
       <h1
         className="font-display font-extrabold text-[var(--color-ink-charcoal)] text-center leading-tight mt-4"
-        style={{ fontSize: 'clamp(1.5rem, 4vw, 2.5rem)', lineHeight: 1.1 }}
+        style={{ fontSize: "clamp(1.5rem, 4vw, 2.5rem)", lineHeight: 1.1 }}
       >
         {questionText}
       </h1>

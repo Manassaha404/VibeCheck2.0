@@ -10,4 +10,4 @@ export const inngestRouter = serve({
   serveOrigin: process.env.API_BASE_URL ?? "http://localhost:8000",
 });
 
-export { inngest,getClientSubscriptionToken };
+export { inngest, getClientSubscriptionToken };

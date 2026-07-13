@@ -34,6 +34,5 @@ export const quizzes = pgTable(
   (t) => [
     index("quiz_user_id_idx").on(t.userId),
     index("quiz_status_idx").on(t.status),
-    
   ],
 );

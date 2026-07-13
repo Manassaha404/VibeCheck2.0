@@ -10,7 +10,7 @@ export const useGetSessionAnalytics = (sessionId: string | null) => {
         enabled: !!sessionId,
         staleTime: 1000 * 60 * 2,
         retry: 1,
-      }
+      },
     );
 
   return {

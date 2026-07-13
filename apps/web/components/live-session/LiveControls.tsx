@@ -1,5 +1,6 @@
-import React from 'react';
-import { BarChart, Link as LinkIcon } from 'lucide-react';
+import React from "react";
+import { BarChart, Link as LinkIcon } from "lucide-react";
+import { uuidToNumber } from "@/utils/uuid";
 
 interface LiveControlsProps {
   joinCode: string;
@@ -8,11 +9,16 @@ interface LiveControlsProps {
   onGoToLeaderboard: () => void;
 }
 
-export default function LiveControls({ joinCode, sessionId, onGoToLeaderboard }: LiveControlsProps) {
+export default function LiveControls({
+  joinCode,
+  sessionId,
+  onGoToLeaderboard,
+}: LiveControlsProps) {
+  const shortId = uuidToNumber(sessionId);
   const participantUrl =
-    typeof window !== 'undefined'
-      ? `${window.location.origin}/q/${sessionId}`
-      : `/q/${sessionId}`;
+    typeof window !== "undefined"
+      ? `${window.location.origin}/q/${shortId}`
+      : `/q/${shortId}`;
 
   const handleCopy = () => {
     navigator.clipboard.writeText(participantUrl);

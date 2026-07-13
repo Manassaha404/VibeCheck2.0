@@ -59,55 +59,65 @@ const INITIAL_STATE: ParticipantState = {
   questionStartTime: null,
 };
 
-export const useParticipantStore = create<ParticipantState & ParticipantActions>()((set, get) => ({
+export const useParticipantStore = create<
+  ParticipantState & ParticipantActions
+>()((set, get) => ({
   ...INITIAL_STATE,
 
   setSessionStatus: (status) => set({ sessionStatus: status }),
 
-  setQuestion: (question, index) => set({
-    currentQuestion: question,
-    questionIndex: index,
-    timeLeft: question.timeLimitSecs,
-    timerActive: true,
-    questionStartTime: Date.now(),
-  }),
+  setQuestion: (question, index) =>
+    set({
+      currentQuestion: question,
+      questionIndex: index,
+      timeLeft: question.timeLimitSecs,
+      timerActive: true,
+      questionStartTime: Date.now(),
+    }),
 
   setTimer: (timeLeft, active) => set({ timeLeft, timerActive: active }),
 
-  tickTimer: () => set((state) => {
-    if (!state.timerActive || state.timeLeft <= 0) {
-      return { timerActive: false, timeLeft: 0 };
-    }
-    return { timeLeft: state.timeLeft - 1 };
-  }),
+  tickTimer: () =>
+    set((state) => {
+      if (!state.timerActive || state.timeLeft <= 0) {
+        return { timerActive: false, timeLeft: 0 };
+      }
+      return { timeLeft: state.timeLeft - 1 };
+    }),
 
   stopTimer: () => set({ timerActive: false }),
 
   setRankAndScore: (rank, score) => set({ rank, score }),
 
-  selectSingle: (id) => set((state) => {
-    if (state.submitted || state.timeLeft <= 0) return {};
-    return { selectedId: id };
-  }),
+  selectSingle: (id) =>
+    set((state) => {
+      if (state.submitted || state.timeLeft <= 0) return {};
+      return { selectedId: id };
+    }),
 
-  selectMultiple: (id) => set((state) => {
-    if (state.submitted || state.timeLeft <= 0) return {};
-    const prev = state.selectedIds;
-    return {
-      selectedIds: prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
-    };
-  }),
+  selectMultiple: (id) =>
+    set((state) => {
+      if (state.submitted || state.timeLeft <= 0) return {};
+      const prev = state.selectedIds;
+      return {
+        selectedIds: prev.includes(id)
+          ? prev.filter((x) => x !== id)
+          : [...prev, id],
+      };
+    }),
 
   setSubmitted: (submitted) => set({ submitted, timerActive: false }),
 
-  setRevealedAnswer: (optionIds) => set({ revealedOptionIds: optionIds, timerActive: false, timeLeft: 0 }),
+  setRevealedAnswer: (optionIds) =>
+    set({ revealedOptionIds: optionIds, timerActive: false, timeLeft: 0 }),
 
-  resetQuestionState: () => set({
-    selectedId: null,
-    selectedIds: [],
-    submitted: false,
-    revealedOptionIds: null,
-  }),
+  resetQuestionState: () =>
+    set({
+      selectedId: null,
+      selectedIds: [],
+      submitted: false,
+      revealedOptionIds: null,
+    }),
 
   resetAll: () => set(INITIAL_STATE),
 }));

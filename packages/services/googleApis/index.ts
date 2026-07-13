@@ -42,7 +42,7 @@ export class GoogleDriveService {
     });
 
     if (!res.data.id) {
-      throw new AppError("INTERNAL_SERVER_ERROR","Failed to create folder");
+      throw new AppError("INTERNAL_SERVER_ERROR", "Failed to create folder");
     }
 
     return res.data.id;
@@ -53,13 +53,15 @@ export class GoogleDriveService {
     folderId: string,
     file: { name: string; mimeType: string; sizeInBytes: number },
   ): Promise<string> {
-    
     const auth = this.getOAuth2Client(encryptedRefreshToken);
     const tokenResponse = await auth.getAccessToken();
     const accessToken = tokenResponse.token;
 
     if (!accessToken) {
-      throw new AppError("INTERNAL_SERVER_ERROR", "Could not obtain Google access token");
+      throw new AppError(
+        "INTERNAL_SERVER_ERROR",
+        "Could not obtain Google access token",
+      );
     }
 
     const metadata = {
@@ -76,7 +78,7 @@ export class GoogleDriveService {
           "Content-Type": "application/json",
           "X-Upload-Content-Type": file.mimeType,
           "X-Upload-Content-Length": file.sizeInBytes.toString(),
-          "Origin": process.env.FRONTEND_URL || "http://localhost:3000",
+          Origin: process.env.FRONTEND_URL || "http://localhost:3000",
         },
         body: JSON.stringify(metadata),
       },
@@ -93,13 +95,19 @@ export class GoogleDriveService {
     const uploadUrl = response.headers.get("location");
 
     if (!uploadUrl) {
-      throw new AppError("INTERNAL_SERVER_ERROR", "Google did not return a resumable upload URL");
+      throw new AppError(
+        "INTERNAL_SERVER_ERROR",
+        "Google did not return a resumable upload URL",
+      );
     }
 
     return uploadUrl;
   }
 
-  public async deleteFile(encryptedRefreshToken: string, fileId: string): Promise<boolean> {
+  public async deleteFile(
+    encryptedRefreshToken: string,
+    fileId: string,
+  ): Promise<boolean> {
     try {
       const drive = await this.getDriveClient(encryptedRefreshToken);
       await drive.files.delete({
@@ -112,7 +120,10 @@ export class GoogleDriveService {
         return true;
       }
       console.error("Google Drive deleteFile error:", error);
-      throw new AppError("INTERNAL_SERVER_ERROR", "Failed to delete file from Google Drive");
+      throw new AppError(
+        "INTERNAL_SERVER_ERROR",
+        "Failed to delete file from Google Drive",
+      );
     }
   }
 }

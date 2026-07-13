@@ -40,16 +40,18 @@ export function useAgentChat(
   ]);
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
-  
+
   const [activeJobId, setActiveJobId] = useState<string | null>(null);
   const processedJobIds = useRef<Set<string>>(new Set());
-  
+
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
   const tokenFactory = useCallback(async () => {
     if (!activeJobId) throw new Error("No active job");
-    const result = await utils.agent.getRealTimeToken.fetch({ jobId: activeJobId });
+    const result = await utils.agent.getRealTimeToken.fetch({
+      jobId: activeJobId,
+    });
     if (!result) throw new Error("Failed to get token");
     return result.token;
   }, [activeJobId, utils]);
@@ -86,62 +88,65 @@ export function useAgentChat(
     const data = payload.result;
 
     if (data?.error) {
-       let displayMessage = `⚠️ Something went wrong: ${data.message}. Please try again.`;
-       if (data.message) {
-         if (
-           data.message.startsWith("Input guardrail triggered: ") ||
-           data.message.startsWith("Output guardrail triggered: ")
-         ) {
-           try {
-             const jsonStr = data.message.replace(/^.*?guardrail triggered: /, "");
-             const parsed = JSON.parse(jsonStr);
-             displayMessage = parsed.reason ?? data.message;
-           } catch {
-             displayMessage = data.message;
-           }
-         }
-       }
-       setMessages((prev) => [
-         ...prev,
-         {
-           id: crypto.randomUUID(),
-           role: "agent",
-           text: displayMessage,
-           timestamp: new Date(),
-         },
-       ]);
+      let displayMessage = `⚠️ Something went wrong: ${data.message}. Please try again.`;
+      if (data.message) {
+        if (
+          data.message.startsWith("Input guardrail triggered: ") ||
+          data.message.startsWith("Output guardrail triggered: ")
+        ) {
+          try {
+            const jsonStr = data.message.replace(
+              /^.*?guardrail triggered: /,
+              "",
+            );
+            const parsed = JSON.parse(jsonStr);
+            displayMessage = parsed.reason ?? data.message;
+          } catch {
+            displayMessage = data.message;
+          }
+        }
+      }
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: crypto.randomUUID(),
+          role: "agent",
+          text: displayMessage,
+          timestamp: new Date(),
+        },
+      ]);
     } else if (data) {
-       utils.agent.respondentAgentGetSession.setData({ formId }, (prev) => {
-         if (!prev) {
-           return {
-             hasSession: true,
-             isCompleted: data.isComplete,
-             collectedAnswers: data.collectedAnswers,
-             currentFieldId: data.currentFieldId,
-             responseId: data.responseId,
-           };
-         }
-         return {
-           ...prev,
-           isCompleted: data.isComplete,
-           collectedAnswers: data.collectedAnswers,
-           currentFieldId: data.currentFieldId,
-           responseId: data.responseId,
-         };
-       });
-       utils.agent.respondentAgentGetSession.invalidate({ formId });
+      utils.agent.respondentAgentGetSession.setData({ formId }, (prev) => {
+        if (!prev) {
+          return {
+            hasSession: true,
+            isCompleted: data.isComplete,
+            collectedAnswers: data.collectedAnswers,
+            currentFieldId: data.currentFieldId,
+            responseId: data.responseId,
+          };
+        }
+        return {
+          ...prev,
+          isCompleted: data.isComplete,
+          collectedAnswers: data.collectedAnswers,
+          currentFieldId: data.currentFieldId,
+          responseId: data.responseId,
+        };
+      });
+      utils.agent.respondentAgentGetSession.invalidate({ formId });
 
-       const agentMsg: Message = {
-         id: crypto.randomUUID(),
-         role: "agent",
-         text: data.reply || "Done.",
-         timestamp: new Date(),
-       };
-       setMessages((prev) => [...prev, agentMsg]);
-       
-       if (data.isComplete) {
-         setTimeout(() => onComplete(data.responseId), 800);
-       }
+      const agentMsg: Message = {
+        id: crypto.randomUUID(),
+        role: "agent",
+        text: data.reply || "Done.",
+        timestamp: new Date(),
+      };
+      setMessages((prev) => [...prev, agentMsg]);
+
+      if (data.isComplete) {
+        setTimeout(() => onComplete(data.responseId), 800);
+      }
     }
 
     setActiveJobId(null);

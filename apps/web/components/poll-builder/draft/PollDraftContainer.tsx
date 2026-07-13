@@ -10,7 +10,7 @@ import { PollOptionsList } from "./PollOptionsList";
 import { PollTagsInput } from "./PollTagsInput";
 import { PollSettingsPanel } from "./PollSettingsPanel";
 import { Save, Rocket } from "lucide-react";
-import { toast } from "sonner";
+
 import { usePollStore } from "@/store/pollStore";
 import { usePublishPoll } from "@/hook/poll/usePublishPoll";
 import { useSaveDraft } from "@/hook/poll/useSaveDraft";
@@ -26,7 +26,7 @@ export function PollDraftContainer() {
   const setup = usePollStore((state) => state.setup);
   const setDraft = usePollStore((state) => state.setDraft);
   const currentPoll = usePollStore((state) => state.currentPoll);
-  
+
   const router = useRouter();
   const { handlePublish, isPublishing } = usePublishPoll();
   const { handleSave, isSaving } = useSaveDraft();
@@ -67,7 +67,10 @@ export function PollDraftContainer() {
     return {
       question: {
         text: data.question,
-        options: data.options.map((opt, i) => ({ text: opt.text, orderIndex: i })),
+        options: data.options.map((opt, i) => ({
+          text: opt.text,
+          orderIndex: i,
+        })),
       },
       isPublic: data.visibility === "public",
       isCommentsAllowed: setup?.isCommentsAllowed ?? true,
@@ -78,16 +81,19 @@ export function PollDraftContainer() {
 
   const onSubmit = async (data: PollDraftFormOutput) => {
     if (!currentPoll?.pollId) {
-      toast.error("Poll ID is missing.");
       return;
     }
-    
+
     // We update the DTO status directly before publishing
     const draftDto = constructDto(data);
     draftDto.status = "active";
     draftDto.isPublished = true;
-    
-    const success = await handlePublish(currentPoll.pollId, draftDto, data.tags);
+
+    const success = await handlePublish(
+      currentPoll.pollId,
+      draftDto,
+      data.tags,
+    );
     if (success) {
       router.replace(`/dashboard/analytics/poll/${currentPoll.slug}`);
     }
@@ -98,10 +104,13 @@ export function PollDraftContainer() {
     setDraft(data);
 
     if (currentPoll?.pollId) {
-      const draftDto = constructDto({ ...data, allowMultipleVotes: data.allowMultipleVotes ?? false, visibility: data.visibility ?? "public" });
+      const draftDto = constructDto({
+        ...data,
+        allowMultipleVotes: data.allowMultipleVotes ?? false,
+        visibility: data.visibility ?? "public",
+      });
       await handleSave(currentPoll.pollId, draftDto);
     } else {
-      toast.error("Could not save to server. Poll ID missing.");
     }
   };
 
@@ -113,7 +122,9 @@ export function PollDraftContainer() {
         <section className="w-full flex flex-col gap-8">
           <div className="flex flex-col gap-8 mb-4 border-b-4 border-ink-charcoal pb-8 border-dashed">
             <h1 className="font-display text-display-lg text-ink-charcoal animate-pop-in leading-[1.1]">
-              <span className="text-shadow-yellow inline-block transform -rotate-1 mr-4">Build</span>
+              <span className="text-shadow-yellow inline-block transform -rotate-1 mr-4">
+                Build
+              </span>
               <span className="bg-electric-sun px-4 py-1 rounded-2xl border-4 border-ink-charcoal inline-block transform rotate-2 shadow-hard">
                 Your Poll
               </span>
@@ -133,7 +144,8 @@ export function PollDraftContainer() {
                 disabled={isSaving || isPublishing}
                 className="bg-leaf-green text-ink-charcoal px-8 py-3 border-4 border-ink-charcoal shadow-hard rounded-xl font-headline-sm text-headline-sm hover:bg-electric-sun transition-all active:translate-y-2 active:shadow-none flex items-center justify-center gap-3 w-full sm:w-auto hover-lift disabled:opacity-50"
               >
-                {isPublishing ? "Publishing..." : "Publish"} <Rocket size={24} />
+                {isPublishing ? "Publishing..." : "Publish"}{" "}
+                <Rocket size={24} />
               </button>
             </div>
           </div>
@@ -154,7 +166,6 @@ export function PollDraftContainer() {
 
             {/* Settings */}
             <PollSettingsPanel />
-
           </form>
         </section>
       </main>

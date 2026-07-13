@@ -61,7 +61,7 @@ function BarRow({
         duration: 1.5,
         delay: index * 0.15,
         ease: "power3.out",
-      }
+      },
     );
   }, [option.percentage]);
 
@@ -129,7 +129,10 @@ const CustomTooltip = ({
   return null;
 };
 
-export function LiveBarChart({ options, lastUpdated = "Just now" }: LiveBarChartProps) {
+export function LiveBarChart({
+  options,
+  lastUpdated = "Just now",
+}: LiveBarChartProps) {
   const [chartType, setChartType] = useState<"bar" | "pie">("bar");
   const [updatedAt, setUpdatedAt] = useState(lastUpdated);
 
@@ -191,7 +194,12 @@ export function LiveBarChart({ options, lastUpdated = "Just now" }: LiveBarChart
             id="chart-container"
           >
             {options.map((option, i) => (
-              <BarRow key={option.id} option={option} index={i} maxVotes={maxVotes} />
+              <BarRow
+                key={option.id}
+                option={option}
+                index={i}
+                maxVotes={maxVotes}
+              />
             ))}
 
             {/* Recharts horizontal bar underneath */}
@@ -200,15 +208,26 @@ export function LiveBarChart({ options, lastUpdated = "Just now" }: LiveBarChart
                 Vote Distribution
               </p>
               <ResponsiveContainer width="100%" height={160}>
-                <BarChart data={rechartsData} margin={{ top: 4, right: 8, left: -20, bottom: 0 }}>
+                <BarChart
+                  data={rechartsData}
+                  margin={{ top: 4, right: 8, left: -20, bottom: 0 }}
+                >
                   <XAxis
                     dataKey="name"
-                    tick={{ fontSize: 11, fontFamily: "Hanken Grotesk", fill: "#2C2E2A" }}
+                    tick={{
+                      fontSize: 11,
+                      fontFamily: "Hanken Grotesk",
+                      fill: "#2C2E2A",
+                    }}
                     axisLine={false}
                     tickLine={false}
                   />
                   <YAxis
-                    tick={{ fontSize: 11, fontFamily: "Hanken Grotesk", fill: "#2C2E2A" }}
+                    tick={{
+                      fontSize: 11,
+                      fontFamily: "Hanken Grotesk",
+                      fill: "#2C2E2A",
+                    }}
                     axisLine={false}
                     tickLine={false}
                     unit="%"
@@ -216,7 +235,12 @@ export function LiveBarChart({ options, lastUpdated = "Just now" }: LiveBarChart
                   <Tooltip content={<CustomTooltip />} />
                   <Bar dataKey="value" radius={[6, 6, 0, 0]}>
                     {rechartsData.map((entry, index) => (
-                      <Cell key={index} fill={entry.fill} stroke="#2C2E2A" strokeWidth={2} />
+                      <Cell
+                        key={index}
+                        fill={entry.fill}
+                        stroke="#2C2E2A"
+                        strokeWidth={2}
+                      />
                     ))}
                   </Bar>
                 </BarChart>
@@ -258,7 +282,9 @@ export function LiveBarChart({ options, lastUpdated = "Just now" }: LiveBarChart
                 <Tooltip
                   content={({ active, payload }) => {
                     if (active && payload && payload.length) {
-                      const d = payload[0]?.payload as { fullName: string; value: number; votes: number } | undefined;
+                      const d = payload[0]?.payload as
+                        | { fullName: string; value: number; votes: number }
+                        | undefined;
                       if (!d) return null;
                       return (
                         <div className="bg-pure-white border-2 border-ink-charcoal rounded-xl px-4 py-3 shadow-hard">

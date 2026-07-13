@@ -5,13 +5,14 @@ import socket from "@/lib/socket";
 import { useLiveSessionStore, VoteTallies } from "@/store/liveSessionStore";
 import type { FeedMessage } from "@/components/live-session/LiveFeedMasonry";
 
-
 export function useHostSocket(
   sessionId: string | null,
   initialParticipantCount: number = 0,
-  setOpenEndedMessages?: React.Dispatch<React.SetStateAction<FeedMessage[]>>
+  setOpenEndedMessages?: React.Dispatch<React.SetStateAction<FeedMessage[]>>,
 ) {
-  const [participantCount, setParticipantCount] = useState(initialParticipantCount);
+  const [participantCount, setParticipantCount] = useState(
+    initialParticipantCount,
+  );
 
   useEffect(() => {
     setParticipantCount(initialParticipantCount);
@@ -44,7 +45,11 @@ export function useHostSocket(
       questionId?: string;
       text?: string;
     }) => {
-      if (payload.questionId && payload.optionIds && payload.optionIds.length > 0) {
+      if (
+        payload.questionId &&
+        payload.optionIds &&
+        payload.optionIds.length > 0
+      ) {
         // MCQ: merge into vote tallies
         const questionTallies: Record<string, number> = {};
         for (const id of payload.optionIds) {
@@ -86,7 +91,7 @@ export function useHostSocket(
     (sessionId: string, questionId: string, correctOptionIds: string[]) => {
       socket.emit("reveal:answer", { sessionId, questionId, correctOptionIds });
     },
-    []
+    [],
   );
 
   const emitSessionActivated = useCallback((sessionId: string) => {
@@ -97,5 +102,10 @@ export function useHostSocket(
     socket.emit("end:session", { sessionId });
   }, []);
 
-  return { participantCount, revealAnswer, emitSessionActivated, emitSessionEnded };
+  return {
+    participantCount,
+    revealAnswer,
+    emitSessionActivated,
+    emitSessionEnded,
+  };
 }

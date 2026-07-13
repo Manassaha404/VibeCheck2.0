@@ -1,6 +1,14 @@
 "use client";
-import React from 'react';
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
+import React from "react";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+  Cell,
+} from "recharts";
 
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
@@ -8,7 +16,10 @@ const CustomTooltip = ({ active, payload, label }: any) => {
       <div className="bg-[var(--color-pure-white)] border-2 border-[var(--color-ink-charcoal)] p-3 shadow-hard-sm">
         <p className="font-display text-headline-sm uppercase mb-1">{label}</p>
         <p className="font-body text-label-md font-bold">
-          Signatures: <span className="text-[var(--color-ink-charcoal)]">{payload[0].value}</span>
+          Signatures:{" "}
+          <span className="text-[var(--color-ink-charcoal)]">
+            {payload[0].value}
+          </span>
         </p>
       </div>
     );
@@ -16,10 +27,14 @@ const CustomTooltip = ({ active, payload, label }: any) => {
   return null;
 };
 
-export default function GrowthChart({ data }: { data: { day: string; signatures: number }[] }) {
+export default function GrowthChart({
+  data,
+}: {
+  data: { day: string; signatures: number }[];
+}) {
   const chartData = data.map((item) => ({
     ...item,
-    fill: 'var(--color-leaf-green)',
+    fill: "var(--color-leaf-green)",
   }));
 
   return (
@@ -29,21 +44,31 @@ export default function GrowthChart({ data }: { data: { day: string; signatures:
       </h3>
       <div className="flex-grow w-full h-full pt-4 font-body">
         <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-            <XAxis 
-              dataKey="day" 
-              axisLine={{ stroke: 'var(--color-ink-charcoal)', strokeWidth: 2 }}
-              tickLine={{ stroke: 'var(--color-ink-charcoal)', strokeWidth: 2 }}
-              tick={{ fill: 'var(--color-ink-charcoal)', fontWeight: 'bold' }}
+          <BarChart
+            data={chartData}
+            margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
+          >
+            <XAxis
+              dataKey="day"
+              axisLine={{ stroke: "var(--color-ink-charcoal)", strokeWidth: 2 }}
+              tickLine={{ stroke: "var(--color-ink-charcoal)", strokeWidth: 2 }}
+              tick={{ fill: "var(--color-ink-charcoal)", fontWeight: "bold" }}
               dy={10}
             />
-            <YAxis 
-              axisLine={{ stroke: 'var(--color-ink-charcoal)', strokeWidth: 2 }}
-              tickLine={{ stroke: 'var(--color-ink-charcoal)', strokeWidth: 2 }}
-              tick={{ fill: 'var(--color-ink-charcoal)', fontWeight: 'bold' }}
+            <YAxis
+              axisLine={{ stroke: "var(--color-ink-charcoal)", strokeWidth: 2 }}
+              tickLine={{ stroke: "var(--color-ink-charcoal)", strokeWidth: 2 }}
+              tick={{ fill: "var(--color-ink-charcoal)", fontWeight: "bold" }}
             />
-            <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(44,46,42,0.05)' }} />
-            <Bar dataKey="signatures" stroke="var(--color-ink-charcoal)" strokeWidth={2}>
+            <Tooltip
+              content={<CustomTooltip />}
+              cursor={{ fill: "rgba(44,46,42,0.05)" }}
+            />
+            <Bar
+              dataKey="signatures"
+              stroke="var(--color-ink-charcoal)"
+              strokeWidth={2}
+            >
               {chartData.map((entry, index) => (
                 <Cell key={`cell-${index}`} fill={entry.fill} />
               ))}

@@ -9,7 +9,7 @@ async function init() {
   try {
     const server = http.createServer();
     attachSocketServer(server);
-    
+
     const PORT: number = env.PORT ? +env.PORT : 9000;
     server.listen(PORT, () => {
       logger.info(`Socket server is running on PORT ${PORT}`);

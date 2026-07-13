@@ -70,7 +70,10 @@ export function VoteTimeline({ data }: VoteTimelineProps) {
       </div>
 
       <ResponsiveContainer width="100%" height={240}>
-        <AreaChart data={data} margin={{ top: 8, right: 16, left: -20, bottom: 0 }}>
+        <AreaChart
+          data={data}
+          margin={{ top: 8, right: 16, left: -20, bottom: 0 }}
+        >
           <defs>
             <linearGradient id="voteGradient" x1="0" y1="0" x2="0" y2="1">
               <stop offset="5%" stopColor="#8ED462" stopOpacity={0.4} />
@@ -81,15 +84,27 @@ export function VoteTimeline({ data }: VoteTimelineProps) {
               <stop offset="95%" stopColor="#F5E211" stopOpacity={0.02} />
             </linearGradient>
           </defs>
-          <CartesianGrid strokeDasharray="3 3" stroke="#2C2E2A" strokeOpacity={0.1} />
+          <CartesianGrid
+            strokeDasharray="3 3"
+            stroke="#2C2E2A"
+            strokeOpacity={0.1}
+          />
           <XAxis
             dataKey="time"
-            tick={{ fontSize: 11, fontFamily: "Hanken Grotesk", fill: "#2C2E2A" }}
+            tick={{
+              fontSize: 11,
+              fontFamily: "Hanken Grotesk",
+              fill: "#2C2E2A",
+            }}
             axisLine={false}
             tickLine={false}
           />
           <YAxis
-            tick={{ fontSize: 11, fontFamily: "Hanken Grotesk", fill: "#2C2E2A" }}
+            tick={{
+              fontSize: 11,
+              fontFamily: "Hanken Grotesk",
+              fill: "#2C2E2A",
+            }}
             axisLine={false}
             tickLine={false}
           />
@@ -101,7 +116,12 @@ export function VoteTimeline({ data }: VoteTimelineProps) {
             strokeWidth={3}
             fill="url(#voteGradient)"
             dot={{ fill: "#8ED462", stroke: "#2C2E2A", strokeWidth: 2, r: 4 }}
-            activeDot={{ fill: "#8ED462", stroke: "#2C2E2A", strokeWidth: 2, r: 6 }}
+            activeDot={{
+              fill: "#8ED462",
+              stroke: "#2C2E2A",
+              strokeWidth: 2,
+              r: 6,
+            }}
             name="votes"
           />
           <Area
@@ -121,11 +141,18 @@ export function VoteTimeline({ data }: VoteTimelineProps) {
       <div className="flex gap-6 flex-wrap">
         <div className="flex items-center gap-2">
           <div className="w-4 h-1 bg-leaf-green rounded" />
-          <span className="text-label-md text-ink-charcoal/70 font-body">New votes per interval</span>
+          <span className="text-label-md text-ink-charcoal/70 font-body">
+            New votes per interval
+          </span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="w-4 h-1 bg-electric-sun rounded" style={{ borderTop: "2px dashed" }} />
-          <span className="text-label-md text-ink-charcoal/70 font-body">Cumulative total</span>
+          <div
+            className="w-4 h-1 bg-electric-sun rounded"
+            style={{ borderTop: "2px dashed" }}
+          />
+          <span className="text-label-md text-ink-charcoal/70 font-body">
+            Cumulative total
+          </span>
         </div>
       </div>
     </motion.section>

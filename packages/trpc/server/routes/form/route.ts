@@ -66,7 +66,9 @@ export const formRouter = router({
         await formServices.saveDraft(ctx.user.id, input);
 
         // Then publish the form
-        const form = await formServices.publishForm(ctx.user.id, { formSlug: input.formSlug });
+        const form = await formServices.publishForm(ctx.user.id, {
+          formSlug: input.formSlug,
+        });
         return { message: "Form published successfully", form };
       } catch (error) {
         handleRouteError(error);
@@ -76,7 +78,10 @@ export const formRouter = router({
     .input(getFormAnalyticsDto)
     .query(async ({ input, ctx }) => {
       try {
-        const analytics = await formServices.getFormAnalytics(ctx.user.id, input);
+        const analytics = await formServices.getFormAnalytics(
+          ctx.user.id,
+          input,
+        );
         return analytics;
       } catch (error) {
         handleRouteError(error);
@@ -134,14 +139,13 @@ export const formRouter = router({
       }
     }),
 
-  getDashboard: protectedProcedure
-    .query(async ({ ctx }) => {
-      try {
-        return await formServices.getDashboardItems(ctx.user.id);
-      } catch (error) {
-        handleRouteError(error);
-      }
-    }),
+  getDashboard: protectedProcedure.query(async ({ ctx }) => {
+    try {
+      return await formServices.getDashboardItems(ctx.user.id);
+    } catch (error) {
+      handleRouteError(error);
+    }
+  }),
 
   archiveItem: protectedProcedure
     .input(archiveFormDto)
@@ -172,5 +176,4 @@ export const formRouter = router({
         handleRouteError(error);
       }
     }),
-
 });

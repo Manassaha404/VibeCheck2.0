@@ -22,9 +22,7 @@ interface UseEmitQuestionOptions {
  *                         Should be updated to match the question that will be emitted.
  * @param options        - Optional callbacks
  */
-export const useEmitQuestion = (
-  options: UseEmitQuestionOptions = {}
-) => {
+export const useEmitQuestion = (options: UseEmitQuestionOptions = {}) => {
   const setCurrentQuestion = useLiveSessionStore((s) => s.setCurrentQuestion);
 
   const mutation = trpc.quiz.emitQuestion.useMutation({
@@ -49,7 +47,7 @@ export const useEmitQuestion = (
     sessionId: string,
     questionIndex: number,
     timeLimitSecs: number,
-    questionPayload?: LiveQuestion | null
+    questionPayload?: LiveQuestion | null,
   ) => {
     mutation.mutate(
       { sessionId, questionIndex },
@@ -58,7 +56,7 @@ export const useEmitQuestion = (
           if (data?.currentQuestionIndex !== undefined) {
             // 1. Update local store (starts the countdown timer)
             setCurrentQuestion(data.currentQuestionIndex, timeLimitSecs);
-            
+
             if (questionPayload) {
               // Broadcast to participants via socket immediately after tRPC succeeds
               socket.emit("emit:question", {
@@ -69,7 +67,7 @@ export const useEmitQuestion = (
             }
           }
         },
-      }
+      },
     );
   };
 

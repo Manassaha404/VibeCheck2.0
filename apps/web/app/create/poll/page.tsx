@@ -42,7 +42,6 @@ export default function CreatePollPage() {
 
       {/* Main Content */}
       <main className="flex-grow w-full px-4 md:px-10 py-12 md:py-24 relative overflow-hidden">
-
         {/* Decorative Floating Shapes */}
         <div className="absolute top-10 left-10 w-32 h-32 bg-vivid-coral rounded-full border-4 border-ink-charcoal hard-shadow animate-float-slow hidden md:block" />
         <div className="absolute bottom-20 left-10 w-24 h-24 bg-mint border-4 border-ink-charcoal rotate-12 hard-shadow animate-wiggle hidden md:block" />
@@ -51,13 +50,11 @@ export default function CreatePollPage() {
         <div className="absolute top-1/2 left-8 w-16 h-16 bg-lavender rounded-xl border-4 border-ink-charcoal rotate-45 hard-shadow animate-float-slow hidden md:block" />
 
         <div className="max-w-4xl mx-auto relative z-10">
-
           <PollSetupHeader />
 
           {/* Poll Builder Layout */}
           <PollFormContainer>
             <div className="flex flex-col gap-8 relative z-10">
-
               <PollGeneralDetailsSection />
 
               <PollSettingsSection />
@@ -65,7 +62,6 @@ export default function CreatePollPage() {
               <PollActions />
             </div>
           </PollFormContainer>
-
         </div>
       </main>
 

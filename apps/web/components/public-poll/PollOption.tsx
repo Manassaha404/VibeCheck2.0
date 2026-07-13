@@ -56,7 +56,7 @@ export const PollOption = ({
       className={cn(
         "flex items-center p-6 bg-canvas-cream rounded-xl cursor-pointer transition-all group hard-shadow-sm btn-hover-press border-2 border-ink-charcoal",
         hoverColor,
-        checked && "ring-2 ring-inset ring-ink-charcoal"
+        checked && "ring-2 ring-inset ring-ink-charcoal",
       )}
       style={{ transition: "all 0.15s ease-out" }}
     >
@@ -79,7 +79,12 @@ export const PollOption = ({
         {text}
       </span>
 
-      <span className={cn("transition-opacity", checked ? "opacity-100" : "opacity-0 group-hover:opacity-100")}>
+      <span
+        className={cn(
+          "transition-opacity",
+          checked ? "opacity-100" : "opacity-0 group-hover:opacity-100",
+        )}
+      >
         <CheckCircle2 size={24} strokeWidth={2.5} />
       </span>
     </label>

@@ -2,9 +2,18 @@
 
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Share2, QrCode, X, Copy, Check, ExternalLink, Loader2, Zap } from "lucide-react";
+import {
+  Share2,
+  QrCode,
+  X,
+  Copy,
+  Check,
+  ExternalLink,
+  Loader2,
+  Zap,
+} from "lucide-react";
 import QRCode from "react-qr-code";
-import { toast } from "sonner";
+
 import { trpc } from "@/trpc/client";
 import { useRouter } from "next/navigation";
 
@@ -30,14 +39,14 @@ export function AnalyticsHeader({
   const [showQR, setShowQR] = useState(false);
   const [showShare, setShowShare] = useState(false);
   const [copied, setCopied] = useState(false);
-  
+
   const router = useRouter();
   const utils = trpc.useUtils();
   const activatePoll = trpc.poll.activateItem.useMutation({
     onSuccess: () => {
       utils.poll.getAnalytics.invalidate({ slug });
       router.refresh();
-    }
+    },
   });
 
   const handleActivate = () => {
@@ -52,7 +61,7 @@ export function AnalyticsHeader({
   const handleCopy = async () => {
     await navigator.clipboard.writeText(shareUrl);
     setCopied(true);
-    toast.success("Link copied to clipboard!");
+
     setTimeout(() => setCopied(false), 2000);
   };
 
@@ -112,7 +121,11 @@ export function AnalyticsHeader({
             disabled={activatePoll.isPending}
             className="flex-grow md:flex-grow-0 bg-leaf-green text-ink-charcoal border-2 border-ink-charcoal font-headline-sm text-headline-sm px-6 py-4 rounded-xl shadow-hard transition-all hover-lift flex justify-center items-center gap-2 whitespace-nowrap disabled:opacity-50"
           >
-            {activatePoll.isPending ? <Loader2 size={20} className="animate-spin" /> : <Zap size={20} strokeWidth={3} />}
+            {activatePoll.isPending ? (
+              <Loader2 size={20} className="animate-spin" />
+            ) : (
+              <Zap size={20} strokeWidth={3} />
+            )}
             Activate
           </button>
         )}
@@ -179,7 +192,10 @@ export function AnalyticsHeader({
               </div>
 
               <div className="w-full bg-pure-white border-2 border-ink-charcoal rounded-xl px-4 py-3 flex items-center gap-2">
-                <ExternalLink size={16} className="text-ink-charcoal/60 flex-shrink-0" />
+                <ExternalLink
+                  size={16}
+                  className="text-ink-charcoal/60 flex-shrink-0"
+                />
                 <span className="text-label-md text-ink-charcoal truncate flex-1 font-body">
                   {shareUrl}
                 </span>

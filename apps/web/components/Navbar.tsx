@@ -20,11 +20,14 @@ interface NavbarProps {
 
 const defaultLinks: NavLink[] = [
   { label: "Explore", href: "/explore" },
-  { label: "Create",  href: "/create" },
+  { label: "Create", href: "/create" },
   { label: "Dashboard", href: "/dashboard" },
 ];
 
-export default function Navbar({ links = defaultLinks, logoText = "VibeCheck" }: NavbarProps) {
+export default function Navbar({
+  links = defaultLinks,
+  logoText = "VibeCheck",
+}: NavbarProps) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const pathname = usePathname();
   const { userId } = useUserInfoStore();
@@ -60,9 +63,11 @@ export default function Navbar({ links = defaultLinks, logoText = "VibeCheck" }:
         {/* Nav links */}
         <nav className="flex gap-8" aria-label="Main navigation">
           {links.map((link) => {
-            const isActive = link.active !== undefined 
-              ? link.active 
-              : pathname === link.href || (link.href !== '/' && pathname.startsWith(link.href + '/'));
+            const isActive =
+              link.active !== undefined
+                ? link.active
+                : pathname === link.href ||
+                  (link.href !== "/" && pathname.startsWith(link.href + "/"));
 
             return (
               <Link
@@ -116,7 +121,10 @@ export default function Navbar({ links = defaultLinks, logoText = "VibeCheck" }:
 
       {/* Mobile */}
       <div className="flex md:hidden justify-between items-center px-4 py-4">
-        <Link href="/" className="text-headline-sm font-display font-black text-[var(--color-ink-charcoal)]">
+        <Link
+          href="/"
+          className="text-headline-sm font-display font-black text-[var(--color-ink-charcoal)]"
+        >
           {logoText}
         </Link>
 
@@ -141,9 +149,11 @@ export default function Navbar({ links = defaultLinks, logoText = "VibeCheck" }:
           aria-label="Mobile navigation"
         >
           {links.map((link) => {
-            const isActive = link.active !== undefined 
-              ? link.active 
-              : pathname === link.href || (link.href !== '/' && pathname.startsWith(link.href + '/'));
+            const isActive =
+              link.active !== undefined
+                ? link.active
+                : pathname === link.href ||
+                  (link.href !== "/" && pathname.startsWith(link.href + "/"));
 
             return (
               <Link

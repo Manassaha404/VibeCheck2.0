@@ -5,13 +5,13 @@ const envSchema = z.object({
   GOOGLE_CALLBACK_URL: z.string(),
   GOOGLE_CLIENT_SECRET: z.string(),
   ENCRYPTION_SECRET: z.string(),
-  OPENAI_API_KEY:z.string(),
-  RESEND_API_KEY:z.string(),
-  CLIENT_URL:z.string(),
-  API_BASE_URL:z.string(),
-  CLOUDINARY_CLOUD_NAME:z.string(),
-  CLOUDINARY_API_KEY:z.string(),
-  CLOUDINARY_API_SECRET:z.string(),
+  OPENAI_API_KEY: z.string(),
+  RESEND_API_KEY: z.string(),
+  CLIENT_URL: z.string(),
+  API_BASE_URL: z.string(),
+  CLOUDINARY_CLOUD_NAME: z.string(),
+  CLOUDINARY_API_KEY: z.string(),
+  CLOUDINARY_API_SECRET: z.string(),
 });
 
 function createEnv(env: NodeJS.ProcessEnv) {

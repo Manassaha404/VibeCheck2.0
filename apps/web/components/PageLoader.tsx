@@ -13,17 +13,20 @@ export default function PageLoader() {
             <div className="h-10 w-1/3 bg-[var(--color-surface-container-high)] rounded-lg"></div>
             <div className="h-6 w-1/4 bg-[var(--color-surface-container)] rounded-lg"></div>
           </div>
-          
+
           {/* Main Content Area Skeleton */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="md:col-span-2 h-64 bg-[var(--color-pure-white)] border-2 border-[var(--color-outline-variant)] rounded-xl"></div>
             <div className="h-64 bg-[var(--color-pure-white)] border-2 border-[var(--color-outline-variant)] rounded-xl"></div>
           </div>
-          
+
           {/* Grid Skeleton */}
           <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5 mt-6">
             {[1, 2, 3, 4, 5, 6].map((i) => (
-              <div key={i} className="h-[260px] bg-[var(--color-pure-white)] border-2 border-[var(--color-outline-variant)] rounded-xl p-5 flex flex-col gap-4">
+              <div
+                key={i}
+                className="h-[260px] bg-[var(--color-pure-white)] border-2 border-[var(--color-outline-variant)] rounded-xl p-5 flex flex-col gap-4"
+              >
                 <div className="flex gap-2">
                   <div className="h-6 w-16 rounded-md bg-[var(--color-surface-container-high)]" />
                   <div className="h-6 w-14 rounded-md bg-[var(--color-surface-container-high)]" />

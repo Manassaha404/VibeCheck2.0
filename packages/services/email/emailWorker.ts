@@ -92,7 +92,7 @@ export const emailWorker = new Worker<EmailJobData>(
       host: "localhost",
       port: 6379,
     },
-  }
+  },
 );
 
 emailWorker.on("completed", (job) => {

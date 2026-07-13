@@ -36,7 +36,12 @@ export interface LiveSessionState {
 
 export interface LiveSessionActions {
   /** Called once when entering the session page */
-  initSession: (sessionId: string, initialState?: Partial<Pick<LiveSessionState, "currentQuestionIndex" | "voteTallies">>) => void;
+  initSession: (
+    sessionId: string,
+    initialState?: Partial<
+      Pick<LiveSessionState, "currentQuestionIndex" | "voteTallies">
+    >,
+  ) => void;
 
   /** Called after host emits a question — resets timer with the question's time limit */
   setCurrentQuestion: (index: number, timeLimitSecs: number) => void;
@@ -73,7 +78,9 @@ const INITIAL_STATE: LiveSessionState = {
 
 // ── Store ─────────────────────────────────────────────────────────────────────
 
-export const useLiveSessionStore = create<LiveSessionState & LiveSessionActions>()((set, get) => ({
+export const useLiveSessionStore = create<
+  LiveSessionState & LiveSessionActions
+>()((set, get) => ({
   ...INITIAL_STATE,
 
   initSession: (sessionId, initialState = {}) =>
@@ -122,7 +129,7 @@ export const useLiveSessionStore = create<LiveSessionState & LiveSessionActions>
           Object.entries(incoming).map(([qId, optMap]) => [
             qId,
             { ...(s.voteTallies[qId] ?? {}), ...optMap },
-          ])
+          ]),
         ),
       },
     })),

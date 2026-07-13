@@ -6,11 +6,15 @@ import { useUserInfoStore } from "@/store/userInfoStore";
 export const useLogin = () => {
   const router = useRouter();
   const [apiError, setApiError] = useState<string | null>(null);
-  const { mutateAsync: loginMutation, isPending: isLoggingIn } = trpc.auth.loginWithEmailAndPass.useMutation();
+  const { mutateAsync: loginMutation, isPending: isLoggingIn } =
+    trpc.auth.loginWithEmailAndPass.useMutation();
   const { setUserInfo } = useUserInfoStore();
   const utils = trpc.useUtils();
 
-  const handleLogin = async (data: { emailOrUsername: string; password: string }) => {
+  const handleLogin = async (data: {
+    emailOrUsername: string;
+    password: string;
+  }) => {
     setApiError(null);
     try {
       const response = await loginMutation(data);
@@ -23,7 +27,7 @@ export const useLogin = () => {
         });
 
         await utils.auth.getMe.invalidate();
-        router.replace('/');
+        router.replace("/");
       }
     } catch (error: any) {
       setApiError(error.message || "Failed to login. Please try again.");

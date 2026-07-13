@@ -1,6 +1,5 @@
 import { Queue } from "bullmq";
 
-
 export const inactivityQueue = new Queue("inactivity-queue", {
   connection: {
     host: "localhost",
@@ -9,8 +8,8 @@ export const inactivityQueue = new Queue("inactivity-queue", {
 });
 
 export const autoActiveQueue = new Queue("auto-active-queue", {
-   connection: {
+  connection: {
     host: "localhost",
     port: 6379,
   },
-})
+});

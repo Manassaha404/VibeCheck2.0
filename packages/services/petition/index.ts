@@ -16,7 +16,7 @@ import {
   ActivatePetitionDtoType,
   deletePetitionDto,
   DeletePetitionDtoType,
-  type DashboardPetitionsResult
+  type DashboardPetitionsResult,
 } from "./model";
 import { AppError } from "@repo/error";
 import { users } from "@repo/database/models/users";
@@ -25,20 +25,23 @@ import { inngest } from "../inngest";
 import { count } from "drizzle-orm";
 
 class PetitionService {
-  private async generateUniqueSlug(userId: string, title: string): Promise<string> {
+  private async generateUniqueSlug(
+    userId: string,
+    title: string,
+  ): Promise<string> {
     let baseSlug = title.toLowerCase().replace(/[^a-z0-9]+/g, "-");
     if (!baseSlug) baseSlug = "petition";
-    
+
     let slug = baseSlug;
     let isUnique = false;
     let maxAttempts = 10;
-    
+
     while (!isUnique && maxAttempts > 0) {
       const [existing] = await db
         .select()
         .from(petitions)
         .where(and(eq(petitions.userId, userId), eq(petitions.slug, slug)));
-        
+
       if (existing) {
         slug = `${baseSlug}-${crypto.randomBytes(4).toString("hex")}`;
         maxAttempts--;
@@ -48,7 +51,10 @@ class PetitionService {
     }
 
     if (!isUnique) {
-      throw new AppError("INTERNAL_SERVER_ERROR", "Failed to generate unique slug");
+      throw new AppError(
+        "INTERNAL_SERVER_ERROR",
+        "Failed to generate unique slug",
+      );
     }
 
     return slug;
@@ -85,10 +91,13 @@ class PetitionService {
       }
 
       if (tags && tags.length > 0) {
-        await inngest.send({name:"create/petition", data:{
-            petitionId:newPetition.petitionId,
-            tagsArray:tags
-        }})
+        await inngest.send({
+          name: "create/petition",
+          data: {
+            petitionId: newPetition.petitionId,
+            tagsArray: tags,
+          },
+        });
       }
 
       return newPetition;
@@ -154,7 +163,11 @@ class PetitionService {
       GROUP BY city, country
       ORDER BY count DESC
     `);
-    const topHubs = topHubsResult.rows as { city: string; country: string; count: number }[];
+    const topHubs = topHubsResult.rows as {
+      city: string;
+      country: string;
+      count: number;
+    }[];
 
     // 5. Recent Signatures for Live Feed
     const recentSignatures = await db
@@ -185,7 +198,12 @@ class PetitionService {
     };
   }
 
-  public async getPetitionForSign(username: string, slug: string, viewerUserId:string | undefined, guestToken: string | undefined): Promise<GetPetitionForSignResponseType> {
+  public async getPetitionForSign(
+    username: string,
+    slug: string,
+    viewerUserId: string | undefined,
+    guestToken: string | undefined,
+  ): Promise<GetPetitionForSignResponseType> {
     const parsed = await getPetitionForSignDto.parseAsync({ username, slug });
     const [petition] = await db
       .select({
@@ -199,14 +217,22 @@ class PetitionService {
       })
       .from(petitions)
       .innerJoin(users, eq(petitions.userId, users.userId))
-      .where(and(eq(petitions.slug, parsed.slug), eq(users.username, parsed.username)));
+      .where(
+        and(
+          eq(petitions.slug, parsed.slug),
+          eq(users.username, parsed.username),
+        ),
+      );
 
     if (!petition) {
       throw new AppError("NOT_FOUND", "Petition not found");
     }
 
     if (petition.status === "archived") {
-      throw new AppError("FORBIDDEN", "This petition has been archived and is no longer accepting signatures");
+      throw new AppError(
+        "FORBIDDEN",
+        "This petition has been archived and is no longer accepting signatures",
+      );
     }
 
     const totalResult = await db.execute(sql`
@@ -224,11 +250,11 @@ class PetitionService {
         .where(
           and(
             eq(petitionSignatures.petitionId, petition.petitionId),
-            eq(petitionSignatures.guestToken, guestToken)
-          )
+            eq(petitionSignatures.guestToken, guestToken),
+          ),
         )
         .limit(1);
-      
+
       if (existingSignature) {
         hasSigned = true;
       }
@@ -246,12 +272,12 @@ class PetitionService {
       .orderBy(desc(petitionSignatures.createdAt))
       .limit(5);
     await inngest.send({
-      name:"petition/view", 
-      data:{
-        petitionId:petition.petitionId,
-        userId:viewerUserId
+      name: "petition/view",
+      data: {
+        petitionId: petition.petitionId,
+        userId: viewerUserId,
       },
-    })
+    });
     return {
       petition,
       totalSignatures,
@@ -260,7 +286,11 @@ class PetitionService {
     };
   }
 
-  public async signPetition(payload: signPetitionType, viewerUserId:string | undefined, guestToken:string) {
+  public async signPetition(
+    payload: signPetitionType,
+    viewerUserId: string | undefined,
+    guestToken: string,
+  ) {
     const data = await signPetitionDto.parseAsync(payload);
 
     // Verify the petition exists and is not archived
@@ -273,7 +303,10 @@ class PetitionService {
       throw new AppError("NOT_FOUND", "Petition not found");
     }
     if (existingPetition.status === "archived") {
-      throw new AppError("FORBIDDEN", "This petition has been archived and is no longer accepting signatures");
+      throw new AppError(
+        "FORBIDDEN",
+        "This petition has been archived and is no longer accepting signatures",
+      );
     }
 
     await db.insert(petitionSignatures).values({
@@ -286,17 +319,19 @@ class PetitionService {
       guestToken,
     });
     await inngest.send({
-      name: "petition/sign", 
+      name: "petition/sign",
       data: {
         petitionId: data.petitionId,
-        userId: viewerUserId
-      }
+        userId: viewerUserId,
+      },
     });
 
     return { success: true };
   }
 
-  public async getDashboardItems(userId: string): Promise<DashboardPetitionsResult> {
+  public async getDashboardItems(
+    userId: string,
+  ): Promise<DashboardPetitionsResult> {
     const rows = await db
       .select({
         petitionId: petitions.petitionId,
@@ -335,7 +370,12 @@ class PetitionService {
     const [existingPetition] = await db
       .select()
       .from(petitions)
-      .where(and(eq(petitions.petitionId, data.petitionId), eq(petitions.userId, userId)));
+      .where(
+        and(
+          eq(petitions.petitionId, data.petitionId),
+          eq(petitions.userId, userId),
+        ),
+      );
 
     if (!existingPetition) {
       throw new AppError("NOT_FOUND", "Petition not found");
@@ -354,7 +394,12 @@ class PetitionService {
     const [existingPetition] = await db
       .select()
       .from(petitions)
-      .where(and(eq(petitions.petitionId, data.petitionId), eq(petitions.userId, userId)));
+      .where(
+        and(
+          eq(petitions.petitionId, data.petitionId),
+          eq(petitions.userId, userId),
+        ),
+      );
 
     if (!existingPetition) {
       throw new AppError("NOT_FOUND", "Petition not found");
@@ -373,7 +418,12 @@ class PetitionService {
     const [existingPetition] = await db
       .select()
       .from(petitions)
-      .where(and(eq(petitions.petitionId, data.petitionId), eq(petitions.userId, userId)));
+      .where(
+        and(
+          eq(petitions.petitionId, data.petitionId),
+          eq(petitions.userId, userId),
+        ),
+      );
 
     if (!existingPetition) {
       throw new AppError("NOT_FOUND", "Petition not found");

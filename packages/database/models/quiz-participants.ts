@@ -32,9 +32,6 @@ export const quizParticipants = pgTable(
   (t) => [
     index("quiz_participant_session_id_idx").on(t.sessionId),
     index("quiz_participant_user_id_idx").on(t.userId),
-    uniqueIndex("quiz_participant_session_user_idx").on(
-      t.sessionId,
-      t.userId,
-    ),
+    uniqueIndex("quiz_participant_session_user_idx").on(t.sessionId, t.userId),
   ],
 );

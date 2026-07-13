@@ -19,10 +19,10 @@ export const useGetSessionForHost = (sessionId: string | null) => {
       { sessionId: sessionId ?? "" },
       {
         enabled: !!sessionId,
-        refetchInterval: 20000, 
+        refetchInterval: 20000,
         staleTime: 0,
         retry: 1,
-      }
+      },
     );
 
   return {

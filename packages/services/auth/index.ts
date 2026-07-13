@@ -180,11 +180,12 @@ class AuthServices {
     }
 
     const hashedPassword = await bcrypt.hash(newPassword, 10);
-    
-    await db.update(auths)
+
+    await db
+      .update(auths)
       .set({ password: hashedPassword })
       .where(eq(auths.userId, user.userId));
-    
+
     return { success: true };
   }
 

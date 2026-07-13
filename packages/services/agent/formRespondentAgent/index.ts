@@ -46,7 +46,7 @@ class FormRespondentAgentService {
   //Both keys share a 24-hour TTL, refreshed on every turn.
   //The DB is only touched once — when `isCompleted` flips to true.
 
-  // build full context for agent, 
+  // build full context for agent,
   private static buildContextBlock(
     title: string,
     description: string | undefined,
@@ -87,7 +87,6 @@ class FormRespondentAgentService {
       collectedLines,
     ].join("\n");
   }
-
 
   //store response in the db
   private static async submitResponse(
@@ -130,21 +129,23 @@ class FormRespondentAgentService {
     return newResponse.responseId;
   }
 
-
-
   static async chat(
-    payload: RespondentAgentChatType
+    payload: RespondentAgentChatType,
   ): Promise<RespondentAgentChatResult> {
-    const { formId, guestToken, userMessage } = await RespondentAgentChatDto.parseAsync(payload);
-    
+    const { formId, guestToken, userMessage } =
+      await RespondentAgentChatDto.parseAsync(payload);
+
     const [form] = await db
       .select()
       .from(forms)
       .where(eq(forms.formId, formId));
 
-    if (!form) throw new AppError("NOT_FOUND", "Form not found")
+    if (!form) throw new AppError("NOT_FOUND", "Form not found");
     if (!form.isPublished)
-      throw new AppError("FORBIDDEN", "This form is not accepting responses yet");
+      throw new AppError(
+        "FORBIDDEN",
+        "This form is not accepting responses yet",
+      );
 
     const fields = await db
       .select()
@@ -257,19 +258,17 @@ class FormRespondentAgentService {
     };
   }
 
-  
-  public async getSession(
-    payload: RespondentAgentGetSessionType
-  ): Promise<{
+  public async getSession(payload: RespondentAgentGetSessionType): Promise<{
     hasSession: boolean;
     isCompleted: boolean;
     collectedAnswers: CollectedAnswer[];
     currentFieldId: string | null;
     responseId?: string;
   }> {
-    const { formId, guestToken } = await RespondentAgentGetSessionDto.parseAsync(payload);
+    const { formId, guestToken } =
+      await RespondentAgentGetSessionDto.parseAsync(payload);
     const raw = await redis.get(SESSION_KEY(formId, guestToken));
-    
+
     if (!raw) {
       return {
         hasSession: false,
@@ -289,9 +288,11 @@ class FormRespondentAgentService {
     };
   }
 
-  
-  public async clearSession(payload: RespondentAgentClearSessionType): Promise<void> {
-    const { formId, guestToken } = await RespondentAgentClearSessionDto.parseAsync(payload);
+  public async clearSession(
+    payload: RespondentAgentClearSessionType,
+  ): Promise<void> {
+    const { formId, guestToken } =
+      await RespondentAgentClearSessionDto.parseAsync(payload);
     await Promise.all([
       redis.del(SESSION_KEY(formId, guestToken)),
       redis.del(HISTORY_KEY(formId, guestToken)),

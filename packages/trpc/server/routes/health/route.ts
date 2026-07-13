@@ -10,7 +10,8 @@ export const healthRouter = router({
         path: "/health",
         tags: ["health"],
         summary: "Health check",
-        description: "Returns a simple string confirming the tRPC server is alive.",
+        description:
+          "Returns a simple string confirming the tRPC server is alive.",
       },
     })
     .input(zodUndefinedModel)

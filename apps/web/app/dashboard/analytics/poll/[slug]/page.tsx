@@ -13,7 +13,8 @@ export default function PollAnalyticsPage() {
   const params = useParams();
   const slug = params?.slug as string;
 
-  const { analytics, isLoading, isError, error, refetch } = usePollAnalytics(slug);
+  const { analytics, isLoading, isError, error, refetch } =
+    usePollAnalytics(slug);
 
   if (isLoading) {
     return <PageLoader />;
@@ -23,8 +24,8 @@ export default function PollAnalyticsPage() {
     <div className="flex flex-col min-h-screen bg-canvas-cream">
       <Navbar
         links={[
-          { label: "Explore",   href: "/explore" },
-          { label: "Create",    href: "/create" },
+          { label: "Explore", href: "/explore" },
+          { label: "Create", href: "/create" },
           { label: "Dashboard", href: "/dashboard", active: true },
         ]}
       />
@@ -32,7 +33,10 @@ export default function PollAnalyticsPage() {
         {isError ? (
           <DashboardError
             title="POLL CHECK FAILED!"
-            message={(error as { message?: string })?.message ?? "Could not load poll analytics."}
+            message={
+              (error as { message?: string })?.message ??
+              "Could not load poll analytics."
+            }
             onRetry={refetch}
           />
         ) : analytics ? (

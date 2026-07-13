@@ -54,8 +54,8 @@ export default function ParticipantPasswordGate({
                 </p>
               ) : (
                 <p className="font-body text-body-md text-[var(--color-on-surface-variant)]">
-                  This quiz is password protected. Enter the code your host
-                  gave you.
+                  This quiz is password protected. Enter the code your host gave
+                  you.
                 </p>
               )}
             </div>

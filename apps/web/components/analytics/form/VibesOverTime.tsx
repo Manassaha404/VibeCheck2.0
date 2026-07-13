@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import React from 'react';
-import { TrendingUp } from 'lucide-react';
+import React from "react";
+import { TrendingUp } from "lucide-react";
 
 interface WeeklyDataPoint {
   week: string;
@@ -13,12 +13,12 @@ interface VibesOverTimeProps {
 }
 
 const BAR_COLORS = [
-  'bg-[var(--color-electric-sun)]',
-  'bg-[var(--color-leaf-green)]',
-  'bg-[var(--color-sky-blue)]',
-  'bg-[var(--color-tangerine)]',
-  'bg-[var(--color-vivid-coral)]',
-  'bg-[var(--color-lavender)]',
+  "bg-[var(--color-electric-sun)]",
+  "bg-[var(--color-leaf-green)]",
+  "bg-[var(--color-sky-blue)]",
+  "bg-[var(--color-tangerine)]",
+  "bg-[var(--color-vivid-coral)]",
+  "bg-[var(--color-lavender)]",
 ];
 
 export function VibesOverTime({ weeklyData }: VibesOverTimeProps) {
@@ -32,11 +32,11 @@ export function VibesOverTime({ weeklyData }: VibesOverTimeProps) {
       {/* Rising / Falling badge */}
       <div
         className={`absolute -top-6 -right-6 text-pure-white font-black text-xl p-3 border-4 border-ink-charcoal rotate-[15deg] shadow-[4px_4px_0px_0px_rgba(44,46,42,1)] z-10 flex items-center gap-1 ${
-          isRising ? 'bg-[#FF5733]' : 'bg-ink-charcoal'
+          isRising ? "bg-[#FF5733]" : "bg-ink-charcoal"
         }`}
       >
         <TrendingUp size={18} strokeWidth={3} />
-        {isRising ? 'RISING!' : 'STEADY'}
+        {isRising ? "RISING!" : "STEADY"}
       </div>
 
       <h2 className="font-headline-lg text-headline-lg border-b-4 border-ink-charcoal pb-4 mb-8 uppercase">
@@ -50,7 +50,10 @@ export function VibesOverTime({ weeklyData }: VibesOverTimeProps) {
       ) : (
         <div className="h-64 md:h-96 w-full flex items-end justify-between gap-2 md:gap-6 border-b-4 border-l-4 border-ink-charcoal pb-2 pl-4">
           {weeklyData.map((point, i) => {
-            const heightPct = Math.max((point.count / maxCount) * 100, point.count > 0 ? 4 : 0);
+            const heightPct = Math.max(
+              (point.count / maxCount) * 100,
+              point.count > 0 ? 4 : 0,
+            );
             return (
               <div
                 key={point.week}
@@ -59,7 +62,8 @@ export function VibesOverTime({ weeklyData }: VibesOverTimeProps) {
               >
                 {/* Tooltip */}
                 <div className="absolute -top-12 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 bg-ink-charcoal text-pure-white px-3 py-1.5 font-bold text-sm pointer-events-none transition-opacity whitespace-nowrap border-2 border-electric-sun z-20">
-                  {point.count.toLocaleString()} response{point.count !== 1 ? 's' : ''}
+                  {point.count.toLocaleString()} response
+                  {point.count !== 1 ? "s" : ""}
                 </div>
               </div>
             );

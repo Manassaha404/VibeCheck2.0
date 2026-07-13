@@ -58,6 +58,6 @@ export const usePollStore = create<PollState>()(
     }),
     {
       name: "vibecheck-poll-store",
-    }
-  )
+    },
+  ),
 );

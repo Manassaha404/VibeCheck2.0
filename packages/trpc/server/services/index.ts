@@ -9,6 +9,7 @@ import TagService from "@repo/services/tag";
 import PetitionService from "@repo/services/petition";
 import UploadService from "@repo/services/upload";
 import QuizService from "@repo/services/quiz";
+import ExploreService from "@repo/services/explore";
 
 export const authService = new AuthServices();
 export const oAuthService = new OauthService();
@@ -21,3 +22,4 @@ export const tagService = new TagService();
 export const petitionService = new PetitionService();
 export const uploadService = new UploadService();
 export const quizService = new QuizService();
+export const exploreService = new ExploreService();

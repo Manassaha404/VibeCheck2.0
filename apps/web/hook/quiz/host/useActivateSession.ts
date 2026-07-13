@@ -18,7 +18,10 @@ export const useActivateSession = (options: UseActivateSessionOptions = {}) => {
   const mutation = trpc.quiz.manuallyActivateSession.useMutation({
     onSuccess: (_data, variables) => {
       // Re-init live session store for the now-active session
-      initSession(variables.sessionId, { currentQuestionIndex: -1, voteTallies: {} });
+      initSession(variables.sessionId, {
+        currentQuestionIndex: -1,
+        voteTallies: {},
+      });
       options.onSuccess?.();
     },
     onError: (error) => {

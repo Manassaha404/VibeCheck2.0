@@ -7,7 +7,11 @@ import { X, Tag, Flame, Plus } from "lucide-react";
 import { useTopTags } from "@/hook/tag/useTopTags";
 
 export function PetitionTagsInput() {
-  const { watch, setValue, formState: { errors } } = useFormContext<PetitionDraftFormValues>();
+  const {
+    watch,
+    setValue,
+    formState: { errors },
+  } = useFormContext<PetitionDraftFormValues>();
   const tags = watch("tags") || [];
   const [inputValue, setInputValue] = useState("");
 
@@ -18,9 +22,12 @@ export function PetitionTagsInput() {
   // Filter top tags based on user input
   const isTyping = inputValue.trim().length > 0;
   const suggestedTags = topTags
-    .filter((tag: string) => 
-      !tags.includes(tag) && 
-      (isTyping ? tag.toLowerCase().includes(inputValue.toLowerCase()) : true)
+    .filter(
+      (tag: string) =>
+        !tags.includes(tag) &&
+        (isTyping
+          ? tag.toLowerCase().includes(inputValue.toLowerCase())
+          : true),
     )
     .slice(0, 7);
 
@@ -40,17 +47,23 @@ export function PetitionTagsInput() {
   };
 
   const removeTag = (tagToRemove: string) => {
-    setValue("tags", tags.filter(t => t !== tagToRemove), { shouldValidate: true });
+    setValue(
+      "tags",
+      tags.filter((t) => t !== tagToRemove),
+      { shouldValidate: true },
+    );
   };
 
   return (
-    <div className="bg-pure-white border-2 border-ink-charcoal shadow-hard-lg p-6 rounded-xl flex flex-col gap-4 relative overflow-hidden card-lift animate-fade-up" style={{ animationDelay: '200ms' }}>
+    <div
+      className="bg-pure-white border-2 border-ink-charcoal shadow-hard-lg p-6 rounded-xl flex flex-col gap-4 relative overflow-hidden card-lift animate-fade-up"
+      style={{ animationDelay: "200ms" }}
+    >
       <div className="absolute top-0 left-0 w-full h-2 bg-[var(--color-sky-blue)] border-b-2 border-ink-charcoal rounded-t-xl"></div>
       <h2 className="font-headline-sm text-headline-sm text-ink-charcoal flex items-center gap-2 mt-2">
         <Tag size={24} /> Tags
       </h2>
       <div className="flex flex-col gap-4">
-        
         {/* Selected Tags Display */}
         <div className="flex flex-wrap gap-2 min-h-[32px]">
           {tags.map((tag) => (
@@ -77,7 +90,9 @@ export function PetitionTagsInput() {
 
         {/* Input */}
         <div className="relative flex items-center">
-          <span className="absolute left-4 font-body-lg text-on-surface-variant font-bold">#</span>
+          <span className="absolute left-4 font-body-lg text-on-surface-variant font-bold">
+            #
+          </span>
           <input
             type="text"
             value={inputValue}
@@ -88,7 +103,7 @@ export function PetitionTagsInput() {
             disabled={tags.length >= 10}
           />
         </div>
-        
+
         {errors.tags && (
           <p className="text-error font-label-sm text-label-sm">
             {errors.tags.message}
@@ -99,7 +114,15 @@ export function PetitionTagsInput() {
         {tags.length < 10 && (
           <div className="flex flex-col gap-2 mt-1 bg-canvas-cream p-4 border-2 border-ink-charcoal border-dashed rounded-lg">
             <span className="font-label-sm text-label-sm text-ink-charcoal flex items-center gap-2 font-bold">
-              {isTyping ? <><Tag size={16} /> Matching Tags</> : <><Flame size={16} className="text-error" /> Trending Tags</>}
+              {isTyping ? (
+                <>
+                  <Tag size={16} /> Matching Tags
+                </>
+              ) : (
+                <>
+                  <Flame size={16} className="text-error" /> Trending Tags
+                </>
+              )}
             </span>
             <div className="flex flex-wrap gap-2">
               {suggestedTags.map((suggestion) => (
@@ -109,19 +132,25 @@ export function PetitionTagsInput() {
                   onClick={() => addTag(suggestion)}
                   className="group flex items-center gap-1 bg-pure-white border-2 border-ink-charcoal px-3 py-1 rounded-md font-label-md text-label-md text-ink-charcoal transition-all hover:bg-leaf-green hover:-translate-y-0.5 shadow-hard-sm"
                 >
-                  <Plus size={14} className="opacity-0 group-hover:opacity-100 -ml-1 transition-opacity w-0 group-hover:w-auto" />
+                  <Plus
+                    size={14}
+                    className="opacity-0 group-hover:opacity-100 -ml-1 transition-opacity w-0 group-hover:w-auto"
+                  />
                   {suggestion}
                 </button>
               ))}
-              {isTyping && !suggestedTags.includes(inputValue.toLowerCase().trim()) && inputValue.trim().length > 0 && (
-                <button
-                  type="button"
-                  onClick={() => addTag(inputValue)}
-                  className="group flex items-center gap-1 bg-pure-white border-2 border-ink-charcoal px-3 py-1 rounded-md font-label-md text-label-md text-ink-charcoal transition-all hover:bg-sky-blue hover:-translate-y-0.5 shadow-hard-sm"
-                >
-                  <Plus size={14} /> Create "{inputValue.trim().toLowerCase()}"
-                </button>
-              )}
+              {isTyping &&
+                !suggestedTags.includes(inputValue.toLowerCase().trim()) &&
+                inputValue.trim().length > 0 && (
+                  <button
+                    type="button"
+                    onClick={() => addTag(inputValue)}
+                    className="group flex items-center gap-1 bg-pure-white border-2 border-ink-charcoal px-3 py-1 rounded-md font-label-md text-label-md text-ink-charcoal transition-all hover:bg-sky-blue hover:-translate-y-0.5 shadow-hard-sm"
+                  >
+                    <Plus size={14} /> Create "{inputValue.trim().toLowerCase()}
+                    "
+                  </button>
+                )}
               {suggestedTags.length === 0 && !isTyping && (
                 <span className="text-on-surface-variant font-body-sm text-body-sm italic">
                   No trending tags right now.

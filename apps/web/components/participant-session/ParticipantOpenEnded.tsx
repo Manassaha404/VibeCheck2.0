@@ -1,26 +1,32 @@
-import React, { useState } from 'react';
-import { Send } from 'lucide-react';
+import React, { useState } from "react";
+import { Send } from "lucide-react";
 
 interface ParticipantOpenEndedProps {
   onSubmit: (text: string) => void;
   disabled?: boolean;
 }
 
-export default function ParticipantOpenEnded({ onSubmit, disabled }: ParticipantOpenEndedProps) {
-  const [answer, setAnswer] = useState('');
+export default function ParticipantOpenEnded({
+  onSubmit,
+  disabled,
+}: ParticipantOpenEndedProps) {
+  const [answer, setAnswer] = useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (answer.trim() && !disabled) {
       onSubmit(answer);
-      setAnswer('');
+      setAnswer("");
     }
   };
 
   return (
     <div className="bg-[var(--color-pure-white)] border-2 border-[var(--color-ink-charcoal)] rounded-xl p-6 md:p-8 shadow-hard relative mt-8">
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-        <label htmlFor="open-ended-answer" className="font-display text-headline-sm font-bold text-[var(--color-ink-charcoal)]">
+        <label
+          htmlFor="open-ended-answer"
+          className="font-display text-headline-sm font-bold text-[var(--color-ink-charcoal)]"
+        >
           Your Answer
         </label>
         <textarea
@@ -46,7 +52,7 @@ export default function ParticipantOpenEnded({ onSubmit, disabled }: Participant
           </button>
         </div>
       </form>
-      
+
       {/* Decorative Graphic */}
       <div className="absolute -bottom-4 -left-4 bg-[var(--color-mint)] text-[var(--color-ink-charcoal)] font-display text-label-md font-black border-2 border-[var(--color-ink-charcoal)] px-3 py-1 transform -rotate-6 shadow-hard">
         Be Creative!

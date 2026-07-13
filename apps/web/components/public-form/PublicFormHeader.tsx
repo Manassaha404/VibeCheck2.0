@@ -8,14 +8,21 @@ interface PublicFormHeaderProps {
   isAgentComplete: boolean;
 }
 
-export function PublicFormHeader({ mode, setMode, isAgentComplete }: PublicFormHeaderProps) {
+export function PublicFormHeader({
+  mode,
+  setMode,
+  isAgentComplete,
+}: PublicFormHeaderProps) {
   return (
     <header className="bg-[var(--color-canvas-cream)] border-b-2 border-[var(--color-ink-charcoal)] shadow-[4px_4px_0px_0px_var(--color-ink-charcoal)] w-full top-0 sticky z-50 transition-all">
       <div className="flex justify-between items-center px-4 md:px-10 py-4 w-full max-w-[1280px] mx-auto">
-        <Link href="/" className="text-headline-sm md:text-headline-md font-black text-[var(--color-ink-charcoal)]">
+        <Link
+          href="/"
+          className="text-headline-sm md:text-headline-md font-black text-[var(--color-ink-charcoal)]"
+        >
           VibeCheck
         </Link>
-        
+
         {/* Mode toggle */}
         {!isAgentComplete && (
           <div className="flex-shrink-0 flex items-center bg-white border-2 border-[var(--color-ink-charcoal)] rounded-xl p-1 gap-1 shadow-hard-sm">

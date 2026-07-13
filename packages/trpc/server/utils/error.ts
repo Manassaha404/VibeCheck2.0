@@ -4,7 +4,10 @@ import { z } from "zod";
 import logger from "@repo/logger/logger";
 
 export const handleRouteError = (error: unknown): never => {
-  if (error instanceof AppError || (error instanceof Error && error.name === "AppError")) {
+  if (
+    error instanceof AppError ||
+    (error instanceof Error && error.name === "AppError")
+  ) {
     throw new TRPCError({
       code: (error as AppError).code as any,
       message: (error as Error).message,
@@ -18,7 +21,10 @@ export const handleRouteError = (error: unknown): never => {
   }
 
   if (error instanceof Error) {
-    logger.error(`[tRPC] Unhandled ${error.constructor.name}: ${error.message}`, { stack: error.stack });
+    logger.error(
+      `[tRPC] Unhandled ${error.constructor.name}: ${error.message}`,
+      { stack: error.stack },
+    );
     throw new TRPCError({
       code: "INTERNAL_SERVER_ERROR",
       message:

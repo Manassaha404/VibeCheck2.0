@@ -1,5 +1,14 @@
 import React, { useState, useRef, useCallback } from "react";
-import { Send, Bot, User, RotateCcw, Paperclip, X, FileIcon, Loader2 } from "lucide-react";
+import {
+  Send,
+  Bot,
+  User,
+  RotateCcw,
+  Paperclip,
+  X,
+  FileIcon,
+  Loader2,
+} from "lucide-react";
 import { useAgentChat } from "../../hook/agent/useFormRespondentAgentChat";
 import { useFileUpload } from "../../hook/form/useFileUpload";
 import { useSubmitStaticForm } from "../../hook/form/useSubmitStaticForm";
@@ -28,7 +37,8 @@ export function AgentChatPanel({
   const [isUploadingToServer, setIsUploadingToServer] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const { uploadFile, fetchPrimaryFieldValue, fetchRespondentSession } = useFileUpload();
+  const { uploadFile, fetchPrimaryFieldValue, fetchRespondentSession } =
+    useFileUpload();
   const submitMutation = useSubmitStaticForm();
 
   // ── Upload all queued files via resumable upload, then call onComplete ──────
@@ -41,8 +51,11 @@ export function AgentChatPanel({
 
       setIsUploadingToServer(true);
       try {
-        const primaryFieldValue = await fetchPrimaryFieldValue(formId, primaryFieldId);
-        
+        const primaryFieldValue = await fetchPrimaryFieldValue(
+          formId,
+          primaryFieldId,
+        );
+
         const session = await fetchRespondentSession(formId);
         let newAnswers: Record<string, unknown> = {};
         for (const a of session?.collectedAnswers || []) {
@@ -55,8 +68,10 @@ export function AgentChatPanel({
         for (const file of pendingFiles) {
           const fileId = await uploadFile(formId, file, primaryFieldValue);
           if (fileId) {
-            const fileAnswer = session?.collectedAnswers?.find((a: any) => 
-              typeof a.value === "string" && a.value.includes(`[Attached file: ${file.name}]`)
+            const fileAnswer = session?.collectedAnswers?.find(
+              (a: any) =>
+                typeof a.value === "string" &&
+                a.value.includes(`[Attached file: ${file.name}]`),
             );
             if (fileAnswer) {
               newAnswers[fileAnswer.fieldId] = fileId;
@@ -81,7 +96,16 @@ export function AgentChatPanel({
         onComplete(responseId);
       }
     },
-    [pendingFiles, formId, onComplete, uploadFile, primaryFieldId, fetchPrimaryFieldValue, submitMutation, fetchRespondentSession],
+    [
+      pendingFiles,
+      formId,
+      onComplete,
+      uploadFile,
+      primaryFieldId,
+      fetchPrimaryFieldValue,
+      submitMutation,
+      fetchRespondentSession,
+    ],
   );
 
   const {
@@ -105,7 +129,9 @@ export function AgentChatPanel({
 
     setPendingFiles((prev) => [...prev, file]);
     setInput((prev) =>
-      prev ? `${prev}\n[Attached file: ${file.name}]` : `[Attached file: ${file.name}]`,
+      prev
+        ? `${prev}\n[Attached file: ${file.name}]`
+        : `[Attached file: ${file.name}]`,
     );
   };
 
@@ -120,7 +146,8 @@ export function AgentChatPanel({
     }
   };
 
-  const progress = totalFields > 0 ? Math.round((collectedCount / totalFields) * 100) : 0;
+  const progress =
+    totalFields > 0 ? Math.round((collectedCount / totalFields) * 100) : 0;
   const isBusy = isUploadingToServer;
 
   return (
@@ -132,7 +159,9 @@ export function AgentChatPanel({
             <Bot className="w-4 h-4 md:w-5 md:h-5" strokeWidth={2.5} />
           </div>
           <div>
-            <p className="text-label-sm md:text-label-md font-bold leading-tight">AI Form Guide</p>
+            <p className="text-label-sm md:text-label-md font-bold leading-tight">
+              AI Form Guide
+            </p>
           </div>
         </div>
         <div className="flex flex-col items-end gap-1">
@@ -178,9 +207,14 @@ export function AgentChatPanel({
                   : "bg-[var(--color-leaf-green)] rounded-tr-sm"
               }`}
             >
-              <p className="whitespace-pre-wrap text-sm md:text-base">{msg.text}</p>
+              <p className="whitespace-pre-wrap text-sm md:text-base">
+                {msg.text}
+              </p>
               <p className="text-[10px] md:text-[11px] opacity-60 mt-1.5 md:mt-2 text-right font-bold">
-                {msg.timestamp.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                {msg.timestamp.toLocaleTimeString([], {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
               </p>
             </div>
           </div>
@@ -195,8 +229,13 @@ export function AgentChatPanel({
             <div className="bg-white px-4 py-3 md:px-5 md:py-4 rounded-2xl rounded-tl-sm border-[2px] md:border-[3px] border-[var(--color-ink-charcoal)] shadow-hard-sm flex items-center gap-2">
               {isUploadingToServer ? (
                 <>
-                  <Loader2 className="w-3 h-3 md:w-4 md:h-4 animate-spin" strokeWidth={2.5} />
-                  <span className="text-[11px] md:text-[12px] font-bold opacity-70">Uploading...</span>
+                  <Loader2
+                    className="w-3 h-3 md:w-4 md:h-4 animate-spin"
+                    strokeWidth={2.5}
+                  />
+                  <span className="text-[11px] md:text-[12px] font-bold opacity-70">
+                    Uploading...
+                  </span>
                 </>
               ) : (
                 <>

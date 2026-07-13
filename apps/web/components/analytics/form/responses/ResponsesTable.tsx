@@ -1,11 +1,14 @@
-'use client';
+"use client";
 
-import React from 'react';
-import { Wind } from 'lucide-react';
-import { ResponseRow } from './ResponseRow';
-import { ResponsesPagination } from './ResponsesPagination';
+import React from "react";
+import { Wind } from "lucide-react";
+import { ResponseRow } from "./ResponseRow";
+import { ResponsesPagination } from "./ResponsesPagination";
 
-import { FormResponseItem, FormResponseAnswer } from '@repo/services/form/model';
+import {
+  FormResponseItem,
+  FormResponseAnswer,
+} from "@repo/services/form/model";
 
 interface ResponsesTableProps {
   responses: FormResponseItem[];
@@ -20,7 +23,11 @@ function EmptyState() {
   return (
     <div className="flex flex-col items-center justify-center py-20 gap-4">
       <div className="bg-canvas-cream border-4 border-ink-charcoal shadow-[8px_8px_0px_0px_rgba(44,46,42,1)] p-8 text-center -rotate-1">
-        <Wind size={48} strokeWidth={1.5} className="text-ink-charcoal/30 mx-auto mb-3" />
+        <Wind
+          size={48}
+          strokeWidth={1.5}
+          className="text-ink-charcoal/30 mx-auto mb-3"
+        />
         <p className="font-black text-2xl uppercase text-ink-charcoal">
           No Vibes Yet
         </p>

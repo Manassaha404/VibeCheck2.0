@@ -7,9 +7,7 @@ export const getUploadSignatureDto = z.object({
   /** Destination folder inside your Cloudinary account (e.g. "quiz_media") */
   folder: z.string().min(1).default("quiz_media"),
   /** Desired resource type: image | video | raw | auto */
-  resourceType: z
-    .enum(["image", "video", "raw", "auto"])
-    .default("image"),
+  resourceType: z.enum(["image", "video", "raw", "auto"]).default("image"),
   /** Optional: public_id override. Cloudinary will auto-generate one if omitted. */
   publicId: z.string().optional(),
 });

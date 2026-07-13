@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import React from 'react';
-import { ArrowRight, Wifi } from 'lucide-react';
-import { useRouter } from 'next/navigation';
-import { trpc } from '@/trpc/client';
-import { Loader2, Zap } from 'lucide-react';
+import React from "react";
+import { ArrowRight, Wifi } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { trpc } from "@/trpc/client";
+import { Loader2, Zap } from "lucide-react";
 
 interface AnalyticsHeaderProps {
   formTitle: string;
@@ -14,10 +14,10 @@ interface AnalyticsHeaderProps {
 }
 
 const STATUS_COLORS: Record<string, string> = {
-  active: 'bg-leaf-green text-ink-charcoal',
-  draft: 'bg-electric-sun text-ink-charcoal',
-  closed: 'bg-[#FF007F] text-pure-white',
-  archived: 'bg-ink-charcoal text-pure-white',
+  active: "bg-leaf-green text-ink-charcoal",
+  draft: "bg-electric-sun text-ink-charcoal",
+  closed: "bg-[#FF007F] text-pure-white",
+  archived: "bg-ink-charcoal text-pure-white",
 };
 
 export function AnalyticsHeader({
@@ -27,14 +27,15 @@ export function AnalyticsHeader({
   formSlug,
 }: AnalyticsHeaderProps) {
   const router = useRouter();
-  const statusClass = STATUS_COLORS[status] ?? 'bg-canvas-cream text-ink-charcoal';
+  const statusClass =
+    STATUS_COLORS[status] ?? "bg-canvas-cream text-ink-charcoal";
 
   const utils = trpc.useUtils();
   const activateForm = trpc.form.activateItem.useMutation({
     onSuccess: () => {
       utils.form.getFormAnalytics.invalidate({ formSlug });
       router.refresh();
-    }
+    },
   });
 
   const handleActivate = () => {
@@ -58,7 +59,7 @@ export function AnalyticsHeader({
           </h1>
           <br />
           <h2 className="font-display-lg text-display-lg md:text-[64px] md:leading-[70px] font-black uppercase text-pure-white bg-[var(--color-primary)] inline-block p-4 border-4 border-ink-charcoal shadow-[12px_12px_0px_0px_rgba(44,46,42,1)] rotate-1 relative z-20 max-w-[720px] break-words">
-            {formTitle || 'YOUR FORM'}
+            {formTitle || "YOUR FORM"}
           </h2>
 
           {/* Status chip */}
@@ -74,7 +75,7 @@ export function AnalyticsHeader({
 
         {/* Action and Stats */}
         <div className="flex gap-4 md:gap-8 flex-col sm:flex-row w-full md:w-auto relative z-30">
-          {status === 'archived' && (
+          {status === "archived" && (
             <button
               onClick={handleActivate}
               disabled={activateForm.isPending}
@@ -105,11 +106,17 @@ export function AnalyticsHeader({
       {/* CTA buttons */}
       <div className="flex flex-col xl:flex-row justify-start w-full mt-8 gap-4 md:gap-8">
         <button
-          onClick={() => router.push(`/dashboard/analytics/form/${formSlug}/responses`)}
+          onClick={() =>
+            router.push(`/dashboard/analytics/form/${formSlug}/responses`)
+          }
           className="relative group bg-leaf-green text-pure-white font-display-lg text-[32px] md:text-[48px] uppercase font-black px-8 md:px-16 py-6 border-8 border-ink-charcoal shadow-[8px_8px_0px_0px_rgba(44,46,42,1)] hover:-translate-y-2 hover:shadow-[16px_16px_0px_0px_rgba(44,46,42,1)] hover:bg-[#FF007F] active:translate-x-1 active:translate-y-1 active:shadow-none flex items-center justify-center gap-4 md:gap-6 transition-all duration-200"
         >
           SEE ALL RESPONSES
-          <ArrowRight className="transform group-hover:translate-x-2 transition-transform duration-200" size={40} strokeWidth={3} />
+          <ArrowRight
+            className="transform group-hover:translate-x-2 transition-transform duration-200"
+            size={40}
+            strokeWidth={3}
+          />
         </button>
 
         <button

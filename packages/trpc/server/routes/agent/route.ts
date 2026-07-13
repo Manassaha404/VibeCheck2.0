@@ -63,7 +63,10 @@ export const agentRouter = router({
     .input(clearHistoryDto)
     .mutation(async ({ input, ctx }) => {
       try {
-        await formBuilderAgentServices.clearHistory({ userId: ctx.user.id, formId: input.formId });
+        await formBuilderAgentServices.clearHistory({
+          userId: ctx.user.id,
+          formId: input.formId,
+        });
         return { message: "Conversation history cleared" };
       } catch (error) {
         handleRouteError(error);
@@ -122,7 +125,10 @@ export const agentRouter = router({
       try {
         const guestToken = ctx.guestToken;
         if (!guestToken) return { message: "No session to clear" };
-        await formRespondentAgentService.clearSession({ formId: input.formId, guestToken });
+        await formRespondentAgentService.clearSession({
+          formId: input.formId,
+          guestToken,
+        });
         return { message: "Session cleared" };
       } catch (error) {
         handleRouteError(error);

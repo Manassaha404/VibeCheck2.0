@@ -36,28 +36,28 @@ interface PollAnalyticsContainerProps {
 export function PollAnalyticsContainer({ data }: PollAnalyticsContainerProps) {
   const containerRef = useRef<HTMLDivElement>(null);
 
-  useGSAP(() => {
-    if (!containerRef.current) return;
-    // Stagger-in child sections on mount
-    gsap.from(containerRef.current.querySelectorAll("section, header"), {
-      opacity: 0,
-      y: 32,
-      duration: 0.6,
-      stagger: 0.08,
-      ease: "power3.out",
-      clearProps: "all",
-    });
-  }, { scope: containerRef });
+  useGSAP(
+    () => {
+      if (!containerRef.current) return;
+      // Stagger-in child sections on mount
+      gsap.from(containerRef.current.querySelectorAll("section, header"), {
+        opacity: 0,
+        y: 32,
+        duration: 0.6,
+        stagger: 0.08,
+        ease: "power3.out",
+        clearProps: "all",
+      });
+    },
+    { scope: containerRef },
+  );
 
   const hasComments = (data.comments?.length ?? 0) > 0;
   const hasTimeline = (data.voteTimeline?.length ?? 0) > 0;
   const hasDemographics = (data.demographicData?.length ?? 0) > 0;
 
   return (
-    <div
-      ref={containerRef}
-      className="w-full py-0 flex flex-col gap-12"
-    >
+    <div ref={containerRef} className="w-full py-0 flex flex-col gap-12">
       {/* Header: title + QR + Share */}
       <AnalyticsHeader
         question={data.question}
@@ -90,7 +90,9 @@ export function PollAnalyticsContainer({ data }: PollAnalyticsContainerProps) {
         </div>
       ) : (
         <>
-          {hasDemographics && <DemographicInsights data={data.demographicData!} />}
+          {hasDemographics && (
+            <DemographicInsights data={data.demographicData!} />
+          )}
           {hasComments && <RecentComments comments={data.comments!} />}
         </>
       )}

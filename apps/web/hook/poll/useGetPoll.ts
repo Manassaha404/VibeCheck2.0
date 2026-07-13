@@ -8,6 +8,6 @@ export const useGetPoll = (slug: string, enabled: boolean = true) => {
     {
       enabled: enabled && !!slug,
       retry: 1,
-    }
+    },
   );
 };

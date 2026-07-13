@@ -1,34 +1,33 @@
-
 export type FieldType =
-  | 'short_text'
-  | 'long_text'
-  | 'number'
-  | 'email'
-  | 'phone'
-  | 'date'
-  | 'select'
-  | 'multi_select'
-  | 'radio'
-  | 'checkbox'
-  | 'file'
-  | 'rating'
-  | 'scale'
-  | 'mood';
+  | "short_text"
+  | "long_text"
+  | "number"
+  | "email"
+  | "phone"
+  | "date"
+  | "select"
+  | "multi_select"
+  | "radio"
+  | "checkbox"
+  | "file"
+  | "rating"
+  | "scale"
+  | "mood";
 
 export interface TextFieldAnalytics {
-  kind: 'text';
+  kind: "text";
   samples: string[];
   totalAnswered: number;
 }
 
 export interface ChoiceFieldAnalytics {
-  kind: 'choice';
+  kind: "choice";
   options: { label: string; count: number; pct: number }[];
   totalAnswered: number;
 }
 
 export interface NumericFieldAnalytics {
-  kind: 'numeric';
+  kind: "numeric";
   average: number;
   min: number;
   max: number;
@@ -37,18 +36,19 @@ export interface NumericFieldAnalytics {
 }
 
 export interface MoodFieldAnalytics {
-  kind: 'mood';
+  kind: "mood";
   distribution: { mood: string; count: number; pct: number }[];
+  options?: { id: string; value: string }[];
   totalAnswered: number;
 }
 
 export interface FileFieldAnalytics {
-  kind: 'file';
+  kind: "file";
   totalUploads: number;
 }
 
 export interface DateFieldAnalytics {
-  kind: 'date';
+  kind: "date";
   distribution: { label: string; count: number }[];
   totalAnswered: number;
 }

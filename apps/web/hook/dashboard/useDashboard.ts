@@ -12,18 +12,28 @@ import { trpc } from "@/trpc/client";
 export function useDashboard() {
   // useQueries fires all three in parallel — same as Promise.all semantics
   // but hook-safe (no await, no async wrapper needed)
-  const [pollsQuery, formsQuery, petitionsQuery, quizzesQuery] = trpc.useQueries((t) => [
-    t.poll.getDashboard(undefined, { staleTime: 1000 * 60 * 2, retry: 1 }),
-    t.form.getDashboard(undefined, { staleTime: 1000 * 60 * 2, retry: 1 }),
-    t.petition.getDashboard(undefined, { staleTime: 1000 * 60 * 2, retry: 1 }),
-    t.quiz.getDashboard(undefined, { staleTime: 1000 * 60 * 2, retry: 1 }),
-  ]);
+  const [pollsQuery, formsQuery, petitionsQuery, quizzesQuery] =
+    trpc.useQueries((t) => [
+      t.poll.getDashboard(undefined, { staleTime: 1000 * 60 * 2, retry: 1 }),
+      t.form.getDashboard(undefined, { staleTime: 1000 * 60 * 2, retry: 1 }),
+      t.petition.getDashboard(undefined, {
+        staleTime: 1000 * 60 * 2,
+        retry: 1,
+      }),
+      t.quiz.getDashboard(undefined, { staleTime: 1000 * 60 * 2, retry: 1 }),
+    ]);
 
   const isLoading =
-    pollsQuery.isLoading || formsQuery.isLoading || petitionsQuery.isLoading || quizzesQuery.isLoading;
+    pollsQuery.isLoading ||
+    formsQuery.isLoading ||
+    petitionsQuery.isLoading ||
+    quizzesQuery.isLoading;
 
   const isError =
-    pollsQuery.isError || formsQuery.isError || petitionsQuery.isError || quizzesQuery.isError;
+    pollsQuery.isError ||
+    formsQuery.isError ||
+    petitionsQuery.isError ||
+    quizzesQuery.isError;
 
   // ── Aggregate stats ────────────────────────────────────────────
   const totalPolls = pollsQuery.data?.total ?? 0;

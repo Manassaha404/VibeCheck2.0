@@ -18,10 +18,10 @@ import {
 export type ContentKind = "poll" | "form" | "petition";
 
 export type ContentErrorVariant =
-  | "not_found"      // 404 – content doesn't exist or never published
-  | "archived"       // owner archived it
-  | "forbidden"      // generic access denied / server FORBIDDEN
-  | "error";         // unexpected / network error
+  | "not_found" // 404 – content doesn't exist or never published
+  | "archived" // owner archived it
+  | "forbidden" // generic access denied / server FORBIDDEN
+  | "error"; // unexpected / network error
 
 interface ContentErrorStateProps {
   /** What type of content failed to load */
@@ -52,8 +52,8 @@ const kindIcon: Record<ContentKind, React.ReactNode> = {
 
 type VariantConfig = {
   icon: React.ReactNode;
-  accent: string;       // bg color for the icon box
-  badge: string;        // small status badge text
+  accent: string; // bg color for the icon box
+  badge: string; // small status badge text
   badgeBg: string;
   heading: (kind: string) => string;
   description: (kind: string) => string;
@@ -120,7 +120,6 @@ export function ContentErrorState({
       <div className="w-full max-w-md">
         {/* Card */}
         <div className="bg-[var(--color-pure-white)] border-4 border-[var(--color-ink-charcoal)] rounded-2xl shadow-hard-xl p-8 md:p-10 flex flex-col items-center text-center gap-6">
-
           {/* Icon stack */}
           <div className="relative">
             {/* Main variant icon box */}
@@ -130,9 +129,7 @@ export function ContentErrorState({
               {vc.icon}
             </div>
             {/* Kind badge — overlapping bottom-right */}
-            <div
-              className="absolute -bottom-3 -right-3 w-10 h-10 rounded-xl border-2 border-[var(--color-ink-charcoal)] shadow-hard-sm flex items-center justify-center bg-[var(--color-pure-white)]"
-            >
+            <div className="absolute -bottom-3 -right-3 w-10 h-10 rounded-xl border-2 border-[var(--color-ink-charcoal)] shadow-hard-sm flex items-center justify-center bg-[var(--color-pure-white)]">
               {KindIcon}
             </div>
           </div>
@@ -182,7 +179,10 @@ export function ContentErrorState({
         {/* Footer hint */}
         <p className="text-center text-label-sm text-[var(--color-on-surface-variant)] mt-4 opacity-70">
           Think this is a mistake?{" "}
-          <Link href="/" className="underline underline-offset-2 hover:opacity-100">
+          <Link
+            href="/"
+            className="underline underline-offset-2 hover:opacity-100"
+          >
             Contact support
           </Link>
         </p>

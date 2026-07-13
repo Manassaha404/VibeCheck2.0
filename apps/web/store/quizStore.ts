@@ -59,7 +59,7 @@ const DEFAULT_INFO: QuizInfo = {
 
 function makeQuestion(
   overrides: Partial<Omit<Question, "id">> = {},
-  globalSettings: GlobalSettings
+  globalSettings: GlobalSettings,
 ): Question {
   return {
     id: `q-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
@@ -106,7 +106,11 @@ interface QuizStore {
   // Option actions (inside a question)
   addOption: (questionId: string) => void;
   removeOption: (questionId: string, optionId: string) => void;
-  updateOption: (questionId: string, optionId: string, partial: Partial<QuizOption>) => void;
+  updateOption: (
+    questionId: string,
+    optionId: string,
+    partial: Partial<QuizOption>,
+  ) => void;
   reorderOptions: (questionId: string, options: QuizOption[]) => void;
 
   reset: () => void;
@@ -128,153 +132,150 @@ const INITIAL_QUESTIONS: Question[] = [
     points: DEFAULT_GLOBAL.defaultPoints,
     collapsed: false,
     allowMultipleCorrect: false,
-  }
+  },
 ];
 
 export const useQuizStore = create<QuizStore>()((set, get) => ({
+  info: DEFAULT_INFO,
+  globalSettings: DEFAULT_GLOBAL,
+  questions: INITIAL_QUESTIONS,
+
+  // ── Info ────────────────────────────────────────────────────────────
+  setInfo: (partial) => set((s) => ({ info: { ...s.info, ...partial } })),
+
+  // ── Global Settings ─────────────────────────────────────────────────
+  setGlobalSettings: (partial) =>
+    set((s) => {
+      const next = { ...s.globalSettings, ...partial };
+
+      // If syncAllQuestions is on, immediately propagate time/points
+      const shouldSync =
+        next.syncAllQuestions &&
+        (partial.defaultTimeLimit !== undefined ||
+          partial.defaultPoints !== undefined);
+
+      return {
+        globalSettings: next,
+        questions: shouldSync
+          ? s.questions.map((q) => ({
+              ...q,
+              timeLimit: next.defaultTimeLimit,
+              points: next.defaultPoints,
+            }))
+          : s.questions,
+      };
+    }),
+
+  applyGlobalToAllQuestions: () =>
+    set((s) => ({
+      questions: s.questions.map((q) => ({
+        ...q,
+        timeLimit: s.globalSettings.defaultTimeLimit,
+        points: s.globalSettings.defaultPoints,
+      })),
+    })),
+
+  // ── Questions ───────────────────────────────────────────────────────
+  addQuestion: (type = "multiple_choice") =>
+    set((s) => ({
+      questions: [...s.questions, makeQuestion({ type }, s.globalSettings)],
+    })),
+
+  removeQuestion: (id) =>
+    set((s) => ({
+      questions: s.questions.filter((q) => q.id !== id),
+    })),
+
+  updateQuestion: (id, partial) =>
+    set((s) => ({
+      questions: s.questions.map((q) =>
+        q.id === id ? { ...q, ...partial } : q,
+      ),
+    })),
+
+  reorderQuestions: (questions) => set({ questions }),
+
+  // ── Options ─────────────────────────────────────────────────────────
+  addOption: (questionId) =>
+    set((s) => ({
+      questions: s.questions.map((q) => {
+        if (q.id !== questionId || q.options.length >= 6) return q;
+        return {
+          ...q,
+          options: [
+            ...q.options,
+            {
+              id: `opt-${Date.now()}`,
+              text: "",
+              isCorrect: false,
+            },
+          ],
+        };
+      }),
+    })),
+
+  removeOption: (questionId, optionId) =>
+    set((s) => ({
+      questions: s.questions.map((q) => {
+        if (q.id !== questionId || q.options.length <= 2) return q;
+        return {
+          ...q,
+          options: q.options.filter((o) => o.id !== optionId),
+        };
+      }),
+    })),
+
+  updateOption: (questionId, optionId, partial) =>
+    set((s) => ({
+      questions: s.questions.map((q) =>
+        q.id !== questionId
+          ? q
+          : {
+              ...q,
+              options: q.options.map((o) =>
+                o.id === optionId ? { ...o, ...partial } : o,
+              ),
+            },
+      ),
+    })),
+
+  toggleCorrectOption: (questionId, optionId) =>
+    set((s) => ({
+      questions: s.questions.map((q) => {
+        if (q.id !== questionId) return q;
+        if (q.allowMultipleCorrect) {
+          // Multi-correct: simply flip the toggled option
+          return {
+            ...q,
+            options: q.options.map((o) =>
+              o.id === optionId ? { ...o, isCorrect: !o.isCorrect } : o,
+            ),
+          };
+        } else {
+          // Single-correct: clear all others, set the clicked one
+          return {
+            ...q,
+            options: q.options.map((o) => ({
+              ...o,
+              isCorrect: o.id === optionId,
+            })),
+          };
+        }
+      }),
+    })),
+
+  reorderOptions: (questionId, options) =>
+    set((s) => ({
+      questions: s.questions.map((q) =>
+        q.id === questionId ? { ...q, options } : q,
+      ),
+    })),
+
+  // ── Reset ────────────────────────────────────────────────────────────
+  reset: () =>
+    set({
       info: DEFAULT_INFO,
       globalSettings: DEFAULT_GLOBAL,
-      questions: INITIAL_QUESTIONS,
-
-      // ── Info ────────────────────────────────────────────────────────────
-      setInfo: (partial) =>
-        set((s) => ({ info: { ...s.info, ...partial } })),
-
-      // ── Global Settings ─────────────────────────────────────────────────
-      setGlobalSettings: (partial) =>
-        set((s) => {
-          const next = { ...s.globalSettings, ...partial };
-
-          // If syncAllQuestions is on, immediately propagate time/points
-          const shouldSync =
-            next.syncAllQuestions &&
-            (partial.defaultTimeLimit !== undefined || partial.defaultPoints !== undefined);
-
-          return {
-            globalSettings: next,
-            questions: shouldSync
-              ? s.questions.map((q) => ({
-                  ...q,
-                  timeLimit: next.defaultTimeLimit,
-                  points: next.defaultPoints,
-                }))
-              : s.questions,
-          };
-        }),
-
-      applyGlobalToAllQuestions: () =>
-        set((s) => ({
-          questions: s.questions.map((q) => ({
-            ...q,
-            timeLimit: s.globalSettings.defaultTimeLimit,
-            points: s.globalSettings.defaultPoints,
-          })),
-        })),
-
-      // ── Questions ───────────────────────────────────────────────────────
-      addQuestion: (type = "multiple_choice") =>
-        set((s) => ({
-          questions: [
-            ...s.questions,
-            makeQuestion({ type }, s.globalSettings),
-          ],
-        })),
-
-      removeQuestion: (id) =>
-        set((s) => ({
-          questions: s.questions.filter((q) => q.id !== id),
-        })),
-
-      updateQuestion: (id, partial) =>
-        set((s) => ({
-          questions: s.questions.map((q) =>
-            q.id === id ? { ...q, ...partial } : q
-          ),
-        })),
-
-      reorderQuestions: (questions) => set({ questions }),
-
-      // ── Options ─────────────────────────────────────────────────────────
-      addOption: (questionId) =>
-        set((s) => ({
-          questions: s.questions.map((q) => {
-            if (q.id !== questionId || q.options.length >= 6) return q;
-            return {
-              ...q,
-              options: [
-                ...q.options,
-                {
-                  id: `opt-${Date.now()}`,
-                  text: "",
-                  isCorrect: false,
-                },
-              ],
-            };
-          }),
-        })),
-
-      removeOption: (questionId, optionId) =>
-        set((s) => ({
-          questions: s.questions.map((q) => {
-            if (q.id !== questionId || q.options.length <= 2) return q;
-            return {
-              ...q,
-              options: q.options.filter((o) => o.id !== optionId),
-            };
-          }),
-        })),
-
-      updateOption: (questionId, optionId, partial) =>
-        set((s) => ({
-          questions: s.questions.map((q) =>
-            q.id !== questionId
-              ? q
-              : {
-                  ...q,
-                  options: q.options.map((o) =>
-                    o.id === optionId ? { ...o, ...partial } : o
-                  ),
-                }
-          ),
-        })),
-
-      toggleCorrectOption: (questionId, optionId) =>
-        set((s) => ({
-          questions: s.questions.map((q) => {
-            if (q.id !== questionId) return q;
-            if (q.allowMultipleCorrect) {
-              // Multi-correct: simply flip the toggled option
-              return {
-                ...q,
-                options: q.options.map((o) =>
-                  o.id === optionId ? { ...o, isCorrect: !o.isCorrect } : o
-                ),
-              };
-            } else {
-              // Single-correct: clear all others, set the clicked one
-              return {
-                ...q,
-                options: q.options.map((o) => ({
-                  ...o,
-                  isCorrect: o.id === optionId,
-                })),
-              };
-            }
-          }),
-        })),
-
-      reorderOptions: (questionId, options) =>
-        set((s) => ({
-          questions: s.questions.map((q) =>
-            q.id === questionId ? { ...q, options } : q
-          ),
-        })),
-
-      // ── Reset ────────────────────────────────────────────────────────────
-      reset: () =>
-        set({
-          info: DEFAULT_INFO,
-          globalSettings: DEFAULT_GLOBAL,
-          questions: [],
-        }),
-    }));
+      questions: [],
+    }),
+}));
