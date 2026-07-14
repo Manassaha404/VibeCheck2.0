@@ -18,6 +18,7 @@ import {
   addBonusPointsDto,
   getQuizDashboardDto,
   getQuizForEditDto,
+  recordAnswerDto,
 } from "@repo/services/quiz/model";
 import { quizService } from "../../services";
 import { handleRouteError } from "../../utils/error";
@@ -231,6 +232,16 @@ export const quizRouter = router({
           input,
         );
         return { message: "Bonus points processed", ...result };
+      } catch (error) {
+        handleRouteError(error);
+      }
+    }),
+  submitAnswer: protectedProcedure
+    .input(recordAnswerDto)
+    .mutation(async ({ input, ctx }) => {
+      try {
+        const result = await quizService.recordAnswer(ctx.user.id, input);
+        return { message: "Answer recorded", ...result };
       } catch (error) {
         handleRouteError(error);
       }

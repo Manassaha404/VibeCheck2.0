@@ -1,7 +1,7 @@
 import { Server } from "socket.io";
-import { env } from "../env.js";
-import { registerPollSocket } from "./pollSocket.js";
-import { registerQuizSocket } from "./quizSocket.js";
+import { env } from "./env";
+import { registerPollSocket } from "./pollSocket";
+import { registerQuizSocket } from "./quizSocket";
 
 const io = new Server({
   cors: {

@@ -1,4 +1,4 @@
-import { publisher, subscriber } from "../redis/pubsub.js";
+import { publisher, subscriber } from "@repo/redis/pubsub";
 import { Server } from "socket.io";
 
 //channel;

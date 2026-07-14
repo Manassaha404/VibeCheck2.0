@@ -11,6 +11,7 @@ import { FeedbackScreen } from "@/components/public-form/FeedbackScreen";
 import { ContentErrorState } from "@/components/ui/ContentErrorState";
 import { useRouter } from "next/navigation";
 import { ContentLoadingState } from "@/components/ui/ContentLoadingState";
+import { SaveButton } from "@/components/Saved/SaveButton";
 
 interface PageProps {
   params: Promise<{ username: string; slug: string }>;
@@ -152,16 +153,19 @@ export default function PublicFormPage({ params }: PageProps) {
           >
             {/* Title Area */}
             <div
-              className={`flex-shrink-0 border-b-[3px] border-[var(--color-ink-charcoal)] pb-4 md:pb-6 px-2 md:px-0 ${mode === "agent" && !isAgentComplete ? "mb-4" : "mb-8"}`}
+              className={`flex-shrink-0 border-b-[3px] border-[var(--color-ink-charcoal)] pb-4 md:pb-6 px-2 md:px-0 flex justify-between items-start ${mode === "agent" && !isAgentComplete ? "mb-4" : "mb-8"}`}
             >
-              <h1 className="font-headline-lg-mobile md:font-headline-lg text-[var(--color-ink-charcoal)] mb-2 md:mb-3 leading-tight">
-                {form.title}
-              </h1>
-              {form.description && (
-                <p className="text-body-md md:text-body-lg text-[var(--color-on-surface-variant)] opacity-90 font-headline-sm">
-                  {form.description}
-                </p>
-              )}
+              <div>
+                <h1 className="font-headline-lg-mobile md:font-headline-lg text-[var(--color-ink-charcoal)] mb-2 md:mb-3 leading-tight">
+                  {form.title}
+                </h1>
+                {form.description && (
+                  <p className="text-body-md md:text-body-lg text-[var(--color-on-surface-variant)] opacity-90 font-headline-sm">
+                    {form.description}
+                  </p>
+                )}
+              </div>
+              <SaveButton formId={form.formId} />
             </div>
 
             {/* Content Area */}

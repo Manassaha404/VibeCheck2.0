@@ -1,9 +1,11 @@
 import redis from "@repo/services/redis";
-import { authService } from "../../services";
+import { authService, oAuthService } from "../../services";
 import { protectedProcedure, publicProcedure, router } from "../../trpc";
 import {
   loginWithEmailAndPasswordDto,
   registerWithEmailAndPasswordDto,
+  toggleSaveItemDto,
+  checkSavedStatusDto,
 } from "@repo/services/auth/model";
 import { emailServices } from "../../services";
 import { handleRouteError } from "../../utils/error";
@@ -14,7 +16,9 @@ import {
   resetPasswordRouteDto,
   resendOtpDto,
   changeUsernameRouteDto,
+  updateProfileRouteDto,
 } from "./model";
+import { z } from "zod";
 import { generateAccessToken, generateRefreshToken } from "../../utils/jwt";
 import * as crypto from "node:crypto";
 export const authRouter = router({
@@ -181,6 +185,53 @@ export const authRouter = router({
           newUsername,
         });
         return { message: "Username updated successfully", ...result };
+      } catch (error) {
+        handleRouteError(error);
+      }
+    }),
+  updateProfile: protectedProcedure
+    .input(updateProfileRouteDto)
+    .mutation(async ({ input, ctx }) => {
+      try {
+        const payload = await updateProfileRouteDto.parseAsync(input);
+        const result = await authService.updateProfile(ctx.user.id, payload);
+        return { message: "Profile updated successfully", ...result };
+      } catch (error) {
+        handleRouteError(error);
+      }
+    }),
+  disconnectGoogleDrive: protectedProcedure.mutation(async ({ ctx }) => {
+    try {
+      const result = await authService.disconnectGoogleDrive(ctx.user.id);
+      return { message: "Google Drive disconnected successfully", ...result };
+    } catch (error) {
+      handleRouteError(error);
+    }
+  }),
+  getSavedItems: protectedProcedure.query(async ({ ctx }) => {
+    try {
+      const result = await authService.getSavedItems(ctx.user.id);
+      return { message: "Saved items retrieved successfully", data: result };
+    } catch (error) {
+      handleRouteError(error);
+    }
+  }),
+  checkSavedStatus: protectedProcedure
+    .input(checkSavedStatusDto)
+    .query(async ({ ctx, input }) => {
+      try {
+        const result = await authService.checkSavedStatus(ctx.user.id, input);
+        return result;
+      } catch (error) {
+        handleRouteError(error);
+      }
+    }),
+  toggleSaveItem: protectedProcedure
+    .input(toggleSaveItemDto)
+    .mutation(async ({ ctx, input }) => {
+      try {
+        const result = await authService.toggleSaveItem(ctx.user.id, input);
+        return result;
       } catch (error) {
         handleRouteError(error);
       }

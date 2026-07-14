@@ -13,6 +13,7 @@ import { useGetPublicPoll } from "@/hook/poll/useGetPublicPoll";
 import { ContentErrorState } from "@/components/ui/ContentErrorState";
 import socket from "@/lib/socket";
 import { ContentLoadingState } from "@/components/ui/ContentLoadingState";
+import { SaveButton } from "@/components/Saved/SaveButton";
 
 export default function PublicPollPage() {
   const params = useParams();
@@ -99,6 +100,10 @@ export default function PublicPollPage() {
                 </div>
               </div>
 
+              <div className="flex justify-end mb-4 relative z-20">
+                <SaveButton pollId={data.poll.pollId} />
+              </div>
+
               <PollCard
                 title={data.poll.title}
                 description={data.poll.description}
@@ -119,6 +124,10 @@ export default function PublicPollPage() {
               transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
               className="w-full"
             >
+              <div className="w-full max-w-5xl mx-auto flex justify-end mb-4 relative z-20">
+                <SaveButton pollId={data.poll.pollId} />
+              </div>
+
               <VoteSuccessCard
                 question={data.question?.text || data.poll.title}
                 options={localResults}

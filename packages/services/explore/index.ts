@@ -482,6 +482,13 @@ class ExploreService {
               title: polls.title,
               slug: polls.slug,
               userId: polls.userId,
+              totalVotes: sql<number>`(
+                SELECT COUNT(v.poll_vote_id) 
+                FROM poll_votes v 
+                JOIN poll_options o ON v.option_id = o.poll_option_id 
+                JOIN poll_questions q ON o.question_id = q.poll_question_id 
+                WHERE q.poll_id = polls.poll_id
+              )::int`,
             })
             .from(polls)
             .where(
@@ -502,6 +509,11 @@ class ExploreService {
               slug: petitions.slug,
               userId: petitions.userId,
               signaturesTarget: petitions.signaturesTarget,
+              totalSignatures: sql<number>`(
+                SELECT COUNT(ps.petition_signature_id)
+                FROM petition_signatures ps
+                WHERE ps.petition_id = petitions.petition_id
+              )::int`,
             })
             .from(petitions)
             .where(
@@ -540,7 +552,7 @@ class ExploreService {
         username: userMap.get(p.userId) ?? "",
         tags: [] as string[],
         relevanceScore: 0,
-        totalVotes: 0,
+        totalVotes: p.totalVotes,
       })),
       ...latestPetitions.map((p) => ({
         type: "petition" as const,
@@ -550,7 +562,7 @@ class ExploreService {
         username: userMap.get(p.userId) ?? "",
         tags: [] as string[],
         relevanceScore: 0,
-        totalSignatures: 0,
+        totalSignatures: p.totalSignatures,
         signaturesTarget: p.signaturesTarget,
       })),
     ];

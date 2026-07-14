@@ -34,3 +34,10 @@ export const resetPasswordRouteDto = z.object({
 export const changeUsernameRouteDto = z.object({
   newUsername: z.string().trim().min(3).max(255).describe("new username"),
 });
+
+export const updateProfileRouteDto = z.object({
+  firstName: z.string().trim().max(255).min(2).optional(),
+  lastName: z.string().trim().max(255).min(2).optional(),
+  username: z.string().trim().max(255).min(2).optional(),
+  avatarUrl: z.string().url().max(512).optional(),
+});

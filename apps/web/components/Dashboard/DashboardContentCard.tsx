@@ -18,6 +18,7 @@ import {
   Brain,
 } from "lucide-react";
 import { trpc } from "@/trpc/client";
+import { uuidToNumber } from "@/utils/uuid";
 
 export type ContentType = "poll" | "form" | "petition" | "quiz";
 export type ContentStatus = "draft" | "active" | "closed" | "archived";
@@ -107,7 +108,9 @@ export function DashboardContentCard({
 }: DashboardContentCardProps) {
   const tc = typeConfig[item.type];
   const sc = statusConfig[item.status];
-  const detailHref = item.href ?? `/${item.type}/${item.slug}`;
+  const itemSlugOrId =
+    item.type === "quiz" ? uuidToNumber(item.slug) : item.slug;
+  const detailHref = item.href ?? `/${item.type}/${itemSlugOrId}`;
 
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
@@ -307,17 +310,14 @@ export function DashboardContentCard({
 
   let actionHref =
     item.type === "quiz"
-      ? `/dashboard/quiz/${item.slug}`
-      : `/dashboard/analytics/${item.type}/${item.slug}`;
+      ? `/dashboard/quiz/${itemSlugOrId}`
+      : `/dashboard/analytics/${item.type}/${itemSlugOrId}`;
   let actionLabel = item.type === "quiz" ? "Dashboard" : "Analytics";
   let ActionIcon = item.type === "quiz" ? Brain : BarChart2;
-  let actionColorClass = "text-[var(--color-primary)]";
-
   if (item.status === "draft") {
-    actionHref = `/create/${item.type}/draft/${item.slug}`;
+    actionHref = `/create/${item.type}/draft/${itemSlugOrId}`;
     actionLabel = "Edit Draft";
     ActionIcon = FileText;
-    actionColorClass = "text-[var(--color-primary)]";
   }
 
   return (
@@ -461,7 +461,7 @@ export function DashboardContentCard({
 
         <Link
           href={actionHref}
-          className={`inline-flex items-center gap-1.5 text-label-sm font-bold ${actionColorClass} hover:underline`}
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[var(--color-pure-white)] border-2 border-[var(--color-ink-charcoal)] rounded-lg shadow-hard-sm btn-press text-label-sm font-bold text-[var(--color-ink-charcoal)] transition-colors"
         >
           <ActionIcon size={13} />
           {actionLabel}

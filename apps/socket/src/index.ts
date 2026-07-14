@@ -3,7 +3,7 @@ import "@repo/logger/instrumentation.js";
 import http from "node:http";
 import logger from "@repo/logger/logger";
 import { env } from "./env";
-import { attachSocketServer } from "@repo/services/socket";
+import { attachSocketServer } from "@repo/socket/index";
 
 async function init() {
   try {

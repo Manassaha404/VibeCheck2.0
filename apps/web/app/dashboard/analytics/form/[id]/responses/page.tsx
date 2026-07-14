@@ -12,23 +12,7 @@ import { ResponseDetailModal } from "@/components/analytics/form/responses/Respo
 import PageLoader from "@/components/PageLoader";
 import { DashboardError } from "@/components/Dashboard/DashboardError";
 import { useFormResponses } from "@/hook/form/useFormResponses";
-
-// ── Types ───────────────────────────────────────────────────────
-interface FormResponseAnswer {
-  fieldId: string;
-  fieldLabel: string;
-  fieldType: string;
-  isPrimary: boolean;
-  value: unknown;
-}
-
-interface FormResponseItem {
-  responseId: string;
-  respondentIdentity: string;
-  respondentAvatar: string;
-  submittedAt: string;
-  answers: FormResponseAnswer[];
-}
+import { FormResponseItem } from "@repo/services/form/model";
 
 // ── Main Page ───────────────────────────────────────────────────
 export default function FormResponsesPage() {

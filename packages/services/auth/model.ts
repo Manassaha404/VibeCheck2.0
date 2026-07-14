@@ -72,3 +72,25 @@ export type loginWithEmailAndPasswordType = z.infer<
 export type forgotPasswordType = z.infer<typeof forgotPasswordDto>;
 export type resetPasswordType = z.infer<typeof resetPasswordDto>;
 export type changeUsernameType = z.infer<typeof changeUsernameDto>;
+
+export const updateProfileDto = z.object({
+  firstName: z.string().trim().max(255).min(2).optional(),
+  lastName: z.string().trim().max(255).min(2).optional(),
+  username: z.string().trim().max(255).min(2).optional(),
+  avatarUrl: z.string().url().max(512).optional(),
+});
+export type updateProfileType = z.infer<typeof updateProfileDto>;
+
+export const toggleSaveItemDto = z
+  .object({
+    formId: z.string().uuid().optional(),
+    pollId: z.string().uuid().optional(),
+    petitionId: z.string().uuid().optional(),
+  })
+  .refine((data) => data.formId || data.pollId || data.petitionId, {
+    message: "At least one of formId, pollId, or petitionId must be provided",
+  });
+export type toggleSaveItemType = z.infer<typeof toggleSaveItemDto>;
+
+export const checkSavedStatusDto = toggleSaveItemDto;
+export type checkSavedStatusType = z.infer<typeof checkSavedStatusDto>;

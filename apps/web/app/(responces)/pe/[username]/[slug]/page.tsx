@@ -10,6 +10,8 @@ import SignRecentSigners from "@/components/petition-sign/SignRecentSigners";
 import { useGetPetitionForSign } from "@/hook/petition/useGetPetitionForSign";
 import { ContentErrorState } from "@/components/ui/ContentErrorState";
 import { ContentLoadingState } from "@/components/ui/ContentLoadingState";
+import { SaveButton } from "@/components/Saved/SaveButton";
+
 export default function PetitionSignPage({
   params,
 }: {
@@ -40,9 +42,15 @@ export default function PetitionSignPage({
       <Navbar />
 
       <main className="flex-grow w-full max-w-[1280px] mx-auto px-4 md:px-10 py-16 relative z-10">
-        <SignHeader title={petition.title} description={petition.description} />
+        <div className="flex justify-between items-start">
+          <SignHeader
+            title={petition.title}
+            description={petition.description}
+          />
+          <SaveButton petitionId={petition.petitionId} className="mt-2" />
+        </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mt-6">
           <SignatureForm
             petitionId={petition.petitionId}
             hasSigned={hasSigned}

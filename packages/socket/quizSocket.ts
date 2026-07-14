@@ -1,8 +1,5 @@
 import { Server } from "socket.io";
-import QuizService from "../quiz";
-import { publisher, subscriber } from "../redis/pubsub";
-const quizService = new QuizService();
-
+import { publisher, subscriber } from "@repo/redis/pubsub";
 const PARTICIPANT_JOIN_CHANNEL_NAME = "redis:quiz:participant:join";
 const EMIT_QUESTION_CHANNEL_NAME = "redis:quiz:emit:question";
 const SUBMIT_ANSWER_CHANNEL_NAME = "redis:quiz:submit:answer";
@@ -87,18 +84,6 @@ export function registerQuizSocket(io: Server) {
           SUBMIT_ANSWER_CHANNEL_NAME,
           JSON.stringify({ sessionId, optionIds, questionId, text, userId }),
         );
-
-        if (optionIds && questionId && userId) {
-          try {
-            await quizService.recordAnswer(userId, {
-              sessionId,
-              questionId,
-              optionIds,
-            });
-          } catch (err) {
-            console.error("[quizSocket] recordAnswer error:", err);
-          }
-        }
       },
     );
     socket.on("update:rank", ({ sessionId }) => {

@@ -1,8 +1,12 @@
-import db, { eq, or } from "@repo/database";
+import db, { eq, or, and } from "@repo/database";
 import { users } from "@repo/database/models/users";
 import * as bcrypt from "bcrypt";
 import * as crypto from "node:crypto";
 import { auths } from "@repo/database/models/auths";
+import { saves } from "@repo/database/models/saves";
+import { polls } from "@repo/database/models/polls";
+import { forms } from "@repo/database/models/forms";
+import { petitions } from "@repo/database/models/petitions";
 import {
   createVerifiedUserDto,
   createVerifiedUserType,
@@ -18,6 +22,10 @@ import {
   resetPasswordType,
   changeUsernameDto,
   changeUsernameType,
+  updateProfileDto,
+  updateProfileType,
+  toggleSaveItemType,
+  checkSavedStatusType,
 } from "./model";
 import { AppError } from "@repo/error";
 class AuthServices {
@@ -206,6 +214,115 @@ class AuthServices {
       .where(eq(users.userId, userId));
 
     return { success: true, newUsername };
+  }
+
+  public async updateProfile(userId: string, payload: updateProfileType) {
+    const { firstName, lastName, username, avatarUrl } =
+      await updateProfileDto.parseAsync(payload);
+
+    if (username) {
+      const existingUsers = await db
+        .select()
+        .from(users)
+        .where(eq(users.username, username));
+
+      const isOtherUser = existingUsers.some((u) => u.userId !== userId);
+      if (isOtherUser) {
+        throw new AppError("CONFLICT", "Username already exists");
+      }
+    }
+
+    const updates: Partial<typeof users.$inferInsert> = {};
+    if (firstName) updates.firstName = firstName;
+    if (lastName) updates.lastName = lastName;
+    if (username) updates.username = username;
+    if (avatarUrl !== undefined) updates.avatarUrl = avatarUrl; // allow empty string to remove maybe? Or just use as is
+
+    if (Object.keys(updates).length > 0) {
+      await db.update(users).set(updates).where(eq(users.userId, userId));
+    }
+
+    return { success: true };
+  }
+
+  public async disconnectGoogleDrive(userId: string) {
+    await db
+      .update(auths)
+      .set({ googleDriveRefreshToken: null })
+      .where(eq(auths.userId, userId));
+
+    return { success: true };
+  }
+
+  public async getSavedItems(userId: string) {
+    const savedItems = await db
+      .select()
+      .from(saves)
+      .leftJoin(polls, eq(saves.pollId, polls.pollId))
+      .leftJoin(forms, eq(saves.formId, forms.formId))
+      .leftJoin(petitions, eq(saves.petitionId, petitions.petitionId))
+      .where(eq(saves.userId, userId));
+
+    return savedItems;
+  }
+
+  public async checkSavedStatus(userId: string, payload: checkSavedStatusType) {
+    const { formId, pollId, petitionId } = payload;
+    let conditions = [eq(saves.userId, userId)];
+
+    if (formId) conditions.push(eq(saves.formId, formId));
+    else if (pollId) conditions.push(eq(saves.pollId, pollId));
+    else if (petitionId) conditions.push(eq(saves.petitionId, petitionId));
+
+    const [existingSave] = await db
+      .select()
+      .from(saves)
+      .where(and(...conditions));
+
+    return { isSaved: !!existingSave };
+  }
+
+  public async toggleSaveItem(userId: string, payload: toggleSaveItemType) {
+    const { formId, pollId, petitionId } = payload;
+
+    let conditions = [eq(saves.userId, userId)];
+    if (formId) conditions.push(eq(saves.formId, formId));
+    if (pollId) conditions.push(eq(saves.pollId, pollId));
+    if (petitionId) conditions.push(eq(saves.petitionId, petitionId));
+
+    // For drizzle, and(...conditions) works well. Let's construct it.
+    // Drizzle doesn't like dynamically array-spreading for and() sometimes depending on version,
+    // but building the where clause specifically:
+    let whereClause;
+    if (formId)
+      whereClause = and(eq(saves.userId, userId), eq(saves.formId, formId));
+    else if (pollId)
+      whereClause = and(eq(saves.userId, userId), eq(saves.pollId, pollId));
+    else if (petitionId)
+      whereClause = and(
+        eq(saves.userId, userId),
+        eq(saves.petitionId, petitionId),
+      );
+    else
+      throw new AppError(
+        "BAD_REQUEST",
+        "Must provide formId, pollId, or petitionId",
+      );
+
+    const [existingSave] = await db.select().from(saves).where(whereClause);
+
+    if (existingSave) {
+      await db.delete(saves).where(whereClause);
+      return { isSaved: false, message: "Item removed from saved list" };
+    } else {
+      await db.insert(saves).values({
+        userId,
+        formId,
+        pollId,
+        petitionId,
+      });
+      return { isSaved: true, message: "Item saved successfully" };
+    }
   }
 }
 

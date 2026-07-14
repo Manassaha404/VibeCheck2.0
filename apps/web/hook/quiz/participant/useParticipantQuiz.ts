@@ -131,6 +131,7 @@ export function useParticipantQuiz(sessionId: string) {
   };
 
   const submitBonusPointsMutation = trpc.quiz.submitBonusPoints.useMutation();
+  const submitAnswerMutation = trpc.quiz.submitAnswer.useMutation();
 
   const handleSubmitMCQ = () => {
     if (store.submitted || !store.currentQuestion) return;
@@ -143,6 +144,12 @@ export function useParticipantQuiz(sessionId: string) {
         : [];
 
     submitAnswer(sessionId, store.currentQuestion!.questionId, idsToSubmit);
+
+    submitAnswerMutation.mutate({
+      sessionId,
+      questionId: store.currentQuestion.questionId,
+      optionIds: idsToSubmit,
+    });
 
     // Calculate bonus points based on milliseconds left
     if (store.questionStartTime) {
