@@ -1,37 +1,27 @@
 import { create } from "zustand";
 
-// ─── Types ───────────────────────────────────────────────────────────────────
-
+//types
 export type QuestionType = "multiple_choice" | "text_entry";
-
 export interface QuizOption {
   id: string;
   text: string;
   isCorrect: boolean;
 }
-
 export interface Question {
   id: string;
   type: QuestionType;
   text: string;
   options: QuizOption[];
-  /** Accepted answers for text_entry type */
-  acceptedAnswers: string;
-  /** Per-question overrides; if null, global settings apply */
   timeLimit: number;
   points: number;
   mediaUrl?: string;
   collapsed: boolean;
-  /** When true, multiple options can be marked correct simultaneously */
   allowMultipleCorrect: boolean;
 }
 
 export interface GlobalSettings {
-  /** Default time limit in seconds applied to newly added questions */
   defaultTimeLimit: number;
-  /** Default points applied to newly added questions */
   defaultPoints: number;
-  /** When true, any change to global settings immediately syncs all questions */
   syncAllQuestions: boolean;
   passwordProtect: boolean;
   password: string;
@@ -42,68 +32,51 @@ export interface QuizInfo {
   description: string;
 }
 
-// ─── Defaults ────────────────────────────────────────────────────────────────
 
-const DEFAULT_GLOBAL: GlobalSettings = {
-  defaultTimeLimit: 30,
-  defaultPoints: 10,
-  syncAllQuestions: false,
-  passwordProtect: false,
-  password: "",
-};
-
-const DEFAULT_INFO: QuizInfo = {
-  title: "",
-  description: "",
-};
 
 function makeQuestion(
   overrides: Partial<Omit<Question, "id">> = {},
   globalSettings: GlobalSettings,
 ): Question {
-  return {
-    id: `q-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+  const base: Omit<Question, "id"> = {
     type: "multiple_choice",
     text: "",
     options: [
       { id: "opt-1", text: "", isCorrect: false },
       { id: "opt-2", text: "", isCorrect: false },
     ],
-    acceptedAnswers: "",
     timeLimit: globalSettings.defaultTimeLimit,
     points: globalSettings.defaultPoints,
     collapsed: false,
     allowMultipleCorrect: false,
     ...overrides,
   };
-}
 
-// ─── Store interface ──────────────────────────────────────────────────────────
+  if (base.type === "text_entry") {
+    base.points = 0;
+  }
+
+  return {
+    id: `q-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+    ...base,
+  };
+}
 
 interface QuizStore {
   info: QuizInfo;
   globalSettings: GlobalSettings;
   questions: Question[];
 
-  // Info actions
+  //actions
   setInfo: (partial: Partial<QuizInfo>) => void;
-
-  // Global settings actions
   setGlobalSettings: (partial: Partial<GlobalSettings>) => void;
-  /** Force-apply current defaultTimeLimit & defaultPoints to every question */
   applyGlobalToAllQuestions: () => void;
-
-  // Correct-answer actions
-  /** Toggle a single option's correct state. If allowMultipleCorrect is false, clears all others first. */
   toggleCorrectOption: (questionId: string, optionId: string) => void;
-
-  // Question actions
   addQuestion: (type?: QuestionType) => void;
+  appendQuestions: (questions: Question[]) => void;
   removeQuestion: (id: string) => void;
   updateQuestion: (id: string, partial: Partial<Omit<Question, "id">>) => void;
   reorderQuestions: (questions: Question[]) => void;
-
-  // Option actions (inside a question)
   addOption: (questionId: string) => void;
   removeOption: (questionId: string, optionId: string) => void;
   updateOption: (
@@ -112,12 +85,22 @@ interface QuizStore {
     partial: Partial<QuizOption>,
   ) => void;
   reorderOptions: (questionId: string, options: QuizOption[]) => void;
-
   reset: () => void;
 }
 
-// ─── Store ───────────────────────────────────────────────────────────────────
 
+//default values
+const DEFAULT_GLOBAL: GlobalSettings = {
+  defaultTimeLimit: 30,
+  defaultPoints: 10,
+  syncAllQuestions: false,
+  passwordProtect: false,
+  password: "",
+};
+const DEFAULT_INFO: QuizInfo = {
+  title: "",
+  description: "",
+};
 const INITIAL_QUESTIONS: Question[] = [
   {
     id: `q-init-${Date.now()}`,
@@ -127,7 +110,6 @@ const INITIAL_QUESTIONS: Question[] = [
       { id: "opt-1", text: "", isCorrect: false },
       { id: "opt-2", text: "", isCorrect: false },
     ],
-    acceptedAnswers: "",
     timeLimit: DEFAULT_GLOBAL.defaultTimeLimit,
     points: DEFAULT_GLOBAL.defaultPoints,
     collapsed: false,
@@ -140,10 +122,10 @@ export const useQuizStore = create<QuizStore>()((set, get) => ({
   globalSettings: DEFAULT_GLOBAL,
   questions: INITIAL_QUESTIONS,
 
-  // ── Info ────────────────────────────────────────────────────────────
+  //quiz information settings
   setInfo: (partial) => set((s) => ({ info: { ...s.info, ...partial } })),
 
-  // ── Global Settings ─────────────────────────────────────────────────
+  //global information settings
   setGlobalSettings: (partial) =>
     set((s) => {
       const next = { ...s.globalSettings, ...partial };
@@ -179,6 +161,11 @@ export const useQuizStore = create<QuizStore>()((set, get) => ({
   addQuestion: (type = "multiple_choice") =>
     set((s) => ({
       questions: [...s.questions, makeQuestion({ type }, s.globalSettings)],
+    })),
+
+  appendQuestions: (newQuestions) =>
+    set((s) => ({
+      questions: [...s.questions, ...newQuestions],
     })),
 
   removeQuestion: (id) =>

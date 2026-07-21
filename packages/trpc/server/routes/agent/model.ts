@@ -37,9 +37,38 @@ export const clearHistoryDto = z.object({
 });
 
 export const getRealTimeTokenDto = z.object({
-  jobId: z.string(),
+  jobId: z.string().optional(),
+  quizId: z.string().optional(),
 });
 
 export type generateFormType = z.infer<typeof generateFormDto>;
 export type clearHistoryType = z.infer<typeof clearHistoryDto>;
 export type CurrentFieldType = z.infer<typeof currentFieldSchema>;
+
+export const storeDocumentsEmbeddingsDto = z.object({
+  documentId: z.string().uuid("documentId must be a valid UUID"),
+  fileUrl: z.string().url("fileUrl must be a valid URL"),
+  quizId: z.string().uuid("quizId must be a valid UUID"),
+  conversationId: z.string().uuid("conversationId must be a valid UUID").optional(),
+});
+
+export type StoreDocumentsEmbeddingsDto = z.infer<typeof storeDocumentsEmbeddingsDto>;
+
+export const getDocumentRealTimeTokenDto = z.object({
+  documentId: z.string().uuid("documentId must be a valid UUID"),
+});
+
+export type GetDocumentRealTimeTokenDto = z.infer<typeof getDocumentRealTimeTokenDto>;
+
+export const runQuizBuilderAgentDto = z.object({
+  prompt: z.string().min(1, "Prompt cannot be empty"),
+  quizId: z.string().uuid("quizId must be a valid UUID"),
+  conversationId: z.string().uuid("conversationId must be a valid UUID").optional(),
+});
+
+export const clearQuizBuilderHistoryDto = z.object({
+  quizId: z.string().uuid("quizId must be a valid UUID"),
+});
+
+export type RunQuizBuilderAgentType = z.infer<typeof runQuizBuilderAgentDto>;
+export type ClearQuizBuilderHistoryType = z.infer<typeof clearQuizBuilderHistoryDto>;

@@ -1,15 +1,7 @@
 import { v2 as cloudinary } from "cloudinary";
 import { GetUploadSignatureInput, UploadSignatureResult } from "./model";
 import { env } from "../env";
-/**
- * UploadService — Cloudinary signed-upload helper.
- *
- * Flow:
- *   1. Client calls `getSignature` tRPC mutation with file metadata.
- *   2. Server returns signature + upload URL (this class).
- *   3. Client uploads the file directly to Cloudinary — no bytes hit our server.
- *   4. Client saves the returned `secure_url` / `public_id` in the quiz store.
- */
+
 export default class UploadService {
   constructor() {
     cloudinary.config({
@@ -19,10 +11,6 @@ export default class UploadService {
     });
   }
 
-  /**
-   * Generate a short-lived Cloudinary signature.
-   * The timestamp + params are exactly what Cloudinary validates on upload.
-   */
   getUploadSignature(input: GetUploadSignatureInput): UploadSignatureResult {
     const cloudName = env.CLOUDINARY_CLOUD_NAME;
     const apiKey = env.CLOUDINARY_API_KEY;
@@ -36,20 +24,14 @@ export default class UploadService {
 
     const timestamp = Math.round(Date.now() / 1000);
 
-    // Only params that are signed must be in this object
     const paramsToSign: Record<string, string | number> = {
       timestamp,
       folder: input.folder,
+      access_mode: "public",
     };
+    if (input.publicId) paramsToSign.public_id = input.publicId;
 
-    if (input.publicId) {
-      paramsToSign.public_id = input.publicId;
-    }
-
-    const signature = cloudinary.utils.api_sign_request(
-      paramsToSign,
-      apiSecret,
-    );
+    const signature = cloudinary.utils.api_sign_request(paramsToSign, apiSecret);
 
     return {
       signature,
@@ -58,8 +40,41 @@ export default class UploadService {
       apiKey,
       folder: input.folder,
       publicId: input.publicId,
-      // e.g. https://api.cloudinary.com/v1_1/<cloud>/image/upload
+      accessMode: "public",
       uploadUrl: `https://api.cloudinary.com/v1_1/${cloudName}/${input.resourceType}/upload`,
+    };
+  }
+
+ 
+  async getFileFromUrl(fileUrl: string): Promise<{
+    buffer: Buffer;
+    contentType: string | null;
+    contentLength: number | null;
+    fileName: string;
+  }> {
+    if (!fileUrl) {
+      throw new Error("A valid fileUrl must be provided.");
+    }
+
+    const response = await fetch(fileUrl);
+    if (!response.ok) {
+      throw new Error(
+        `Failed to fetch file from URL: ${response.status} ${response.statusText}`,
+      );
+    }
+
+    const buffer = Buffer.from(await response.arrayBuffer());
+    const contentType = response.headers.get("content-type");
+    const contentLength = response.headers.get("content-length");
+    const fileName = decodeURIComponent(
+      new URL(fileUrl).pathname.split("/").pop() ?? "download",
+    );
+
+    return {
+      buffer,
+      contentType,
+      contentLength: contentLength ? parseInt(contentLength, 10) : null,
+      fileName,
     };
   }
 }

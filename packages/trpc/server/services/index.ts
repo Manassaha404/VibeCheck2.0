@@ -9,6 +9,8 @@ import TagService from "@repo/services/tag";
 import PetitionService from "@repo/services/petition";
 import UploadService from "@repo/services/upload";
 import QuizService from "@repo/services/quiz";
+import LangChainService from "@repo/services/agent/quizBuilderAgent/langchain";
+import QuizBuilderAgentService from "@repo/services/agent/quizBuilderAgent";
 import ExploreService from "@repo/services/explore";
 
 export const authService = new AuthServices();
@@ -22,4 +24,6 @@ export const tagService = new TagService();
 export const petitionService = new PetitionService();
 export const uploadService = new UploadService();
 export const quizService = new QuizService();
+export const langChainService = new LangChainService();
+export const quizBuilderAgentService = new QuizBuilderAgentService();
 export const exploreService = new ExploreService();

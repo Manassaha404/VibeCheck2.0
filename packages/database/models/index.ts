@@ -27,8 +27,8 @@ export * from "./petition-tags";
 export * from "./user-tag-preferences";
 
 // Agent
-export * from "./agent-conversations";
-
+export * from "./form-builder-agent-conversations";
+export * from "./quiz-builder-agent-conversation";
 // Saves
 export * from "./saves";
 

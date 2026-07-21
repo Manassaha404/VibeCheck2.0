@@ -15,19 +15,14 @@ services:
       interval: 5s
       timeout: 3s
       retries: 5
-
-  redisinsight:
-    image: redis/redisinsight:latest
-    container_name: redisinsight
+  qdrant:
+    image: qdrant/qdrant:latest
+    container_name: qdrant
     restart: unless-stopped
-    depends_on:
-      redis:
-        condition: service_healthy
     ports:
-      - "5540:5540"
+      - "6333:6333"
     volumes:
-      - redisinsight_data:/data
-
+      - qdrant_storage:/qdrant/storage
 volumes:
   redis_data:
-  redisinsight_data:
+  qdrant_storage:

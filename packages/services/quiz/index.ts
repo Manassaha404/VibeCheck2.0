@@ -15,6 +15,10 @@ import {
   CreateQuizInput,
   updateQuizDto,
   UpdateQuizInput,
+  initDraftQuizDto,
+  InitDraftQuizInput,
+  publishDraftQuizDto,
+  PublishDraftQuizInput,
   archiveItemDto,
   ArchiveItemDtoType,
   activateItemDto,
@@ -222,6 +226,79 @@ class QuizService {
     // Clear Redis live state and leaderboard after successful persistence
     await redis.del(liveKey);
     await redis.del(leaderboardKey);
+  }
+
+  public async initDraftQuiz(userId: string, payload: InitDraftQuizInput) {
+    const data = initDraftQuizDto.parse(payload);
+
+    const [newQuiz] = await db
+      .insert(quizzes)
+      .values({
+        userId,
+        title: data.info.title,
+        description: data.info.description ?? null,
+        status: "draft",
+        passwordNeeded: data.globalSettings.passwordProtect,
+        password: data.globalSettings.passwordProtect
+          ? data.globalSettings.password
+          : null,
+      })
+      .returning();
+
+    if (!newQuiz) {
+      throw new AppError("INTERNAL_SERVER_ERROR", "Failed to initialise quiz draft");
+    }
+
+    return {
+      success: true,
+      quizId: newQuiz.quizId,
+    };
+  }
+
+  public async publishDraftQuiz(userId: string, payload: PublishDraftQuizInput) {
+    const data = publishDraftQuizDto.parse(payload);
+
+    return await db.transaction(async (tx) => {
+      // 1. Verify the draft exists and belongs to this user
+      const [existingQuiz] = await tx
+        .select()
+        .from(quizzes)
+        .where(eq(quizzes.quizId, data.quizId));
+
+      if (!existingQuiz) {
+        throw new AppError("NOT_FOUND", "Quiz draft not found");
+      }
+      if (existingQuiz.userId !== userId) {
+        throw new AppError("UNAUTHORIZED", "Unauthorized to publish this quiz");
+      }
+
+      // 2. Insert questions
+      const questionsToInsert = data.questions.map((q, index) => ({
+        quizId: data.quizId,
+        orderIndex: index,
+        text: q.text,
+        options: q.options,
+        acceptedAnswers: q.acceptedAnswers ?? null,
+        isTextAnswer: q.type === "text_entry",
+        allowMultipleCorrect: q.allowMultipleCorrect,
+        mediaUrl: q.mediaUrl ?? null,
+        timeLimitSecs: q.timeLimit,
+        points: q.points,
+      }));
+
+      await tx.insert(quizQuestions).values(questionsToInsert);
+
+      // 3. Set status to active
+      await tx
+        .update(quizzes)
+        .set({ status: "active" })
+        .where(eq(quizzes.quizId, data.quizId));
+
+      return {
+        success: true,
+        quizId: data.quizId,
+      };
+    });
   }
 
   public async createQuiz(userId: string, payload: CreateQuizInput) {

@@ -1,11 +1,27 @@
 import { inngest } from "./client";
 import { realtime } from "inngest";
 import { z } from "zod";
+import { run } from "@openai/agents";
+import type { AgentInputItem } from "@openai/agents";
 import FormBuilderAgentServices from "../agent/formBuilderAgent";
-import { CollectedAnswer } from "../agent/formRespondentAgent/model";
 import FormRespondentAgentService from "../agent/formRespondentAgent";
+import { routerQuizBuilderAgent } from "../agent/quizBuilderAgent/createAgent";
+import db, { eq, and } from "@repo/database";
+import { quizBuilderAgentConversation } from "@repo/database/models/quiz-builder-agent-conversation";
 export const agentChannel = realtime.channel({
   name: ({ jobId }: { jobId: string }) => `agent:${jobId}`,
+  topics: {
+    status: {
+      schema: z.object({
+        status: z.string(),
+        result: z.any().optional(),
+      }),
+    },
+  },
+});
+
+export const quizAgentChannel = realtime.channel({
+  name: ({ quizId }: { quizId: string }) => `quiz-agent:${quizId}`,
   topics: {
     status: {
       schema: z.object({
@@ -37,6 +53,13 @@ interface formRespondentEventData {
   formId: string;
   guestToken: string;
   userMessage: string;
+}
+
+interface quizBuilderAgentEventData {
+  jobId: string;
+  userId: string;
+  quizId: string;
+  input: string | AgentInputItem[];
 }
 
 const runFormBuilderAgent = inngest.createFunction(
@@ -126,5 +149,82 @@ const runFormRespondentAgent = inngest.createFunction(
   },
 );
 
-const agentFunctions = [runFormBuilderAgent, runFormRespondentAgent];
+const runQuizBuilderAgent = inngest.createFunction(
+  {
+    id: "run-quiz-builder-agent",
+    triggers: {
+      event: "quiz-builder-agent/run",
+    },
+  },
+  async ({ event, step }) => {
+    const { jobId, userId, quizId, input } =
+      event.data as quizBuilderAgentEventData;
+    const ch = quizAgentChannel({ quizId });
+
+    await step.realtime.publish("agent-running", ch.status, {
+      status: "running",
+    });
+
+    const result = await step.run("call-openai", async () => {
+      try {
+        const agentResult = await run(
+          routerQuizBuilderAgent,
+          input as string | AgentInputItem[],
+        );
+
+        if (!agentResult.finalOutput) {
+          throw new Error("Quiz builder agent returned no output");
+        }
+
+        // Persist updated conversation history
+        const [existing] = await db
+          .select({ fileUrls: quizBuilderAgentConversation.fileUrls })
+          .from(quizBuilderAgentConversation)
+          .where(
+            and(
+              eq(quizBuilderAgentConversation.userId, userId),
+              eq(quizBuilderAgentConversation.quizId, quizId),
+            ),
+          );
+
+        await db
+          .insert(quizBuilderAgentConversation)
+          .values({
+            userId,
+            quizId,
+            history: agentResult.history as any,
+            fileUrls: existing?.fileUrls ?? [],
+          })
+          .onConflictDoUpdate({
+            target: [
+              quizBuilderAgentConversation.userId,
+              quizBuilderAgentConversation.quizId,
+            ],
+            set: {
+              history: agentResult.history as any,
+              updatedAt: new Date(),
+            },
+          });
+
+        return agentResult.finalOutput;
+      } catch (error) {
+        if (
+          error instanceof Error &&
+          (error.constructor.name === "InputGuardrailTripwireTriggered" ||
+            error.constructor.name === "OutputGuardrailTripwireTriggered")
+        ) {
+          return { error: true, message: error.message };
+        }
+        throw error;
+      }
+    });
+
+    await step.realtime.publish("agent-done", ch.status, {
+      status: "done",
+      result: { ...(result as any), jobId },
+    });
+  },
+);
+
+const agentFunctions = [runFormBuilderAgent, runFormRespondentAgent, runQuizBuilderAgent];
 export default agentFunctions;

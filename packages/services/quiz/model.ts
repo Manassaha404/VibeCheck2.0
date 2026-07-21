@@ -41,6 +41,38 @@ export const updateQuizDto = createQuizDto.extend({
 
 export type UpdateQuizInput = z.infer<typeof updateQuizDto>;
 
+// ─── Two-step quiz creation DTOs ─────────────────────────────────────────────
+
+/**
+ * Step 1 — create a quiz draft with only title/description and password settings.
+ * Returns a quizId so the user can proceed to Step 2 (add questions).
+ */
+export const initDraftQuizDto = z.object({
+  info: z.object({
+    title: z.string().min(1, "Title is required"),
+    description: z.string().optional(),
+  }),
+  globalSettings: z.object({
+    passwordProtect: z.boolean(),
+    password: z.string().optional(),
+    defaultTimeLimit: z.number(),
+    defaultPoints: z.number(),
+    syncAllQuestions: z.boolean(),
+  }),
+});
+
+export type InitDraftQuizInput = z.infer<typeof initDraftQuizDto>;
+
+/**
+ * Step 2 — attach questions to an existing draft quiz and publish it (status → active).
+ */
+export const publishDraftQuizDto = z.object({
+  quizId: z.string().uuid(),
+  questions: z.array(quizQuestionSchema).min(1, "At least one question is required"),
+});
+
+export type PublishDraftQuizInput = z.infer<typeof publishDraftQuizDto>;
+
 export const getQuizDashboardDto = z.object({
   quizId: z.string().uuid(),
 });

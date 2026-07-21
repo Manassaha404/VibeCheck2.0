@@ -24,6 +24,8 @@ export interface UploadSignatureResult {
   apiKey: string;
   folder: string;
   publicId?: string;
+  /** Always "public" — ensures raw assets are accessible without auth */
+  accessMode: string;
   /** The Cloudinary direct-upload endpoint to POST to */
   uploadUrl: string;
 }

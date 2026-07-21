@@ -15,6 +15,7 @@ import { trpc } from "@/trpc/client";
 import { numberToUuid } from "@/utils/uuid";
 import { ArrowLeft, Loader2 } from "lucide-react";
 import Link from "next/link";
+import AgentChatToggleFAB from "@/components/agent-chat/AgentChatToggleFAB";
 
 export default function EditQuizPage() {
   const params = useParams();
@@ -153,6 +154,9 @@ export default function EditQuizPage() {
       </main>
 
       <Footer />
+
+      {/* ── Quiz Maker Agent Chat FAB ── */}
+      <AgentChatToggleFAB />
     </div>
   );
 }

@@ -8,6 +8,20 @@
       "when": 1783676909659,
       "tag": "0000_slow_riptide",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1784444953784,
+      "tag": "0001_charming_gorgon",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1784445032362,
+      "tag": "0002_flawless_salo",
+      "breakpoints": true
     }
   ]
 }

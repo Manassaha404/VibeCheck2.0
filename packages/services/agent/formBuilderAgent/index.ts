@@ -9,8 +9,8 @@ import {
 } from "./model";
 import { formMakerAgent } from "./createAgent";
 import db, { eq, and } from "@repo/database";
-import { formBuilderAgentConversation } from "@repo/database/models/agent-conversations";
-import { z } from "zod";
+import { formBuilderAgentConversation } from "@repo/database/models/form-builder-agent-conversations";
+
 
 class FormBuilderAgentServices {
   static async runFormMakerAgent(

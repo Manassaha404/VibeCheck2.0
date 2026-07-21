@@ -3,6 +3,8 @@ import { z } from "zod";
 import {
   createQuizDto,
   updateQuizDto,
+  initDraftQuizDto,
+  publishDraftQuizDto,
   archiveItemDto,
   activateItemDto,
   deleteItemDto,
@@ -25,6 +27,30 @@ import { handleRouteError } from "../../utils/error";
 import { AppError } from "@repo/error";
 
 export const quizRouter = router({
+  // ─── Two-step creation ───────────────────────────────────────────────────
+  /** Step 1: create a draft quiz (title/desc/settings). Returns quizId. */
+  initDraftQuiz: protectedProcedure
+    .input(initDraftQuizDto)
+    .mutation(async ({ input, ctx }) => {
+      try {
+        const result = await quizService.initDraftQuiz(ctx.user.id, input);
+        return { message: "Quiz draft initialised", ...result };
+      } catch (error) {
+        handleRouteError(error);
+      }
+    }),
+  /** Step 2: attach questions to a draft and publish it (status → active). */
+  publishDraftQuiz: protectedProcedure
+    .input(publishDraftQuizDto)
+    .mutation(async ({ input, ctx }) => {
+      try {
+        const result = await quizService.publishDraftQuiz(ctx.user.id, input);
+        return { message: "Quiz published successfully", ...result };
+      } catch (error) {
+        handleRouteError(error);
+      }
+    }),
+  // ─── Legacy single-step creation ───────────────────────────────────────────
   createQuiz: protectedProcedure
     .input(createQuizDto)
     .mutation(async ({ input, ctx }) => {

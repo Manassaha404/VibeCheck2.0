@@ -1,3 +1,10 @@
 {
-  "cSpell.words": ["hset", "inngest", "vibecheck", "zincrby"]
+  "cSpell.words": [
+    "hset",
+    "inngest",
+    "langchain",
+    "textsplitters",
+    "vibecheck",
+    "zincrby"
+  ]
 }

@@ -4,8 +4,18 @@ import { protectedProcedure, publicProcedure, router } from "../../trpc";
 import {
   formBuilderAgentServices,
   formRespondentAgentService,
+  langChainService,
+  quizBuilderAgentService,
 } from "../../services";
-import { generateFormDto, clearHistoryDto, getRealTimeTokenDto } from "./model";
+import {
+  generateFormDto,
+  clearHistoryDto,
+  getRealTimeTokenDto,
+  storeDocumentsEmbeddingsDto,
+  getDocumentRealTimeTokenDto,
+  runQuizBuilderAgentDto,
+  clearQuizBuilderHistoryDto,
+} from "./model";
 import {
   agentChatDto,
   agentClearSessionDto,
@@ -13,7 +23,8 @@ import {
 } from "@repo/services/form/model";
 import { handleRouteError } from "../../utils/error";
 import { inngest, getClientSubscriptionToken } from "@repo/services/inngest";
-import { agentChannel } from "@repo/services/inngest/agent-functions";
+import { agentChannel, quizAgentChannel } from "@repo/services/inngest/agent-functions";
+import { documentChannel } from "@repo/services/inngest/langchain-functions";
 
 export const agentRouter = router({
   generateForm: protectedProcedure
@@ -44,9 +55,13 @@ export const agentRouter = router({
     .input(getRealTimeTokenDto)
     .query(async ({ input }) => {
       try {
-        const { jobId } = input;
+        const { jobId, quizId } = input;
+        const channel = quizId 
+          ? quizAgentChannel({ quizId }) 
+          : agentChannel({ jobId: jobId as string });
+        
         const token = await getClientSubscriptionToken(inngest, {
-          channel: agentChannel({ jobId }),
+          channel,
           topics: ["status"],
         });
         return {
@@ -130,6 +145,72 @@ export const agentRouter = router({
           guestToken,
         });
         return { message: "Session cleared" };
+      } catch (error) {
+        handleRouteError(error);
+      }
+    }),
+
+  quizBuilderAgentStoreDocuments: protectedProcedure
+    .input(storeDocumentsEmbeddingsDto)
+    .mutation(async ({ input, ctx }) => {
+      try {
+        return await langChainService.storeDocumentsEmbeddings({
+          documentId: input.documentId,
+          fileUrl: input.fileUrl,
+          userId: ctx.user.id,
+          quizId: input.quizId,
+          conversationId: input.conversationId,
+        });
+      } catch (error) {
+        handleRouteError(error);
+      }
+    }),
+
+  getDocumentRealTimeToken: protectedProcedure
+    .input(getDocumentRealTimeTokenDto)
+    .query(async ({ input }) => {
+      try {
+        const token = await getClientSubscriptionToken(inngest, {
+          channel: documentChannel({ documentId: input.documentId }),
+          topics: ["status"],
+        });
+        return { token };
+      } catch (error) {
+        handleRouteError(error);
+      }
+    }),
+
+  runQuizBuilderAgent: protectedProcedure
+    .input(runQuizBuilderAgentDto)
+    .mutation(async ({ input, ctx }) => {
+      try {
+        const jobId = crypto.randomUUID();
+        await quizBuilderAgentService.runQuizBuilderAgent({
+          jobId,
+          userId: ctx.user.id,
+          quizId: input.quizId,
+          prompt: input.prompt,
+          conversationId: input.conversationId,
+        });
+        return {
+          jobId,
+          message:
+            "Quiz builder agent is processing your request. You will receive updates on the status of the job.",
+        };
+      } catch (error) {
+        handleRouteError(error);
+      }
+    }),
+
+  clearQuizBuilderAgentHistory: protectedProcedure
+    .input(clearQuizBuilderHistoryDto)
+    .mutation(async ({ input, ctx }) => {
+      try {
+        await quizBuilderAgentService.clearHistory({
+          userId: ctx.user.id,
+          quizId: input.quizId,
+        });
+        return { message: "Quiz builder conversation history cleared" };
       } catch (error) {
         handleRouteError(error);
       }
