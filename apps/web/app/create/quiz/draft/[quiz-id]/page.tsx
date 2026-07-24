@@ -1,81 +1,50 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+
 import { useParams, useRouter } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import QuizSettings from "@/components/create-quiz/QuizSettings";
 import QuestionCard from "@/components/create-quiz/QuestionCard";
 import AddQuestionButton from "@/components/create-quiz/AddQuestionButton";
 import AgentChatToggleFAB from "@/components/agent-chat/AgentChatToggleFAB";
 import { useQuizStore } from "@/store/quizStore";
-import { trpc } from "@/trpc/client";
+import { useLoadQuizData } from "@/hook/quiz/host/useLoadQuizData";
 import { numberToUuid } from "@/utils/uuid";
 import { usePublishDraftQuiz } from "@/hook/quiz/host/usePublishDraftQuiz";
 import { ArrowLeft, Loader2, Zap } from "lucide-react";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import PageLoader from "@/components/PageLoader";
+import { ContentErrorState } from "@/components/ui/ContentErrorState";
 
 export default function DraftQuizPage() {
   const params = useParams();
   const router = useRouter();
   const quizId = numberToUuid(params["quiz-id"] as string);
-
-  // Seed the store with the draft's info/settings (created in Step 1)
-  const { data, isLoading, isError } = trpc.quiz.getQuizForEdit.useQuery(
-    { quizId },
-    {
-      refetchOnWindowFocus: false,
-      refetchOnMount: false,
-      refetchOnReconnect: false,
-    },
-  );
-
-  const [isInitialized, setIsInitialized] = useState(false);
+  const { data, isLoading, isError, isInitialized } = useLoadQuizData(quizId);
   const questions = useQuizStore((s) => s.questions);
-  const setInfo = useQuizStore((s) => s.setInfo);
-  const setGlobalSettings = useQuizStore((s) => s.setGlobalSettings);
-  const reorderQuestions = useQuizStore((s) => s.reorderQuestions);
-
-  // Seed store with the draft data so globalSettings defaults are correct
-  useEffect(() => {
-    if (data && !isInitialized) {
-      setInfo({
-        title: data.quiz.title,
-        description: data.quiz.description || "",
-      });
-      setGlobalSettings({
-        passwordProtect: data.quiz.passwordNeeded,
-        password: data.quiz.password || "",
-      });
-      // Start with an empty questions list — the user will build them fresh
-      reorderQuestions([]);
-      setIsInitialized(true);
-    }
-  }, [data, isInitialized, setInfo, setGlobalSettings, reorderQuestions]);
-
   const { publishQuiz, isSubmitting } = usePublishDraftQuiz(quizId);
 
-  // ── Loading state ──────────────────────────────────────────────────────────
   if (isLoading || !isInitialized) {
     return (
-      <div className="bg-canvas-cream text-ink-charcoal font-body min-h-screen flex flex-col justify-center items-center bg-dot-pattern selection:bg-electric-sun selection:text-ink-charcoal">
-        <Loader2 className="animate-spin text-ink-charcoal mb-4" size={48} />
-        <h2 className="font-display text-headline-md">Loading question builder...</h2>
-      </div>
+      <>
+        <Navbar />
+        <PageLoader />
+        <Footer />
+      </>
+
     );
   }
 
-  // ── Error state ────────────────────────────────────────────────────────────
+ 
   if (isError) {
     return (
-      <div className="bg-canvas-cream text-ink-charcoal font-body min-h-screen flex flex-col justify-center items-center bg-dot-pattern gap-4">
-        <h2 className="font-display text-headline-md text-red-500">
-          Failed to load quiz draft
-        </h2>
-        <Link href="/create/quiz" className="underline font-bold text-lg">
-          Start over
-        </Link>
-      </div>
+      <>
+        <Navbar />
+        <ContentErrorState kind="quiz" />
+        <Footer />
+      </>
     );
   }
 
@@ -133,9 +102,12 @@ export default function DraftQuizPage() {
             {/* Quiz title pill */}
             <div className="-mt-6 flex justify-center">
               <div className="bg-pure-white border-2 border-ink-charcoal px-6 py-2 shadow-hard-sm font-label-md text-label-md uppercase tracking-wide text-ink-charcoal/70 max-w-full truncate">
-                📝 &nbsp;{data.quiz.title}
+                📝 &nbsp;{data?.quiz.title}
               </div>
             </div>
+
+            {/* Quiz Settings */}
+            <QuizSettings />
 
             {/* Question Builder Header */}
             <div className="flex items-center justify-between">

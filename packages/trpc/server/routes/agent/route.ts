@@ -23,8 +23,7 @@ import {
 } from "@repo/services/form/model";
 import { handleRouteError } from "../../utils/error";
 import { inngest, getClientSubscriptionToken } from "@repo/services/inngest";
-import { agentChannel, quizAgentChannel } from "@repo/services/inngest/agent-functions";
-import { documentChannel } from "@repo/services/inngest/langchain-functions";
+import { quizAgentChannel } from "@repo/services/inngest/agent-functions";
 
 export const agentRouter = router({
   generateForm: protectedProcedure
@@ -55,10 +54,8 @@ export const agentRouter = router({
     .input(getRealTimeTokenDto)
     .query(async ({ input }) => {
       try {
-        const { jobId, quizId } = input;
-        const channel = quizId 
-          ? quizAgentChannel({ quizId }) 
-          : agentChannel({ jobId: jobId as string });
+        const { quizId } = input;
+        const channel = quizAgentChannel({ quizId: quizId as string });
         
         const token = await getClientSubscriptionToken(inngest, {
           channel,
@@ -171,7 +168,7 @@ export const agentRouter = router({
     .query(async ({ input }) => {
       try {
         const token = await getClientSubscriptionToken(inngest, {
-          channel: documentChannel({ documentId: input.documentId }),
+          channel: quizAgentChannel({ quizId: input.quizId }),
           topics: ["status"],
         });
         return { token };
@@ -184,16 +181,15 @@ export const agentRouter = router({
     .input(runQuizBuilderAgentDto)
     .mutation(async ({ input, ctx }) => {
       try {
-        const jobId = crypto.randomUUID();
-        await quizBuilderAgentService.runQuizBuilderAgent({
-          jobId,
+        const result = await quizBuilderAgentService.runQuizBuilderAgent({
           userId: ctx.user.id,
           quizId: input.quizId,
           prompt: input.prompt,
           conversationId: input.conversationId,
         });
         return {
-          jobId,
+          quizId: result.quizId,
+          conversationId: result.conversationId,
           message:
             "Quiz builder agent is processing your request. You will receive updates on the status of the job.",
         };

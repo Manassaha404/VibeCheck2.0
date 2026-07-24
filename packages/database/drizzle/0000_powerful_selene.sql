@@ -4,7 +4,7 @@ CREATE TYPE "public"."form_status" AS ENUM('draft', 'active', 'closed', 'archive
 CREATE TYPE "public"."field_type" AS ENUM('short_text', 'long_text', 'number', 'email', 'phone', 'date', 'select', 'multi_select', 'radio', 'checkbox', 'file', 'rating', 'scale', 'mood');--> statement-breakpoint
 CREATE TYPE "public"."poll_status" AS ENUM('draft', 'active', 'archived');--> statement-breakpoint
 CREATE TYPE "public"."petition_status" AS ENUM('draft', 'active', 'closed', 'archived');--> statement-breakpoint
-CREATE TYPE "public"."quiz_status" AS ENUM('active', 'archived');--> statement-breakpoint
+CREATE TYPE "public"."quiz_status" AS ENUM('active', 'archived', 'draft');--> statement-breakpoint
 CREATE TYPE "public"."session_status" AS ENUM('waiting', 'active', 'ended');--> statement-breakpoint
 CREATE TABLE "auths" (
 	"auth_id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
@@ -219,6 +219,16 @@ CREATE TABLE "form_building_agent_conversations" (
 	"updated_at" timestamp DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
+CREATE TABLE "quiz_building_agent_conversations" (
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"user_id" uuid NOT NULL,
+	"quiz_id" uuid NOT NULL,
+	"history" jsonb DEFAULT '[]'::jsonb NOT NULL,
+	"file_urls" jsonb DEFAULT '[]'::jsonb NOT NULL,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL
+);
+--> statement-breakpoint
 CREATE TABLE "saves" (
 	"save_id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"user_id" uuid NOT NULL,
@@ -234,7 +244,7 @@ CREATE TABLE "quizzes" (
 	"user_id" uuid NOT NULL,
 	"title" varchar(255) NOT NULL,
 	"description" text,
-	"status" "quiz_status" DEFAULT 'active' NOT NULL,
+	"status" "quiz_status" DEFAULT 'draft' NOT NULL,
 	"password_needed" boolean DEFAULT false NOT NULL,
 	"password" varchar(255),
 	"created_at" timestamp DEFAULT now() NOT NULL,
@@ -318,6 +328,8 @@ ALTER TABLE "user_tag_preferences" ADD CONSTRAINT "user_tag_preferences_user_id_
 ALTER TABLE "user_tag_preferences" ADD CONSTRAINT "user_tag_preferences_tag_id_tags_tag_id_fk" FOREIGN KEY ("tag_id") REFERENCES "public"."tags"("tag_id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "form_building_agent_conversations" ADD CONSTRAINT "form_building_agent_conversations_user_id_users_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("user_id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "form_building_agent_conversations" ADD CONSTRAINT "form_building_agent_conversations_form_id_forms_form_id_fk" FOREIGN KEY ("form_id") REFERENCES "public"."forms"("form_id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "quiz_building_agent_conversations" ADD CONSTRAINT "quiz_building_agent_conversations_user_id_users_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("user_id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "quiz_building_agent_conversations" ADD CONSTRAINT "quiz_building_agent_conversations_quiz_id_quizzes_quiz_id_fk" FOREIGN KEY ("quiz_id") REFERENCES "public"."quizzes"("quiz_id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "saves" ADD CONSTRAINT "saves_user_id_users_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("user_id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "saves" ADD CONSTRAINT "saves_form_id_forms_form_id_fk" FOREIGN KEY ("form_id") REFERENCES "public"."forms"("form_id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "saves" ADD CONSTRAINT "saves_petition_id_petitions_petition_id_fk" FOREIGN KEY ("petition_id") REFERENCES "public"."petitions"("petition_id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
@@ -368,6 +380,7 @@ CREATE INDEX "user_tag_pref_user_id_idx" ON "user_tag_preferences" USING btree (
 CREATE INDEX "user_tag_pref_tag_id_idx" ON "user_tag_preferences" USING btree ("tag_id");--> statement-breakpoint
 CREATE UNIQUE INDEX "agent_conv_user_form_idx" ON "form_building_agent_conversations" USING btree ("user_id","form_id");--> statement-breakpoint
 CREATE INDEX "agent_conv_user_idx" ON "form_building_agent_conversations" USING btree ("user_id");--> statement-breakpoint
+CREATE INDEX "quiz_agent_conv_user_idx" ON "quiz_building_agent_conversations" USING btree ("user_id");--> statement-breakpoint
 CREATE INDEX "save_user_id_idx" ON "saves" USING btree ("user_id");--> statement-breakpoint
 CREATE UNIQUE INDEX "save_user_form_idx" ON "saves" USING btree ("user_id","form_id");--> statement-breakpoint
 CREATE UNIQUE INDEX "save_user_petition_idx" ON "saves" USING btree ("user_id","petition_id");--> statement-breakpoint

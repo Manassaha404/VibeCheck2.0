@@ -19,27 +19,24 @@ export function useHostSocket(
   }, [initialParticipantCount]);
 
   const mergeVoteTallies = useLiveSessionStore((s) => s.mergeVoteTallies);
-  // Track whether we've already joined to avoid duplicate joins on re-render
+  
   const joinedRef = useRef(false);
 
   useEffect(() => {
     if (!sessionId) return;
     if (joinedRef.current) return;
 
-    // Connect and join host room
+    
     socket.connect();
     socket.emit("join:session", sessionId);
     joinedRef.current = true;
 
-    // ── participant:join ───────────────────────────────────────────────────────
-    // Fired by the server whenever a participant joins the session room
+    
     const onParticipantJoin = () => {
       setParticipantCount((c) => c + 1);
     };
 
-    // ── participant:answer ─────────────────────────────────────────────────────
-    // Fired by the server when a participant submits an answer.
-    // Payload: { optionId: string, questionId: string, text?: string }
+    
     const onParticipantAnswer = (payload: {
       optionIds?: string[];
       questionId?: string;
@@ -50,7 +47,7 @@ export function useHostSocket(
         payload.optionIds &&
         payload.optionIds.length > 0
       ) {
-        // MCQ: merge into vote tallies
+        
         const questionTallies: Record<string, number> = {};
         for (const id of payload.optionIds) {
           questionTallies[id] = 1;
@@ -58,7 +55,7 @@ export function useHostSocket(
         const incoming: VoteTallies = { [payload.questionId]: questionTallies };
         mergeVoteTallies(incoming);
       } else if (payload.text && setOpenEndedMessages) {
-        // Open-ended: build a FeedMessage and prepend to feed
+        
         const feedMsg: FeedMessage = {
           id: `${Date.now()}-${Math.random()}`,
           authorInitial: "?",

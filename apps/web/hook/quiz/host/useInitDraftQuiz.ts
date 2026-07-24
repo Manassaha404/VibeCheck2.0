@@ -1,13 +1,11 @@
+//perfectly fine 
+
 import { useState } from "react";
 import { trpc } from "@/trpc/client";
 import { useQuizStore } from "@/store/quizStore";
 import { useRouter } from "next/navigation";
 import { uuidToNumber } from "@/utils/uuid";
 
-/**
- * Step 1 hook — reads title/description/settings from the quiz store,
- * calls initDraftQuiz to create a DB draft, then navigates to Step 2.
- */
 export function useInitDraftQuiz() {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -18,13 +16,11 @@ export function useInitDraftQuiz() {
     if (!quizStore.info.title.trim()) {
       return;
     }
-
     const payload = {
       info: {
         title: quizStore.info.title.trim(),
         description: quizStore.info.description.trim() || undefined,
       },
-      globalSettings: quizStore.globalSettings,
     };
 
     try {

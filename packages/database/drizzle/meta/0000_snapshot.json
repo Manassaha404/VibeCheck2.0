@@ -1,5 +1,5 @@
 {
-  "id": "3edb65b7-a2fb-4717-b2ba-670c4431614a",
+  "id": "6d4d9620-9d63-42e3-82e8-c75e257040a8",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -124,8 +124,12 @@
           "name": "auths_user_id_users_user_id_fk",
           "tableFrom": "auths",
           "tableTo": "users",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["user_id"],
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "user_id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -230,12 +234,16 @@
         "users_username_unique": {
           "name": "users_username_unique",
           "nullsNotDistinct": false,
-          "columns": ["username"]
+          "columns": [
+            "username"
+          ]
         },
         "users_email_unique": {
           "name": "users_email_unique",
           "nullsNotDistinct": false,
-          "columns": ["email"]
+          "columns": [
+            "email"
+          ]
         }
       },
       "policies": {},
@@ -403,8 +411,12 @@
           "name": "forms_user_id_users_user_id_fk",
           "tableFrom": "forms",
           "tableTo": "users",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["user_id"],
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "user_id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -541,8 +553,12 @@
           "name": "form_fields_form_id_forms_form_id_fk",
           "tableFrom": "form_fields",
           "tableTo": "forms",
-          "columnsFrom": ["form_id"],
-          "columnsTo": ["form_id"],
+          "columnsFrom": [
+            "form_id"
+          ],
+          "columnsTo": [
+            "form_id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -649,8 +665,12 @@
           "name": "form_responses_form_id_forms_form_id_fk",
           "tableFrom": "form_responses",
           "tableTo": "forms",
-          "columnsFrom": ["form_id"],
-          "columnsTo": ["form_id"],
+          "columnsFrom": [
+            "form_id"
+          ],
+          "columnsTo": [
+            "form_id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -658,8 +678,12 @@
           "name": "form_responses_user_id_users_user_id_fk",
           "tableFrom": "form_responses",
           "tableTo": "users",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["user_id"],
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "user_id"
+          ],
           "onDelete": "set null",
           "onUpdate": "no action"
         }
@@ -751,8 +775,12 @@
           "name": "form_answers_field_id_form_fields_field_id_fk",
           "tableFrom": "form_answers",
           "tableTo": "form_fields",
-          "columnsFrom": ["field_id"],
-          "columnsTo": ["field_id"],
+          "columnsFrom": [
+            "field_id"
+          ],
+          "columnsTo": [
+            "field_id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -760,8 +788,12 @@
           "name": "form_answers_response_id_form_responses_response_id_fk",
           "tableFrom": "form_answers",
           "tableTo": "form_responses",
-          "columnsFrom": ["response_id"],
-          "columnsTo": ["response_id"],
+          "columnsFrom": [
+            "response_id"
+          ],
+          "columnsTo": [
+            "response_id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -907,8 +939,12 @@
           "name": "polls_user_id_users_user_id_fk",
           "tableFrom": "polls",
           "tableTo": "users",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["user_id"],
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "user_id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -979,8 +1015,12 @@
           "name": "poll_questions_poll_id_polls_poll_id_fk",
           "tableFrom": "poll_questions",
           "tableTo": "polls",
-          "columnsFrom": ["poll_id"],
-          "columnsTo": ["poll_id"],
+          "columnsFrom": [
+            "poll_id"
+          ],
+          "columnsTo": [
+            "poll_id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -1057,8 +1097,12 @@
           "name": "poll_options_question_id_poll_questions_poll_question_id_fk",
           "tableFrom": "poll_options",
           "tableTo": "poll_questions",
-          "columnsFrom": ["question_id"],
-          "columnsTo": ["poll_question_id"],
+          "columnsFrom": [
+            "question_id"
+          ],
+          "columnsTo": [
+            "poll_question_id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -1165,8 +1209,12 @@
           "name": "poll_views_poll_id_polls_poll_id_fk",
           "tableFrom": "poll_views",
           "tableTo": "polls",
-          "columnsFrom": ["poll_id"],
-          "columnsTo": ["poll_id"],
+          "columnsFrom": [
+            "poll_id"
+          ],
+          "columnsTo": [
+            "poll_id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -1174,8 +1222,12 @@
           "name": "poll_views_user_id_users_user_id_fk",
           "tableFrom": "poll_views",
           "tableTo": "users",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["user_id"],
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "user_id"
+          ],
           "onDelete": "set null",
           "onUpdate": "no action"
         }
@@ -1303,8 +1355,12 @@
           "name": "poll_votes_question_id_poll_questions_poll_question_id_fk",
           "tableFrom": "poll_votes",
           "tableTo": "poll_questions",
-          "columnsFrom": ["question_id"],
-          "columnsTo": ["poll_question_id"],
+          "columnsFrom": [
+            "question_id"
+          ],
+          "columnsTo": [
+            "poll_question_id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -1312,8 +1368,12 @@
           "name": "poll_votes_option_id_poll_options_poll_option_id_fk",
           "tableFrom": "poll_votes",
           "tableTo": "poll_options",
-          "columnsFrom": ["option_id"],
-          "columnsTo": ["poll_option_id"],
+          "columnsFrom": [
+            "option_id"
+          ],
+          "columnsTo": [
+            "poll_option_id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -1321,8 +1381,12 @@
           "name": "poll_votes_user_id_users_user_id_fk",
           "tableFrom": "poll_votes",
           "tableTo": "users",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["user_id"],
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "user_id"
+          ],
           "onDelete": "set null",
           "onUpdate": "no action"
         }
@@ -1405,8 +1469,12 @@
           "name": "poll_comments_poll_id_polls_poll_id_fk",
           "tableFrom": "poll_comments",
           "tableTo": "polls",
-          "columnsFrom": ["poll_id"],
-          "columnsTo": ["poll_id"],
+          "columnsFrom": [
+            "poll_id"
+          ],
+          "columnsTo": [
+            "poll_id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -1414,8 +1482,12 @@
           "name": "poll_comments_user_id_users_user_id_fk",
           "tableFrom": "poll_comments",
           "tableTo": "users",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["user_id"],
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "user_id"
+          ],
           "onDelete": "set null",
           "onUpdate": "no action"
         }
@@ -1553,8 +1625,12 @@
           "name": "petitions_user_id_users_user_id_fk",
           "tableFrom": "petitions",
           "tableTo": "users",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["user_id"],
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "user_id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -1697,8 +1773,12 @@
           "name": "petition_signatures_petition_id_petitions_petition_id_fk",
           "tableFrom": "petition_signatures",
           "tableTo": "petitions",
-          "columnsFrom": ["petition_id"],
-          "columnsTo": ["petition_id"],
+          "columnsFrom": [
+            "petition_id"
+          ],
+          "columnsTo": [
+            "petition_id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -1706,8 +1786,12 @@
           "name": "petition_signatures_user_id_users_user_id_fk",
           "tableFrom": "petition_signatures",
           "tableTo": "users",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["user_id"],
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "user_id"
+          ],
           "onDelete": "set null",
           "onUpdate": "no action"
         }
@@ -1759,7 +1843,9 @@
         "tags_text_unique": {
           "name": "tags_text_unique",
           "nullsNotDistinct": false,
-          "columns": ["text"]
+          "columns": [
+            "text"
+          ]
         }
       },
       "policies": {},
@@ -1847,8 +1933,12 @@
           "name": "poll_tags_poll_id_polls_poll_id_fk",
           "tableFrom": "poll_tags",
           "tableTo": "polls",
-          "columnsFrom": ["poll_id"],
-          "columnsTo": ["poll_id"],
+          "columnsFrom": [
+            "poll_id"
+          ],
+          "columnsTo": [
+            "poll_id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -1856,8 +1946,12 @@
           "name": "poll_tags_tag_id_tags_tag_id_fk",
           "tableFrom": "poll_tags",
           "tableTo": "tags",
-          "columnsFrom": ["tag_id"],
-          "columnsTo": ["tag_id"],
+          "columnsFrom": [
+            "tag_id"
+          ],
+          "columnsTo": [
+            "tag_id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -1949,8 +2043,12 @@
           "name": "petition_tags_petition_id_petitions_petition_id_fk",
           "tableFrom": "petition_tags",
           "tableTo": "petitions",
-          "columnsFrom": ["petition_id"],
-          "columnsTo": ["petition_id"],
+          "columnsFrom": [
+            "petition_id"
+          ],
+          "columnsTo": [
+            "petition_id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -1958,8 +2056,12 @@
           "name": "petition_tags_tag_id_tags_tag_id_fk",
           "tableFrom": "petition_tags",
           "tableTo": "tags",
-          "columnsFrom": ["tag_id"],
-          "columnsTo": ["tag_id"],
+          "columnsFrom": [
+            "tag_id"
+          ],
+          "columnsTo": [
+            "tag_id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -2073,8 +2175,12 @@
           "name": "user_tag_preferences_user_id_users_user_id_fk",
           "tableFrom": "user_tag_preferences",
           "tableTo": "users",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["user_id"],
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "user_id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -2082,8 +2188,12 @@
           "name": "user_tag_preferences_tag_id_tags_tag_id_fk",
           "tableFrom": "user_tag_preferences",
           "tableTo": "tags",
-          "columnsFrom": ["tag_id"],
-          "columnsTo": ["tag_id"],
+          "columnsFrom": [
+            "tag_id"
+          ],
+          "columnsTo": [
+            "tag_id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -2182,8 +2292,12 @@
           "name": "form_building_agent_conversations_user_id_users_user_id_fk",
           "tableFrom": "form_building_agent_conversations",
           "tableTo": "users",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["user_id"],
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "user_id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -2191,8 +2305,115 @@
           "name": "form_building_agent_conversations_form_id_forms_form_id_fk",
           "tableFrom": "form_building_agent_conversations",
           "tableTo": "forms",
-          "columnsFrom": ["form_id"],
-          "columnsTo": ["form_id"],
+          "columnsFrom": [
+            "form_id"
+          ],
+          "columnsTo": [
+            "form_id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.quiz_building_agent_conversations": {
+      "name": "quiz_building_agent_conversations",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "quiz_id": {
+          "name": "quiz_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "history": {
+          "name": "history",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'[]'::jsonb"
+        },
+        "file_urls": {
+          "name": "file_urls",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'[]'::jsonb"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "quiz_agent_conv_user_idx": {
+          "name": "quiz_agent_conv_user_idx",
+          "columns": [
+            {
+              "expression": "user_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "quiz_building_agent_conversations_user_id_users_user_id_fk": {
+          "name": "quiz_building_agent_conversations_user_id_users_user_id_fk",
+          "tableFrom": "quiz_building_agent_conversations",
+          "tableTo": "users",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "user_id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "quiz_building_agent_conversations_quiz_id_quizzes_quiz_id_fk": {
+          "name": "quiz_building_agent_conversations_quiz_id_quizzes_quiz_id_fk",
+          "tableFrom": "quiz_building_agent_conversations",
+          "tableTo": "quizzes",
+          "columnsFrom": [
+            "quiz_id"
+          ],
+          "columnsTo": [
+            "quiz_id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -2338,8 +2559,12 @@
           "name": "saves_user_id_users_user_id_fk",
           "tableFrom": "saves",
           "tableTo": "users",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["user_id"],
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "user_id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -2347,8 +2572,12 @@
           "name": "saves_form_id_forms_form_id_fk",
           "tableFrom": "saves",
           "tableTo": "forms",
-          "columnsFrom": ["form_id"],
-          "columnsTo": ["form_id"],
+          "columnsFrom": [
+            "form_id"
+          ],
+          "columnsTo": [
+            "form_id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -2356,8 +2585,12 @@
           "name": "saves_petition_id_petitions_petition_id_fk",
           "tableFrom": "saves",
           "tableTo": "petitions",
-          "columnsFrom": ["petition_id"],
-          "columnsTo": ["petition_id"],
+          "columnsFrom": [
+            "petition_id"
+          ],
+          "columnsTo": [
+            "petition_id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -2365,8 +2598,12 @@
           "name": "saves_poll_id_polls_poll_id_fk",
           "tableFrom": "saves",
           "tableTo": "polls",
-          "columnsFrom": ["poll_id"],
-          "columnsTo": ["poll_id"],
+          "columnsFrom": [
+            "poll_id"
+          ],
+          "columnsTo": [
+            "poll_id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -2412,7 +2649,7 @@
           "typeSchema": "public",
           "primaryKey": false,
           "notNull": true,
-          "default": "'active'"
+          "default": "'draft'"
         },
         "password_needed": {
           "name": "password_needed",
@@ -2479,8 +2716,12 @@
           "name": "quizzes_user_id_users_user_id_fk",
           "tableFrom": "quizzes",
           "tableTo": "users",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["user_id"],
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "user_id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -2624,8 +2865,12 @@
           "name": "quiz_questions_quiz_id_quizzes_quiz_id_fk",
           "tableFrom": "quiz_questions",
           "tableTo": "quizzes",
-          "columnsFrom": ["quiz_id"],
-          "columnsTo": ["quiz_id"],
+          "columnsFrom": [
+            "quiz_id"
+          ],
+          "columnsTo": [
+            "quiz_id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -2759,8 +3004,12 @@
           "name": "quiz_sessions_quiz_id_quizzes_quiz_id_fk",
           "tableFrom": "quiz_sessions",
           "tableTo": "quizzes",
-          "columnsFrom": ["quiz_id"],
-          "columnsTo": ["quiz_id"],
+          "columnsFrom": [
+            "quiz_id"
+          ],
+          "columnsTo": [
+            "quiz_id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -2881,8 +3130,12 @@
           "name": "quiz_participants_session_id_quiz_sessions_session_id_fk",
           "tableFrom": "quiz_participants",
           "tableTo": "quiz_sessions",
-          "columnsFrom": ["session_id"],
-          "columnsTo": ["session_id"],
+          "columnsFrom": [
+            "session_id"
+          ],
+          "columnsTo": [
+            "session_id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -2890,8 +3143,12 @@
           "name": "quiz_participants_user_id_users_user_id_fk",
           "tableFrom": "quiz_participants",
           "tableTo": "users",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["user_id"],
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "user_id"
+          ],
           "onDelete": "set null",
           "onUpdate": "no action"
         }
@@ -2973,8 +3230,12 @@
           "name": "session_results_session_id_quiz_sessions_session_id_fk",
           "tableFrom": "session_results",
           "tableTo": "quiz_sessions",
-          "columnsFrom": ["session_id"],
-          "columnsTo": ["session_id"],
+          "columnsFrom": [
+            "session_id"
+          ],
+          "columnsTo": [
+            "session_id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -2990,17 +3251,29 @@
     "public.user_plan": {
       "name": "user_plan",
       "schema": "public",
-      "values": ["free", "pro", "premium"]
+      "values": [
+        "free",
+        "pro",
+        "premium"
+      ]
     },
     "public.user_roles": {
       "name": "user_roles",
       "schema": "public",
-      "values": ["admin", "user"]
+      "values": [
+        "admin",
+        "user"
+      ]
     },
     "public.form_status": {
       "name": "form_status",
       "schema": "public",
-      "values": ["draft", "active", "closed", "archived"]
+      "values": [
+        "draft",
+        "active",
+        "closed",
+        "archived"
+      ]
     },
     "public.field_type": {
       "name": "field_type",
@@ -3025,22 +3298,39 @@
     "public.poll_status": {
       "name": "poll_status",
       "schema": "public",
-      "values": ["draft", "active", "archived"]
+      "values": [
+        "draft",
+        "active",
+        "archived"
+      ]
     },
     "public.petition_status": {
       "name": "petition_status",
       "schema": "public",
-      "values": ["draft", "active", "closed", "archived"]
+      "values": [
+        "draft",
+        "active",
+        "closed",
+        "archived"
+      ]
     },
     "public.quiz_status": {
       "name": "quiz_status",
       "schema": "public",
-      "values": ["active", "archived"]
+      "values": [
+        "active",
+        "archived",
+        "draft"
+      ]
     },
     "public.session_status": {
       "name": "session_status",
       "schema": "public",
-      "values": ["waiting", "active", "ended"]
+      "values": [
+        "waiting",
+        "active",
+        "ended"
+      ]
     }
   },
   "schemas": {},

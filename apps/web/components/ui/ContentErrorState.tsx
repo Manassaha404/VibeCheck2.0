@@ -11,11 +11,12 @@ import {
   SearchX,
   Home,
   RefreshCw,
+  HelpCircle,
 } from "lucide-react";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
-export type ContentKind = "poll" | "form" | "petition";
+export type ContentKind = "poll" | "form" | "petition" | "quiz";
 
 export type ContentErrorVariant =
   | "not_found" // 404 – content doesn't exist or never published
@@ -42,12 +43,14 @@ const kindLabel: Record<ContentKind, string> = {
   poll: "Poll",
   form: "Form",
   petition: "Petition",
+  quiz: "Quiz",
 };
 
 const kindIcon: Record<ContentKind, React.ReactNode> = {
   poll: <BarChart2 size={28} strokeWidth={2.5} />,
   form: <FileText size={28} strokeWidth={2.5} />,
   petition: <Megaphone size={28} strokeWidth={2.5} />,
+  quiz: <HelpCircle size={28} strokeWidth={2.5} />,
 };
 
 type VariantConfig = {

@@ -20,12 +20,8 @@ export const useMakeQuizSession = (
       console.error("Failed to create quiz session", error);
     },
   });
-
   const handleStartSession = async (sessionName: string) => {
     if (!sessionName.trim()) return;
-
-    // We use mutate instead of mutateAsync here since the success/error handling
-    // is now managed by the mutation configuration above.
     mutation.mutate({
       quizId: numberToUuid(quizIdParam),
       sessionName: sessionName.trim(),

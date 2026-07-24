@@ -28,6 +28,9 @@ export interface AgentSessionStore {
   /** Called by the upload pipeline when a document has been indexed. */
   setDocumentReady: (conversationId: string, fileName: string) => void;
 
+  /** Set the conversation id manually. */
+  setConversationId: (conversationId: string) => void;
+
   /** Called when the pipeline starts uploading. */
   setUploadStatus: (status: DocumentUploadStatus) => void;
 
@@ -54,6 +57,8 @@ export const useAgentSessionStore = create<AgentSessionStore>()((set) => ({
     })),
 
   setUploadStatus: (status) => set({ uploadStatus: status }),
+  
+  setConversationId: (id) => set({ conversationId: id }),
 
   resetSession: () =>
     set({

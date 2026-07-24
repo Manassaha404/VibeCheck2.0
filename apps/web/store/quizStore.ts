@@ -12,6 +12,7 @@ export interface Question {
   type: QuestionType;
   text: string;
   options: QuizOption[];
+  acceptedAnswers?: string;
   timeLimit: number;
   points: number;
   mediaUrl?: string;
@@ -25,6 +26,7 @@ export interface GlobalSettings {
   syncAllQuestions: boolean;
   passwordProtect: boolean;
   password: string;
+  isBonusPointsEnabled: boolean;
 }
 
 export interface QuizInfo {
@@ -32,14 +34,13 @@ export interface QuizInfo {
   description: string;
 }
 
-
-
 function makeQuestion(
   overrides: Partial<Omit<Question, "id">> = {},
   globalSettings: GlobalSettings,
 ): Question {
+  const type = overrides.type || "multiple_choice";
   const base: Omit<Question, "id"> = {
-    type: "multiple_choice",
+    type,
     text: "",
     options: [
       { id: "opt-1", text: "", isCorrect: false },
@@ -48,7 +49,7 @@ function makeQuestion(
     timeLimit: globalSettings.defaultTimeLimit,
     points: globalSettings.defaultPoints,
     collapsed: false,
-    allowMultipleCorrect: false,
+    allowMultipleCorrect: type === "multiple_choice",
     ...overrides,
   };
 
@@ -88,7 +89,6 @@ interface QuizStore {
   reset: () => void;
 }
 
-
 //default values
 const DEFAULT_GLOBAL: GlobalSettings = {
   defaultTimeLimit: 30,
@@ -96,6 +96,7 @@ const DEFAULT_GLOBAL: GlobalSettings = {
   syncAllQuestions: false,
   passwordProtect: false,
   password: "",
+  isBonusPointsEnabled: false,
 };
 const DEFAULT_INFO: QuizInfo = {
   title: "",
@@ -113,7 +114,7 @@ const INITIAL_QUESTIONS: Question[] = [
     timeLimit: DEFAULT_GLOBAL.defaultTimeLimit,
     points: DEFAULT_GLOBAL.defaultPoints,
     collapsed: false,
-    allowMultipleCorrect: false,
+    allowMultipleCorrect: true,
   },
 ];
 
@@ -129,8 +130,6 @@ export const useQuizStore = create<QuizStore>()((set, get) => ({
   setGlobalSettings: (partial) =>
     set((s) => {
       const next = { ...s.globalSettings, ...partial };
-
-      // If syncAllQuestions is on, immediately propagate time/points
       const shouldSync =
         next.syncAllQuestions &&
         (partial.defaultTimeLimit !== undefined ||
@@ -140,14 +139,13 @@ export const useQuizStore = create<QuizStore>()((set, get) => ({
         globalSettings: next,
         questions: shouldSync
           ? s.questions.map((q) => ({
-              ...q,
-              timeLimit: next.defaultTimeLimit,
-              points: next.defaultPoints,
-            }))
+            ...q,
+            timeLimit: next.defaultTimeLimit,
+            points: next.defaultPoints,
+          }))
           : s.questions,
       };
     }),
-
   applyGlobalToAllQuestions: () =>
     set((s) => ({
       questions: s.questions.map((q) => ({
@@ -157,7 +155,7 @@ export const useQuizStore = create<QuizStore>()((set, get) => ({
       })),
     })),
 
-  // ── Questions ───────────────────────────────────────────────────────
+  //questions settings
   addQuestion: (type = "multiple_choice") =>
     set((s) => ({
       questions: [...s.questions, makeQuestion({ type }, s.globalSettings)],
@@ -182,7 +180,7 @@ export const useQuizStore = create<QuizStore>()((set, get) => ({
 
   reorderQuestions: (questions) => set({ questions }),
 
-  // ── Options ─────────────────────────────────────────────────────────
+  //options settings
   addOption: (questionId) =>
     set((s) => ({
       questions: s.questions.map((q) => {
@@ -218,11 +216,11 @@ export const useQuizStore = create<QuizStore>()((set, get) => ({
         q.id !== questionId
           ? q
           : {
-              ...q,
-              options: q.options.map((o) =>
-                o.id === optionId ? { ...o, ...partial } : o,
-              ),
-            },
+            ...q,
+            options: q.options.map((o) =>
+              o.id === optionId ? { ...o, ...partial } : o,
+            ),
+          },
       ),
     })),
 
@@ -258,7 +256,7 @@ export const useQuizStore = create<QuizStore>()((set, get) => ({
       ),
     })),
 
-  // ── Reset ────────────────────────────────────────────────────────────
+  //reset
   reset: () =>
     set({
       info: DEFAULT_INFO,

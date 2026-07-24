@@ -7,14 +7,16 @@ import { QuestionOutputSchema, type QuestionOutputType } from "../model";
 const getAllChunksAndCallQuizBuilderAgentInBatches = tool({
   name: "get_all_chunks_and_call_quiz_builder_agent_in_batches",
   description:
-    "Fetches every embedded chunk for a conversation from the vector store, " +
-    "groups them into batches, and runs the quiz-builder agent " +
-    "on each batch to generate questions without exceeding the context window limit.",
+    "Fetches every embedded document chunk for a specific conversation from the vector store, " +
+    "groups them into manageable batches, and processes them through the quiz-builder agent. " +
+    "It then automatically deduplicates and curates the results. " +
+    "Use this tool ONLY when the user wants a comprehensive quiz covering the ENTIRE uploaded document or when they don't specify a narrow topic.",
   parameters: z.object({
     conversationId: z.string(),
+    userRequest: z.string().optional().describe("The user's original request or prompt, indicating the desired number of questions or specific constraints."),
   }),
-  execute: async ({ conversationId }) => {
-    const vectorStore = await getVectorStore();
+  execute: async ({ conversationId, userRequest }) => {
+    const vectorStore = await getVectorStore(conversationId);
     const client = vectorStore.client;
     const collectionName = vectorStore.collectionName;
 
@@ -68,8 +70,10 @@ const getAllChunksAndCallQuizBuilderAgentInBatches = tool({
           .map((doc, i) => `[Chunk ${batchIndex * BATCH_SIZE + i + 1}]\n${doc.pageContent}`)
           .join("\n\n---\n\n");
 
+        const userInstructions = userRequest ? `\n\nUSER REQUEST/CONSTRAINTS:\n"${userRequest}"\nPlease ensure you follow the user's request (e.g. if they asked for exactly 30 questions, you must provide exactly 30 questions).` : "";
+
         const prompt =
-          `You are generating quiz questions from the following document excerpts (Part ${batchIndex + 1} of ${batches.length}):\n\n${context}`;
+          `You are generating quiz questions from the following document excerpts (Part ${batchIndex + 1} of ${batches.length}):\n\n${context}${userInstructions}`;
 
         const result = await run(quizBuilderAgent, prompt);
         return result.finalOutput as QuestionOutputType;
@@ -82,7 +86,8 @@ const getAllChunksAndCallQuizBuilderAgentInBatches = tool({
       return { questions: [], agentMessage: "No questions could be generated." };
     }
 
-    const reducerPrompt = `Please deduplicate and curate these questions:\n\n${JSON.stringify({ questions: allQuestions })}`;
+    const userInstructions = userRequest ? `\n\nUSER REQUEST/CONSTRAINTS:\n"${userRequest}"\nPlease ensure you follow the user's request (e.g. if they asked for exactly 30 questions, you must output exactly 30 questions, bypassing the default 20 question cap).` : "";
+    const reducerPrompt = `Please deduplicate and curate these questions:\n\n${JSON.stringify({ questions: allQuestions })}${userInstructions}`;
     const reducedResult = await run(reducerQuizBuilderAgent, reducerPrompt);
 
     return reducedResult.finalOutput as QuestionOutputType;

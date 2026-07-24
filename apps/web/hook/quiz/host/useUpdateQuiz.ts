@@ -13,7 +13,7 @@ export function useUpdateQuiz(quizId: string) {
   const trpcUtils = trpc.useUtils();
 
   const submitQuiz = async () => {
-    // Basic validation
+    
     if (!quizStore.info.title.trim()) {
       return;
     }
@@ -22,7 +22,6 @@ export function useUpdateQuiz(quizId: string) {
       return;
     }
 
-    // Format data from store to match DTO
     const payload = {
       quizId,
       info: {

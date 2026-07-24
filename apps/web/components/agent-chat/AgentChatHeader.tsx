@@ -1,13 +1,13 @@
 import React from "react";
-import { Bot, Minimize2, X, Trash2 } from "lucide-react";
+import { Bot, Minimize2, X, MessageSquarePlus } from "lucide-react";
 
 interface AgentChatHeaderProps {
   onMinimize: () => void;
   onClose: () => void;
-  onClearHistory?: () => void;
+  onNewConversation?: () => void;
 }
 
-export default function AgentChatHeader({ onMinimize, onClose, onClearHistory }: AgentChatHeaderProps) {
+export default function AgentChatHeader({ onMinimize, onClose, onNewConversation }: AgentChatHeaderProps) {
   return (
     <div className="flex items-center justify-between p-4 bg-electric-sun border-b-2 border-ink-charcoal shrink-0">
       {/* Left — avatar + title */}
@@ -20,15 +20,15 @@ export default function AgentChatHeader({ onMinimize, onClose, onClearHistory }:
 
       {/* Right — actions */}
       <div className="flex items-center gap-1">
-        {onClearHistory && (
+        {onNewConversation && (
           <button
             type="button"
-            onClick={onClearHistory}
+            onClick={onNewConversation}
             className="p-1 hover:bg-pure-white border-2 border-transparent hover:border-ink-charcoal rounded transition-colors text-ink-charcoal"
             aria-label="New Conversation"
             title="New Conversation"
           >
-            <Trash2 className="w-5 h-5" />
+            <MessageSquarePlus className="w-5 h-5" />
           </button>
         )}
         <button

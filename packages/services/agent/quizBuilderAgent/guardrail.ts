@@ -36,19 +36,21 @@ function extractUserText(input: string | AgentInputItem[] | unknown): string {
   if (typeof input === "string") return input;
 
   if (Array.isArray(input)) {
+    const texts: string[] = [];
     for (let i = input.length - 1; i >= 0; i--) {
       const item = input[i] as AgentInputItem;
       if (item && (item as any).role === "user") {
         const content = (item as any).content;
-        if (typeof content === "string") return content;
+        if (typeof content === "string") texts.push(content);
         if (Array.isArray(content)) {
           const textPart = content.find(
             (p: any) => p.type === "input_text" || p.type === "text",
           );
-          if (textPart) return textPart.text ?? textPart.content ?? "";
+          if (textPart) texts.push(textPart.text ?? textPart.content ?? "");
         }
       }
     }
+    if (texts.length > 0) return texts.join("\n\n");
   }
   return JSON.stringify(input);
 }
@@ -69,22 +71,13 @@ export const inputGuardrail: InputGuardrail = {
 export const outputGuardrailAgent = new Agent({
   name: "output_guardrail_agent",
   instructions: `
-You are a strict output guardrail for a quiz-generation assistant.
-
-You receive a JSON object that is the agent's final output. Validate it against
-these EXACT rules (DO NOT invent any other rules):
-  1. It must have a "questions" array with at least 0 items (empty is allowed).
-  2. Every question must have a non-empty "text" field and a valid "type"
-     ("multiple_choice" or "text_entry").
-  3. If type is "multiple_choice", it must have at least 2 "options", each with
-     a "text" string and an "isCorrect" boolean. Multiple options can be correct
-     if allowMultipleCorrect is true. Do not fail it for having multiple correct options.
-     If type is "text_entry", "options" can be empty.
-  4. "timeLimit" must be a positive integer; "points" must be a non-negative integer.
-  5. The object must have an "agentMessage" string (may be empty).
-
-If ALL 5 rules pass → { isValid: true, reason: null }
-If ANY rule fails → { isValid: false, reason: "<concise description of what failed>" }
+You are a quality-control output guardrail for a quiz-generation assistant.
+You receive a JSON object representing the agent's final output. The structure and types are already validated by the system.
+Your ONLY job is to verify semantic correctness:
+  1. For "multiple_choice" questions, ensure there are at least 2 options.
+  2. For "text_entry" questions, ensure the "options" array is empty.
+If both semantic rules pass -> { isValid: true, reason: null }
+If ANY rule fails -> { isValid: false, reason: "<Concise description of the EXACT rule that failed>" }
 `.trim(),
   model: "gpt-4o-mini",
   outputType: GuardrailResultSchema,

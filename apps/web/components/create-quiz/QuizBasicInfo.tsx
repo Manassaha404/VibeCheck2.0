@@ -2,10 +2,13 @@
 
 import React from "react";
 import { useQuizStore } from "@/store/quizStore";
+import { Zap } from "lucide-react";
 
 export default function QuizBasicInfo() {
   const info = useQuizStore((s) => s.info);
   const setInfo = useQuizStore((s) => s.setInfo);
+  const globalSettings = useQuizStore((s) => s.globalSettings);
+  const setGlobalSettings = useQuizStore((s) => s.setGlobalSettings);
 
   return (
     <div className="w-full flex flex-col gap-8">
@@ -48,6 +51,7 @@ export default function QuizBasicInfo() {
           />
         </div>
       </div>
+
     </div>
   );
 }

@@ -1,0 +1,1 @@
+ALTER TABLE "quizzes" ADD COLUMN "is_bonus_points_enabled" boolean DEFAULT false NOT NULL;

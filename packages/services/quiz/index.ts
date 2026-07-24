@@ -238,10 +238,6 @@ class QuizService {
         title: data.info.title,
         description: data.info.description ?? null,
         status: "draft",
-        passwordNeeded: data.globalSettings.passwordProtect,
-        password: data.globalSettings.passwordProtect
-          ? data.globalSettings.password
-          : null,
       })
       .returning();
 
@@ -317,6 +313,7 @@ class QuizService {
           password: data.globalSettings.passwordProtect
             ? data.globalSettings.password
             : null,
+          isBonusPointsEnabled: data.globalSettings.isBonusPointsEnabled,
         })
         .returning();
 
@@ -396,6 +393,7 @@ class QuizService {
           password: data.globalSettings.passwordProtect
             ? data.globalSettings.password
             : null,
+          isBonusPointsEnabled: data.globalSettings.isBonusPointsEnabled,
         })
         .where(eq(quizzes.quizId, data.quizId));
 
@@ -1272,6 +1270,7 @@ class QuizService {
         title: quizzes.title,
         description: quizzes.description,
         passwordNeeded: quizzes.passwordNeeded,
+        isBonusPointsEnabled: quizzes.isBonusPointsEnabled,
       })
       .from(quizzes)
       .where(eq(quizzes.quizId, session.quizId));
@@ -1338,6 +1337,7 @@ class QuizService {
         title: quiz.title,
         description: quiz.description ?? null,
         passwordNeeded: quiz.passwordNeeded,
+        isBonusPointsEnabled: quiz.isBonusPointsEnabled,
       },
       participantCount,
       liveState,

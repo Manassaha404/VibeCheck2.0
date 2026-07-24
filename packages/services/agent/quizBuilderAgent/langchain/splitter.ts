@@ -1,3 +1,4 @@
+//perfectly fine
 import { RecursiveCharacterTextSplitter } from "@langchain/textsplitters";
 
 import { Document } from "@langchain/core/documents";
@@ -23,7 +24,7 @@ export async function chunkAndTagDocuments(
       new Document({
         pageContent: chunk.pageContent,
         metadata: {
-          ...chunk.metadata, // keep source, page number, etc. from the loader
+          ...chunk.metadata, 
           conversationId: opts.conversationId,
           chunkIndex: i,
           totalChunks: chunks.length,

@@ -149,6 +149,36 @@ export default function QuizSettings() {
           </label>
         </div>
 
+        {/* ── Bonus Points toggle ── */}
+        <div className="flex items-center justify-between bg-pure-white p-4 border-2 border-ink-charcoal">
+          <div className="flex flex-col gap-0.5 pr-4">
+            <span className="font-headline-sm text-headline-sm font-bold">
+              Enable Speed Bonus
+            </span>
+            <span className="text-xs text-outline font-medium">
+              Faster answers score more points
+            </span>
+          </div>
+          <label className="relative inline-flex items-center cursor-pointer shrink-0">
+            <input
+              className="sr-only peer"
+              id="toggle-bonus"
+              type="checkbox"
+              checked={globalSettings.isBonusPointsEnabled}
+              onChange={(e) =>
+                setGlobalSettings({ isBonusPointsEnabled: e.target.checked })
+              }
+            />
+            <div
+              className={`w-16 h-8 border-2 border-ink-charcoal peer-focus:outline-none rounded-none shadow-hard-sm relative transition-colors ${globalSettings.isBonusPointsEnabled ? "bg-vivid-coral" : "bg-surface-container-highest"}`}
+            >
+              <div
+                className={`absolute top-[2px] bg-ink-charcoal border-2 border-ink-charcoal h-6 w-7 transition-transform ${globalSettings.isBonusPointsEnabled ? "translate-x-[26px] left-[2px]" : "left-[2px]"}`}
+              />
+            </div>
+          </label>
+        </div>
+
         {/* ── Manual apply-to-all button ── */}
         <motion.button
           whileHover={{ scale: 1.02, y: -1 }}

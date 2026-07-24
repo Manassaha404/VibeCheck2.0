@@ -1,3 +1,4 @@
+//perfectly fine
 import db, { eq, sql } from "@repo/database";
 import { quizBuilderAgentConversation } from "@repo/database/models/quiz-builder-agent-conversation";
 import { inngest } from "../../../inngest";
@@ -7,7 +8,7 @@ export interface StoreDocumentsEmbeddingsInput {
   fileUrl: string;
   userId: string;
   quizId: string;
-  conversationId?: string;
+  conversationId?: string | null;
 }
 
 class LangChainService {
@@ -18,7 +19,7 @@ class LangChainService {
     quizId,
     conversationId,
   }: StoreDocumentsEmbeddingsInput): Promise<{ conversationId: string }> {
-    let resolvedConversationId: string;
+    let resolvedConversationId: string | undefined;
 
     if (conversationId) {
       const [updated] = await db
@@ -30,14 +31,12 @@ class LangChainService {
         .where(eq(quizBuilderAgentConversation.id, conversationId))
         .returning({ id: quizBuilderAgentConversation.id });
 
-      if (!updated) {
-        throw new Error(
-          `Quiz-builder conversation not found: ${conversationId}`,
-        );
+      if (updated) {
+        resolvedConversationId = updated.id;
       }
+    }
 
-      resolvedConversationId = updated.id;
-    } else {
+    if (!resolvedConversationId) {
       if (!userId || !quizId) {
         throw new Error(
           "userId and quizId are required when creating a new conversation",
@@ -52,16 +51,6 @@ class LangChainService {
           fileUrls: [fileUrl],
           history: [],
         })
-        .onConflictDoUpdate({
-          target: [
-            quizBuilderAgentConversation.userId,
-            quizBuilderAgentConversation.quizId,
-          ],
-          set: {
-            fileUrls: sql`${quizBuilderAgentConversation.fileUrls} || ${JSON.stringify([fileUrl])}::jsonb`,
-            updatedAt: new Date(),
-          },
-        })
         .returning({ id: quizBuilderAgentConversation.id });
 
       if (!inserted) {
@@ -75,8 +64,9 @@ class LangChainService {
       name: "document/uploaded",
       data: {
         documentId,
-        fileUrl, // plain public secure_url — no reconstruction needed
+        fileUrl, 
         conversationId: resolvedConversationId,
+        quizId,
       },
     });
 

@@ -28,7 +28,6 @@ export const quizBuilderAgentConversation = pgTable(
       .$onUpdate(() => new Date()),
   },
   (t) => [
-    uniqueIndex("agent_conv_user_quiz_idx").on(t.userId, t.quizId),
     index("quiz_agent_conv_user_idx").on(t.userId),
   ],
 );

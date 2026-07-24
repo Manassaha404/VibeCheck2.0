@@ -171,7 +171,7 @@ export default function AgentChatPanel({ onClose, onMinimize, quizId }: AgentCha
       <AgentChatHeader 
         onClose={onClose} 
         onMinimize={onMinimize} 
-        onClearHistory={handleNewConversation}
+        onNewConversation={handleNewConversation}
       />
 
       {/* ── Messages ── */}

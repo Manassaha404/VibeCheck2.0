@@ -28,17 +28,19 @@ class OauthService {
       .replace(/[^a-z0-9_]/g, "")
       .slice(0, 20);
 
+    const baseName = sanitized || "user";
+
     const existing = await db
       .select()
       .from(users)
-      .where(like(users.username, `${sanitized}`));
+      .where(like(users.username, `${baseName}%`));
 
-    if (!existing.length) return sanitized;
+    if (!existing.length) return baseName;
 
     const taken = new Set(existing.map((u) => u.username));
     let candidate: string;
     do {
-      candidate = `${sanitized}_${Math.floor(1000 + Math.random() * 9000)}`;
+      candidate = `${baseName}_${Math.floor(1000 + Math.random() * 9000)}`;
     } while (taken.has(candidate));
 
     return candidate;
@@ -127,15 +129,26 @@ class OauthService {
         .from(auths)
         .where(eq(auths.userId, existingUser.userId));
 
-      await db
-        .update(auths)
-        .set({
+      if (existingAuthRecord) {
+        await db
+          .update(auths)
+          .set({
+            googleAccountId: googleUser.sub,
+            googleRefreshToken: refreshToken ?? existingAuthRecord.googleRefreshToken,
+            isVerified: true,
+            lastLoginAt: new Date(),
+          })
+          .where(eq(auths.authId, existingAuthRecord.authId));
+      } else {
+        await db.insert(auths).values({
+          userId: existingUser.userId,
+          password: null,
           googleAccountId: googleUser.sub,
           googleRefreshToken: refreshToken ?? null,
           isVerified: true,
           lastLoginAt: new Date(),
-        })
-        .where(eq(auths.authId, existingAuthRecord!.authId));
+        });
+      }
 
       return {
         userId: existingUser.userId,

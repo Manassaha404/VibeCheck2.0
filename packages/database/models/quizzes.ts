@@ -23,6 +23,7 @@ export const quizzes = pgTable(
     title: varchar("title", { length: 255 }).notNull(),
     description: text("description"),
     status: quizStatusEnum("status").default("draft").notNull(),
+    isBonusPointsEnabled: boolean("is_bonus_points_enabled").default(false).notNull(),
     passwordNeeded: boolean("password_needed").default(false).notNull(),
     password: varchar("password", { length: 255 }),
     createdAt: timestamp("created_at").defaultNow().notNull(),

@@ -1,3 +1,4 @@
+//perfectly fine
 import { OpenAIEmbeddings } from "@langchain/openai";
 import { Document } from "@langchain/core/documents";
 

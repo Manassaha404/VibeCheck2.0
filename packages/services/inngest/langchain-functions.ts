@@ -1,6 +1,6 @@
-import { realtime } from "inngest";
-import { z } from "zod";
+//perfectly fine
 import { inngest } from "./client";
+import { quizAgentChannel } from "./agent-functions";
 import loadAnyDocument from "../agent/quizBuilderAgent/langchain/docloader";
 import { chunkAndTagDocuments } from "../agent/quizBuilderAgent/langchain/splitter";
 import { getVectorStore } from "../agent/quizBuilderAgent/langchain/vectorStore";
@@ -8,32 +8,11 @@ import fs from "fs";
 import path from "path";
 import os from "os";
 
-export const documentChannel = realtime.channel({
-  name: ({ documentId }: { documentId: string }) => `document:${documentId}`,
-  topics: {
-    status: {
-      schema: z.object({
-        status: z.enum(["uploaded", "processing", "ready", "failed"]),
-        stage: z
-          .enum(["downloading", "chunking", "embedding", "storing", "done"])
-          .optional(),
-        progress: z
-          .object({
-            totalChunks: z.number(),
-            embeddedChunks: z.number(),
-          })
-          .optional(),
-        error: z.string().optional(),
-        timestamp: z.string().default(() => new Date().toISOString()),
-      }),
-    },
-  },
-});
-
 interface ingestDocumentEventData {
   documentId: string;
   fileUrl: string;
   conversationId: string;
+  quizId: string;
 }
 
 const ingestDocument = inngest.createFunction(
@@ -44,10 +23,10 @@ const ingestDocument = inngest.createFunction(
     },
   },
   async ({ event, step }) => {
-    const { documentId, fileUrl, conversationId } =
+    const { documentId, fileUrl, conversationId, quizId } =
       event.data as ingestDocumentEventData;
 
-    const ch = documentChannel({ documentId });
+    const ch = quizAgentChannel({ quizId });
 
     await step.realtime.publish("document-processing", ch.status, {
       status: "processing",
@@ -55,7 +34,6 @@ const ingestDocument = inngest.createFunction(
     });
 
     try {
-      
       const localSource = await step.run("download-file", async () => {
         const response = await fetch(fileUrl);
         if (!response.ok) {
@@ -80,21 +58,18 @@ const ingestDocument = inngest.createFunction(
         stage: "chunking",
       });
 
-      
       const rawDocs = await step.run("load-document", async () => {
         try {
           return await loadAnyDocument(localSource);
         } finally {
-          // Best-effort cleanup — temp file is no longer needed after loading
           try {
             fs.unlinkSync(localSource);
           } catch {
-            // ignore — OS will clean it up eventually
+            // os will clean up temp files eventually, but we try to delete it here to avoid cluttering the temp directory
           }
         }
       });
 
-      
       const taggedChunks = await step.run("chunk-and-tag", async () => {
         return chunkAndTagDocuments(rawDocs, { conversationId });
       });
@@ -105,9 +80,8 @@ const ingestDocument = inngest.createFunction(
         progress: { totalChunks: taggedChunks.length, embeddedChunks: 0 },
       });
 
-      
       const result = await step.run("store-embeddings", async () => {
-        const vectorStore = await getVectorStore();
+        const vectorStore = await getVectorStore(conversationId);
         const ids = await vectorStore.addDocuments(taggedChunks);
         return { chunkCount: taggedChunks.length, ids };
       });

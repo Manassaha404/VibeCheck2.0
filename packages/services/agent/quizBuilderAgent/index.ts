@@ -12,24 +12,46 @@ import { inngest } from "../../inngest";
 class QuizBuilderAgentService {
   public async runQuizBuilderAgent(
     payload: RunQuizBuilderAgentType,
-  ): Promise<{ jobId: string }> {
-    const { jobId, userId, quizId, prompt, conversationId } =
+  ): Promise<{ quizId: string; conversationId: string }> {
+    const { userId, quizId, prompt, conversationId } =
       await runQuizBuilderAgentDto.parseAsync(payload);
-    const [existing] = await db
-      .select()
-      .from(quizBuilderAgentConversation)
-      .where(
-        and(
-          eq(quizBuilderAgentConversation.userId, userId),
-          eq(quizBuilderAgentConversation.quizId, quizId),
-        ),
-      );
+      
+    let resolvedConversationId = conversationId ?? undefined;
+    let previousHistory: AgentInputItem[] = [];
 
-    const previousHistory = (existing?.history ?? []) as AgentInputItem[];
+    if (resolvedConversationId) {
+      const [existing] = await db
+        .select()
+        .from(quizBuilderAgentConversation)
+        .where(eq(quizBuilderAgentConversation.id, resolvedConversationId));
+      
+      if (existing) {
+        previousHistory = (existing.history ?? []) as AgentInputItem[];
+      } else {
+        resolvedConversationId = undefined;
+      }
+    }
 
-    const effectivePrompt = conversationId
-      ? `conversationId: ${conversationId}\n\nUser request: ${prompt}`
-      : prompt;
+    if (!resolvedConversationId) {
+      const [inserted] = await db
+        .insert(quizBuilderAgentConversation)
+        .values({
+          userId,
+          quizId,
+          history: [],
+          fileUrls: [],
+        })
+        .returning({ id: quizBuilderAgentConversation.id });
+        
+      if (!inserted) {
+        throw new Error("Failed to create new conversation");
+      }
+      resolvedConversationId = inserted.id;
+    }
+
+
+
+    const effectivePrompt = `conversationId: ${resolvedConversationId}\n\n${prompt}`;
 
     const input: string | AgentInputItem[] =
       previousHistory.length > 0
@@ -41,10 +63,10 @@ class QuizBuilderAgentService {
 
     await inngest.send({
       name: "quiz-builder-agent/run",
-      data: { jobId, userId, quizId, input },
+      data: { userId, quizId, input, conversationId: resolvedConversationId },
     });
 
-    return { jobId };
+    return { quizId, conversationId: resolvedConversationId };
   }
 
   public async clearHistory(payload: ClearHistoryType): Promise<void> {

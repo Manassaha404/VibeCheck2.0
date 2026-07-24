@@ -41,7 +41,7 @@ authRouter.get("/google/callback", async (req: Request, res: Response) => {
       : "";
 
   if (error || !code) {
-    const redirectUrl = new URL(`${process.env.FRONTEND_URL}/login`);
+    const redirectUrl = new URL(`${env.CLIENT_URL}/login`);
     redirectUrl.searchParams.set("error", "oauth_cancelled");
     if (basePath) redirectUrl.searchParams.set("returnTo", basePath);
     return res.redirect(redirectUrl.toString());
@@ -57,7 +57,7 @@ authRouter.get("/google/callback", async (req: Request, res: Response) => {
 
     if (!googleUser.email_verified) {
       return res.redirect(
-        `${process.env.FRONTEND_URL}/login?error=email_not_verified`,
+        `${env.CLIENT_URL}/login?error=email_not_verified`,
       );
     }
 

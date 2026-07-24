@@ -27,6 +27,10 @@ export const quizAgentChannel = realtime.channel({
       schema: z.object({
         status: z.string(),
         result: z.any().optional(),
+        stage: z.string().optional(),
+        progress: z.any().optional(),
+        error: z.string().optional(),
+        timestamp: z.string().optional(),
       }),
     },
   },
@@ -56,10 +60,10 @@ interface formRespondentEventData {
 }
 
 interface quizBuilderAgentEventData {
-  jobId: string;
   userId: string;
   quizId: string;
   input: string | AgentInputItem[];
+  conversationId: string;
 }
 
 const runFormBuilderAgent = inngest.createFunction(
@@ -157,7 +161,7 @@ const runQuizBuilderAgent = inngest.createFunction(
     },
   },
   async ({ event, step }) => {
-    const { jobId, userId, quizId, input } =
+    const { userId, quizId, input, conversationId } =
       event.data as quizBuilderAgentEventData;
     const ch = quizAgentChannel({ quizId });
 
@@ -180,31 +184,15 @@ const runQuizBuilderAgent = inngest.createFunction(
         const [existing] = await db
           .select({ fileUrls: quizBuilderAgentConversation.fileUrls })
           .from(quizBuilderAgentConversation)
-          .where(
-            and(
-              eq(quizBuilderAgentConversation.userId, userId),
-              eq(quizBuilderAgentConversation.quizId, quizId),
-            ),
-          );
+          .where(eq(quizBuilderAgentConversation.id, conversationId));
 
         await db
-          .insert(quizBuilderAgentConversation)
-          .values({
-            userId,
-            quizId,
+          .update(quizBuilderAgentConversation)
+          .set({
             history: agentResult.history as any,
-            fileUrls: existing?.fileUrls ?? [],
+            updatedAt: new Date(),
           })
-          .onConflictDoUpdate({
-            target: [
-              quizBuilderAgentConversation.userId,
-              quizBuilderAgentConversation.quizId,
-            ],
-            set: {
-              history: agentResult.history as any,
-              updatedAt: new Date(),
-            },
-          });
+          .where(eq(quizBuilderAgentConversation.id, conversationId));
 
         return agentResult.finalOutput;
       } catch (error) {
@@ -221,7 +209,7 @@ const runQuizBuilderAgent = inngest.createFunction(
 
     await step.realtime.publish("agent-done", ch.status, {
       status: "done",
-      result: { ...(result as any), jobId },
+      result: { ...(result as any), quizId },
     });
   },
 );

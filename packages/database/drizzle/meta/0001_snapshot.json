@@ -1,6 +1,6 @@
 {
-  "id": "3f70faea-3904-4513-bbf0-81dd39f3db81",
-  "prevId": "3edb65b7-a2fb-4717-b2ba-670c4431614a",
+  "id": "f55850a8-f93c-4ee5-835c-872b669a5b19",
+  "prevId": "6d4d9620-9d63-42e3-82e8-c75e257040a8",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -2321,6 +2321,109 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
+    "public.quiz_building_agent_conversations": {
+      "name": "quiz_building_agent_conversations",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "quiz_id": {
+          "name": "quiz_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "history": {
+          "name": "history",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'[]'::jsonb"
+        },
+        "file_urls": {
+          "name": "file_urls",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'[]'::jsonb"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "quiz_agent_conv_user_idx": {
+          "name": "quiz_agent_conv_user_idx",
+          "columns": [
+            {
+              "expression": "user_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "quiz_building_agent_conversations_user_id_users_user_id_fk": {
+          "name": "quiz_building_agent_conversations_user_id_users_user_id_fk",
+          "tableFrom": "quiz_building_agent_conversations",
+          "tableTo": "users",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "user_id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "quiz_building_agent_conversations_quiz_id_quizzes_quiz_id_fk": {
+          "name": "quiz_building_agent_conversations_quiz_id_quizzes_quiz_id_fk",
+          "tableFrom": "quiz_building_agent_conversations",
+          "tableTo": "quizzes",
+          "columnsFrom": [
+            "quiz_id"
+          ],
+          "columnsTo": [
+            "quiz_id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
     "public.saves": {
       "name": "saves",
       "schema": "",
@@ -2547,6 +2650,13 @@
           "primaryKey": false,
           "notNull": true,
           "default": "'draft'"
+        },
+        "is_bonus_points_enabled": {
+          "name": "is_bonus_points_enabled",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
         },
         "password_needed": {
           "name": "password_needed",

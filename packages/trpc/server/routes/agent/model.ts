@@ -37,7 +37,6 @@ export const clearHistoryDto = z.object({
 });
 
 export const getRealTimeTokenDto = z.object({
-  jobId: z.string().optional(),
   quizId: z.string().optional(),
 });
 
@@ -49,13 +48,13 @@ export const storeDocumentsEmbeddingsDto = z.object({
   documentId: z.string().uuid("documentId must be a valid UUID"),
   fileUrl: z.string().url("fileUrl must be a valid URL"),
   quizId: z.string().uuid("quizId must be a valid UUID"),
-  conversationId: z.string().uuid("conversationId must be a valid UUID").optional(),
+  conversationId: z.string().uuid("conversationId must be a valid UUID").nullish(),
 });
 
 export type StoreDocumentsEmbeddingsDto = z.infer<typeof storeDocumentsEmbeddingsDto>;
 
 export const getDocumentRealTimeTokenDto = z.object({
-  documentId: z.string().uuid("documentId must be a valid UUID"),
+  quizId: z.string().uuid("quizId must be a valid UUID"),
 });
 
 export type GetDocumentRealTimeTokenDto = z.infer<typeof getDocumentRealTimeTokenDto>;
@@ -63,7 +62,7 @@ export type GetDocumentRealTimeTokenDto = z.infer<typeof getDocumentRealTimeToke
 export const runQuizBuilderAgentDto = z.object({
   prompt: z.string().min(1, "Prompt cannot be empty"),
   quizId: z.string().uuid("quizId must be a valid UUID"),
-  conversationId: z.string().uuid("conversationId must be a valid UUID").optional(),
+  conversationId: z.string().uuid("conversationId must be a valid UUID").nullish(),
 });
 
 export const clearQuizBuilderHistoryDto = z.object({

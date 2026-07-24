@@ -1,14 +1,10 @@
+//perfectly fine
 import { useState } from "react";
 import { trpc } from "@/trpc/client";
 import { useQuizStore } from "@/store/quizStore";
 import { useRouter } from "next/navigation";
 import { uuidToNumber } from "@/utils/uuid";
 
-/**
- * Step 2 hook — reads questions from the quiz store,
- * calls publishDraftQuiz to save questions and set status → active,
- * then navigates to the quiz dashboard.
- */
 export function usePublishDraftQuiz(quizId: string) {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -46,7 +42,6 @@ export function usePublishDraftQuiz(quizId: string) {
 
       quizStore.reset();
 
-      // Invalidate relevant queries so dashboard reflects the new quiz
       trpcUtils.quiz.getDashboard.invalidate();
 
       const quizIdURL = uuidToNumber(quizId);

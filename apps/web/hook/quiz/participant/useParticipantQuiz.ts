@@ -159,7 +159,7 @@ export function useParticipantQuiz(sessionId: string) {
         Math.max(0, timeLimitMs - timeElapsedMs) / 1000,
       );
 
-      if (bonusPoints > 0) {
+      if (bonusPoints > 0 && data?.quiz?.isBonusPointsEnabled) {
         submitBonusPointsMutation.mutate({
           sessionId,
           questionId: store.currentQuestion.questionId,
@@ -182,6 +182,7 @@ export function useParticipantQuiz(sessionId: string) {
     isLoading,
     isError,
     error,
+    refetch,
     // Form state
     passwordInput,
     setPasswordInput,

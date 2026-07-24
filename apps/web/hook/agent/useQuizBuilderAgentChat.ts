@@ -111,7 +111,7 @@ export function useQuizBuilderAgentChat(
   >(null);
 
   // Guard against processing the same job's "done" event more than once
-  const processedJobIds = useRef<Set<string>>(new Set());
+  const processedQuizIds = useRef<Set<string>>(new Set());
 
   // Helper for external callers to inject system messages
   const pushMessage = useCallback(
@@ -179,13 +179,13 @@ export function useQuizBuilderAgentChat(
     const result = payload.result as QuizBuilderAgentResult & {
       error?: boolean;
       message?: string;
-      jobId?: string;
+      quizId?: string;
     };
 
     // Mark job as handled to prevent duplicate renders processing the same message
-    const resultJobId = result?.jobId || Math.random().toString();
-    if (processedJobIds.current.has(resultJobId)) return;
-    processedJobIds.current.add(resultJobId);
+    const resultId = result?.quizId || Math.random().toString();
+    if (processedQuizIds.current.has(resultId)) return;
+    processedQuizIds.current.add(resultId);
 
     if (result?.error) {
       // Surface guardrail / error messages
@@ -223,25 +223,26 @@ export function useQuizBuilderAgentChat(
       setLastGeneratedQuestions(result.questions);
 
       // Map the agent's payload into the UI's Question store format
-      const mappedQuestions: Question[] = result.questions.map((q: GeneratedQuestion) => ({
-        id: `q-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
-        type: q.type,
-        text: q.text,
-        options:
-          q.type === "multiple_choice"
-            ? q.options.map((opt) => ({
-                id: `opt-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
-                text: opt.text,
-                isCorrect: opt.isCorrect,
-              }))
-            : [], // text_entry has no predefined options
-        timeLimit: q.timeLimit,
-        points: q.points,
-        mediaUrl: q.mediaUrl ?? undefined,
-        collapsed: false,
-        allowMultipleCorrect:
-          q.type === "multiple_choice" ? q.allowMultipleCorrect : false,
-      }));
+      const mappedQuestions: Question[] = result.questions.map((q: GeneratedQuestion) => {
+        return {
+          id: `q-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+          type: q.type,
+          text: q.text,
+          options:
+            q.type === "multiple_choice"
+              ? q.options.map((opt) => ({
+                  id: `opt-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+                  text: opt.text,
+                  isCorrect: opt.isCorrect,
+                }))
+              : [], // text_entry has no predefined options
+          timeLimit: q.timeLimit,
+          points: q.points,
+          mediaUrl: q.mediaUrl ?? undefined,
+          collapsed: false,
+          allowMultipleCorrect: q.type === "multiple_choice" ? (q as MultipleChoiceQuestion).allowMultipleCorrect : false,
+        };
+      });
 
       useQuizStore.getState().appendQuestions(mappedQuestions);
 
@@ -302,6 +303,7 @@ export function useQuizBuilderAgentChat(
     setMessages((prev) => [...prev, userMsg]);
     setInputValue("");
     setIsGenerating(true);
+    processedQuizIds.current.clear(); // clear so a new generation for the same quizId is allowed
 
     // ── Build enriched prompt ────────────────────────────────────────────────
     // Inject conversationId + current quiz draft so the agent always has context.
@@ -322,6 +324,10 @@ export function useQuizBuilderAgentChat(
       });
 
       if (!response) throw new Error("Failed to start quiz builder agent");
+      
+      if (!conversationId && response.conversationId) {
+         useAgentSessionStore.getState().setConversationId(response.conversationId);
+      }
     } catch (error: any) {
       const displayMessage =
         error?.message || "Sorry, I encountered an error while starting the agent.";
@@ -348,11 +354,12 @@ export function useQuizBuilderAgentChat(
           id: Math.random().toString(36).slice(2, 9),
           role: "agent",
           content:
-            "Conversation history cleared. Start fresh — describe the quiz you want to create!",
+            "Started a new conversation. Describe the quiz you want to create or upload a document!",
           timestamp: new Date(),
         },
       ]);
       setLastGeneratedQuestions(null);
+      useAgentSessionStore.getState().resetSession();
     } catch {
       // silently ignore
     }

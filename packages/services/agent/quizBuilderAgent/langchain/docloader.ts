@@ -1,3 +1,4 @@
+// review needed (add a ocr loader for scanned pdf)
 import { PDFLoader } from "@langchain/community/document_loaders/fs/pdf";
 import { CSVLoader } from "@langchain/community/document_loaders/fs/csv";
 import { DocxLoader } from "@langchain/community/document_loaders/fs/docx";
@@ -9,7 +10,7 @@ import fs from "fs";
 import path from "path";
 import os from "os";
 
-/** File extensions that we handle as binary downloads instead of HTML scraping */
+
 const DOCUMENT_EXTENSIONS = new Set([
   ".pdf",
   ".csv",
@@ -22,11 +23,7 @@ const DOCUMENT_EXTENSIONS = new Set([
   ".htm",
 ]);
 
-/**
- * Downloads a remote URL to a temp file and returns its local path.
- * The temp file is cleaned up by the OS; call `fs.unlinkSync` if you need
- * immediate cleanup.
- */
+
 async function downloadToTemp(url: string, ext: string): Promise<string> {
   const response = await fetch(url);
   if (!response.ok) {
@@ -41,34 +38,27 @@ async function downloadToTemp(url: string, ext: string): Promise<string> {
 }
 
 async function loadAnyDocument(source: string) {
-  // ── Remote URL ──────────────────────────────────────────────────────────────
   if (/^https?:\/\//.test(source)) {
-    // Strip query-string / fragment before checking extension (Cloudinary URLs
-    // often end with ?version=... or similar parameters).
     const cleanPath = new URL(source).pathname;
     const ext = path.extname(cleanPath).toLowerCase();
 
     if (DOCUMENT_EXTENSIONS.has(ext)) {
-      // Download the binary file then re-use the local-file branches below.
+      
       const tmpPath = await downloadToTemp(source, ext);
       try {
         return await loadLocalFile(tmpPath, ext, source);
       } finally {
-        // Best-effort cleanup
+       
         try {
           fs.unlinkSync(tmpPath);
         } catch {
-          // ignore
+          
         }
       }
     }
-
-    // Fall back to HTML scraping for plain web pages
     const loader = new CheerioWebBaseLoader(source);
     return loader.load();
   }
-
-  // ── Local file ──────────────────────────────────────────────────────────────
   const ext = path.extname(source).toLowerCase();
   return loadLocalFile(source, ext, source);
 }

@@ -29,6 +29,7 @@ export const createQuizDto = z.object({
     defaultTimeLimit: z.number(),
     defaultPoints: z.number(),
     syncAllQuestions: z.boolean(),
+    isBonusPointsEnabled: z.boolean().default(false),
   }),
   questions: z.array(quizQuestionSchema),
 });
@@ -51,13 +52,6 @@ export const initDraftQuizDto = z.object({
   info: z.object({
     title: z.string().min(1, "Title is required"),
     description: z.string().optional(),
-  }),
-  globalSettings: z.object({
-    passwordProtect: z.boolean(),
-    password: z.string().optional(),
-    defaultTimeLimit: z.number(),
-    defaultPoints: z.number(),
-    syncAllQuestions: z.boolean(),
   }),
 });
 

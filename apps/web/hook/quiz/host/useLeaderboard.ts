@@ -16,7 +16,7 @@ export const useLeaderboard = (sessionId: string) => {
     correctOptionIds: string[];
   } | null>(null);
 
-  // Clear the reveal state after a delay
+  
   useEffect(() => {
     if (!revealedInfo) return;
     const t = setTimeout(() => {

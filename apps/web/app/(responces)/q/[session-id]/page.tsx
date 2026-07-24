@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Send } from "lucide-react";
 import Navbar from "@/components/Navbar";
@@ -24,6 +24,7 @@ import {
 } from "@/components/participant-session/ParticipantSessionStates";
 import { numberToUuid } from "@/utils/uuid";
 import { useParticipantQuiz } from "@/hook/quiz/participant/useParticipantQuiz";
+import { useParticipantStore } from "@/store/participantStore";
 import { ContentLoadingState } from "@/components/ui/ContentLoadingState";
 
 // ── Option colour palette ─────────────────────────────────────────────────────
@@ -56,6 +57,7 @@ export default function ParticipantQuizSessionPage({
     isLoading,
     isError,
     error,
+    refetch,
     passwordInput,
     setPasswordInput,
     submittedPassword,
@@ -68,6 +70,13 @@ export default function ParticipantQuizSessionPage({
     handleSubmitMCQ,
     handleSubmitOpenEnded,
   } = useParticipantQuiz(sessionId);
+
+  useEffect(() => {
+    refetch();
+    return () => {
+      useParticipantStore.getState().resetAll();
+    };
+  }, [refetch]);
 
   const {
     sessionStatus,

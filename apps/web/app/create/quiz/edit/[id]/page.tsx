@@ -10,94 +10,44 @@ import QuizSettings from "@/components/create-quiz/QuizSettings";
 import QuestionCard from "@/components/create-quiz/QuestionCard";
 import AddQuestionButton from "@/components/create-quiz/AddQuestionButton";
 import EditButton from "@/components/create-quiz/EditButton";
-import { useQuizStore, QuestionType } from "@/store/quizStore";
-import { trpc } from "@/trpc/client";
+import { useQuizStore } from "@/store/quizStore";
+import { useLoadQuizData } from "@/hook/quiz/host/useLoadQuizData";
 import { numberToUuid } from "@/utils/uuid";
 import { ArrowLeft, Loader2 } from "lucide-react";
 import Link from "next/link";
 import AgentChatToggleFAB from "@/components/agent-chat/AgentChatToggleFAB";
+import PageLoader from "@/components/PageLoader";
+import { ContentErrorState } from "@/components/ui/ContentErrorState";
 
 export default function EditQuizPage() {
   const params = useParams();
   const router = useRouter();
   const quizId = numberToUuid(params.id as string);
 
-  const { data, isLoading, isError } = trpc.quiz.getQuizForEdit.useQuery(
-    { quizId },
-    {
-      refetchOnWindowFocus: false,
-      refetchOnMount: false,
-      refetchOnReconnect: false,
-    },
-  );
-
-  const [isInitialized, setIsInitialized] = useState(false);
+  const { data, isLoading, isError, isInitialized } = useLoadQuizData(quizId);
 
   const questions = useQuizStore((s) => s.questions);
-  const setInfo = useQuizStore((s) => s.setInfo);
-  const setGlobalSettings = useQuizStore((s) => s.setGlobalSettings);
-  const reorderQuestions = useQuizStore((s) => s.reorderQuestions);
-
-  useEffect(() => {
-    if (data && !isInitialized) {
-      setInfo({
-        title: data.quiz.title,
-        description: data.quiz.description || "",
-      });
-
-      setGlobalSettings({
-        passwordProtect: data.quiz.passwordNeeded,
-        password: data.quiz.password || "",
-      });
-
-      const mappedQuestions = data.questions.map((q) => ({
-        id: `q-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
-        type: (q.isTextAnswer
-          ? "text_entry"
-          : "multiple_choice") as QuestionType,
-        text: q.text,
-        options: (q.options || []).map((opt) => ({
-          ...opt,
-          id:
-            opt.id ||
-            `opt-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
-        })),
-        acceptedAnswers: q.acceptedAnswers || "",
-        timeLimit: q.timeLimitSecs,
-        points: q.points,
-        mediaUrl: q.mediaUrl || undefined,
-        collapsed: true,
-        allowMultipleCorrect: q.allowMultipleCorrect,
-      }));
-
-      reorderQuestions(mappedQuestions);
-      setIsInitialized(true);
-    }
-  }, [data, isInitialized, setInfo, setGlobalSettings, reorderQuestions]);
 
   if (isLoading || !isInitialized) {
-    return (
-      <div className="bg-canvas-cream text-ink-charcoal font-body min-h-screen flex flex-col justify-center items-center bg-dot-pattern selection:bg-electric-sun selection:text-ink-charcoal">
-        <Loader2 className="animate-spin text-ink-charcoal mb-4" size={48} />
-        <h2 className="font-display text-headline-md">
-          Loading Quiz Editor...
-        </h2>
-      </div>
-    );
-  }
+      return (
+        <>
+          <Navbar />
+          <PageLoader />
+          <Footer />
+        </>
+  
+      );
+    }
 
   if (isError) {
-    return (
-      <div className="bg-canvas-cream text-ink-charcoal font-body min-h-screen flex flex-col justify-center items-center bg-dot-pattern selection:bg-electric-sun selection:text-ink-charcoal">
-        <h2 className="font-display text-headline-md text-red-500 mb-4">
-          Error loading quiz
-        </h2>
-        <Link href="/dashboard" className="underline font-bold text-lg">
-          Go back to dashboard
-        </Link>
-      </div>
-    );
-  }
+      return (
+        <>
+          <Navbar />
+          <ContentErrorState kind="quiz" />
+          <Footer />
+        </>
+      );
+    }
 
   return (
     <div className="bg-canvas-cream text-ink-charcoal font-body min-h-screen flex flex-col bg-dot-pattern selection:bg-electric-sun selection:text-ink-charcoal">
@@ -156,7 +106,7 @@ export default function EditQuizPage() {
       <Footer />
 
       {/* ── Quiz Maker Agent Chat FAB ── */}
-      <AgentChatToggleFAB />
+      <AgentChatToggleFAB quizId={quizId} />
     </div>
   );
 }

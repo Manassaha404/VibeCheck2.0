@@ -5,8 +5,6 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import QuizHero from "@/components/create-quiz/QuizHero";
 import QuizBasicInfo from "@/components/create-quiz/QuizBasicInfo";
-import QuizSettings from "@/components/create-quiz/QuizSettings";
-import AgentChatToggleFAB from "@/components/agent-chat/AgentChatToggleFAB";
 import { useInitDraftQuiz } from "@/hook/quiz/host/useInitDraftQuiz";
 import { useQuizStore } from "@/store/quizStore";
 import { ArrowRight, Loader2 } from "lucide-react";
@@ -46,8 +44,6 @@ export default function CreateQuizPage() {
               <QuizBasicInfo />
             </div>
 
-            <QuizSettings />
-
             {/* Continue button */}
             <div className="mt-4 mb-8 flex justify-center">
               <button
@@ -78,9 +74,6 @@ export default function CreateQuizPage() {
       </main>
 
       <Footer />
-
-      {/* ── Quiz Maker Agent Chat FAB ── */}
-      <AgentChatToggleFAB />
     </div>
   );
 }

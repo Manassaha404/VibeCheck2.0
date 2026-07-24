@@ -7,8 +7,7 @@ export const QuizOptionOutputSchema = z.object({
   isCorrect: z.boolean(),
 });
 
-// OpenAI Structured Outputs requires all fields to be required (no .optional()).
-// Use .nullable() so the model always emits the field (null = no media).
+
 const mediaUrlSchema = z
   .string()
   .nullable()
@@ -20,7 +19,7 @@ export const QuizQuestionSchema = z.object({
   options: z
     .array(QuizOptionOutputSchema)
     .describe("For multiple_choice, 2-6 options. For text_entry, pass an empty array."),
-  allowMultipleCorrect: z.boolean().describe("True if multiple options are correct. False for text_entry."),
+  allowMultipleCorrect: z.boolean().describe("True if multiple options are correct. False if only one option is correct. False for text_entry."),
   timeLimit: z.number().int().positive().describe("Time limit in seconds"),
   points: z.number().int().nonnegative().describe("Points awarded. Should be 0 for text_entry."),
   mediaUrl: mediaUrlSchema,
@@ -36,7 +35,6 @@ export type QuestionOutputType = z.infer<typeof QuestionOutputSchema>
 // ── Service-layer DTOs ────────────────────────────────────────────────────────
 
 export const runQuizBuilderAgentDto = z.object({
-  jobId: z.string(),
   userId: z.string(),
   quizId: z.string(),
   prompt: z.string(),
