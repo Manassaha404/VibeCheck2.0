@@ -1,24 +1,27 @@
 import express from "express";
 import cors from "cors";
-
 import * as trpcExpress from "@trpc/server/adapters/express";
-
 import {
   serverRouter,
   createContext,
   openApiDocument,
 } from "@repo/trpc/server";
-
 import { env } from "./env";
 import cookieParser from "cookie-parser";
 import authRouter from "./authRouter";
 import { inngestRouter } from "@repo/services/inngest/index";
-export const app = express();
+import rateLimiter from "@repo/services/utils/rateLimiting";
+import logger from "@repo/logger/logger";
+import razorPayWebhookRouter from "./razorpayRouter";
 
+export const app = express();
+app.use(razorPayWebhookRouter);
 app.set("trust proxy", 1);
 
-// Inngest dev server needs its own CORS — it POSTs to /api/inngest from
-// http://localhost:8288, which is blocked by the global cors() below.
+// Bug #1 fix: Webhook route MUST be registered before express.json() so that
+// express.raw() inside razorpayRouter can capture the raw Buffer for HMAC verification.
+// If express.json() runs first, req.body becomes a parsed object and the HMAC will fail.
+
 const inngestCors = cors({
   origin: (origin, callback) => {
     // Allow Inngest dev server, Inngest cloud, and requests with no origin (server-to-server)
@@ -45,7 +48,6 @@ const inngestCors = cors({
   credentials: false,
 });
 
-// Moved express.json() up so that inngestRouter can parse POST bodies
 app.use(express.json());
 
 app.use("/api/inngest", inngestCors, inngestRouter);
@@ -68,8 +70,6 @@ app.use((req, res, next) => {
   next();
 });
 
-import rateLimiter from "@repo/services/utils/rateLimiting";
-import logger from "@repo/logger/logger";
 app.use((req, res, next) => {
   return rateLimiter(req, res, next);
 });

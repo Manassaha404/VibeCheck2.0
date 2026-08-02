@@ -12,10 +12,7 @@ export interface EmbeddedDocument {
   embedding: number[];
 }
 
-
-async function embedDocuments(
-  docs: Document[]
-): Promise<EmbeddedDocument[]> {
+async function embedDocuments(docs: Document[]): Promise<EmbeddedDocument[]> {
   const texts = docs.map((doc) => doc.pageContent);
   const vectors = await embeddings.embedDocuments(texts);
 

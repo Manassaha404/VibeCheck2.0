@@ -27,7 +27,5 @@ export const quizBuilderAgentConversation = pgTable(
       .notNull()
       .$onUpdate(() => new Date()),
   },
-  (t) => [
-    index("quiz_agent_conv_user_idx").on(t.userId),
-  ],
+  (t) => [index("quiz_agent_conv_user_idx").on(t.userId)],
 );

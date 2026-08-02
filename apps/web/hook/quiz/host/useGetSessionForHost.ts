@@ -2,7 +2,6 @@
 
 import { trpc } from "@/trpc/client";
 
-
 export const useGetSessionForHost = (sessionId: string | null) => {
   const { data, isLoading, isError, error, refetch } =
     trpc.quiz.getSessionForHost.useQuery(

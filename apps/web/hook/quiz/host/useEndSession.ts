@@ -10,7 +10,6 @@ interface UseEndSessionOptions {
   onSuccessCallback?: (sessionId: string) => void;
 }
 
-
 export const useEndSession = ({
   quizId,
   redirectPath,
@@ -21,7 +20,6 @@ export const useEndSession = ({
 
   const mutation = trpc.quiz.endSession.useMutation({
     onSuccess: (_data, variables) => {
-      
       if (onSuccessCallback) {
         onSuccessCallback(variables.sessionId);
       }

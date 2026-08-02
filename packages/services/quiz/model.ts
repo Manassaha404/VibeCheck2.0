@@ -62,7 +62,9 @@ export type InitDraftQuizInput = z.infer<typeof initDraftQuizDto>;
  */
 export const publishDraftQuizDto = z.object({
   quizId: z.string().uuid(),
-  questions: z.array(quizQuestionSchema).min(1, "At least one question is required"),
+  questions: z
+    .array(quizQuestionSchema)
+    .min(1, "At least one question is required"),
 });
 
 export type PublishDraftQuizInput = z.infer<typeof publishDraftQuizDto>;

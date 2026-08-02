@@ -56,9 +56,7 @@ authRouter.get("/google/callback", async (req: Request, res: Response) => {
     });
 
     if (!googleUser.email_verified) {
-      return res.redirect(
-        `${env.CLIENT_URL}/login?error=email_not_verified`,
-      );
+      return res.redirect(`${env.CLIENT_URL}/login?error=email_not_verified`);
     }
 
     const { userId, isNewUser } = await oAuthService.findOrCreateUser({

@@ -76,7 +76,9 @@ export default function AgentChatInput({
         aria-label="Send message"
         title="Send (Enter)"
       >
-        <Send className={`w-5 h-5 text-ink-charcoal ${isSending ? "animate-pulse" : ""}`} />
+        <Send
+          className={`w-5 h-5 text-ink-charcoal ${isSending ? "animate-pulse" : ""}`}
+        />
       </button>
     </div>
   );

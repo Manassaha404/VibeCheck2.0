@@ -7,8 +7,12 @@ import {
   User,
   Loader2,
   Trash2,
+  Lock,
 } from "lucide-react";
 import { useAgentChat } from "@/hook/agent/useFormBuilderAgentChat";
+import { useUserInfoStore } from "@/store/userInfoStore";
+import { useSubscriptionStore } from "@/store/subscriptionStore";
+import { useSubscriptionGuard } from "@/providers/subscription-guard-provider";
 
 export function AgentChat() {
   const [isOpen, setIsOpen] = useState(false);
@@ -21,7 +25,18 @@ export function AgentChat() {
     isGenerating,
     isReady,
   } = useAgentChat();
+  const { plan } = useUserInfoStore();
+  const canUseFormAI = useSubscriptionStore((s) => s.canUseFormAI);
+  const { showLimitAlert } = useSubscriptionGuard();
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const isFeatureEnabled = canUseFormAI(plan);
+
+  const handleLockedClick = () => {
+    showLimitAlert(
+      "Your current plan does not include AI features for Form Building. Please upgrade your plan to unlock the Vibe Agent!",
+    );
+  };
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -38,16 +53,20 @@ export function AgentChat() {
       {/* Floating Action Button */}
       {!isOpen && (
         <button
-          onClick={() => setIsOpen(true)}
+          onClick={isFeatureEnabled ? () => setIsOpen(true) : handleLockedClick}
           className="fixed bottom-6 right-6 p-4 bg-electric-sun border-2 border-ink-charcoal rounded-full shadow-[4px_4px_0px_0px_rgba(44,46,42,1)] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(44,46,42,1)] transition-all z-50 flex items-center justify-center group"
-          title="Chat with Agent"
+          title={isFeatureEnabled ? "Chat with Agent" : "AI Agent (Locked)"}
         >
-          <MessageSquare className="w-6 h-6 text-ink-charcoal group-hover:scale-110 transition-transform" />
+          {isFeatureEnabled ? (
+            <MessageSquare className="w-6 h-6 text-ink-charcoal group-hover:scale-110 transition-transform" />
+          ) : (
+            <Lock className="w-6 h-6 text-ink-charcoal group-hover:scale-110 transition-transform" />
+          )}
         </button>
       )}
 
       {/* Chat Panel */}
-      {isOpen && (
+      {isOpen && isFeatureEnabled && (
         <div className="fixed bottom-6 right-6 w-80 md:w-96 h-[32rem] bg-pure-white border-2 border-ink-charcoal shadow-[8px_8px_0px_0px_rgba(44,46,42,1)] rounded-lg flex flex-col z-50 overflow-hidden font-body-md transition-all animate-in slide-in-from-bottom-10">
           {/* Header */}
           <div className="flex items-center justify-between p-4 bg-electric-sun border-b-2 border-ink-charcoal">

@@ -31,7 +31,10 @@ export default class UploadService {
     };
     if (input.publicId) paramsToSign.public_id = input.publicId;
 
-    const signature = cloudinary.utils.api_sign_request(paramsToSign, apiSecret);
+    const signature = cloudinary.utils.api_sign_request(
+      paramsToSign,
+      apiSecret,
+    );
 
     return {
       signature,
@@ -45,7 +48,6 @@ export default class UploadService {
     };
   }
 
- 
   async getFileFromUrl(fileUrl: string): Promise<{
     buffer: Buffer;
     contentType: string | null;

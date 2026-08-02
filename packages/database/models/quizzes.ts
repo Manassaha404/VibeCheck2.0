@@ -11,7 +11,11 @@ import {
 } from "drizzle-orm/pg-core";
 import { users } from "./users";
 
-export const quizStatusEnum = pgEnum("quiz_status", ["active", "archived", "draft" ]);
+export const quizStatusEnum = pgEnum("quiz_status", [
+  "active",
+  "archived",
+  "draft",
+]);
 
 export const quizzes = pgTable(
   "quizzes",
@@ -23,7 +27,9 @@ export const quizzes = pgTable(
     title: varchar("title", { length: 255 }).notNull(),
     description: text("description"),
     status: quizStatusEnum("status").default("draft").notNull(),
-    isBonusPointsEnabled: boolean("is_bonus_points_enabled").default(false).notNull(),
+    isBonusPointsEnabled: boolean("is_bonus_points_enabled")
+      .default(false)
+      .notNull(),
     passwordNeeded: boolean("password_needed").default(false).notNull(),
     password: varchar("password", { length: 255 }),
     createdAt: timestamp("created_at").defaultNow().notNull(),

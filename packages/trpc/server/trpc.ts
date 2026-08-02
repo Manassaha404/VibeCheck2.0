@@ -7,6 +7,8 @@ import {
   generateAccessToken,
   generateRefreshToken,
 } from "./utils/jwt";
+import { usageService, UsageMetric } from "@repo/services/utils/usageService";
+import { AppError } from "@repo/error";
 
 export const tRPCContext = initTRPC
   .context<typeof createContext>()
@@ -74,7 +76,7 @@ export const publicProcedure = tRPCContext.procedure
   .use(getGuestToken)
   .use(getOptionalUser);
 
-const isAuthed = tRPCContext.middleware(({ ctx, next }) => {
+const isAuthed = tRPCContext.middleware(async ({ ctx, next }) => {
   const accessToken = ctx.getCookie("accessToken");
   const refreshToken = ctx.getCookie("refreshToken");
 
@@ -86,7 +88,6 @@ const isAuthed = tRPCContext.middleware(({ ctx, next }) => {
   }
 
   let userId: string;
-
   try {
     if (accessToken) {
       const decoded = verifyAccessToken(accessToken);
@@ -99,7 +100,7 @@ const isAuthed = tRPCContext.middleware(({ ctx, next }) => {
       try {
         const decoded = verifyRefreshToken(refreshToken);
         userId = decoded.userId;
-
+        // plan = await subscriptionService.getUserPlan(userId);
         const newAccessToken = generateAccessToken(userId);
         const newRefreshToken = generateRefreshToken(userId);
         ctx.setCookie("accessToken", newAccessToken);
@@ -129,3 +130,29 @@ const isAuthed = tRPCContext.middleware(({ ctx, next }) => {
 });
 
 export const protectedProcedure = tRPCContext.procedure.use(isAuthed);
+
+export const planRestrictedProcedure = (metric: UsageMetric) =>
+  protectedProcedure.use(async ({ ctx, next }) => {
+    try {
+      const { periodEnd } = await usageService.assertWithinLimit(
+        ctx.user.id,
+        metric,
+      );
+
+      const result = await next();
+
+      if (result.ok) {
+        await usageService.incrementUsage(ctx.user.id, metric, periodEnd);
+      }
+
+      return result;
+    } catch (error) {
+      if (error instanceof AppError && error.code === "FORBIDDEN") {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "PLAN_LIMIT_EXCEEDED:" + error.message,
+        });
+      }
+      throw error;
+    }
+  });

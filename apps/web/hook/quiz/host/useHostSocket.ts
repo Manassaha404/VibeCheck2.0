@@ -19,24 +19,21 @@ export function useHostSocket(
   }, [initialParticipantCount]);
 
   const mergeVoteTallies = useLiveSessionStore((s) => s.mergeVoteTallies);
-  
+
   const joinedRef = useRef(false);
 
   useEffect(() => {
     if (!sessionId) return;
     if (joinedRef.current) return;
 
-    
     socket.connect();
     socket.emit("join:session", sessionId);
     joinedRef.current = true;
 
-    
     const onParticipantJoin = () => {
       setParticipantCount((c) => c + 1);
     };
 
-    
     const onParticipantAnswer = (payload: {
       optionIds?: string[];
       questionId?: string;
@@ -47,7 +44,6 @@ export function useHostSocket(
         payload.optionIds &&
         payload.optionIds.length > 0
       ) {
-        
         const questionTallies: Record<string, number> = {};
         for (const id of payload.optionIds) {
           questionTallies[id] = 1;
@@ -55,7 +51,6 @@ export function useHostSocket(
         const incoming: VoteTallies = { [payload.questionId]: questionTallies };
         mergeVoteTallies(incoming);
       } else if (payload.text && setOpenEndedMessages) {
-        
         const feedMsg: FeedMessage = {
           id: `${Date.now()}-${Math.random()}`,
           authorInitial: "?",

@@ -4,7 +4,6 @@ import { useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { trpc } from "@/trpc/client";
 import { useUserInfoStore } from "@/store/userInfoStore";
-import PageLoader from "@/components/PageLoader";
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter();
@@ -13,8 +12,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const { data, isLoading, isError } = trpc.auth.getMe.useQuery(undefined, {
     retry: false,
   });
+  const { data: subData, isLoading: isSubLoading } =
+    trpc.subscription.getActiveSubscription.useQuery(undefined, {
+      enabled: !!data?.users?.userId,
+      retry: false,
+    });
+
   useEffect(() => {
-    if (isLoading) return;
+    if (isLoading || (data?.users?.userId && isSubLoading)) return;
     const publicRoutes = ["/", "/signin", "/forgot-password"];
     const isPublicRoute =
       publicRoutes.includes(pathname) ||
@@ -45,6 +50,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         username: data.users.username,
         isGoogleDriveConnected: data?.isGoogleDriveConnected,
         avatarUrl: data?.users.avatarUrl,
+        plan: subData?.plan ?? null,
       });
       setInitialized(true);
 
@@ -55,9 +61,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         router.replace("/");
       }
     }
-  }, [data, isLoading, isError, pathname, router, setInitialized, setUserInfo]);
+  }, [
+    data,
+    isLoading,
+    isError,
+    pathname,
+    router,
+    setInitialized,
+    setUserInfo,
+    subData,
+    isSubLoading,
+  ]);
 
-  if (!useUserInfoStore.getState().isInitialized && isLoading) {
+  if (
+    !useUserInfoStore.getState().isInitialized &&
+    (isLoading || isSubLoading)
+  ) {
     return <></>;
   }
   return <>{children}</>;

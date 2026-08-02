@@ -13,7 +13,6 @@ export function useUpdateQuiz(quizId: string) {
   const trpcUtils = trpc.useUtils();
 
   const submitQuiz = async () => {
-    
     if (!quizStore.info.title.trim()) {
       return;
     }

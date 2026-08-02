@@ -5,44 +5,34 @@ import { ProfileLayout } from "@/components/profile/ProfileLayout";
 import { AvatarUploader } from "@/components/profile/AvatarUploader";
 import { ProfileForm } from "@/components/profile/ProfileForm";
 import { DriveIntegrationCard } from "@/components/profile/DriveIntegrationCard";
-import { useUpdateProfile } from "../../hook/auth/useUpdateProfile";
-import { useDriveConnection } from "../../hook/auth/useDriveConnection";
-import { trpc } from "@/trpc/client";
-import { Loader2 } from "lucide-react";
+import { SubscriptionCard } from "@/components/profile/SubscriptionCard";
+import { useProfileLogic } from "../../hook/profile/useProfileLogic";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 import PageLoader from "../../components/PageLoader";
 
 const ProfileContent = () => {
-  const { data: userData, isLoading: isUserLoading } =
-    trpc.auth.getMe.useQuery();
-  const { handleUpdateProfile, isUpdatingProfile } = useUpdateProfile();
-  const { handleConnectDrive, handleDisconnectDrive, isDisconnecting } =
-    useDriveConnection();
+  const {
+    userData,
+    isLoading,
+    subData,
+    refetchSub,
+    isUpdatingProfile,
+    isDisconnecting,
+    handleDisconnectDrive,
+    onAvatarUpload,
+    onProfileSubmit,
+    onConnectDrive,
+  } = useProfileLogic();
 
-  const onAvatarUpload = async (file: File) => {
-    // Simulate upload delay
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-
-    // In a real scenario, we'd use trpc.upload.getSignature to upload to Cloudinary
-    // and then pass the resulting URL to updateProfile.
-    // For now, we'll just mock it and save a generic placeholder or the object url.
-
-    // Fallback URL simulating an uploaded image
-    const mockCloudinaryUrl = `https://api.dicebear.com/7.x/avataaars/svg?seed=${file.name}`;
-    await handleUpdateProfile({ avatarUrl: mockCloudinaryUrl });
-  };
-
-  const onProfileSubmit = async (data: any) => {
-    await handleUpdateProfile(data);
-  };
-
-  const onConnectDrive = () => {
-    handleConnectDrive();
-  };
-
-  if (isUserLoading || !userData) {
-    return <PageLoader />;
+  if (isLoading || !userData) {
+    return (
+      <>
+        <Navbar />
+        <PageLoader />
+        <Footer />
+      </>
+    );
   }
 
   const user = userData.users;
@@ -77,6 +67,27 @@ const ProfileContent = () => {
             </div>
           </div>
 
+          <div className="stagger-item mb-12">
+            <h2 className="text-headline-md font-display font-black text-[var(--color-ink-charcoal)] mb-6">
+              Subscription & Billing
+            </h2>
+            {subData?.plan && (
+              <SubscriptionCard
+                plan={subData.plan}
+                razorpaySubscriptionId={
+                  subData.subscription?.razorpaySubscriptionId
+                }
+                status={subData.subscription?.status}
+                cancelAtCycleEnd={subData.subscription?.cancelAtCycleEnd}
+                scheduledCancellationDate={
+                  subData.subscription?.scheduledCancellationDate
+                }
+                currentEnd={subData.subscription?.currentEnd}
+                onCancelled={() => refetchSub()}
+              />
+            )}
+          </div>
+
           <div className="stagger-item">
             <h2 className="text-headline-md font-display font-black text-[var(--color-ink-charcoal)] mb-6">
               Integrations
@@ -98,7 +109,15 @@ const ProfileContent = () => {
 
 export default function ProfilePage() {
   return (
-    <Suspense fallback={<PageLoader />}>
+    <Suspense
+      fallback={
+        <>
+          <Navbar />
+          <PageLoader />
+          <Footer />
+        </>
+      }
+    >
       <ProfileContent />
     </Suspense>
   );

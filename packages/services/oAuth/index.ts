@@ -134,7 +134,8 @@ class OauthService {
           .update(auths)
           .set({
             googleAccountId: googleUser.sub,
-            googleRefreshToken: refreshToken ?? existingAuthRecord.googleRefreshToken,
+            googleRefreshToken:
+              refreshToken ?? existingAuthRecord.googleRefreshToken,
             isVerified: true,
             lastLoginAt: new Date(),
           })

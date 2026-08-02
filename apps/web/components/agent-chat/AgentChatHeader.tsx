@@ -7,7 +7,11 @@ interface AgentChatHeaderProps {
   onNewConversation?: () => void;
 }
 
-export default function AgentChatHeader({ onMinimize, onClose, onNewConversation }: AgentChatHeaderProps) {
+export default function AgentChatHeader({
+  onMinimize,
+  onClose,
+  onNewConversation,
+}: AgentChatHeaderProps) {
   return (
     <div className="flex items-center justify-between p-4 bg-electric-sun border-b-2 border-ink-charcoal shrink-0">
       {/* Left — avatar + title */}

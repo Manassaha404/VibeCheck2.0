@@ -121,7 +121,11 @@ export default function QuestionCard({
 
   const handleTypeChange = (t: QuestionType) => {
     if (t === "text_entry") {
-      updateQuestion(questionId, { type: t, points: 0, allowMultipleCorrect: false });
+      updateQuestion(questionId, {
+        type: t,
+        points: 0,
+        allowMultipleCorrect: false,
+      });
     } else {
       updateQuestion(questionId, { type: t, allowMultipleCorrect: true });
     }
@@ -139,9 +143,10 @@ export default function QuestionCard({
       exit={{ opacity: 0, scale: 0.94 }}
       transition={{ type: "spring", stiffness: 380, damping: 32 }}
       className={`relative bg-pure-white border-4 border-ink-charcoal transition-all duration-300
-        ${focused
-          ? "shadow-[8px_8px_0px_0px_#2C2E2A]"
-          : "shadow-hard hover:shadow-[8px_8px_0px_0px_#2C2E2A] hover:-translate-y-0.5"
+        ${
+          focused
+            ? "shadow-[8px_8px_0px_0px_#2C2E2A]"
+            : "shadow-hard hover:shadow-[8px_8px_0px_0px_#2C2E2A] hover:-translate-y-0.5"
         }`}
       onFocus={() => setFocused(true)}
       onBlur={(e) => {
@@ -198,9 +203,7 @@ export default function QuestionCard({
                 ) : (
                   <Edit3 size={14} />
                 )}
-                {t === "multiple_choice"
-                  ? "Multiple Choice"
-                  : "Text Entry"}
+                {t === "multiple_choice" ? "Multiple Choice" : "Text Entry"}
               </span>
             </button>
           ))}
@@ -208,8 +211,6 @@ export default function QuestionCard({
 
         {/* Right: time / points / multi-correct / collapse / delete */}
         <div className="flex items-center gap-2 flex-wrap">
-
-
           {/* Time */}
           <div className="group flex items-center gap-1.5 border-2 border-ink-charcoal px-3 py-1.5 bg-pure-white shadow-hard-sm focus-within:border-electric-sun transition-colors">
             <Clock size={15} className="text-outline shrink-0" />
@@ -235,19 +236,29 @@ export default function QuestionCard({
                   type="number"
                   value={question.points}
                   onChange={(e) =>
-                    updateQuestion(questionId, { points: Number(e.target.value) })
+                    updateQuestion(questionId, {
+                      points: Number(e.target.value),
+                    })
                   }
                   className="w-9 bg-transparent text-center font-black text-sm focus:outline-none"
                 />
                 <span className="text-xs text-outline font-semibold">pts</span>
               </div>
-              
+
               {/* Multi/Single Toggle */}
               <button
-                onClick={() => updateQuestion(questionId, { allowMultipleCorrect: !question.allowMultipleCorrect })}
+                onClick={() =>
+                  updateQuestion(questionId, {
+                    allowMultipleCorrect: !question.allowMultipleCorrect,
+                  })
+                }
                 className={`group flex items-center gap-1.5 border-2 border-ink-charcoal px-3 py-1.5 shadow-hard-sm transition-colors text-xs font-black uppercase tracking-widest
                   ${question.allowMultipleCorrect ? "bg-vivid-coral text-pure-white" : "bg-pure-white text-ink-charcoal hover:bg-canvas-cream"}`}
-                title={question.allowMultipleCorrect ? "Multiple correct answers allowed" : "Only one correct answer allowed"}
+                title={
+                  question.allowMultipleCorrect
+                    ? "Multiple correct answers allowed"
+                    : "Only one correct answer allowed"
+                }
               >
                 <CheckCircle2 size={15} className="shrink-0" />
                 {question.allowMultipleCorrect ? "Multi" : "Single"}
@@ -365,32 +376,32 @@ export default function QuestionCard({
                 <AnimatePresence>
                   {(uploadStatus === "signing" ||
                     uploadStatus === "uploading") && (
-                      <motion.div
-                        key="progress"
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: "auto" }}
-                        exit={{ opacity: 0, height: 0 }}
-                        className="flex flex-col gap-1.5 overflow-hidden"
-                      >
-                        <div className="flex items-center justify-between text-xs font-semibold text-outline uppercase tracking-wider">
-                          <span className="flex items-center gap-1.5">
-                            <Loader2 size={13} className="animate-spin" />
-                            {uploadStatus === "signing"
-                              ? "Preparing…"
-                              : `Uploading ${progress}%`}
-                          </span>
-                        </div>
-                        <div className="w-full h-2 bg-surface-container-high border border-ink-charcoal rounded-none overflow-hidden">
-                          <motion.div
-                            className="h-full bg-ink-charcoal"
-                            animate={{
-                              width: `${uploadStatus === "signing" ? 5 : progress}%`,
-                            }}
-                            transition={{ ease: "linear" }}
-                          />
-                        </div>
-                      </motion.div>
-                    )}
+                    <motion.div
+                      key="progress"
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: "auto" }}
+                      exit={{ opacity: 0, height: 0 }}
+                      className="flex flex-col gap-1.5 overflow-hidden"
+                    >
+                      <div className="flex items-center justify-between text-xs font-semibold text-outline uppercase tracking-wider">
+                        <span className="flex items-center gap-1.5">
+                          <Loader2 size={13} className="animate-spin" />
+                          {uploadStatus === "signing"
+                            ? "Preparing…"
+                            : `Uploading ${progress}%`}
+                        </span>
+                      </div>
+                      <div className="w-full h-2 bg-surface-container-high border border-ink-charcoal rounded-none overflow-hidden">
+                        <motion.div
+                          className="h-full bg-ink-charcoal"
+                          animate={{
+                            width: `${uploadStatus === "signing" ? 5 : progress}%`,
+                          }}
+                          transition={{ ease: "linear" }}
+                        />
+                      </div>
+                    </motion.div>
+                  )}
                 </AnimatePresence>
 
                 {/* Error banner */}
@@ -446,7 +457,8 @@ export default function QuestionCard({
                   >
                     <p className="text-xs font-black uppercase tracking-widest text-outline flex items-center gap-2">
                       <CheckCircle2 size={13} />
-                      {question.type === "multiple_choice" && question.allowMultipleCorrect
+                      {question.type === "multiple_choice" &&
+                      question.allowMultipleCorrect
                         ? "Select all correct answers"
                         : "Select the correct answer"}
                     </p>
@@ -570,11 +582,13 @@ function OptionItem({
         <button
           onClick={() => toggleCorrectOption(questionId, option.id)}
           title={option.isCorrect ? "Unmark as correct" : "Mark as correct"}
-          className={`flex-shrink-0 w-9 h-9 self-center ${question.allowMultipleCorrect ? "rounded-sm" : "rounded-full"
-            } border-3 border-ink-charcoal transition-all duration-200 flex items-center justify-center
-            ${option.isCorrect
-              ? "bg-leaf-green shadow-hard-sm"
-              : "bg-pure-white hover:bg-canvas-cream shadow-hard-sm"
+          className={`flex-shrink-0 w-9 h-9 self-center ${
+            question.allowMultipleCorrect ? "rounded-sm" : "rounded-full"
+          } border-3 border-ink-charcoal transition-all duration-200 flex items-center justify-center
+            ${
+              option.isCorrect
+                ? "bg-leaf-green shadow-hard-sm"
+                : "bg-pure-white hover:bg-canvas-cream shadow-hard-sm"
             }`}
         >
           <AnimatePresence mode="wait">
@@ -600,10 +614,11 @@ function OptionItem({
         <div
           className={`flex-grow flex items-stretch border-3 border-ink-charcoal overflow-hidden
           transition-all duration-200 rounded-sm
-          ${option.isCorrect
+          ${
+            option.isCorrect
               ? "shadow-[4px_4px_0px_0px_#2C2E2A] ring-2 ring-leaf-green/60"
               : "shadow-hard-sm focus-within:ring-2 focus-within:ring-electric-sun/60"
-            }`}
+          }`}
         >
           <span
             className={`w-14 shrink-0 flex items-center justify-center font-black text-sm border-r-3 border-ink-charcoal transition-colors

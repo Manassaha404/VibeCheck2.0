@@ -21,9 +21,9 @@ export interface UseCloudinaryUploadReturn {
 
 const DEFAULT_MAX_FILE_SIZE = 100 * 1024 * 1024; // 100MB, adjust as needed
 
-export function useCloudinaryUpload(
-  options?: { maxFileSize?: number },
-): UseCloudinaryUploadReturn {
+export function useCloudinaryUpload(options?: {
+  maxFileSize?: number;
+}): UseCloudinaryUploadReturn {
   const [status, setStatus] = useState<UploadStatus>("idle");
   const [progress, setProgress] = useState(0);
   const [error, setError] = useState<string | null>(null);

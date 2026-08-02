@@ -58,7 +58,6 @@ class FormServices {
     if (existingForm) {
       throw new AppError("CONFLICT", "slug already exists");
     }
-
     const expiresAtDate = data.expiresAt ? new Date(data.expiresAt) : null;
 
     const [newForm] = await db
@@ -77,7 +76,6 @@ class FormServices {
         isPublished: false,
       })
       .returning();
-
     return newForm;
   }
   public async saveDraft(userId: string, payload: SaveDraftFormDtoType) {
@@ -90,8 +88,6 @@ class FormServices {
     if (!existingForm) {
       throw new AppError("NOT_FOUND", "Form not found");
     }
-
-    // Update fields if provided
     if (data.fields) {
       await db
         .delete(formFields)

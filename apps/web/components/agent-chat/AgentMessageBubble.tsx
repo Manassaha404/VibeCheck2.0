@@ -16,13 +16,13 @@ interface AgentMessageBubbleProps {
   message: AgentMessage;
 }
 
-export default function AgentMessageBubble({ message }: AgentMessageBubbleProps) {
+export default function AgentMessageBubble({
+  message,
+}: AgentMessageBubbleProps) {
   const isAgent = message.role === "agent";
 
   return (
-    <div
-      className={`flex ${isAgent ? "justify-start" : "justify-end"}`}
-    >
+    <div className={`flex ${isAgent ? "justify-start" : "justify-end"}`}>
       <div
         className={`flex gap-3 max-w-[85%] ${
           !isAgent ? "flex-row-reverse" : "flex-row"
@@ -57,10 +57,13 @@ export default function AgentMessageBubble({ message }: AgentMessageBubbleProps)
               <span className="truncate min-w-0">{message.fileName}</span>
             </div>
           )}
-          
+
           {/* Timestamp */}
           <span className="text-[10px] opacity-60 font-medium text-ink-charcoal self-end mt-1">
-            {message.timestamp.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+            {message.timestamp.toLocaleTimeString([], {
+              hour: "2-digit",
+              minute: "2-digit",
+            })}
           </span>
         </div>
       </div>

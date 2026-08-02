@@ -1,0 +1,4 @@
+ALTER TABLE "subscriptions" ADD COLUMN "pending_plan_id" uuid;--> statement-breakpoint
+ALTER TABLE "subscriptions" ADD COLUMN "pending_coupon_id" uuid;--> statement-breakpoint
+ALTER TABLE "subscriptions" ADD CONSTRAINT "subscriptions_pending_plan_id_plans_plan_id_fk" FOREIGN KEY ("pending_plan_id") REFERENCES "public"."plans"("plan_id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "subscriptions" ADD CONSTRAINT "subscriptions_pending_coupon_id_coupons_coupon_id_fk" FOREIGN KEY ("pending_coupon_id") REFERENCES "public"."coupons"("coupon_id") ON DELETE no action ON UPDATE no action;

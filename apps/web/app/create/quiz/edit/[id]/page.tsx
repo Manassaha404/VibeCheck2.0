@@ -29,25 +29,24 @@ export default function EditQuizPage() {
   const questions = useQuizStore((s) => s.questions);
 
   if (isLoading || !isInitialized) {
-      return (
-        <>
-          <Navbar />
-          <PageLoader />
-          <Footer />
-        </>
-  
-      );
-    }
+    return (
+      <>
+        <Navbar />
+        <PageLoader />
+        <Footer />
+      </>
+    );
+  }
 
   if (isError) {
-      return (
-        <>
-          <Navbar />
-          <ContentErrorState kind="quiz" />
-          <Footer />
-        </>
-      );
-    }
+    return (
+      <>
+        <Navbar />
+        <ContentErrorState kind="quiz" />
+        <Footer />
+      </>
+    );
+  }
 
   return (
     <div className="bg-canvas-cream text-ink-charcoal font-body min-h-screen flex flex-col bg-dot-pattern selection:bg-electric-sun selection:text-ink-charcoal">

@@ -51,7 +51,6 @@ export default function QuizBasicInfo() {
           />
         </div>
       </div>
-
     </div>
   );
 }

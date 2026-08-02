@@ -3,6 +3,7 @@
     "hset",
     "inngest",
     "langchain",
+    "Paise",
     "textsplitters",
     "vibecheck",
     "zincrby"

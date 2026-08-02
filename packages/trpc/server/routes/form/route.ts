@@ -1,4 +1,9 @@
-import { protectedProcedure, publicProcedure, router } from "../../trpc";
+import {
+  protectedProcedure,
+  publicProcedure,
+  router,
+  planRestrictedProcedure,
+} from "../../trpc";
 import {
   draftFormDto,
   getSavedFieldsDto,
@@ -18,7 +23,7 @@ import { formServices } from "../../services";
 import { handleRouteError } from "../../utils/error";
 
 export const formRouter = router({
-  createForm: protectedProcedure
+  createForm: planRestrictedProcedure("form_created")
     .input(draftFormDto)
     .mutation(async ({ input, ctx }) => {
       try {

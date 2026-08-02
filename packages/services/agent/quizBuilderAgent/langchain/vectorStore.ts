@@ -1,4 +1,4 @@
-//perfectly fine 
+//perfectly fine
 import { QdrantVectorStore } from "@langchain/qdrant";
 import { embeddings } from "./embeddings";
 import { env } from "../../../env";

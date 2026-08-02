@@ -1,6 +1,5 @@
 "use client";
 
-
 import { useParams, useRouter } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -33,11 +32,9 @@ export default function DraftQuizPage() {
         <PageLoader />
         <Footer />
       </>
-
     );
   }
 
- 
   if (isError) {
     return (
       <>

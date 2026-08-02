@@ -12,7 +12,7 @@ import QuizService from "@repo/services/quiz";
 import LangChainService from "@repo/services/agent/quizBuilderAgent/langchain";
 import QuizBuilderAgentService from "@repo/services/agent/quizBuilderAgent";
 import ExploreService from "@repo/services/explore";
-
+import SubscriptionService from "@repo/services/razorpay";
 export const authService = new AuthServices();
 export const oAuthService = new OauthService();
 export const formServices = new FormServices();
@@ -27,3 +27,4 @@ export const quizService = new QuizService();
 export const langChainService = new LangChainService();
 export const quizBuilderAgentService = new QuizBuilderAgentService();
 export const exploreService = new ExploreService();
+export const subscriptionService = new SubscriptionService();

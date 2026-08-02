@@ -10,7 +10,6 @@ import fs from "fs";
 import path from "path";
 import os from "os";
 
-
 const DOCUMENT_EXTENSIONS = new Set([
   ".pdf",
   ".csv",
@@ -23,13 +22,10 @@ const DOCUMENT_EXTENSIONS = new Set([
   ".htm",
 ]);
 
-
 async function downloadToTemp(url: string, ext: string): Promise<string> {
   const response = await fetch(url);
   if (!response.ok) {
-    throw new Error(
-      `Failed to download document (${response.status}): ${url}`,
-    );
+    throw new Error(`Failed to download document (${response.status}): ${url}`);
   }
   const buffer = Buffer.from(await response.arrayBuffer());
   const tmpPath = path.join(os.tmpdir(), `langchain-doc-${Date.now()}${ext}`);
@@ -43,17 +39,13 @@ async function loadAnyDocument(source: string) {
     const ext = path.extname(cleanPath).toLowerCase();
 
     if (DOCUMENT_EXTENSIONS.has(ext)) {
-      
       const tmpPath = await downloadToTemp(source, ext);
       try {
         return await loadLocalFile(tmpPath, ext, source);
       } finally {
-       
         try {
           fs.unlinkSync(tmpPath);
-        } catch {
-          
-        }
+        } catch {}
       }
     }
     const loader = new CheerioWebBaseLoader(source);
@@ -82,7 +74,10 @@ async function loadLocalFile(
     case ".md": {
       const text = fs.readFileSync(filePath, "utf-8");
       return [
-        new Document({ pageContent: text, metadata: { source: originalSource } }),
+        new Document({
+          pageContent: text,
+          metadata: { source: originalSource },
+        }),
       ];
     }
 
@@ -105,7 +100,10 @@ async function loadLocalFile(
       const raw = fs.readFileSync(filePath, "utf-8");
       const text = convert(raw, { wordwrap: false });
       return [
-        new Document({ pageContent: text, metadata: { source: originalSource } }),
+        new Document({
+          pageContent: text,
+          metadata: { source: originalSource },
+        }),
       ];
     }
 

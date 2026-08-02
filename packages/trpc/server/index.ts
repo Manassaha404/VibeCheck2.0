@@ -10,6 +10,7 @@ import { petitionRouter } from "./routes/petition/route";
 import { uploadRouter } from "./routes/upload/route";
 import { quizRouter } from "./routes/quiz/route";
 import { exploreRouter } from "./routes/explore/route";
+import { subscriptionRouter } from "./routes/subscription/route";
 
 export const serverRouter = router({
   health: healthRouter,
@@ -22,6 +23,7 @@ export const serverRouter = router({
   upload: uploadRouter,
   quiz: quizRouter,
   explore: exploreRouter,
+  subscription: subscriptionRouter,
 });
 
 export { createContext } from "./context";

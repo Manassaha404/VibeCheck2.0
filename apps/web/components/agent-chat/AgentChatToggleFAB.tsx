@@ -1,12 +1,26 @@
 "use client";
 
 import React, { useState } from "react";
-import { MessageSquare, Bot, X } from "lucide-react";
+import { MessageSquare, Bot, X, Lock } from "lucide-react";
 import AgentChatPanel from "./AgentChatPanel";
+import { useUserInfoStore } from "@/store/userInfoStore";
+import { useSubscriptionStore } from "@/store/subscriptionStore";
+import { useSubscriptionGuard } from "@/providers/subscription-guard-provider";
 
 export default function AgentChatToggleFAB({ quizId }: { quizId: string }) {
   const [open, setOpen] = useState(false);
   const [minimized, setMinimized] = useState(false);
+  const { plan } = useUserInfoStore();
+  const canUseQuizAI = useSubscriptionStore((s) => s.canUseQuizAI);
+  const { showLimitAlert } = useSubscriptionGuard();
+
+  const isFeatureEnabled = canUseQuizAI(plan);
+
+  const handleLockedClick = () => {
+    showLimitAlert(
+      "Your current plan does not include AI features for Quiz Building. Please upgrade your plan to unlock the Vibe Agent!",
+    );
+  };
 
   const handleOpen = () => {
     setOpen(true);
@@ -27,23 +41,35 @@ export default function AgentChatToggleFAB({ quizId }: { quizId: string }) {
       {/* Floating Action Button */}
       {(!open || minimized) && (
         <button
-          onClick={handleOpen}
+          onClick={isFeatureEnabled ? handleOpen : handleLockedClick}
           className="fixed bottom-6 right-6 p-4 bg-electric-sun border-2 border-ink-charcoal rounded-full shadow-[4px_4px_0px_0px_rgba(44,46,42,1)] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(44,46,42,1)] transition-all z-50 flex items-center justify-center group"
-          title="Chat with Quiz Maker Agent"
+          title={
+            isFeatureEnabled
+              ? "Chat with Quiz Maker Agent"
+              : "AI Agent (Locked)"
+          }
         >
-          {minimized ? (
-            <Bot className="w-6 h-6 text-ink-charcoal group-hover:scale-110 transition-transform" />
+          {isFeatureEnabled ? (
+            minimized ? (
+              <Bot className="w-6 h-6 text-ink-charcoal group-hover:scale-110 transition-transform" />
+            ) : (
+              <MessageSquare className="w-6 h-6 text-ink-charcoal group-hover:scale-110 transition-transform" />
+            )
           ) : (
-            <MessageSquare className="w-6 h-6 text-ink-charcoal group-hover:scale-110 transition-transform" />
+            <Lock className="w-6 h-6 text-ink-charcoal group-hover:scale-110 transition-transform" />
           )}
         </button>
       )}
 
       {/* Chat Panel — always mounted once opened so the realtime subscription
           is never torn down mid-flight when the user minimizes. */}
-      {open && (
+      {open && isFeatureEnabled && (
         <div className={minimized ? "hidden" : undefined}>
-          <AgentChatPanel onClose={handleClose} onMinimize={handleMinimize} quizId={quizId} />
+          <AgentChatPanel
+            onClose={handleClose}
+            onMinimize={handleMinimize}
+            quizId={quizId}
+          />
         </div>
       )}
     </>

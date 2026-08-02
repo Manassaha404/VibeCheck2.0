@@ -64,7 +64,7 @@ class LangChainService {
       name: "document/uploaded",
       data: {
         documentId,
-        fileUrl, 
+        fileUrl,
         conversationId: resolvedConversationId,
         quizId,
       },

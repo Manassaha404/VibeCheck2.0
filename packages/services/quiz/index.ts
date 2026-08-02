@@ -230,7 +230,6 @@ class QuizService {
 
   public async initDraftQuiz(userId: string, payload: InitDraftQuizInput) {
     const data = initDraftQuizDto.parse(payload);
-
     const [newQuiz] = await db
       .insert(quizzes)
       .values({
@@ -242,16 +241,21 @@ class QuizService {
       .returning();
 
     if (!newQuiz) {
-      throw new AppError("INTERNAL_SERVER_ERROR", "Failed to initialise quiz draft");
+      throw new AppError(
+        "INTERNAL_SERVER_ERROR",
+        "Failed to initialise quiz draft",
+      );
     }
-
     return {
       success: true,
       quizId: newQuiz.quizId,
     };
   }
 
-  public async publishDraftQuiz(userId: string, payload: PublishDraftQuizInput) {
+  public async publishDraftQuiz(
+    userId: string,
+    payload: PublishDraftQuizInput,
+  ) {
     const data = publishDraftQuizDto.parse(payload);
 
     return await db.transaction(async (tx) => {

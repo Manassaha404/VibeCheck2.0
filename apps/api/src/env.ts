@@ -7,6 +7,10 @@ const envSchema = z.object({
     .enum(["development", "production", "test"])
     .optional()
     .default("development"),
+  RAZORPAY_WEBHOOK_SECRET: z.string(),
+  // Bug #2 fix: validate Razorpay API keys at startup so missing keys fail fast
+  RAZORPAY_KEY_ID: z.string(),
+  RAZORPAY_KEY_SECRET: z.string(),
 });
 
 function createEnv(env: NodeJS.ProcessEnv) {

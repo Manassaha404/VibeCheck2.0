@@ -9,7 +9,6 @@ interface UseEmitQuestionOptions {
   onSuccess?: (questionIndex: number) => void;
 }
 
-
 export const useEmitQuestion = (options: UseEmitQuestionOptions = {}) => {
   const setCurrentQuestion = useLiveSessionStore((s) => s.setCurrentQuestion);
 
@@ -23,7 +22,6 @@ export const useEmitQuestion = (options: UseEmitQuestionOptions = {}) => {
       console.error("Failed to emit question:", error.message);
     },
   });
-
 
   const emitQuestion = (
     sessionId: string,

@@ -3,7 +3,6 @@ import { RecursiveCharacterTextSplitter } from "@langchain/textsplitters";
 
 import { Document } from "@langchain/core/documents";
 
-
 interface IngestOptions {
   conversationId: string;
 }
@@ -24,7 +23,7 @@ export async function chunkAndTagDocuments(
       new Document({
         pageContent: chunk.pageContent,
         metadata: {
-          ...chunk.metadata, 
+          ...chunk.metadata,
           conversationId: opts.conversationId,
           chunkIndex: i,
           totalChunks: chunks.length,

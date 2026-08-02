@@ -214,5 +214,9 @@ const runQuizBuilderAgent = inngest.createFunction(
   },
 );
 
-const agentFunctions = [runFormBuilderAgent, runFormRespondentAgent, runQuizBuilderAgent];
+const agentFunctions = [
+  runFormBuilderAgent,
+  runFormRespondentAgent,
+  runQuizBuilderAgent,
+];
 export default agentFunctions;

@@ -7,7 +7,6 @@ interface UseActivateSessionOptions {
   onSuccess?: () => void;
 }
 
-
 export const useActivateSession = (options: UseActivateSessionOptions = {}) => {
   const initSession = useLiveSessionStore((s) => s.initSession);
   const mutation = trpc.quiz.manuallyActivateSession.useMutation({

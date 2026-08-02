@@ -139,10 +139,10 @@ export const useQuizStore = create<QuizStore>()((set, get) => ({
         globalSettings: next,
         questions: shouldSync
           ? s.questions.map((q) => ({
-            ...q,
-            timeLimit: next.defaultTimeLimit,
-            points: next.defaultPoints,
-          }))
+              ...q,
+              timeLimit: next.defaultTimeLimit,
+              points: next.defaultPoints,
+            }))
           : s.questions,
       };
     }),
@@ -216,11 +216,11 @@ export const useQuizStore = create<QuizStore>()((set, get) => ({
         q.id !== questionId
           ? q
           : {
-            ...q,
-            options: q.options.map((o) =>
-              o.id === optionId ? { ...o, ...partial } : o,
-            ),
-          },
+              ...q,
+              options: q.options.map((o) =>
+                o.id === optionId ? { ...o, ...partial } : o,
+              ),
+            },
       ),
     })),
 

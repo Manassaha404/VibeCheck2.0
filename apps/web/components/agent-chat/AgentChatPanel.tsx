@@ -17,11 +17,11 @@ interface AgentChatPanelProps {
   quizId: string;
 }
 
-
-
-
-
-export default function AgentChatPanel({ onClose, onMinimize, quizId }: AgentChatPanelProps) {
+export default function AgentChatPanel({
+  onClose,
+  onMinimize,
+  quizId,
+}: AgentChatPanelProps) {
   const [showUpload, setShowUpload] = useState(false);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -61,7 +61,8 @@ export default function AgentChatPanel({ onClose, onMinimize, quizId }: AgentCha
   } = useAgentFileUploadPipeline();
 
   // Block user input while a file is being uploaded / indexed
-  const isFileProcessing = pipelineStatus === "uploading" || pipelineStatus === "indexing";
+  const isFileProcessing =
+    pipelineStatus === "uploading" || pipelineStatus === "indexing";
   const isDisabled = isGenerating || isFileProcessing;
 
   const handleNewConversation = async () => {
@@ -109,10 +110,11 @@ export default function AgentChatPanel({ onClose, onMinimize, quizId }: AgentCha
 
     // Pass the existing conversationId from the store so multiple uploads
     // in the same session are scoped to the same Qdrant partition.
-    await startPipeline(file, { quizId, conversationId: conversationId ?? undefined });
+    await startPipeline(file, {
+      quizId,
+      conversationId: conversationId ?? undefined,
+    });
   };
-
-
 
   // ── Pipeline status banner ────────────────────────────────────────────────
   const renderPipelineBanner = () => {
@@ -120,7 +122,9 @@ export default function AgentChatPanel({ onClose, onMinimize, quizId }: AgentCha
       return (
         <div className="mx-4 mb-2 flex items-center gap-2 px-3 py-2 rounded border-2 border-ink-charcoal bg-lavender shadow-[2px_2px_0px_0px_rgba(44,46,42,1)]">
           <UploadCloud className="w-4 h-4 text-ink-charcoal shrink-0 animate-bounce" />
-          <span className="text-label-sm font-bold text-ink-charcoal flex-1">Uploading your file…</span>
+          <span className="text-label-sm font-bold text-ink-charcoal flex-1">
+            Uploading your file…
+          </span>
           <div className="w-24 h-1.5 bg-pure-white border border-ink-charcoal rounded-full overflow-hidden">
             <div
               className="h-full bg-electric-sun transition-all duration-300"
@@ -135,7 +139,9 @@ export default function AgentChatPanel({ onClose, onMinimize, quizId }: AgentCha
       return (
         <div className="mx-4 mb-2 flex items-center gap-2 px-3 py-2 rounded border-2 border-ink-charcoal bg-mint shadow-[2px_2px_0px_0px_rgba(44,46,42,1)]">
           <Loader2 className="w-4 h-4 text-ink-charcoal shrink-0 animate-spin" />
-          <span className="text-label-sm font-bold text-ink-charcoal">Reading your document…</span>
+          <span className="text-label-sm font-bold text-ink-charcoal">
+            Reading your document…
+          </span>
         </div>
       );
     }
@@ -168,14 +174,17 @@ export default function AgentChatPanel({ onClose, onMinimize, quizId }: AgentCha
       aria-label="Quiz Maker Agent Chat"
     >
       {/* ── Header ── */}
-      <AgentChatHeader 
-        onClose={onClose} 
-        onMinimize={onMinimize} 
+      <AgentChatHeader
+        onClose={onClose}
+        onMinimize={onMinimize}
         onNewConversation={handleNewConversation}
       />
 
       {/* ── Messages ── */}
-      <div className="flex-1 overflow-y-auto p-4 bg-canvas-cream space-y-4" aria-live="polite">
+      <div
+        className="flex-1 overflow-y-auto p-4 bg-canvas-cream space-y-4"
+        aria-live="polite"
+      >
         {messages.map((msg) => (
           <AgentMessageBubble key={msg.id} message={msg} />
         ))}

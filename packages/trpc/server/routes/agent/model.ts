@@ -48,21 +48,31 @@ export const storeDocumentsEmbeddingsDto = z.object({
   documentId: z.string().uuid("documentId must be a valid UUID"),
   fileUrl: z.string().url("fileUrl must be a valid URL"),
   quizId: z.string().uuid("quizId must be a valid UUID"),
-  conversationId: z.string().uuid("conversationId must be a valid UUID").nullish(),
+  conversationId: z
+    .string()
+    .uuid("conversationId must be a valid UUID")
+    .nullish(),
 });
 
-export type StoreDocumentsEmbeddingsDto = z.infer<typeof storeDocumentsEmbeddingsDto>;
+export type StoreDocumentsEmbeddingsDto = z.infer<
+  typeof storeDocumentsEmbeddingsDto
+>;
 
 export const getDocumentRealTimeTokenDto = z.object({
   quizId: z.string().uuid("quizId must be a valid UUID"),
 });
 
-export type GetDocumentRealTimeTokenDto = z.infer<typeof getDocumentRealTimeTokenDto>;
+export type GetDocumentRealTimeTokenDto = z.infer<
+  typeof getDocumentRealTimeTokenDto
+>;
 
 export const runQuizBuilderAgentDto = z.object({
   prompt: z.string().min(1, "Prompt cannot be empty"),
   quizId: z.string().uuid("quizId must be a valid UUID"),
-  conversationId: z.string().uuid("conversationId must be a valid UUID").nullish(),
+  conversationId: z
+    .string()
+    .uuid("conversationId must be a valid UUID")
+    .nullish(),
 });
 
 export const clearQuizBuilderHistoryDto = z.object({
@@ -70,4 +80,6 @@ export const clearQuizBuilderHistoryDto = z.object({
 });
 
 export type RunQuizBuilderAgentType = z.infer<typeof runQuizBuilderAgentDto>;
-export type ClearQuizBuilderHistoryType = z.infer<typeof clearQuizBuilderHistoryDto>;
+export type ClearQuizBuilderHistoryType = z.infer<
+  typeof clearQuizBuilderHistoryDto
+>;

@@ -1,10 +1,12 @@
 import { useUserInfoStore } from "@/store/userInfoStore";
 import { trpc } from "@/trpc/client";
 import { useRouter } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
 
 export const useLogout = () => {
   const router = useRouter();
   const { setUserInfo } = useUserInfoStore();
+  const queryClient = useQueryClient();
 
   const logoutMutation = trpc.auth.logout.useMutation({
     onSuccess: () => {
@@ -14,6 +16,7 @@ export const useLogout = () => {
         fullName: undefined,
         username: undefined,
       });
+      queryClient.clear();
       router.replace("/");
     },
   });

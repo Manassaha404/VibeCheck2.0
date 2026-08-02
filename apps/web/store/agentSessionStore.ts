@@ -3,11 +3,7 @@ import { create } from "zustand";
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 export type DocumentUploadStatus =
-  | "idle"
-  | "uploading"
-  | "indexing"
-  | "ready"
-  | "error";
+  "idle" | "uploading" | "indexing" | "ready" | "error";
 
 export interface AgentSessionStore {
   /** The conversationId returned by Qdrant after a successful document upload.
@@ -57,7 +53,7 @@ export const useAgentSessionStore = create<AgentSessionStore>()((set) => ({
     })),
 
   setUploadStatus: (status) => set({ uploadStatus: status }),
-  
+
   setConversationId: (id) => set({ conversationId: id }),
 
   resetSession: () =>

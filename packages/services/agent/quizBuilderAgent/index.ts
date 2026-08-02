@@ -15,7 +15,7 @@ class QuizBuilderAgentService {
   ): Promise<{ quizId: string; conversationId: string }> {
     const { userId, quizId, prompt, conversationId } =
       await runQuizBuilderAgentDto.parseAsync(payload);
-      
+
     let resolvedConversationId = conversationId ?? undefined;
     let previousHistory: AgentInputItem[] = [];
 
@@ -24,7 +24,7 @@ class QuizBuilderAgentService {
         .select()
         .from(quizBuilderAgentConversation)
         .where(eq(quizBuilderAgentConversation.id, resolvedConversationId));
-      
+
       if (existing) {
         previousHistory = (existing.history ?? []) as AgentInputItem[];
       } else {
@@ -42,14 +42,12 @@ class QuizBuilderAgentService {
           fileUrls: [],
         })
         .returning({ id: quizBuilderAgentConversation.id });
-        
+
       if (!inserted) {
         throw new Error("Failed to create new conversation");
       }
       resolvedConversationId = inserted.id;
     }
-
-
 
     const effectivePrompt = `conversationId: ${resolvedConversationId}\n\n${prompt}`;
 

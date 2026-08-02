@@ -26,11 +26,7 @@ const quizAgentChannel = realtime.channel({
 });
 
 export type DocumentIngestStatus =
-  | "idle"
-  | "uploading"
-  | "indexing"
-  | "ready"
-  | "error";
+  "idle" | "uploading" | "indexing" | "ready" | "error";
 
 export interface DocumentIngestProgress {
   totalChunks: number;
@@ -52,21 +48,31 @@ export interface UseAgentFileUploadPipelineReturn {
 }
 
 export function useAgentFileUploadPipeline(): UseAgentFileUploadPipelineReturn {
-  const [pipelineStatus, setPipelineStatus] = useState<DocumentIngestStatus>("idle");
+  const [pipelineStatus, setPipelineStatus] =
+    useState<DocumentIngestStatus>("idle");
   const [pipelineError, setPipelineError] = useState<string | null>(null);
   const [indexingStage, setIndexingStage] = useState<string | null>(null);
-  const [indexingProgress, setIndexingProgress] = useState<DocumentIngestProgress | null>(null);
+  const [indexingProgress, setIndexingProgress] =
+    useState<DocumentIngestProgress | null>(null);
   const [activeDocumentId, setActiveDocumentId] = useState<string | null>(null);
   const [activeQuizId, setActiveQuizId] = useState<string | null>(null);
 
   // Track the pending (fileName, conversationId) so we can write to global store on ready
-  const pendingRef = useRef<{ fileName: string; conversationId: string } | null>(null);
+  const pendingRef = useRef<{
+    fileName: string;
+    conversationId: string;
+  } | null>(null);
 
   const { setDocumentReady, setUploadStatus } = useAgentSessionStore();
 
-  const { upload, progress: uploadProgress, reset: resetUpload } = useCloudinaryUpload();
+  const {
+    upload,
+    progress: uploadProgress,
+    reset: resetUpload,
+  } = useCloudinaryUpload();
 
-  const storeDocumentsMutation = trpc.agent.quizBuilderAgentStoreDocuments.useMutation();
+  const storeDocumentsMutation =
+    trpc.agent.quizBuilderAgentStoreDocuments.useMutation();
   const trpcUtils = trpc.useUtils();
 
   const channel = useMemo(
@@ -117,7 +123,10 @@ export function useAgentFileUploadPipeline(): UseAgentFileUploadPipelineReturn {
       setActiveQuizId(null);
       // Write to global agent session store so any hook/component can read it
       if (pendingRef.current) {
-        setDocumentReady(pendingRef.current.conversationId, pendingRef.current.fileName);
+        setDocumentReady(
+          pendingRef.current.conversationId,
+          pendingRef.current.fileName,
+        );
         pendingRef.current = null;
       }
     } else if (data.status === "failed") {
@@ -165,14 +174,19 @@ export function useAgentFileUploadPipeline(): UseAgentFileUploadPipelineReturn {
         });
 
         if (!mutationResult) {
-          throw new Error("Failed to start document indexing — no result returned");
+          throw new Error(
+            "Failed to start document indexing — no result returned",
+          );
         }
 
         // Set conversationId in global store immediately so it is available in state right away
         setDocumentReady(mutationResult.conversationId, file.name);
 
         // Stash for the realtime "ready" handler
-        pendingRef.current = { fileName: file.name, conversationId: mutationResult.conversationId };
+        pendingRef.current = {
+          fileName: file.name,
+          conversationId: mutationResult.conversationId,
+        };
 
         return documentId;
       } catch (err) {

@@ -1,4 +1,4 @@
-//perfectly fine 
+//perfectly fine
 
 import { useState } from "react";
 import { trpc } from "@/trpc/client";

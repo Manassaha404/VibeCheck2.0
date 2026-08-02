@@ -6,6 +6,8 @@ import { Geist } from "next/font/google";
 import { cn } from "@/lib/utils";
 import { Toaster } from "@/components/ui/sonner";
 import { AuthProvider } from "@/providers/auth-provider";
+import { SubscriptionGuardProvider } from "@/providers/subscription-guard-provider";
+import { SubscriptionDataProvider } from "@/providers/subscription-data-provider";
 
 const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -36,10 +38,12 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        <GlobalProviders>
-          <AuthProvider>{children}</AuthProvider>
-          <Toaster richColors position="top-right" />
-        </GlobalProviders>
+        <SubscriptionGuardProvider>
+          <GlobalProviders>
+            <SubscriptionDataProvider />
+            <AuthProvider>{children}</AuthProvider>
+          </GlobalProviders>
+        </SubscriptionGuardProvider>
       </body>
     </html>
   );

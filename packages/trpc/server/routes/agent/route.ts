@@ -1,6 +1,11 @@
 import { AppError } from "@repo/error";
 import * as crypto from "node:crypto";
-import { protectedProcedure, publicProcedure, router } from "../../trpc";
+import {
+  protectedProcedure,
+  publicProcedure,
+  router,
+  planRestrictedProcedure,
+} from "../../trpc";
 import {
   formBuilderAgentServices,
   formRespondentAgentService,
@@ -26,7 +31,7 @@ import { inngest, getClientSubscriptionToken } from "@repo/services/inngest";
 import { quizAgentChannel } from "@repo/services/inngest/agent-functions";
 
 export const agentRouter = router({
-  generateForm: protectedProcedure
+  generateForm: planRestrictedProcedure("ai_call_form")
     .input(generateFormDto)
     .mutation(async ({ input, ctx }) => {
       try {
@@ -56,7 +61,7 @@ export const agentRouter = router({
       try {
         const { quizId } = input;
         const channel = quizAgentChannel({ quizId: quizId as string });
-        
+
         const token = await getClientSubscriptionToken(inngest, {
           channel,
           topics: ["status"],
@@ -177,7 +182,7 @@ export const agentRouter = router({
       }
     }),
 
-  runQuizBuilderAgent: protectedProcedure
+  runQuizBuilderAgent: planRestrictedProcedure("ai_call_quiz")
     .input(runQuizBuilderAgentDto)
     .mutation(async ({ input, ctx }) => {
       try {
@@ -185,7 +190,7 @@ export const agentRouter = router({
           userId: ctx.user.id,
           quizId: input.quizId,
           prompt: input.prompt,
-          conversationId: input.conversationId,
+          conversationId: input.conversationId ?? undefined,
         });
         return {
           quizId: result.quizId,

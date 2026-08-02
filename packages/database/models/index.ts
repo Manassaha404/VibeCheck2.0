@@ -38,3 +38,11 @@ export * from "./quiz-questions";
 export * from "./quiz-sessions";
 export * from "./quiz-participants";
 export * from "./quiz-sessions-result";
+
+// Payment & Subscription
+export * from "./payment&subscription/couponRedemptions";
+export * from "./payment&subscription/coupons";
+export * from "./payment&subscription/plans";
+export * from "./payment&subscription/subscriptions";
+export * from "./payment&subscription/usages";
+export * from "./payment&subscription/razorpayWebhookEvents";

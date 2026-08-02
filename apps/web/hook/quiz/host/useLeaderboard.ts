@@ -16,7 +16,6 @@ export const useLeaderboard = (sessionId: string) => {
     correctOptionIds: string[];
   } | null>(null);
 
-  
   useEffect(() => {
     if (!revealedInfo) return;
     const t = setTimeout(() => {

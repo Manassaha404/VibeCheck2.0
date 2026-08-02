@@ -9,7 +9,6 @@ import type { AgentMessage } from "@/components/agent-chat/AgentMessageBubble";
 import { useQuizStore, Question } from "@/store/quizStore";
 import { useAgentSessionStore } from "@/store/agentSessionStore";
 
-
 const quizAgentChannel = realtime.channel({
   name: ({ quizId }: { quizId: string }) => `quiz-agent:${quizId}`,
   topics: {
@@ -65,8 +64,6 @@ export interface UseQuizBuilderAgentChatReturn {
   pushMessage: (msg: Omit<AgentMessage, "id" | "timestamp">) => void;
 }
 
-
-
 // ── Document-intent detection ─────────────────────────────────────────────────
 const DOCUMENT_INTENT_RE =
   /\b(document|file|pdf|upload(ed)?|my (file|doc|notes)|from (the|my)|based on)/i;
@@ -118,7 +115,11 @@ export function useQuizBuilderAgentChat(
     (msg: Omit<AgentMessage, "id" | "timestamp">) => {
       setMessages((prev) => [
         ...prev,
-        { ...msg, id: Math.random().toString(36).slice(2, 9), timestamp: new Date() },
+        {
+          ...msg,
+          id: Math.random().toString(36).slice(2, 9),
+          timestamp: new Date(),
+        },
       ]);
     },
     [],
@@ -144,10 +145,7 @@ export function useQuizBuilderAgentChat(
 
   const topics = ["status"] as const;
 
-  const channel = useMemo(
-    () => quizAgentChannel({ quizId }),
-    [quizId],
-  );
+  const channel = useMemo(() => quizAgentChannel({ quizId }), [quizId]);
 
   const { messages: realtimeMessages } = useRealtime({
     channel,
@@ -223,26 +221,31 @@ export function useQuizBuilderAgentChat(
       setLastGeneratedQuestions(result.questions);
 
       // Map the agent's payload into the UI's Question store format
-      const mappedQuestions: Question[] = result.questions.map((q: GeneratedQuestion) => {
-        return {
-          id: `q-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
-          type: q.type,
-          text: q.text,
-          options:
-            q.type === "multiple_choice"
-              ? q.options.map((opt) => ({
-                  id: `opt-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
-                  text: opt.text,
-                  isCorrect: opt.isCorrect,
-                }))
-              : [], // text_entry has no predefined options
-          timeLimit: q.timeLimit,
-          points: q.points,
-          mediaUrl: q.mediaUrl ?? undefined,
-          collapsed: false,
-          allowMultipleCorrect: q.type === "multiple_choice" ? (q as MultipleChoiceQuestion).allowMultipleCorrect : false,
-        };
-      });
+      const mappedQuestions: Question[] = result.questions.map(
+        (q: GeneratedQuestion) => {
+          return {
+            id: `q-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+            type: q.type,
+            text: q.text,
+            options:
+              q.type === "multiple_choice"
+                ? q.options.map((opt) => ({
+                    id: `opt-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+                    text: opt.text,
+                    isCorrect: opt.isCorrect,
+                  }))
+                : [], // text_entry has no predefined options
+            timeLimit: q.timeLimit,
+            points: q.points,
+            mediaUrl: q.mediaUrl ?? undefined,
+            collapsed: false,
+            allowMultipleCorrect:
+              q.type === "multiple_choice"
+                ? (q as MultipleChoiceQuestion).allowMultipleCorrect
+                : false,
+          };
+        },
+      );
 
       useQuizStore.getState().appendQuestions(mappedQuestions);
 
@@ -266,7 +269,8 @@ export function useQuizBuilderAgentChat(
         {
           id: Math.random().toString(36).slice(2, 9),
           role: "agent",
-          content: "I finished processing your request but couldn't generate any questions. Try rephrasing your prompt.",
+          content:
+            "I finished processing your request but couldn't generate any questions. Try rephrasing your prompt.",
           timestamp: new Date(),
         },
       ]);
@@ -324,13 +328,16 @@ export function useQuizBuilderAgentChat(
       });
 
       if (!response) throw new Error("Failed to start quiz builder agent");
-      
+
       if (!conversationId && response.conversationId) {
-         useAgentSessionStore.getState().setConversationId(response.conversationId);
+        useAgentSessionStore
+          .getState()
+          .setConversationId(response.conversationId);
       }
     } catch (error: any) {
       const displayMessage =
-        error?.message || "Sorry, I encountered an error while starting the agent.";
+        error?.message ||
+        "Sorry, I encountered an error while starting the agent.";
 
       setMessages((prev) => [
         ...prev,
@@ -343,7 +350,16 @@ export function useQuizBuilderAgentChat(
       ]);
       setIsGenerating(false);
     }
-  }, [inputValue, isGenerating, quizId, runAgentMutation, conversationId, hasUploadedDocument, questions, pushMessage]);
+  }, [
+    inputValue,
+    isGenerating,
+    quizId,
+    runAgentMutation,
+    conversationId,
+    hasUploadedDocument,
+    questions,
+    pushMessage,
+  ]);
 
   // ── Clear history ─────────────────────────────────────────────────────────
   const handleClearHistory = useCallback(async () => {

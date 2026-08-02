@@ -1,4 +1,9 @@
-import { protectedProcedure, publicProcedure, router } from "../../trpc";
+import {
+  protectedProcedure,
+  publicProcedure,
+  router,
+  planRestrictedProcedure,
+} from "../../trpc";
 import { z } from "zod";
 import {
   createQuizDto,
@@ -27,7 +32,6 @@ import { handleRouteError } from "../../utils/error";
 import { AppError } from "@repo/error";
 
 export const quizRouter = router({
-  
   initDraftQuiz: protectedProcedure
     .input(initDraftQuizDto)
     .mutation(async ({ input, ctx }) => {
@@ -48,7 +52,7 @@ export const quizRouter = router({
         handleRouteError(error);
       }
     }),
-  createQuiz: protectedProcedure
+  createQuiz: planRestrictedProcedure("quiz_created")
     .input(createQuizDto)
     .mutation(async ({ input, ctx }) => {
       try {
@@ -135,7 +139,7 @@ export const quizRouter = router({
         handleRouteError(error);
       }
     }),
-  makeQuizSession: protectedProcedure
+  makeQuizSession: planRestrictedProcedure("quiz_session_created")
     .input(makeQuizSessionDto)
     .mutation(async ({ input, ctx }) => {
       try {
