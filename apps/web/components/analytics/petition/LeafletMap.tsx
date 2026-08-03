@@ -34,7 +34,6 @@ function MapController({ markers }: { markers: any[] }) {
 
     let currentIndex = 0;
 
-    // Set initial view to the first city
     map.setView(markers[0].coordinates, 4);
 
     const interval = setInterval(() => {
@@ -55,13 +54,11 @@ export default function LeafletMap({
 }: {
   topCities?: { city: string; country: string; count: number }[];
 }) {
-  // Map topCities to markers if they exist in our coordinate dictionary or dynamically lookup
   const markers = useMemo(() => {
     return topCities
       .map((city) => {
         let coords = CITY_COORDINATES[city.city];
 
-        // Dynamically find coordinates if not hardcoded
         if (!coords) {
           const countryObj = Country.getAllCountries().find(
             (c) => c.name === city.country,
@@ -80,8 +77,6 @@ export default function LeafletMap({
 
         if (!coords) return null; // Skip if we don't have coords for this city
 
-        // Calculate heat level based on count (min 10, max 40 for visual scale)
-        // This is a simple linear scale assuming count could be anything from 1 to 1000s
         const heatLevel = Math.max(10, Math.min(40, 10 + city.count * 2));
 
         return {
@@ -136,7 +131,6 @@ export default function LeafletMap({
           background: var(--color-canvas-cream) !important;
           font-family: 'Hanken Grotesk', sans-serif;
         }
-        /* Make the map tiles high contrast and slightly warm to fit the canvas cream vibe */
         .leaflet-tile-pane {
           filter: grayscale(100%) contrast(1.1) sepia(30%) opacity(0.8);
           mix-blend-mode: multiply;

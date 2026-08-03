@@ -11,7 +11,6 @@ export function PricingHeader() {
       transition={{ type: "spring" as const, stiffness: 100, damping: 14 }}
       className="text-center mb-16"
     >
-      {/* Eyebrow badge */}
       <div className="inline-flex items-center gap-2 bg-[var(--color-electric-sun)] text-[var(--color-ink-charcoal)] font-display font-bold text-sm uppercase tracking-widest px-4 py-1.5 border-2 border-[var(--color-ink-charcoal)] shadow-hard mb-6">
         <Zap size={14} strokeWidth={2.5} />
         Simple Pricing

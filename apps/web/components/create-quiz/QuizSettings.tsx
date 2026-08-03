@@ -14,7 +14,6 @@ export default function QuizSettings() {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-      {/* Security */}
       <section className="bg-canvas-cream border-4 border-ink-charcoal shadow-hard p-6 md:p-8 flex flex-col gap-6 relative">
         <div className="absolute -top-4 -right-4 bg-electric-sun text-ink-charcoal font-label-md text-label-md uppercase px-4 py-1 border-2 border-ink-charcoal transform rotate-3 flex items-center gap-1">
           <Lock size={16} /> Security
@@ -74,7 +73,6 @@ export default function QuizSettings() {
         </AnimatePresence>
       </section>
 
-      {/* Global Rules */}
       <section className="bg-canvas-cream border-4 border-ink-charcoal shadow-hard p-6 md:p-8 flex flex-col gap-6 relative">
         <div className="absolute -top-4 -left-4 bg-leaf-green text-ink-charcoal font-label-md text-label-md uppercase px-4 py-1 border-2 border-ink-charcoal transform -rotate-3 flex items-center gap-1">
           <Settings size={16} /> Global Rules
@@ -119,7 +117,6 @@ export default function QuizSettings() {
           />
         </div>
 
-        {/* ── Auto-sync toggle ── */}
         <div className="flex items-center justify-between bg-pure-white p-4 border-2 border-ink-charcoal">
           <div className="flex flex-col gap-0.5">
             <span className="font-headline-sm text-headline-sm font-bold">
@@ -149,7 +146,6 @@ export default function QuizSettings() {
           </label>
         </div>
 
-        {/* ── Bonus Points toggle ── */}
         <div className="flex items-center justify-between bg-pure-white p-4 border-2 border-ink-charcoal">
           <div className="flex flex-col gap-0.5 pr-4">
             <span className="font-headline-sm text-headline-sm font-bold">
@@ -179,7 +175,6 @@ export default function QuizSettings() {
           </label>
         </div>
 
-        {/* ── Manual apply-to-all button ── */}
         <motion.button
           whileHover={{ scale: 1.02, y: -1 }}
           whileTap={{ scale: 0.97, x: 3, y: 3 }}

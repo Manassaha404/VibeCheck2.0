@@ -37,7 +37,9 @@ export default function RootLayout({
       className={cn("font-sans", geist.variable)}
       suppressHydrationWarning
     >
-      <body className={`${geistSans.variable} ${geistMono.variable}`}>
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} min-h-screen flex flex-col overflow-x-hidden`}
+      >
         <SubscriptionGuardProvider>
           <GlobalProviders>
             <SubscriptionDataProvider />

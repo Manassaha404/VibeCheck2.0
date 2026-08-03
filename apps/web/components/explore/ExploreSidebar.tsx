@@ -42,7 +42,6 @@ function SidebarItem({
     const icon = iconRef.current;
     if (!container || !icon) return;
 
-    // GSAP Magnetic effect for the icon on hover
     const xTo = gsap.quickTo(icon, "x", {
       duration: 0.8,
       ease: "elastic.out(1, 0.3)",
@@ -58,7 +57,6 @@ function SidebarItem({
       const centerX = left + width / 2;
       const centerY = top + height / 2;
 
-      // Magnetic pull only affects the icon subtly
       const x = (clientX - centerX) * 0.15;
       const y = (clientY - centerY) * 0.15;
 
@@ -92,7 +90,6 @@ function SidebarItem({
       whileHover={{ scale: isActive ? 1 : 1.02 }}
       whileTap={{ scale: 0.95 }}
     >
-      {/* Framer motion layoutId for sliding background on active tab */}
       {isActive && (
         <motion.div
           layoutId="sidebar-active-bg"
@@ -189,7 +186,6 @@ export default function ExploreSidebar({
         ))}
       </motion.div>
 
-      {/* Playful "For You" Card at bottom */}
       <motion.div
         className="mt-auto pt-6"
         initial={{ opacity: 0, y: 30 }}
@@ -197,7 +193,6 @@ export default function ExploreSidebar({
         transition={{ delay: 0.6, type: "spring", stiffness: 300 }}
       >
         <div className="relative bg-[var(--color-sky-blue)] rounded-2xl p-4 border-4 border-[var(--color-ink-charcoal)] shadow-hard group overflow-hidden">
-          {/* Decorative background dot pattern */}
           <div className="absolute inset-0 opacity-20 bg-dot-pattern mix-blend-overlay"></div>
 
           <div className="relative z-10 flex flex-col gap-2">
@@ -224,7 +219,6 @@ export default function ExploreSidebar({
             </p>
           </div>
 
-          {/* Hover highlight sweep */}
           <motion.div
             className="absolute inset-0 bg-white opacity-0 group-hover:opacity-20 transition-opacity duration-300"
             style={{ mixBlendMode: "overlay" }}

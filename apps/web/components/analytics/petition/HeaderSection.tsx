@@ -39,14 +39,12 @@ export default function HeaderSection({
     <div className="mb-16">
       <header className="relative flex flex-col md:flex-row items-start md:items-end justify-between gap-8">
         <div className="relative z-10">
-          {/* Decorative boom badge */}
           <div className="absolute -top-12 -left-12 rotate-[-15deg] hidden md:block">
             <div className="bg-[var(--color-electric-sun)] text-[var(--color-ink-charcoal)] font-black text-2xl p-4 border-4 border-[var(--color-ink-charcoal)] shadow-[6px_6px_0px_0px_rgba(44,46,42,1)] transform hover:scale-110 transition-transform cursor-crosshair">
               BOOM!
             </div>
           </div>
 
-          {/* Title */}
           <h1 className="font-display-lg text-display-lg md:text-[96px] md:leading-[90px] font-black uppercase text-[var(--color-ink-charcoal)] bg-[var(--color-pure-white)] inline-block p-4 border-4 border-[var(--color-ink-charcoal)] shadow-[12px_12px_0px_0px_rgba(44,46,42,1)] mb-4 -rotate-1 relative z-10">
             ANALYTICS:
           </h1>
@@ -55,7 +53,6 @@ export default function HeaderSection({
             {title}
           </h2>
 
-          {/* Status chip */}
           <div className="mt-4 flex items-center gap-3">
             <span
               className={`font-headline-sm text-sm font-black uppercase px-4 py-1 border-2 border-[var(--color-ink-charcoal)] inline-flex items-center gap-2 ${statusClass}`}
@@ -66,7 +63,6 @@ export default function HeaderSection({
           </div>
         </div>
 
-        {/* Total Responses stat */}
         <div className="flex gap-4 md:gap-8 flex-col sm:flex-row w-full md:w-auto relative z-30">
           {status === "archived" && (
             <button

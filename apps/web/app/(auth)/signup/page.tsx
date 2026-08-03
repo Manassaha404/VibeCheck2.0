@@ -1,3 +1,11 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Signup | VibeCheck",
+  description:
+    "Join VibeCheck today to start creating and sharing your polls and feedback forms.",
+};
+
 import React from "react";
 import Link from "next/link";
 import SignupForm from "@/components/Auth/SignupForm";

@@ -11,7 +11,6 @@ export const ProfileLayout: React.FC<ProfileLayoutProps> = ({ children }) => {
   useEffect(() => {
     if (!containerRef.current) return;
 
-    // Select all the direct children elements we want to stagger
     const elements = containerRef.current.querySelectorAll(".stagger-item");
 
     gsap.fromTo(

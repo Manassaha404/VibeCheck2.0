@@ -107,14 +107,12 @@ export function FieldSettings() {
         </h2>
       </div>
       <div className="p-6 overflow-y-auto space-y-8 flex-grow">
-        {/* Field Type indicator */}
         <div className="flex items-center gap-3 bg-surface-container-low border-2 border-ink-charcoal p-3 rounded">
           <span className="text-label-md font-label-md uppercase tracking-wider">
             {data.label || data.type} Node
           </span>
         </div>
 
-        {/* Label Setting */}
         <div className="space-y-2">
           <label className="text-label-md font-label-md uppercase text-outline flex items-center gap-1">
             Question Label
@@ -131,7 +129,6 @@ export function FieldSettings() {
           />
         </div>
 
-        {/* Placeholder Setting */}
         {hasPlaceholder && (
           <div className="space-y-2">
             <label className="text-label-md font-label-md uppercase text-outline">
@@ -164,7 +161,6 @@ export function FieldSettings() {
           </div>
         )}
 
-        {/* Help Text Setting */}
         <div className="space-y-2">
           <label className="text-label-md font-label-md uppercase text-outline">
             Helper Text (Optional)
@@ -178,7 +174,6 @@ export function FieldSettings() {
           />
         </div>
 
-        {/* Options Manager */}
         {hasOptions && (
           <div className="space-y-4 pt-4 border-t-2 border-ink-charcoal/20">
             <h3 className="text-headline-sm text-ink-charcoal font-headline-sm font-bold">
@@ -215,7 +210,6 @@ export function FieldSettings() {
           </div>
         )}
 
-        {/* File Integration */}
         {data.type === "file" && (
           <div className="space-y-4 pt-4 border-t-2 border-ink-charcoal/20">
             <h3 className="text-headline-sm text-ink-charcoal font-headline-sm font-bold">
@@ -259,7 +253,6 @@ export function FieldSettings() {
 
         <hr className="border-t-2 border-ink-charcoal/20" />
 
-        {/* Validations */}
         <div className="space-y-4">
           <h3 className="text-headline-sm text-ink-charcoal font-headline-sm font-bold">
             Rules

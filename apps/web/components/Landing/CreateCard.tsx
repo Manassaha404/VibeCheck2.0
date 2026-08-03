@@ -11,9 +11,7 @@ export interface CreateCardProps {
   title: string;
   description: string;
   icon: React.ReactNode;
-  /** Override the accent color (CSS value or var()) */
   accentColor?: string;
-  /** Override the destination href */
   href?: string;
   onClick?: () => void;
   id?: string;

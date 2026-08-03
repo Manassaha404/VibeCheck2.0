@@ -18,7 +18,6 @@ export function PetitionForm({
 
   return (
     <div className="flex flex-col gap-6">
-      {/* Title */}
       <div className="flex flex-col gap-2">
         <label
           className="font-headline-sm text-headline-sm text-ink-charcoal mb-1 block"
@@ -38,7 +37,6 @@ export function PetitionForm({
         )}
       </div>
 
-      {/* Description */}
       <div className="flex flex-col gap-2">
         <label
           className="font-headline-sm text-headline-sm text-ink-charcoal mb-1 block"
@@ -47,7 +45,6 @@ export function PetitionForm({
           The Pitch (Why should we care?)
         </label>
         <div className="bg-pure-white border-2 border-ink-charcoal shadow-hard flex flex-col focus-within:ring-4 focus-within:ring-electric-sun transition-all">
-          {/* Pseudo Rich Text Toolbar */}
           <div className="bg-surface-container border-b-2 border-ink-charcoal p-2 flex gap-2">
             <button
               aria-label="Bold"
@@ -67,8 +64,6 @@ export function PetitionForm({
                   `**${selectedText}**` +
                   value.substring(end);
 
-                // Use setValue from useFormContext if available, otherwise just update value
-                // Since this component uses useFormContext, we need to extract setValue
                 const syntheticEvent = {
                   target: { value: newText },
                 } as React.ChangeEvent<HTMLTextAreaElement>;
@@ -164,9 +159,7 @@ export function PetitionForm({
         )}
       </div>
 
-      {/* Details Row */}
       <div className="flex flex-col sm:flex-row gap-6">
-        {/* Target Authority */}
         <div className="flex flex-col gap-2 flex-grow">
           <label
             className="font-headline-sm text-headline-sm text-ink-charcoal mb-1 block"
@@ -188,7 +181,6 @@ export function PetitionForm({
           )}
         </div>
 
-        {/* Signature Goal */}
         <div className="flex flex-col gap-2 w-full sm:w-1/3">
           <label
             className="font-headline-sm text-headline-sm text-ink-charcoal mb-1 block"
@@ -209,10 +201,8 @@ export function PetitionForm({
         </div>
       </div>
 
-      {/* Tags Input */}
       <PetitionTagsInput />
 
-      {/* Visibility */}
       <div className="bg-pure-white border-2 border-ink-charcoal shadow-hard p-6 flex flex-col gap-4">
         <h3 className="font-headline-sm text-headline-sm text-ink-charcoal">
           Visibility
@@ -249,7 +239,6 @@ export function PetitionForm({
         </div>
       </div>
 
-      {/* Action */}
       <div className="mt-4">
         <button
           className="w-full bg-leaf-green border-2 border-ink-charcoal p-6 font-headline-md text-headline-md text-ink-charcoal shadow-hard-lg hover:translate-x-[4px] hover:translate-y-[4px] hover:shadow-none transition-all active:translate-x-[8px] active:translate-y-[8px] flex items-center justify-center gap-2 group cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"

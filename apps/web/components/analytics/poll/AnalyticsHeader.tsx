@@ -67,9 +67,7 @@ export function AnalyticsHeader({
 
   return (
     <header className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
-      {/* Left: Title + Meta */}
       <div className="flex flex-col gap-4 max-w-2xl">
-        {/* Live badge */}
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
@@ -87,7 +85,6 @@ export function AnalyticsHeader({
           </span>
         </motion.div>
 
-        {/* Poll Question */}
         <motion.h1
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -97,7 +94,6 @@ export function AnalyticsHeader({
           {question}
         </motion.h1>
 
-        {/* Meta */}
         <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -108,7 +104,6 @@ export function AnalyticsHeader({
         </motion.p>
       </div>
 
-      {/* Right: QR + Share */}
       <motion.div
         initial={{ opacity: 0, x: 20 }}
         animate={{ opacity: 1, x: 0 }}
@@ -129,7 +124,6 @@ export function AnalyticsHeader({
             Activate
           </button>
         )}
-        {/* QR Code Toggle */}
         <button
           id="qr-toggle-btn"
           onClick={() => setShowQR((v) => !v)}
@@ -139,7 +133,6 @@ export function AnalyticsHeader({
           <QrCode size={32} className="text-ink-charcoal" />
         </button>
 
-        {/* Share Button */}
         <button
           id="share-result-btn"
           onClick={() => setShowShare((v) => !v)}
@@ -150,7 +143,6 @@ export function AnalyticsHeader({
         </button>
       </motion.div>
 
-      {/* QR Code Modal */}
       <AnimatePresence>
         {showQR && (
           <motion.div
@@ -180,7 +172,6 @@ export function AnalyticsHeader({
                 </button>
               </div>
 
-              {/* QR Code */}
               <div className="bg-pure-white border-4 border-ink-charcoal p-4 rounded-xl shadow-hard">
                 <QRCode
                   value={shareUrl}
@@ -219,7 +210,6 @@ export function AnalyticsHeader({
         )}
       </AnimatePresence>
 
-      {/* Share Dropdown */}
       <AnimatePresence>
         {showShare && (
           <motion.div

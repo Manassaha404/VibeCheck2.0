@@ -26,7 +26,6 @@ export default function MultipleChoiceAnswers({
       {options.map((option, index) => {
         const percentage =
           totalVotes > 0 ? (option.votes / totalVotes) * 100 : 0;
-        // Alternate tilt for the badges
         const badgeRotation = index % 2 === 0 ? "rotate-2" : "-rotate-2";
 
         const isCorrect = isRevealed && revealedOptionIds!.includes(option.id);
@@ -43,7 +42,6 @@ export default function MultipleChoiceAnswers({
               isWrong ? "opacity-40 grayscale" : "",
             ].join(" ")}
           >
-            {/* Progress bar background */}
             <div
               className={`absolute top-0 left-0 h-full ${!isRevealed ? option.colorClass : isCorrect ? "bg-[var(--color-leaf-green)]" : option.colorClass} border-r-4 border-[var(--color-ink-charcoal)] transition-all duration-500 ease-out`}
               style={{ width: `${percentage}%` }}

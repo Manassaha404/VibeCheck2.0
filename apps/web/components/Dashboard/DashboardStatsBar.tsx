@@ -65,7 +65,6 @@ export function DashboardStatsBar({
           id={stat.id}
           className="bg-[var(--color-pure-white)] border-2 border-[var(--color-ink-charcoal)] rounded-xl p-5 shadow-hard card-lift flex flex-col gap-3"
         >
-          {/* Icon badge */}
           <div
             className={`w-10 h-10 rounded-lg border-2 border-[var(--color-ink-charcoal)] flex items-center justify-center shrink-0 ${stat.accentClass}`}
           >
@@ -74,7 +73,6 @@ export function DashboardStatsBar({
             </span>
           </div>
 
-          {/* Value */}
           <div>
             {isLoading ? (
               <div className="h-8 w-16 bg-[var(--color-surface-container-high)] rounded animate-pulse" />

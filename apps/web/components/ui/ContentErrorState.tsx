@@ -14,8 +14,6 @@ import {
   HelpCircle,
 } from "lucide-react";
 
-// ─── Types ────────────────────────────────────────────────────────────────────
-
 export type ContentKind = "poll" | "form" | "petition" | "quiz";
 
 export type ContentErrorVariant =
@@ -25,19 +23,12 @@ export type ContentErrorVariant =
   | "error"; // unexpected / network error
 
 interface ContentErrorStateProps {
-  /** What type of content failed to load */
   kind?: ContentKind;
-  /** Specific error variant — drives icon, heading, and copy */
   variant?: ContentErrorVariant;
-  /** Custom heading override */
   heading?: string;
-  /** Custom description override */
   description?: string;
-  /** Show a retry button */
   onRetry?: () => void;
 }
-
-// ─── Per-variant copy ─────────────────────────────────────────────────────────
 
 const kindLabel: Record<ContentKind, string> = {
   poll: "Poll",
@@ -102,8 +93,6 @@ const variantConfig: Record<ContentErrorVariant, VariantConfig> = {
   },
 };
 
-// ─── Component ────────────────────────────────────────────────────────────────
-
 export function ContentErrorState({
   kind = "form",
   variant = "not_found",
@@ -121,43 +110,34 @@ export function ContentErrorState({
   return (
     <div className="min-h-screen bg-[var(--color-canvas-cream)] bg-dot-pattern flex items-center justify-center p-4">
       <div className="w-full max-w-md">
-        {/* Card */}
         <div className="bg-[var(--color-pure-white)] border-4 border-[var(--color-ink-charcoal)] rounded-2xl shadow-hard-xl p-8 md:p-10 flex flex-col items-center text-center gap-6">
-          {/* Icon stack */}
           <div className="relative">
-            {/* Main variant icon box */}
             <div
               className={`w-20 h-20 rounded-2xl border-4 border-[var(--color-ink-charcoal)] shadow-hard flex items-center justify-center ${vc.accent}`}
             >
               {vc.icon}
             </div>
-            {/* Kind badge — overlapping bottom-right */}
             <div className="absolute -bottom-3 -right-3 w-10 h-10 rounded-xl border-2 border-[var(--color-ink-charcoal)] shadow-hard-sm flex items-center justify-center bg-[var(--color-pure-white)]">
               {KindIcon}
             </div>
           </div>
 
-          {/* Status badge */}
           <span
             className={`inline-flex items-center px-3 py-1 rounded-full border-2 border-[var(--color-ink-charcoal)] text-label-sm font-bold ${vc.badgeBg}`}
           >
             {vc.badge}
           </span>
 
-          {/* Heading */}
           <h1 className="text-headline-sm font-display font-bold text-[var(--color-ink-charcoal)] leading-tight -mt-2">
             {finalHeading}
           </h1>
 
-          {/* Description */}
           <p className="text-body-md text-[var(--color-on-surface-variant)] -mt-2">
             {finalDesc}
           </p>
 
-          {/* Divider */}
           <div className="w-full h-px bg-[var(--color-outline-variant)]" />
 
-          {/* Actions */}
           <div className="flex flex-col sm:flex-row items-center gap-3 w-full">
             <Link
               href="/"
@@ -179,7 +159,6 @@ export function ContentErrorState({
           </div>
         </div>
 
-        {/* Footer hint */}
         <p className="text-center text-label-sm text-[var(--color-on-surface-variant)] mt-4 opacity-70">
           Think this is a mistake?{" "}
           <Link

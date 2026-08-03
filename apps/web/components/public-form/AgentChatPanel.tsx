@@ -32,7 +32,6 @@ export function AgentChatPanel({
   onClear,
   primaryFieldId,
 }: AgentChatPanelProps) {
-  // Hold raw File references — the browser already has the file, no copy needed
   const [pendingFiles, setPendingFiles] = useState<File[]>([]);
   const [isUploadingToServer, setIsUploadingToServer] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -41,7 +40,6 @@ export function AgentChatPanel({
     useFileUpload();
   const submitMutation = useSubmitStaticForm();
 
-  // ── Upload all queued files via resumable upload, then call onComplete ──────
   const handleComplete = useCallback(
     async (responseId?: string) => {
       if (pendingFiles.length === 0) {
@@ -64,7 +62,6 @@ export function AgentChatPanel({
 
         let hasUpdates = false;
 
-        // Stream files one-by-one to avoid saturating the pipe
         for (const file of pendingFiles) {
           const fileId = await uploadFile(formId, file, primaryFieldValue);
           if (fileId) {
@@ -120,7 +117,6 @@ export function AgentChatPanel({
     inputRef,
   } = useAgentChat(formId, formTitle, handleComplete, onClear);
 
-  // ── Queue file without reading it — hold only the File reference ───────────
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -152,7 +148,6 @@ export function AgentChatPanel({
 
   return (
     <div className="flex flex-col h-full bg-[var(--color-canvas-cream)] border-[3px] border-[var(--color-ink-charcoal)] shadow-hard-sm overflow-hidden flex-1">
-      {/* Agent Header / Progress */}
       <div className="bg-[var(--color-electric-sun)] border-b-[3px] border-[var(--color-ink-charcoal)] px-3 md:px-4 py-2 md:py-3 flex items-center justify-between z-10">
         <div className="flex items-center gap-2 md:gap-3">
           <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-white border-[2px] md:border-[3px] border-[var(--color-ink-charcoal)] flex items-center justify-center shadow-hard-sm">
@@ -177,14 +172,12 @@ export function AgentChatPanel({
         </div>
       </div>
 
-      {/* Messages */}
       <div className="flex-1 overflow-y-auto px-3 md:px-4 py-4 md:py-6 space-y-4 md:space-y-6 custom-scrollbar bg-[var(--color-canvas-cream)]">
         {messages.map((msg) => (
           <div
             key={msg.id}
             className={`flex gap-2 md:gap-3 animate-fade-up ${msg.role === "user" ? "flex-row-reverse" : "flex-row"}`}
           >
-            {/* Avatar */}
             <div
               className={`w-8 h-8 md:w-10 md:h-10 flex-shrink-0 rounded-full border-[2px] md:border-[3px] border-[var(--color-ink-charcoal)] flex items-center justify-center shadow-hard-sm ${
                 msg.role === "agent"
@@ -199,7 +192,6 @@ export function AgentChatPanel({
               )}
             </div>
 
-            {/* Bubble */}
             <div
               className={`max-w-[85%] md:max-w-[80%] px-4 py-2.5 md:px-5 md:py-3 rounded-2xl border-[2px] md:border-[3px] border-[var(--color-ink-charcoal)] shadow-hard-sm text-body-md md:text-body-lg font-bold leading-relaxed ${
                 msg.role === "agent"
@@ -220,7 +212,6 @@ export function AgentChatPanel({
           </div>
         ))}
 
-        {/* Typing / uploading indicator */}
         {(isTyping || isUploadingToServer) && (
           <div className="flex gap-2 md:gap-3 animate-fade-up">
             <div className="w-8 h-8 md:w-10 md:h-10 flex-shrink-0 rounded-full border-[2px] md:border-[3px] border-[var(--color-ink-charcoal)] flex items-center justify-center bg-[var(--color-electric-sun)] shadow-hard-sm">
@@ -250,7 +241,6 @@ export function AgentChatPanel({
         <div ref={bottomRef} />
       </div>
 
-      {/* Pending file badges */}
       {pendingFiles.length > 0 && (
         <div className="px-4 pt-2 pb-1 bg-white border-t border-[var(--color-ink-charcoal)]/20 flex flex-wrap gap-2">
           {pendingFiles.map((f, i) => (
@@ -272,7 +262,6 @@ export function AgentChatPanel({
         </div>
       )}
 
-      {/* Input */}
       <div className="border-t-[3px] border-[var(--color-ink-charcoal)] p-3 md:p-4 bg-white z-10">
         <div className="flex gap-2 md:gap-3 items-end">
           <label

@@ -135,7 +135,6 @@ export function StaticFormPanel({
 
   return (
     <div className="space-y-6 animate-fade-up">
-      {/* AI suggestion banner */}
       {!hideAiMode && (
         <button
           id="try-ai-banner"
@@ -161,7 +160,6 @@ export function StaticFormPanel({
         </button>
       )}
 
-      {/* Fields */}
       <div className="space-y-8 mt-8">
         {form.fields.map((field) => {
           const primaryField = form.fields.find((f) => f.isPrimary);
@@ -192,7 +190,6 @@ export function StaticFormPanel({
         })}
       </div>
 
-      {/* Submit */}
       <div className="pt-8 mt-8 border-t-[3px] border-[var(--color-ink-charcoal)]">
         <button
           id="form-submit-btn"

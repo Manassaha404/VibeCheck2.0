@@ -47,7 +47,6 @@ export function FormSettingsModal({
 
             if (response.form.expiresAt) {
               const date = new Date(response.form.expiresAt);
-              // Format for datetime-local: YYYY-MM-DDTHH:mm
               const formattedDate = date.toISOString().slice(0, 16);
               setExpiresAt(formattedDate);
             } else {
@@ -100,7 +99,6 @@ export function FormSettingsModal({
             </div>
           ) : (
             <>
-              {/* Security Section */}
               <section className="bg-canvas-cream border-4 border-ink-charcoal rounded p-6 shadow-[4px_4px_0px_0px_rgba(44,46,42,1)]">
                 <div className="flex items-center gap-3 mb-6 border-b-2 border-ink-charcoal pb-4">
                   <Lock className="text-leaf-green w-6 h-6" />
@@ -154,7 +152,6 @@ export function FormSettingsModal({
                 </div>
               </section>
 
-              {/* Controls Section */}
               <section className="bg-canvas-cream border-4 border-ink-charcoal rounded p-6 shadow-[4px_4px_0px_0px_rgba(44,46,42,1)]">
                 <div className="flex items-center gap-3 mb-6 border-b-2 border-ink-charcoal pb-4">
                   <SettingsIcon className="text-electric-sun w-6 h-6" />

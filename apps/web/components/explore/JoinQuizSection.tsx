@@ -4,7 +4,6 @@ import React from "react";
 import { Gamepad2, ArrowRight, Loader2, Zap } from "lucide-react";
 import { useJoinQuiz } from "@/hook/explore/useJoinQuiz";
 
-// ── Main section ──────────────────────────────────────────────────────────────
 export default function JoinQuizSection() {
   const { joinCode, setJoinCode, isJoining, handleJoin } = useJoinQuiz();
 
@@ -14,7 +13,6 @@ export default function JoinQuizSection() {
 
   return (
     <section className="mb-16 max-w-2xl mx-auto w-full" id="join-quiz">
-      {/* Section header */}
       <div className="flex items-center gap-3 mb-8 border-b-4 border-[var(--color-ink-charcoal)] pb-4">
         <Gamepad2 size={28} className="text-[var(--color-electric-sun)]" />
         <div>
@@ -28,7 +26,6 @@ export default function JoinQuizSection() {
       </div>
 
       <div className="w-full">
-        {/* ── Panel 1: Join by code ──────────────────────────────────── */}
         <div className="bg-[var(--color-pure-white)] border-4 border-[var(--color-ink-charcoal)] rounded-2xl shadow-hard p-8">
           <div className="flex items-center gap-2 mb-2">
             <Zap size={20} className="text-[var(--color-electric-sun)]" />
@@ -65,7 +62,6 @@ export default function JoinQuizSection() {
             </button>
           </div>
 
-          {/* Visual decoration */}
           <div className="mt-8 border-2 border-dashed border-[var(--color-outline)] rounded-xl p-5 bg-[var(--color-canvas-cream)] text-center">
             <Gamepad2
               size={36}

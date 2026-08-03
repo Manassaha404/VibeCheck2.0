@@ -121,7 +121,6 @@ export function FieldInput({
         <p className="text-body-md opacity-70 mt-1">{field.helperText}</p>
       )}
 
-      {/* ── Text types ── */}
       {(field.type === "short_text" ||
         field.type === "email" ||
         field.type === "phone") && (
@@ -178,7 +177,6 @@ export function FieldInput({
         </div>
       )}
 
-      {/* ── Select ── */}
       {field.type === "select" && (
         <div className={inputWrapper}>
           <select
@@ -197,7 +195,6 @@ export function FieldInput({
         </div>
       )}
 
-      {/* ── Radio / Checkbox / Multi Select ── */}
       {(field.type === "radio" ||
         field.type === "checkbox" ||
         field.type === "multi_select") && (
@@ -261,7 +258,6 @@ export function FieldInput({
         </div>
       )}
 
-      {/* ── Rating ── */}
       {field.type === "rating" && (
         <div className="flex gap-4 flex-wrap">
           {[1, 2, 3, 4, 5].map((n) => (
@@ -284,7 +280,6 @@ export function FieldInput({
         </div>
       )}
 
-      {/* ── Scale (1–10) ── */}
       {field.type === "scale" && (
         <div className="flex gap-2 flex-wrap">
           {Array.from({ length: 10 }, (_, i) => i + 1).map((n) => (
@@ -307,7 +302,6 @@ export function FieldInput({
         </div>
       )}
 
-      {/* ── Mood ── */}
       {field.type === "mood" && (
         <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
           {(field.options && field.options.length > 0
@@ -340,7 +334,6 @@ export function FieldInput({
         </div>
       )}
 
-      {/* ── File ── */}
       {field.type === "file" && (
         <div className={inputWrapper + " flex items-center p-4 gap-4"}>
           {value ? (

@@ -42,7 +42,6 @@ export default function TestimonialCard({
         transition: { type: "spring", stiffness: 300, damping: 18 },
       }}
     >
-      {/* Quote mark */}
       <motion.span
         className="text-[4rem] font-display font-black leading-none"
         style={{ color: accentColor }}

@@ -25,7 +25,6 @@ const CrowdCanvas = ({ src, rows = 15, cols = 7 }: CrowdCanvasProps) => {
       cols,
     };
 
-    // UTILS
     const randomRange = (min: number, max: number) =>
       min + Math.random() * (max - min);
     const randomIndex = (array: any[]) => randomRange(0, array.length) | 0;
@@ -36,7 +35,6 @@ const CrowdCanvas = ({ src, rows = 15, cols = 7 }: CrowdCanvasProps) => {
       removeFromArray(array, randomIndex(array));
     const getRandomFromArray = (array: any[]) => array[randomIndex(array) | 0];
 
-    // TWEEN FACTORIES
     const resetPeep = ({ stage, peep }: { stage: any; peep: any }) => {
       const direction = Math.random() > 0.5 ? 1 : -1;
       const offsetY = 100 - 250 * gsap.parseEase("power2.in")(Math.random());
@@ -97,7 +95,6 @@ const CrowdCanvas = ({ src, rows = 15, cols = 7 }: CrowdCanvasProps) => {
 
     const walks = [normalWalk];
 
-    // TYPES
     type Peep = {
       image: HTMLImageElement;
       rect: [number, number, number, number];
@@ -113,7 +110,6 @@ const CrowdCanvas = ({ src, rows = 15, cols = 7 }: CrowdCanvasProps) => {
       render: (ctx: CanvasRenderingContext2D) => void;
     };
 
-    // FACTORY FUNCTIONS
     const createPeep = ({
       image,
       rect,
@@ -161,7 +157,6 @@ const CrowdCanvas = ({ src, rows = 15, cols = 7 }: CrowdCanvasProps) => {
       return peep;
     };
 
-    // MAIN
     const img = document.createElement("img");
     const stage = {
       width: 0,

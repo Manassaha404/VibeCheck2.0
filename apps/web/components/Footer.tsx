@@ -64,21 +64,18 @@ export default function Footer({
       className="bg-[var(--color-ink-charcoal)] w-full border-t-4 border-[var(--color-leaf-green)] mt-24"
     >
       <div className="max-w-[1280px] mx-auto px-4 md:px-10 py-16">
-        {/* Top row */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 pb-12 border-b-2 border-[var(--color-on-surface-variant)]">
-          {/* Brand column */}
           <div className="flex flex-col gap-4 md:col-span-1">
             <Link
               href="/"
               id="footer-logo"
-              className="text-headline-md font-display font-black text-[var(--color-leaf-green)] hover:text-[var(--color-electric-sun)] transition-colors"
+              className="flex items-center text-headline-md font-display font-black text-[var(--color-leaf-green)] hover:text-[var(--color-electric-sun)] transition-colors"
             >
-              {logoText}
+              <span>{logoText}</span>
             </Link>
             <p className="text-body-md text-[var(--color-pure-white)] opacity-70">
               {tagline}
             </p>
-            {/* Social icons */}
             <div className="flex gap-3 mt-2">
               {socialLinks.map((s) => {
                 const Icon = s.icon;
@@ -97,7 +94,6 @@ export default function Footer({
             </div>
           </div>
 
-          {/* Link columns */}
           {sections.map((section) => (
             <div key={section.heading} className="flex flex-col gap-4">
               <h4 className="text-label-sm font-bold text-[var(--color-leaf-green)] tracking-widest uppercase">
@@ -120,7 +116,6 @@ export default function Footer({
           ))}
         </div>
 
-        {/* Bottom row */}
         <div className="flex flex-col md:flex-row justify-between items-center gap-4 pt-8">
           <p className="text-label-md text-[var(--color-pure-white)] opacity-50">
             © {new Date().getFullYear()} VibeCheck. All rights reserved.

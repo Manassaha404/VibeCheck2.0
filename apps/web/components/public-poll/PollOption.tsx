@@ -38,7 +38,6 @@ export const PollOption = ({
 
   const handleChange = () => {
     onChange(value);
-    // Simple micro-interaction
     if (containerRef.current) {
       containerRef.current.style.transform = "scale(1.02)";
       setTimeout(() => {

@@ -30,7 +30,6 @@ export function IntegrationsSection() {
         <div className="flex items-center justify-between p-4 border-2 border-ink-charcoal rounded-DEFAULT bg-canvas-cream">
           <div className="flex items-center gap-4">
             <div className="w-10 h-10 bg-pure-white border-2 border-ink-charcoal flex items-center justify-center rounded-DEFAULT">
-              {/* Google Drive Logo from user URL */}
               <img
                 src="https://imgs.search.brave.com/n8AbV7H1VwspJNw4Wc3SeZpGO99NfCW_SNM4YfAJ-7Q/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWcu/ZmF2cG5nLmNvbS8x/MS80LzYvZ29vZ2xl/LWRyaXZlLWxvZ28t/d0NicnRqM0hfdC5q/cGc"
                 alt="Google Drive"

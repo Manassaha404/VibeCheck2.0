@@ -50,7 +50,6 @@ export function AgentChat() {
 
   return (
     <>
-      {/* Floating Action Button */}
       {!isOpen && (
         <button
           onClick={isFeatureEnabled ? () => setIsOpen(true) : handleLockedClick}
@@ -65,10 +64,8 @@ export function AgentChat() {
         </button>
       )}
 
-      {/* Chat Panel */}
       {isOpen && isFeatureEnabled && (
         <div className="fixed bottom-6 right-6 w-80 md:w-96 h-[32rem] bg-pure-white border-2 border-ink-charcoal shadow-[8px_8px_0px_0px_rgba(44,46,42,1)] rounded-lg flex flex-col z-50 overflow-hidden font-body-md transition-all animate-in slide-in-from-bottom-10">
-          {/* Header */}
           <div className="flex items-center justify-between p-4 bg-electric-sun border-b-2 border-ink-charcoal">
             <div className="flex items-center gap-2">
               <Bot className="w-6 h-6 text-ink-charcoal" />
@@ -77,7 +74,6 @@ export function AgentChat() {
               </h3>
             </div>
             <div className="flex items-center gap-1">
-              {/* Clear history */}
               <button
                 onClick={handleClearHistory}
                 disabled={!isReady || isGenerating}
@@ -95,7 +91,6 @@ export function AgentChat() {
             </div>
           </div>
 
-          {/* Messages */}
           <div className="flex-1 overflow-y-auto p-4 bg-canvas-cream space-y-4">
             {messages.map((msg) => (
               <div
@@ -146,7 +141,6 @@ export function AgentChat() {
             <div ref={messagesEndRef} />
           </div>
 
-          {/* Input Area */}
           <div className="p-4 bg-pure-white border-t-2 border-ink-charcoal">
             <div className="flex gap-2">
               <input

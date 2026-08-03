@@ -14,7 +14,6 @@ export default function ParticipantSidebar({
 }: ParticipantSidebarProps) {
   return (
     <aside className="w-full md:w-72 flex-shrink-0 flex flex-col gap-5">
-      {/* Rank card */}
       <div className="bg-[var(--color-electric-sun)] border-4 border-[var(--color-ink-charcoal)] shadow-hard p-6 flex flex-col items-center gap-4 relative overflow-hidden">
         <div
           className="absolute inset-0 opacity-10 pointer-events-none"
@@ -42,7 +41,6 @@ export default function ParticipantSidebar({
         </div>
       </div>
 
-      {/* Participant count */}
       <div className="bg-[var(--color-pure-white)] border-4 border-[var(--color-ink-charcoal)] shadow-hard p-5 flex items-center gap-4">
         <div className="w-12 h-12 rounded-full bg-[var(--color-sky-blue)] border-4 border-[var(--color-ink-charcoal)] flex items-center justify-center flex-shrink-0">
           <Users
@@ -61,7 +59,6 @@ export default function ParticipantSidebar({
         </div>
       </div>
 
-      {/* Trophy / motivational card */}
       <div className="bg-[var(--color-ink-charcoal)] border-4 border-[var(--color-ink-charcoal)] shadow-hard p-5 flex flex-col gap-2 relative overflow-hidden">
         <Trophy
           size={32}
@@ -76,7 +73,6 @@ export default function ParticipantSidebar({
         <p className="font-body text-label-sm text-[var(--color-pure-white)] opacity-80 uppercase tracking-wide">
           Rank updates after each answer
         </p>
-        {/* Decorative burst */}
         <div className="absolute -bottom-4 -right-4 w-24 h-24 rounded-full bg-[var(--color-vivid-coral)] opacity-30" />
       </div>
     </aside>

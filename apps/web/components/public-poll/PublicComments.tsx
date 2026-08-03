@@ -104,7 +104,6 @@ export function PublicComments({
                 }}
                 className="relative group w-full"
               >
-                {/* Avatar */}
                 <div
                   className={cn(
                     "absolute -left-14 sm:-left-20 top-0 sm:top-2 w-14 h-14 flex items-center justify-center text-headline-sm border-[4px] border-ink-charcoal rounded-full shadow-hard z-20 transition-transform group-hover:scale-110 group-hover:-rotate-12",
@@ -114,10 +113,8 @@ export function PublicComments({
                   {initialLetter}
                 </div>
 
-                {/* Chat Bubble Tail */}
                 <div className="absolute -left-5 top-5 w-8 h-8 bg-pure-white border-l-[4px] border-b-[4px] border-ink-charcoal rotate-45 z-10 group-hover:bg-canvas-cream transition-colors duration-200" />
 
-                {/* Comment Card */}
                 <div
                   className="bg-pure-white border-[4px] border-ink-charcoal p-6 sm:p-8 shadow-hard relative z-10 hover-lift transition-all group-hover:bg-canvas-cream"
                   style={{

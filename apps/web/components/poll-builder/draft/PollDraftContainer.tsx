@@ -84,7 +84,6 @@ export function PollDraftContainer() {
       return;
     }
 
-    // We update the DTO status directly before publishing
     const draftDto = constructDto(data);
     draftDto.status = "active";
     draftDto.isPublished = true;
@@ -155,16 +154,12 @@ export function PollDraftContainer() {
             onSubmit={methods.handleSubmit(onSubmit)}
             className="flex flex-col gap-8"
           >
-            {/* Question Input */}
             <PollQuestionInput />
 
-            {/* Options */}
             <PollOptionsList />
 
-            {/* Tags Input (NEW) */}
             <PollTagsInput />
 
-            {/* Settings */}
             <PollSettingsPanel />
           </form>
         </section>

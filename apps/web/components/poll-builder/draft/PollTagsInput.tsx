@@ -15,11 +15,9 @@ export function PollTagsInput() {
   const tags = watch("tags") || [];
   const [inputValue, setInputValue] = useState("");
 
-  // Fetch top tags from cache
   const { data: topTagsData } = useTopTags();
   const topTags = topTagsData?.data || [];
 
-  // Filter top tags based on user input
   const isTyping = inputValue.trim().length > 0;
   const suggestedTags = topTags
     .filter(
@@ -64,7 +62,6 @@ export function PollTagsInput() {
         <Tag size={24} /> Tags
       </h2>
       <div className="flex flex-col gap-4">
-        {/* Selected Tags Display */}
         <div className="flex flex-wrap gap-2 min-h-[32px]">
           {tags.map((tag) => (
             <span
@@ -88,7 +85,6 @@ export function PollTagsInput() {
           )}
         </div>
 
-        {/* Input */}
         <div className="relative flex items-center">
           <span className="absolute left-4 font-body-lg text-on-surface-variant font-bold">
             #
@@ -110,7 +106,6 @@ export function PollTagsInput() {
           </p>
         )}
 
-        {/* Suggestions Inline */}
         {tags.length < 10 && (
           <div className="flex flex-col gap-2 mt-1 bg-canvas-cream p-4 border-2 border-ink-charcoal border-dashed rounded-lg">
             <span className="font-label-sm text-label-sm text-ink-charcoal flex items-center gap-2 font-bold">

@@ -18,7 +18,6 @@ export const SavedBody = () => {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      {/* Header Section */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -46,7 +45,6 @@ export const SavedBody = () => {
         </div>
       </motion.div>
 
-      {/* Tabs / Filters */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -70,7 +68,6 @@ export const SavedBody = () => {
         </div>
       </motion.div>
 
-      {/* Content State */}
       <div className="min-h-[400px]">
         {isLoading ? (
           <div className="h-full flex flex-col items-center justify-center pt-20">

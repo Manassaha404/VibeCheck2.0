@@ -12,7 +12,6 @@ export function PollQuestionInput() {
 
   return (
     <div className="relative animate-fade-up" style={{ animationDelay: "0ms" }}>
-      {/* Mascot Suggestion (moved outside to prevent clipping) */}
       <div className="absolute -top-10 -right-6 hidden md:flex items-center gap-2 z-20 animate-float-slow pointer-events-none">
         <div className="bg-canvas-cream border-2 border-ink-charcoal p-2 rounded-lg text-label-sm font-label-sm max-w-[150px] relative pointer-events-auto">
           Try asking something spicy!

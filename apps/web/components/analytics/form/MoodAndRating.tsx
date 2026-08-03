@@ -8,7 +8,6 @@ export type {
   NumericFieldAnalytics as NumericFieldData,
 };
 
-// ── Mood display config ────────────────────────────────────────
 const MOOD_DISPLAY: Record<string, { emoji: string; label: string }> = {
   happy: { emoji: "😄", label: "Super Hyped" },
   excited: { emoji: "🤩", label: "Hyped!" },
@@ -54,12 +53,10 @@ function buildConicGradient(distribution: { pct: number }[]) {
     .join(", ")})`;
 }
 
-// ── Props ─────────────────────────────────────────────────────
 interface MoodAndRatingProps {
   moodField?: MoodFieldAnalytics | null;
 }
 
-// ── Component ─────────────────────────────────────────────────
 export function MoodAndRating({ moodField }: MoodAndRatingProps) {
   const hasMood = moodField && moodField.distribution.length > 0;
 

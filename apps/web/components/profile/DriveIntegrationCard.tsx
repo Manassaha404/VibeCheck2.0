@@ -21,7 +21,6 @@ export const DriveIntegrationCard: React.FC<DriveIntegrationCardProps> = ({
   const cardRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Subtle entry animation for the card content
     gsap.fromTo(
       cardRef.current,
       { opacity: 0, y: 20 },

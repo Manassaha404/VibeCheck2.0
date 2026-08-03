@@ -1,3 +1,11 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Create New Activity | VibeCheck",
+  description:
+    "Start creating a new poll, form, quiz, or petition on VibeCheck.",
+};
+
 import React from "react";
 import { CreateHeader } from "@/components/Create/CreateHeader";
 import { CreateCard } from "@/components/Create/CreateCard";

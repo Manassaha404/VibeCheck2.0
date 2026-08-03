@@ -8,7 +8,6 @@ export default function QuizHero() {
         <h1 className="font-display-lg text-display-lg uppercase font-black italic -rotate-3 bg-electric-sun text-ink-charcoal px-8 py-4 border-4 border-ink-charcoal shadow-hard relative z-10 tracking-tighter">
           QUIZ MASTER
         </h1>
-        {/* Decorative element behind title */}
         <div
           aria-hidden="true"
           className="absolute -top-4 -right-6 text-pure-white rotate-12 z-0 opacity-80"

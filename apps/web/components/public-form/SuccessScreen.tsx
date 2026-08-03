@@ -11,7 +11,6 @@ export function SuccessScreen({
   const [showConfetti, setShowConfetti] = useState(false);
 
   useEffect(() => {
-    // Simple mock confetti trigger
     setShowConfetti(true);
     const timer = setTimeout(() => setShowConfetti(false), 3000);
     return () => clearTimeout(timer);
@@ -19,7 +18,6 @@ export function SuccessScreen({
 
   return (
     <div className="bg-[var(--color-electric-sun)] border-[3px] border-[var(--color-ink-charcoal)] shadow-hard-lg w-full p-8 md:p-16 text-center relative z-10 flex flex-col items-center justify-center min-h-[500px] animate-pop-in overflow-hidden">
-      {/* Simple Confetti Effect (CSS based) */}
       {showConfetti && (
         <div className="absolute inset-0 pointer-events-none z-0">
           {[...Array(20)].map((_, i) => {
@@ -58,7 +56,6 @@ export function SuccessScreen({
         </div>
       )}
 
-      {/* Illustration */}
       <div className="w-48 h-48 bg-white rounded-full border-[3px] border-[var(--color-ink-charcoal)] shadow-hard mb-8 flex items-center justify-center relative overflow-hidden z-10">
         <img
           alt="Success Character"

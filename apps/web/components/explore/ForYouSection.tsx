@@ -6,20 +6,17 @@ import { Users, FileSignature, Sparkles, Globe, Loader2 } from "lucide-react";
 import { useForYou } from "@/hook/explore/useForYou";
 import type { ForYouItem } from "@repo/services/explore/model";
 
-// ── Skeleton ──────────────────────────────────────────────────────────────────
 function SkeletonCard() {
   return (
     <div className="bg-[var(--color-pure-white)] border-4 border-[var(--color-ink-charcoal)] rounded-xl shadow-hard animate-pulse h-52" />
   );
 }
 
-// ── Content type badge colours ────────────────────────────────────────────────
 const BADGE_COLORS: Record<ForYouItem["type"], string> = {
   poll: "bg-[var(--color-leaf-green)]",
   petition: "bg-[var(--color-electric-sun)]",
 };
 
-// ── Individual item card ──────────────────────────────────────────────────────
 function ForYouCard({ item }: { item: ForYouItem }) {
   const href =
     item.type === "poll"
@@ -37,7 +34,6 @@ function ForYouCard({ item }: { item: ForYouItem }) {
   return (
     <article className="bg-[var(--color-pure-white)] border-4 border-[var(--color-ink-charcoal)] rounded-xl shadow-hard hover:translate-y-[-4px] hover:shadow-neubrutalist transition-all duration-300 flex flex-col">
       <div className="p-6 flex-1 flex flex-col">
-        {/* Header row */}
         <div className="flex items-center justify-between mb-3">
           <span
             className={`${BADGE_COLORS[item.type]} border-2 border-[var(--color-ink-charcoal)] text-label-sm px-2.5 py-0.5 rounded-full font-bold`}
@@ -49,12 +45,10 @@ function ForYouCard({ item }: { item: ForYouItem }) {
           </span>
         </div>
 
-        {/* Title */}
         <h3 className="text-headline-sm font-display font-bold text-[var(--color-ink-charcoal)] leading-tight mb-3 line-clamp-3 flex-1">
           {item.title}
         </h3>
 
-        {/* Tags */}
         {item.tags.length > 0 && (
           <div className="flex flex-wrap gap-1.5 mb-4">
             {item.tags.slice(0, 3).map((tag) => (
@@ -68,14 +62,12 @@ function ForYouCard({ item }: { item: ForYouItem }) {
           </div>
         )}
 
-        {/* Metric */}
         <div className="flex items-center gap-1.5 text-sm font-bold text-[var(--color-ink-charcoal)]">
           <Icon size={15} />
           {metric}
         </div>
       </div>
 
-      {/* Footer CTA */}
       <div className="border-t-4 border-[var(--color-ink-charcoal)] p-4 bg-[var(--color-canvas-cream)] flex justify-between items-center rounded-b-lg">
         <span className="text-xs font-semibold text-[var(--color-on-surface-variant)]">
           {item.relevanceScore > 0
@@ -93,7 +85,6 @@ function ForYouCard({ item }: { item: ForYouItem }) {
   );
 }
 
-// ── Main section ──────────────────────────────────────────────────────────────
 export default function ForYouSection({
   type,
 }: {
@@ -111,7 +102,6 @@ export default function ForYouSection({
 
   return (
     <section className="mb-16">
-      {/* Section header */}
       <div className="flex items-center justify-between mb-8 border-b-4 border-[var(--color-ink-charcoal)] pb-4">
         <div className="flex items-center gap-3">
           {isPersonalised ? (
@@ -142,7 +132,6 @@ export default function ForYouSection({
         </div>
       </div>
 
-      {/* Cards grid */}
       {isLoading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {Array.from({ length: 6 }).map((_, i) => (
@@ -169,10 +158,8 @@ export default function ForYouSection({
             ))}
           </div>
 
-          {/* Infinite scroll sentinel */}
           <div ref={sentinelRef} className="h-8 mt-4" />
 
-          {/* Loading more indicator */}
           {isFetchingNextPage && (
             <div className="flex justify-center items-center gap-3 py-6 text-[var(--color-on-surface-variant)] font-semibold">
               <Loader2 size={20} className="animate-spin" />

@@ -10,7 +10,6 @@ export function CreateHeader() {
             create?
           </span>
         </h1>
-        {/* Decorative elements */}
         <div className="absolute -top-6 -left-6 w-12 h-12 bg-[var(--color-electric-sun)] rounded-full border-2 border-[var(--color-ink-charcoal)] shadow-hard -z-10 animate-wiggle hidden md:block"></div>
         <div className="absolute -bottom-2 -right-4 w-8 h-8 bg-[var(--color-sky-blue)] border-2 border-[var(--color-ink-charcoal)] rotate-12 shadow-hard -z-10 hidden md:block"></div>
       </div>

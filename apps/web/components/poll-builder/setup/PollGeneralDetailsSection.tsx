@@ -19,7 +19,6 @@ export function PollGeneralDetailsSection() {
         01. The Basics
       </div>
       <div className="space-y-6 mt-4">
-        {/* Title */}
         <div className="flex flex-col gap-2">
           <label
             className="font-label-md text-label-md uppercase tracking-wider flex items-center gap-2"
@@ -43,7 +42,6 @@ export function PollGeneralDetailsSection() {
           )}
         </div>
 
-        {/* Description */}
         <div className="flex flex-col gap-2">
           <label
             className="font-label-md text-label-md uppercase tracking-wider flex items-center gap-2"

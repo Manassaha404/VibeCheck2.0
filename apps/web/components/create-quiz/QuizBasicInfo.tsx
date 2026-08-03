@@ -12,7 +12,6 @@ export default function QuizBasicInfo() {
 
   return (
     <div className="w-full flex flex-col gap-8">
-      {/* Quiz Title Input */}
       <div className="flex flex-col gap-4">
         <label
           className="self-start font-headline-sm text-headline-sm uppercase font-black tracking-tight bg-leaf-green px-2 py-0.5 border-2 border-ink-charcoal shadow-hard-sm -rotate-1 mb-1"
@@ -32,7 +31,6 @@ export default function QuizBasicInfo() {
         </div>
       </div>
 
-      {/* Quiz Description Input */}
       <div className="flex flex-col gap-4">
         <label
           className="self-start font-headline-sm text-headline-sm uppercase font-black tracking-tight bg-leaf-green px-2 py-0.5 border-2 border-ink-charcoal shadow-hard-sm rotate-1 mb-1"

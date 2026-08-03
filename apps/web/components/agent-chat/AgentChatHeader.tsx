@@ -14,7 +14,6 @@ export default function AgentChatHeader({
 }: AgentChatHeaderProps) {
   return (
     <div className="flex items-center justify-between p-4 bg-electric-sun border-b-2 border-ink-charcoal shrink-0">
-      {/* Left — avatar + title */}
       <div className="flex items-center gap-2">
         <Bot className="w-6 h-6 text-ink-charcoal" />
         <h3 className="font-headline-sm text-headline-sm font-bold tracking-tight uppercase text-ink-charcoal m-0">
@@ -22,7 +21,6 @@ export default function AgentChatHeader({
         </h3>
       </div>
 
-      {/* Right — actions */}
       <div className="flex items-center gap-1">
         {onNewConversation && (
           <button

@@ -38,7 +38,6 @@ export default function AgentChatToggleFAB({ quizId }: { quizId: string }) {
 
   return (
     <>
-      {/* Floating Action Button */}
       {(!open || minimized) && (
         <button
           onClick={isFeatureEnabled ? handleOpen : handleLockedClick}
@@ -61,8 +60,6 @@ export default function AgentChatToggleFAB({ quizId }: { quizId: string }) {
         </button>
       )}
 
-      {/* Chat Panel — always mounted once opened so the realtime subscription
-          is never torn down mid-flight when the user minimizes. */}
       {open && isFeatureEnabled && (
         <div className={minimized ? "hidden" : undefined}>
           <AgentChatPanel

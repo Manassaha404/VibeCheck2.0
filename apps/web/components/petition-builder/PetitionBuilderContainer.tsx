@@ -42,7 +42,6 @@ export function PetitionBuilderContainer() {
     }
   }, []);
 
-  // Auto-save form values to global store
   useEffect(() => {
     const subscription = methods.watch((value) => {
       setDraft(value as Partial<PetitionDraftFormValues>);
@@ -59,7 +58,6 @@ export function PetitionBuilderContainer() {
   return (
     <FormProvider {...methods}>
       <main className="flex-grow w-full max-w-[1280px] mx-auto px-4 md:px-10 py-12 flex flex-col lg:flex-row gap-6 lg:gap-16 relative">
-        {/* Builder Side (Left) */}
         <section className="w-full lg:w-1/2 relative z-10 flex flex-col gap-8">
           <header className="mb-4 border-b-4 border-ink-charcoal pb-8 border-dashed">
             <h1 className="font-display text-display-lg text-ink-charcoal animate-pop-in leading-[1.1]">
@@ -91,7 +89,6 @@ export function PetitionBuilderContainer() {
           </form>
         </section>
 
-        {/* Preview Side (Right) */}
         <PetitionPreview />
       </main>
     </FormProvider>

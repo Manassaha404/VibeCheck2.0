@@ -1,3 +1,11 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Signin | VibeCheck",
+  description:
+    "Sign in to your VibeCheck account to access your dashboard and create new polls.",
+};
+
 import React from "react";
 import Link from "next/link";
 import LoginForm from "@/components/Auth/LoginForm";

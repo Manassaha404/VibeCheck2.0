@@ -67,7 +67,6 @@ export function ControlsSection() {
 
         <hr className="border-t-2 border-ink-charcoal/20" />
 
-        {/* Toggle: Allow Response Edit */}
         <div className="flex items-center justify-between">
           <label
             className="font-label-md text-label-md cursor-pointer flex flex-col"

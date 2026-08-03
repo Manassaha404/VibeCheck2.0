@@ -49,7 +49,6 @@ export function FormPreviewCanvas() {
 
       const data = JSON.parse(rawData);
 
-      // Map screen coordinates to flow coordinates
       const position = screenToFlowPosition({
         x: event.clientX,
         y: event.clientY,
@@ -109,7 +108,6 @@ export function FormPreviewCanvas() {
         onPaneClick={() => setSelectedNode(null)}
         fitView
       >
-        {/* Background matching the neubrutalist dot pattern that supports panning */}
         <Background gap={24} size={3} color="#2C2E2A" />
         <Controls />
       </ReactFlow>

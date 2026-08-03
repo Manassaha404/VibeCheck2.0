@@ -21,10 +21,8 @@ export function PlanCardSkeleton({ index }: { index: number }) {
       className="flex flex-col bg-[var(--color-canvas-cream)] border-2 border-[var(--color-ink-charcoal)] overflow-hidden"
       style={{ boxShadow: "6px 6px 0px 0px var(--color-ink-charcoal)" }}
     >
-      {/* accent bar */}
       <div className="h-2 w-full bg-[var(--color-surface-container)] animate-pulse border-b-2 border-[var(--color-ink-charcoal)]" />
 
-      {/* header */}
       <div className="p-6 border-b-2 border-[var(--color-ink-charcoal)] space-y-3">
         <div className="w-10 h-10 bg-[var(--color-surface-container)] animate-pulse border-2 border-[var(--color-ink-charcoal)]" />
         <SkeletonLine className="w-1/3" />
@@ -32,7 +30,6 @@ export function PlanCardSkeleton({ index }: { index: number }) {
         <SkeletonLine className="w-1/4 h-2" />
       </div>
 
-      {/* features */}
       <div className="flex-1 p-6 space-y-3">
         {SKELETON_WIDTHS.map((w, i) => (
           <div key={i} className="flex items-center gap-3">
@@ -42,7 +39,6 @@ export function PlanCardSkeleton({ index }: { index: number }) {
         ))}
       </div>
 
-      {/* CTA */}
       <div className="p-6 pt-0">
         <div className="h-11 bg-[var(--color-surface-container)] animate-pulse border-2 border-[var(--color-ink-charcoal)]" />
       </div>

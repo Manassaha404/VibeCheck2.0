@@ -1,3 +1,10 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Username | VibeCheck",
+  description: "Choose a unique username to start your VibeCheck journey.",
+};
+
 import React from "react";
 import { UsernameForm } from "../../../components/Auth/UsernameForm";
 

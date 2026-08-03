@@ -5,7 +5,6 @@ interface QuestionDisplayProps {
   currentQuestionIndex: number;
   totalQuestions: number;
   questionText: string;
-  /** Optional media image URL attached to the question */
   mediaUrl?: string | null;
   children?: React.ReactNode;
 }
@@ -33,7 +32,6 @@ export default function QuestionDisplay({
           {questionText}
         </h2>
 
-        {/* Media image — shown when question has an attached image */}
         {mediaUrl && (
           <div className="relative w-full max-h-[360px] border-4 border-[var(--color-ink-charcoal)] shadow-hard mb-8 overflow-hidden bg-[var(--color-surface-container)]">
             <img

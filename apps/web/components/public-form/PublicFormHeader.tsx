@@ -23,7 +23,6 @@ export function PublicFormHeader({
           VibeCheck
         </Link>
 
-        {/* Mode toggle */}
         {!isAgentComplete && (
           <div className="flex-shrink-0 flex items-center bg-white border-2 border-[var(--color-ink-charcoal)] rounded-xl p-1 gap-1 shadow-hard-sm">
             <button

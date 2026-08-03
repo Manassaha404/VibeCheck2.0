@@ -3,7 +3,6 @@
 import { motion } from "framer-motion";
 import { Check, Zap, Star, Crown } from "lucide-react";
 
-// Shape matching the DB Plan type (dates are serialized as strings by tRPC/JSON)
 export interface PlanCardData {
   planId: string;
   name: string;
@@ -26,7 +25,6 @@ interface PlanCardProps {
   onSelect: (planId: string) => void;
 }
 
-// Accent colours cycle per card index
 const ACCENT_COLORS = [
   "var(--color-leaf-green)",
   "var(--color-electric-sun)",
@@ -113,7 +111,6 @@ export function PlanCard({
       }`}
       style={{ boxShadow: `6px 6px 0px 0px var(--color-ink-charcoal)` }}
     >
-      {/* Popular badge */}
       {isPopular && (
         <div className="absolute top-0 right-0 bg-[var(--color-leaf-green)] text-[var(--color-ink-charcoal)] font-display font-black text-[10px] uppercase tracking-widest px-3 py-1 border-l-2 border-b-2 border-[var(--color-ink-charcoal)] z-10 flex items-center gap-1">
           <Zap size={10} strokeWidth={3} />
@@ -121,13 +118,11 @@ export function PlanCard({
         </div>
       )}
 
-      {/* Coloured accent bar */}
       <div
         className="h-2 w-full border-b-2 border-[var(--color-ink-charcoal)]"
         style={{ backgroundColor: accentColor }}
       />
 
-      {/* Header */}
       <div className="p-6 border-b-2 border-[var(--color-ink-charcoal)]">
         <div
           className={`inline-flex items-center justify-center w-10 h-10 ${accentBg} border-2 border-[var(--color-ink-charcoal)] mb-4`}
@@ -169,7 +164,6 @@ export function PlanCard({
         )}
       </div>
 
-      {/* Features */}
       <ul className="flex-1 p-6 space-y-3">
         {features.map((feat) => (
           <li
@@ -190,7 +184,6 @@ export function PlanCard({
         ))}
       </ul>
 
-      {/* CTA */}
       <div className="p-6 pt-0">
         <button
           id={`plan-select-${plan.planId}`}

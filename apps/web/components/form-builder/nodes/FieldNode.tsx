@@ -57,7 +57,6 @@ export function FieldNode({
       <div
         className={`w-full h-4 border-b-4 border-ink-charcoal ${getTypeColor(data.type)} rounded-t-sm`}
       />
-      {/* Order Badge & Controls */}
       <div className="absolute -top-4 -left-4 flex items-center bg-pure-white border-2 border-ink-charcoal rounded shadow-[2px_2px_0px_0px_rgba(44,46,42,1)] overflow-hidden z-10 opacity-100 transition-opacity">
         <div
           className={`px-3 py-1 h-full flex items-center justify-center font-bold font-label-md text-ink-charcoal border-r-2 border-ink-charcoal ${getTypeColor(data.type)}`}
@@ -111,7 +110,6 @@ export function FieldNode({
           </p>
         )}
 
-        {/* Preview of the field based on its type */}
         <FieldPreviewRenderer data={data} nodeId={id} />
 
         <Handle

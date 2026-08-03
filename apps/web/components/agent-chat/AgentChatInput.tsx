@@ -9,7 +9,6 @@ interface AgentChatInputProps {
   onSend: () => void;
   onAttachClick: () => void;
   disabled?: boolean;
-  /** Shows a spinner-like pulse on send when true */
   isSending?: boolean;
 }
 
@@ -32,7 +31,6 @@ export default function AgentChatInput({
 
   const handleInput = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     onChange(e.target.value);
-    // Auto-resize textarea
     const el = textareaRef.current;
     if (el) {
       el.style.height = "auto";
@@ -42,7 +40,6 @@ export default function AgentChatInput({
 
   return (
     <div className="flex gap-2 items-end">
-      {/* Attach button */}
       <button
         type="button"
         onClick={onAttachClick}
@@ -54,7 +51,6 @@ export default function AgentChatInput({
         <Paperclip className="w-5 h-5 text-ink-charcoal" />
       </button>
 
-      {/* Textarea */}
       <textarea
         ref={textareaRef}
         value={value}
@@ -67,7 +63,6 @@ export default function AgentChatInput({
         aria-label="Chat message input"
       />
 
-      {/* Send button */}
       <button
         type="button"
         onClick={onSend}

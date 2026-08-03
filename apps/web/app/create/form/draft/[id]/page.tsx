@@ -167,9 +167,9 @@ export default function FormDraftBuilderPage() {
       <Navbar />
 
       {/* View Toolbar */}
-      <div className="border-b-2 border-ink-charcoal bg-pure-white px-4 py-2 flex justify-between items-center z-20 shadow-[0_2px_0px_0px_rgba(44,46,42,1)] relative">
-        <div className="flex-1" />
-        <div className="flex bg-surface-container-low border-2 border-ink-charcoal rounded p-1">
+      <div className="border-b-2 border-ink-charcoal bg-pure-white px-4 py-2 flex flex-col md:flex-row justify-between items-center gap-4 md:gap-0 z-20 shadow-[0_2px_0px_0px_rgba(44,46,42,1)] relative">
+        <div className="hidden md:flex flex-1" />
+        <div className="flex bg-surface-container-low border-2 border-ink-charcoal rounded p-1 w-full md:w-auto justify-center">
           <button
             onClick={() => setViewMode("linear")}
             className={`flex items-center gap-2 px-4 py-2 rounded font-label-md transition-colors ${viewMode === "linear" ? "bg-electric-sun border-2 border-ink-charcoal shadow-[2px_2px_0px_0px_rgba(44,46,42,1)]" : "border-2 border-transparent hover:bg-pure-white"}`}
@@ -185,7 +185,7 @@ export default function FormDraftBuilderPage() {
             Logic Canvas
           </button>
         </div>
-        <div className="flex-1 flex justify-end gap-2">
+        <div className="flex-1 flex justify-center md:justify-end gap-2 flex-wrap w-full md:w-auto">
           <button
             onClick={() => setIsSettingsModalOpen(true)}
             className="flex items-center gap-2 px-6 py-2 bg-surface-variant text-ink-charcoal font-bold font-label-md uppercase border-2 border-ink-charcoal rounded shadow-[2px_2px_0px_0px_rgba(44,46,42,1)] hover:-translate-y-0.5 hover:shadow-[4px_4px_0px_0px_rgba(44,46,42,1)] transition-all active:translate-y-0 active:shadow-none disabled:opacity-50 disabled:cursor-not-allowed"

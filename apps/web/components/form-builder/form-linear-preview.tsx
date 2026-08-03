@@ -152,7 +152,6 @@ function LinearFieldCard({
         className={`w-full h-4 border-b-4 border-ink-charcoal ${getTypeColor(data.type)} rounded-t-sm`}
       />
 
-      {/* Drag Handle */}
       <div
         {...attributes}
         {...listeners}
@@ -179,7 +178,6 @@ function LinearFieldCard({
           </p>
         )}
 
-        {/* Preview of the field based on its type */}
         <FieldPreviewRenderer data={data} nodeId={node.id} />
       </div>
     </div>

@@ -8,7 +8,6 @@ export interface AgentMessage {
   role: MessageRole;
   content: string;
   timestamp: Date;
-  /** Optional attached file name */
   fileName?: string;
 }
 
@@ -50,7 +49,6 @@ export default function AgentMessageBubble({
             </p>
           )}
 
-          {/* Attached file chip */}
           {message.fileName && (
             <div className="flex items-center gap-1.5 px-2 py-1 mt-1 rounded border-2 border-ink-charcoal bg-surface-container-low text-label-sm font-medium min-w-0 max-w-full">
               <Paperclip className="w-3.5 h-3.5 shrink-0" />
@@ -58,7 +56,6 @@ export default function AgentMessageBubble({
             </div>
           )}
 
-          {/* Timestamp */}
           <span className="text-[10px] opacity-60 font-medium text-ink-charcoal self-end mt-1">
             {message.timestamp.toLocaleTimeString([], {
               hour: "2-digit",

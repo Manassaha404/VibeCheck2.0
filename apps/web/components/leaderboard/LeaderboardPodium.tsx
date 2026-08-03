@@ -85,7 +85,6 @@ export function LeaderboardPodium({ data = [] }: { data?: PodiumData[] }) {
     );
   }
 
-  // Create an array up to 3 elements long with their respective styles
   const podiumEntries = data.slice(0, 3).map((entry, idx) => ({
     ...entry,
     ...PODIUM_STYLES[idx],
@@ -111,7 +110,6 @@ export function LeaderboardPodium({ data = [] }: { data?: PodiumData[] }) {
             "cursor-default",
           ].join(" ")}
         >
-          {/* Rank badge */}
           <div
             className={[
               entry.badgeBg,
@@ -131,10 +129,8 @@ export function LeaderboardPodium({ data = [] }: { data?: PodiumData[] }) {
             </span>
           </div>
 
-          {/* Stripe accent bar at top */}
           <div className="absolute top-0 left-0 right-0 h-1.5 bg-[var(--color-ink-charcoal)] opacity-20" />
 
-          {/* Avatar */}
           <img
             src={entry.avatar}
             alt={entry.name}

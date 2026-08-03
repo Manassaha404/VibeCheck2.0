@@ -39,7 +39,6 @@ export const PollCard = ({
 
   return (
     <div className="bg-pure-white wiggly-border hard-shadow p-8 md:p-12 relative overflow-hidden">
-      {/* Internal Halftone */}
       <div
         className="absolute inset-0 z-0 opacity-10 pointer-events-none"
         style={{
@@ -49,7 +48,6 @@ export const PollCard = ({
         }}
       />
       <div className="relative z-30">
-        {/* Title & Description */}
         <div className="text-center mb-12 max-w-2xl mx-auto flex flex-col gap-4">
           {title && (
             <h2 className="font-headline-md text-headline-md uppercase text-ink-charcoal border-b-4 border-electric-sun pb-2 inline-block mx-auto">
@@ -63,7 +61,6 @@ export const PollCard = ({
           )}
         </div>
 
-        {/* Big Question */}
         <h1
           className="font-display-lg text-[40px] md:text-[64px] mb-8 uppercase text-pure-white leading-tight text-center font-black tracking-normal relative z-40"
           style={{
@@ -97,7 +94,6 @@ export const PollCard = ({
 
           {isCommentsAllowed && (
             <div className="mt-12 relative max-w-2xl mx-auto group">
-              {/* Decorative Tape */}
               <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-24 h-8 bg-candy-pink/80 border-2 border-ink-charcoal rotate-[-2deg] z-20 backdrop-blur-sm" />
 
               <div

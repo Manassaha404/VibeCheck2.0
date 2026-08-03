@@ -53,7 +53,6 @@ export default function ParticipantOpenEnded({
         </div>
       </form>
 
-      {/* Decorative Graphic */}
       <div className="absolute -bottom-4 -left-4 bg-[var(--color-mint)] text-[var(--color-ink-charcoal)] font-display text-label-md font-black border-2 border-[var(--color-ink-charcoal)] px-3 py-1 transform -rotate-6 shadow-hard">
         Be Creative!
       </div>

@@ -42,10 +42,7 @@ export function PollFormContainer({ children }: { children: React.ReactNode }) {
     setSetup(data);
     const result = await handleCreate(data);
     if (result) {
-      // router.push(`/create/poll/draft/${result.id}`); // Or similar redirect
     } else {
-      // For local demo, pretend it succeeded and redirect to a dummy draft
-
       router.push(`/create/poll/draft/draft-123`);
     }
   };

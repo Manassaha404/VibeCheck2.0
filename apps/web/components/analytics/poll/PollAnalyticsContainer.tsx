@@ -39,7 +39,6 @@ export function PollAnalyticsContainer({ data }: PollAnalyticsContainerProps) {
   useGSAP(
     () => {
       if (!containerRef.current) return;
-      // Stagger-in child sections on mount
       gsap.from(containerRef.current.querySelectorAll("section, header"), {
         opacity: 0,
         y: 32,
@@ -58,7 +57,6 @@ export function PollAnalyticsContainer({ data }: PollAnalyticsContainerProps) {
 
   return (
     <div ref={containerRef} className="w-full py-0 flex flex-col gap-12">
-      {/* Header: title + QR + Share */}
       <AnalyticsHeader
         question={data.question}
         pollId={data.pollId}
@@ -69,20 +67,16 @@ export function PollAnalyticsContainer({ data }: PollAnalyticsContainerProps) {
         status={data.status}
       />
 
-      {/* Stats bento */}
       <AnalyticsStats
         totalVotes={data.totalVotes}
         engagementRate={data.engagementRate}
         topAnswer={data.topAnswer}
       />
 
-      {/* Live bar/pie chart */}
       <LiveBarChart options={data.options} />
 
-      {/* Vote timeline (optional) */}
       {hasTimeline && <VoteTimeline data={data.voteTimeline!} />}
 
-      {/* 2-col layout for Radar + Comments when both exist */}
       {hasDemographics && hasComments ? (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           <DemographicInsights data={data.demographicData!} />

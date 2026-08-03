@@ -33,34 +33,27 @@ export function PetitionPreview() {
         </div>
       </div>
 
-      {/* The Preview Card */}
       <div className="bg-pure-white border-4 border-ink-charcoal shadow-hard-lg flex flex-col relative overflow-hidden group/preview">
-        {/* Decorative Graphic */}
         <div className="h-32 bg-electric-sun border-b-4 border-ink-charcoal relative flex items-center justify-center overflow-hidden">
-          {/* Sticker */}
           <div className="absolute -right-4 -bottom-4 rotate-[-12deg] bg-pure-white border-4 border-ink-charcoal p-2 shadow-hard z-10">
             <span className="font-headline-sm text-headline-sm text-error uppercase block">
               Sign This!
             </span>
           </div>
-          {/* Halftone pattern over electric sun */}
           <div className="absolute inset-0 bg-dot-pattern opacity-20 pointer-events-none"></div>
         </div>
 
         <div className="p-8 flex flex-col gap-6 relative">
-          {/* Target Badge */}
           <div className="inline-flex">
             <span className="bg-canvas-cream border-2 border-ink-charcoal px-3 py-1 font-label-md text-label-md text-ink-charcoal uppercase shadow-hard-sm">
               Target: {displayTarget}
             </span>
           </div>
 
-          {/* Title */}
           <h2 className="font-headline-lg-mobile text-headline-lg-mobile text-ink-charcoal break-words">
             {displayTitle}
           </h2>
 
-          {/* Progress Bar Component */}
           <div className="flex flex-col gap-2 mt-2">
             <div className="flex justify-between items-end">
               <span className="font-headline-sm text-headline-sm text-primary">
@@ -80,7 +73,6 @@ export function PetitionPreview() {
             </div>
           </div>
 
-          {/* Description Snippet */}
           <div className="prose prose-lg font-body-lg text-body-lg text-on-surface mt-4 border-l-4 border-electric-sun pl-4">
             <div className="line-clamp-4 whitespace-pre-wrap">
               <ReactMarkdown
@@ -103,14 +95,12 @@ export function PetitionPreview() {
             </div>
           </div>
 
-          {/* Mock Sign Button */}
           <button className="w-full mt-6 bg-electric-sun border-4 border-ink-charcoal py-4 font-headline-sm text-headline-sm text-ink-charcoal shadow-hard-lg opacity-70 cursor-not-allowed uppercase tracking-widest">
             Sign Petition (Preview)
           </button>
         </div>
       </div>
 
-      {/* Floating Character Graphic */}
       <div className="absolute -bottom-12 -right-8 w-32 h-32 bg-canvas-cream border-4 border-ink-charcoal rounded-full shadow-hard-lg items-center justify-center rotate-12 hidden xl:flex z-20">
         <Hand size={64} className="text-leaf-green" />
       </div>

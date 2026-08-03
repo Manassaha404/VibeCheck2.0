@@ -14,7 +14,6 @@ export default function ParticipantProgress({
 }: ParticipantProgressProps) {
   const progressPercentage = (currentQuestion / totalQuestions) * 100;
 
-  // Format mm:ss
   const formatTime = (s: number) =>
     `${String(Math.floor(s / 60)).padStart(2, "0")}:${String(s % 60).padStart(2, "0")}`;
 
@@ -29,7 +28,6 @@ export default function ParticipantProgress({
         </span>
       </div>
 
-      {/* Progress Bar Graphic */}
       <div className="absolute left-0 bottom-0 h-2 bg-[var(--color-canvas-cream)] w-full border-t-2 border-[var(--color-ink-charcoal)]">
         <div
           className="h-full bg-[var(--color-leaf-green)] border-r-2 border-[var(--color-ink-charcoal)] transition-all duration-500 ease-in-out"
@@ -37,7 +35,6 @@ export default function ParticipantProgress({
         />
       </div>
 
-      {/* Timer */}
       <div
         className={`flex items-center gap-2 z-10 px-4 py-2 rounded-full border-2 border-[var(--color-ink-charcoal)] shadow-hard ${timeLeft <= 10 ? "bg-[var(--color-vivid-coral)] text-[var(--color-pure-white)] animate-pulse" : "bg-[var(--color-electric-sun)] text-[var(--color-ink-charcoal)] animate-pulse"}`}
       >

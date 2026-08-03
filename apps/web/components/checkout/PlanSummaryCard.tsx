@@ -89,13 +89,6 @@ export function PlanSummaryCard({
           </div>
         </div>
       </div>
-
-      <div className="mt-6 p-4 bg-[var(--color-electric-sun)]/20 border-2 border-[var(--color-electric-sun)]">
-        <p className="text-body-sm font-bold text-[var(--color-ink-charcoal)]">
-          ⚡ Upgrading from an existing plan means the change takes effect
-          immediately. Razorpay will handle prorating automatically.
-        </p>
-      </div>
     </motion.div>
   );
 }

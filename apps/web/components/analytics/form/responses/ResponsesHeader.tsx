@@ -22,9 +22,7 @@ export function ResponsesHeader({
 
   return (
     <header className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 w-full">
-      {/* Left: title + subtitle */}
       <div className="flex flex-col gap-3">
-        {/* Back button */}
         <button
           onClick={() => router.push(`/dashboard/analytics/form/${formSlug}`)}
           className="flex items-center gap-2 font-black uppercase text-sm border-2 border-ink-charcoal bg-pure-white px-4 py-2 shadow-[4px_4px_0px_0px_rgba(44,46,42,1)] hover:shadow-none hover:translate-x-1 hover:translate-y-1 transition-all duration-100 w-fit"
@@ -33,7 +31,6 @@ export function ResponsesHeader({
           Back to Analytics
         </button>
 
-        {/* Hero title */}
         <h1
           className="font-black uppercase text-ink-charcoal tracking-tighter leading-none"
           style={{
@@ -47,15 +44,12 @@ export function ResponsesHeader({
           THE RAW VIBE
         </h1>
 
-        {/* Form subtitle */}
         <p className="font-bold text-lg text-ink-charcoal bg-pure-white inline-block px-4 py-2 border-4 border-ink-charcoal shadow-[4px_4px_0px_0px_rgba(44,46,42,1)] rotate-1 w-fit max-w-xl truncate">
           All unfiltered feedback for &ldquo;{formTitle}&rdquo;
         </p>
       </div>
 
-      {/* Right: stat cards */}
       <div className="flex gap-4 shrink-0">
-        {/* Total responses */}
         <div className="bg-electric-sun border-4 border-ink-charcoal shadow-[6px_6px_0px_0px_rgba(44,46,42,1)] p-4 w-44 flex flex-col items-center justify-center -rotate-1">
           <span className="text-xs font-black uppercase tracking-widest text-ink-charcoal mb-1">
             Total Responses
@@ -65,7 +59,6 @@ export function ResponsesHeader({
           </span>
         </div>
 
-        {/* Last response */}
         <div className="bg-[#c1c9b6] border-4 border-ink-charcoal shadow-[6px_6px_0px_0px_rgba(44,46,42,1)] p-4 w-44 flex flex-col items-center justify-center rotate-1">
           <span className="text-xs font-black uppercase tracking-widest text-ink-charcoal mb-1">
             Last Response

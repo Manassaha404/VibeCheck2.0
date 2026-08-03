@@ -46,14 +46,12 @@ export function AnalyticsHeader({
     <>
       <header className="relative flex flex-col md:flex-row items-start md:items-end justify-between gap-8">
         <div className="relative z-10">
-          {/* Decorative boom badge */}
           <div className="absolute -top-12 -left-12 rotate-[-15deg] hidden md:block">
             <div className="bg-electric-sun text-ink-charcoal font-black text-2xl p-4 border-4 border-ink-charcoal shadow-[6px_6px_0px_0px_rgba(44,46,42,1)] transform hover:scale-110 transition-transform cursor-crosshair">
               BOOM!
             </div>
           </div>
 
-          {/* Title */}
           <h1 className="font-display-lg text-display-lg md:text-[96px] md:leading-[90px] font-black uppercase text-ink-charcoal bg-pure-white inline-block p-4 border-4 border-ink-charcoal shadow-[12px_12px_0px_0px_rgba(44,46,42,1)] mb-4 -rotate-1 relative z-10">
             ANALYTICS:
           </h1>
@@ -62,7 +60,6 @@ export function AnalyticsHeader({
             {formTitle || "YOUR FORM"}
           </h2>
 
-          {/* Status chip */}
           <div className="mt-4 flex items-center gap-3">
             <span
               className={`font-headline-sm text-sm font-black uppercase px-4 py-1 border-2 border-ink-charcoal inline-flex items-center gap-2 ${statusClass}`}
@@ -73,7 +70,6 @@ export function AnalyticsHeader({
           </div>
         </div>
 
-        {/* Action and Stats */}
         <div className="flex gap-4 md:gap-8 flex-col sm:flex-row w-full md:w-auto relative z-30">
           {status === "archived" && (
             <button
@@ -103,7 +99,6 @@ export function AnalyticsHeader({
         </div>
       </header>
 
-      {/* CTA buttons */}
       <div className="flex flex-col xl:flex-row justify-start w-full mt-8 gap-4 md:gap-8">
         <button
           onClick={() =>

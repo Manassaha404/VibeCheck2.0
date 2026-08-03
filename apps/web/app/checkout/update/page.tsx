@@ -222,10 +222,6 @@ function UpdateCheckoutContent() {
               </span>
               <span className="flex items-center gap-1.5">
                 <ShieldCheck size={13} strokeWidth={2.5} />
-                Powered by Razorpay
-              </span>
-              <span className="flex items-center gap-1.5">
-                <ShieldCheck size={13} strokeWidth={2.5} />
                 Cancel anytime
               </span>
             </div>

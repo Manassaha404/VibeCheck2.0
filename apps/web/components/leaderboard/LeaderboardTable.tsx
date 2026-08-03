@@ -24,7 +24,6 @@ export function LeaderboardTable({ data = [] }: { data?: TableData[] }) {
 
   return (
     <section className="flex flex-col gap-4 max-w-4xl mx-auto w-full mb-16">
-      {/* Section heading */}
       <div className="flex items-center gap-4 border-b-4 border-[var(--color-ink-charcoal)] pb-3">
         <div className="w-3 h-8 bg-[var(--color-leaf-green)] border-2 border-[var(--color-ink-charcoal)]" />
         <h2 className="text-headline-md uppercase font-display font-black leading-none">
@@ -36,7 +35,6 @@ export function LeaderboardTable({ data = [] }: { data?: TableData[] }) {
         </div>
       </div>
 
-      {/* Table card */}
       <div className="bg-[var(--color-pure-white)] border-4 border-[var(--color-ink-charcoal)] shadow-[8px_8px_0px_0px_var(--color-ink-charcoal)] overflow-x-auto">
         <table className="w-full text-left border-collapse min-w-[480px]">
           <thead>
@@ -66,10 +64,8 @@ export function LeaderboardTable({ data = [] }: { data?: TableData[] }) {
                       : "",
                   ].join(" ")}
                 >
-                  {/* Rank cell with accent bar */}
                   <td className="p-0 border-r-4 border-[var(--color-ink-charcoal)] text-center relative w-24">
                     <div className="flex items-stretch h-full">
-                      {/* Colored left accent strip */}
                       <div
                         className={[
                           "w-2 flex-shrink-0 self-stretch",
@@ -82,10 +78,8 @@ export function LeaderboardTable({ data = [] }: { data?: TableData[] }) {
                     </div>
                   </td>
 
-                  {/* Username */}
                   <td className="px-6 py-5 border-r-4 border-[var(--color-ink-charcoal)]">
                     <div className="flex items-center gap-3">
-                      {/* Avatar placeholder circle */}
                       <img
                         src={row.avatar}
                         alt={row.username}
@@ -100,7 +94,6 @@ export function LeaderboardTable({ data = [] }: { data?: TableData[] }) {
                     </div>
                   </td>
 
-                  {/* Score */}
                   <td className="px-6 py-5 text-right font-display font-black text-headline-sm">
                     {row.score.toLocaleString()}
                   </td>
@@ -110,18 +103,6 @@ export function LeaderboardTable({ data = [] }: { data?: TableData[] }) {
           </tbody>
         </table>
       </div>
-
-      {/* CTA button (Optional if there are many pages, could hide for now if not implemented)
-      <div className="mt-6 flex justify-center">
-        <button className="group inline-flex items-center gap-3 bg-[var(--color-leaf-green)] text-[var(--color-ink-charcoal)] border-4 border-[var(--color-ink-charcoal)] shadow-[4px_4px_0px_0px_var(--color-ink-charcoal)] px-10 py-4 text-headline-sm font-display font-black uppercase btn-press hover:bg-[var(--color-electric-sun)]">
-          SEE NEXT RANKS
-          <ChevronDown
-            size={22}
-            strokeWidth={3}
-            className="transition-transform duration-200 group-hover:translate-y-1"
-          />
-        </button>
-      </div> */}
     </section>
   );
 }

@@ -190,7 +190,6 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
         className="bg-[var(--color-surface)] border-4 border-[var(--color-ink-charcoal)] shadow-neubrutalist p-6 relative overflow-hidden"
       >
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 relative z-10">
-          {/* Left — icon + info */}
           <div className="flex items-center gap-5">
             <div className="p-4 rounded-full border-2 border-[var(--color-ink-charcoal)] shadow-hard-sm bg-[var(--color-canvas-cream)]">
               <CreditCard className="w-8 h-8 text-[var(--color-ink-charcoal)]" />
@@ -233,7 +232,6 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
             </div>
           </div>
 
-          {/* Right — action buttons */}
           <div className="flex items-center gap-3 flex-wrap">
             {canUpgrade && (
               <button
@@ -259,7 +257,6 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
           </div>
         </div>
 
-        {/* Error banner */}
         {error && (
           <p className="mt-4 text-body-sm font-bold text-red-600 border-2 border-red-500 bg-red-50 px-4 py-2">
             {error}
@@ -267,7 +264,6 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
         )}
       </div>
 
-      {/* Confirmation dialog */}
       {showConfirm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm px-4">
           <div className="bg-[var(--color-surface)] border-4 border-[var(--color-ink-charcoal)] shadow-neubrutalist p-8 max-w-md w-full relative">

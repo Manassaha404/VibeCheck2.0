@@ -29,7 +29,6 @@ export function formatTimestamp(iso: string): string {
 }
 
 export function getPreviewText(answers: FormResponseAnswer[]): string {
-  // Show first non-primary text answer as preview
   const firstText = answers.find(
     (a) =>
       !a.isPrimary &&
@@ -44,7 +43,6 @@ export function getPreviewText(answers: FormResponseAnswer[]): string {
     return val.length > 80 ? val.slice(0, 80) + "…" : val;
   }
 
-  // Fall back to any answer
   const any = answers.find((a) => !a.isPrimary && a.value != null);
   if (any) {
     const val = Array.isArray(any.value)

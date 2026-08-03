@@ -41,7 +41,6 @@ export function PaymentStatusOverlay({
         className="relative w-full max-w-sm mx-4 bg-[var(--color-canvas-cream)] border-2 border-[var(--color-ink-charcoal)] p-8 text-center"
         style={{ boxShadow: "8px 8px 0px 0px var(--color-ink-charcoal)" }}
       >
-        {/* ── Polling ── */}
         {isPolling && (
           <>
             <div className="flex justify-center mb-5">
@@ -56,10 +55,6 @@ export function PaymentStatusOverlay({
             <h2 className="text-xl font-display font-black text-[var(--color-ink-charcoal)] uppercase tracking-wide mb-2">
               Confirming Payment
             </h2>
-            <p className="text-body-md text-[var(--color-ink-charcoal)] opacity-60 mb-5">
-              Checking with Razorpay… this usually takes a few seconds.
-            </p>
-            {/* Animated dots */}
             <div className="flex justify-center gap-1.5">
               {[0, 1, 2].map((i) => (
                 <motion.div
@@ -80,7 +75,6 @@ export function PaymentStatusOverlay({
           </>
         )}
 
-        {/* ── Success ── */}
         {isSuccess && (
           <>
             <motion.div
@@ -95,7 +89,6 @@ export function PaymentStatusOverlay({
                   className="text-white"
                   strokeWidth={2.5}
                 />
-                {/* Ripple */}
                 <motion.div
                   className="absolute inset-0 rounded-full border-2 border-[var(--color-leaf-green)]"
                   animate={{ scale: [1, 1.6], opacity: [0.6, 0] }}
@@ -124,7 +117,6 @@ export function PaymentStatusOverlay({
           </>
         )}
 
-        {/* ── Failed ── */}
         {(isFailed || isTimeout) && (
           <>
             <div className="flex justify-center mb-5">

@@ -26,7 +26,6 @@ export default function AgentChatPanel({
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // ── Global session store ─────────────────────────────────────────────────
   const {
     conversationId,
     hasUploadedDocument,
@@ -35,12 +34,10 @@ export default function AgentChatPanel({
   } = useAgentSessionStore();
   const questions = useQuizStore((s) => s.questions);
 
-  // Reset the agent session whenever the quiz changes
   useEffect(() => {
     resetSession();
   }, [quizId]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // ── Quiz builder agent ──────────────────────────────────────────────────
   const {
     messages,
     inputValue,
@@ -51,7 +48,6 @@ export default function AgentChatPanel({
     pushMessage,
   } = useQuizBuilderAgentChat(quizId);
 
-  // ── File-upload pipeline ─────────────────────────────────────────────────
   const {
     startPipeline,
     pipelineStatus,
@@ -60,7 +56,6 @@ export default function AgentChatPanel({
     reset: resetPipeline,
   } = useAgentFileUploadPipeline();
 
-  // Block user input while a file is being uploaded / indexed
   const isFileProcessing =
     pipelineStatus === "uploading" || pipelineStatus === "indexing";
   const isDisabled = isGenerating || isFileProcessing;
@@ -71,12 +66,10 @@ export default function AgentChatPanel({
     resetPipeline();
   };
 
-  // Auto-scroll to bottom on new message
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, isGenerating, pipelineStatus]);
 
-  // Add a system message once the document is fully indexed in the vector DB
   useEffect(() => {
     if (pipelineStatus === "ready") {
       pushMessage({
@@ -87,7 +80,6 @@ export default function AgentChatPanel({
     }
   }, [pipelineStatus, pushMessage]);
 
-  // Inject an error message if the pipeline fails
   useEffect(() => {
     if (pipelineStatus === "error" && pipelineError) {
       pushMessage({
@@ -98,7 +90,6 @@ export default function AgentChatPanel({
     }
   }, [pipelineStatus, pipelineError, resetPipeline, pushMessage]);
 
-  // ── File selected → immediately start the upload pipeline ──────────────
   const handleFileSelect = async (file: File) => {
     setShowUpload(false);
 
@@ -108,15 +99,12 @@ export default function AgentChatPanel({
       fileName: file.name,
     });
 
-    // Pass the existing conversationId from the store so multiple uploads
-    // in the same session are scoped to the same Qdrant partition.
     await startPipeline(file, {
       quizId,
       conversationId: conversationId ?? undefined,
     });
   };
 
-  // ── Pipeline status banner ────────────────────────────────────────────────
   const renderPipelineBanner = () => {
     if (pipelineStatus === "uploading") {
       return (
@@ -173,14 +161,12 @@ export default function AgentChatPanel({
       role="dialog"
       aria-label="Quiz Maker Agent Chat"
     >
-      {/* ── Header ── */}
       <AgentChatHeader
         onClose={onClose}
         onMinimize={onMinimize}
         onNewConversation={handleNewConversation}
       />
 
-      {/* ── Messages ── */}
       <div
         className="flex-1 overflow-y-auto p-4 bg-canvas-cream space-y-4"
         aria-live="polite"
@@ -189,7 +175,6 @@ export default function AgentChatPanel({
           <AgentMessageBubble key={msg.id} message={msg} />
         ))}
 
-        {/* Typing indicator (text agent) */}
         {isGenerating && (
           <div className="flex justify-start">
             <div className="flex gap-3 max-w-[85%] flex-row">
@@ -207,10 +192,8 @@ export default function AgentChatPanel({
         <div ref={messagesEndRef} aria-hidden="true" />
       </div>
 
-      {/* ── Pipeline status banner ── */}
       {renderPipelineBanner()}
 
-      {/* ── File upload area (toggled) ── */}
       {showUpload && !isFileProcessing && (
         <div className="px-4 pt-3 pb-0 bg-canvas-cream border-t-2 border-ink-charcoal">
           <AgentFileUpload
@@ -221,9 +204,7 @@ export default function AgentChatPanel({
         </div>
       )}
 
-      {/* ── Input bar ── */}
       <div className="p-4 bg-pure-white border-t-2 border-ink-charcoal">
-        {/* Blocker message while file is processing */}
         {isFileProcessing && (
           <div className="flex items-center gap-2 mb-2 text-label-sm font-medium text-ink-charcoal/70">
             <Loader2 className="w-3.5 h-3.5 animate-spin shrink-0" />

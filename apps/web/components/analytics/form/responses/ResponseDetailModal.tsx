@@ -50,7 +50,6 @@ export function ResponseDetailModal({
   answers,
   onClose,
 }: ResponseDetailModalProps) {
-  // Close on Escape
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
@@ -67,15 +66,11 @@ export function ResponseDetailModal({
       className="fixed inset-0 z-50 flex items-center justify-center p-4"
       onClick={(e) => e.target === e.currentTarget && onClose()}
     >
-      {/* Backdrop */}
       <div className="absolute inset-0 bg-ink-charcoal/60 backdrop-blur-sm" />
 
-      {/* Modal card */}
       <div className="relative z-10 bg-canvas-cream border-4 border-ink-charcoal shadow-[12px_12px_0px_0px_rgba(44,46,42,1)] w-full max-w-2xl max-h-[90vh] flex flex-col">
-        {/* Header bar */}
         <div className="flex items-start justify-between gap-4 p-6 border-b-4 border-ink-charcoal bg-electric-sun">
           <div className="flex items-center gap-4">
-            {/* Avatar */}
             <div className="w-14 h-14 rounded-full border-4 border-ink-charcoal bg-pure-white flex items-center justify-center font-black text-xl text-ink-charcoal shrink-0">
               {respondentAvatar}
             </div>
@@ -94,7 +89,6 @@ export function ResponseDetailModal({
             </div>
           </div>
 
-          {/* Close */}
           <button
             onClick={onClose}
             aria-label="Close modal"
@@ -104,14 +98,12 @@ export function ResponseDetailModal({
           </button>
         </div>
 
-        {/* Timestamp ribbon */}
         <div className="px-6 py-2 bg-pure-white border-b-4 border-ink-charcoal">
           <p className="text-xs font-bold text-ink-charcoal/60 uppercase tracking-wide">
             Submitted: {formatTimestamp(submittedAt)}
           </p>
         </div>
 
-        {/* Answers list */}
         <div className="flex-1 overflow-y-auto p-6 space-y-4">
           {otherAnswers.length === 0 ? (
             <div className="text-center py-12">
@@ -145,7 +137,6 @@ export function ResponseDetailModal({
           )}
         </div>
 
-        {/* Footer */}
         <div className="p-4 border-t-4 border-ink-charcoal bg-canvas-cream flex justify-end">
           <button
             onClick={onClose}

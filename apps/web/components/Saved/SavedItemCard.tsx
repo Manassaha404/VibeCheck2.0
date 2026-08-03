@@ -48,7 +48,6 @@ export const SavedItemCard: React.FC<SavedItemCardProps> = ({
         : "UNKNOWN";
   const data = item.polls || item.forms || item.petitions || {};
 
-  // Create a proper href based on the type
   const getHref = () => {
     switch (type) {
       case "POLL":
@@ -105,15 +104,12 @@ export const SavedItemCard: React.FC<SavedItemCardProps> = ({
           transition={{ type: "spring", stiffness: 400, damping: 25 }}
           className="relative h-full flex flex-col p-6 md:p-8 bg-pure-white border-[4px] border-ink-charcoal shadow-hard group-hover:shadow-hard-xl transition-shadow duration-300 overflow-hidden"
         >
-          {/* Halftone dot pattern overlay on hover */}
           <div className="absolute inset-0 bg-dot-pattern opacity-0 group-hover:opacity-10 transition-opacity duration-300 pointer-events-none" />
 
-          {/* Accent border strip at top */}
           <div
             className={`absolute top-0 left-0 right-0 h-3 border-b-[4px] border-ink-charcoal ${getTypeStyle()}`}
           />
 
-          {/* Header */}
           <div className="flex justify-between items-start mt-2 mb-6 relative z-10">
             <span
               className={`px-4 py-1 text-sm font-display font-black uppercase tracking-widest text-ink-charcoal border-[3px] border-ink-charcoal shadow-hard-sm flex items-center gap-2 ${getTypeStyle()} transform -rotate-2 group-hover:rotate-0 transition-transform`}
@@ -130,7 +126,6 @@ export const SavedItemCard: React.FC<SavedItemCardProps> = ({
             </span>
           </div>
 
-          {/* Content */}
           <div className="flex-grow relative z-10 mb-6">
             <h3 className="text-2xl font-display font-black uppercase text-ink-charcoal mb-4 line-clamp-2 leading-tight group-hover:underline decoration-[4px] underline-offset-4">
               {data.title || data.question || "Untitled"}
@@ -141,7 +136,6 @@ export const SavedItemCard: React.FC<SavedItemCardProps> = ({
             </p>
           </div>
 
-          {/* Footer */}
           <div className="pt-5 border-t-[4px] border-ink-charcoal border-dashed flex items-center justify-between relative z-10">
             <div className="flex items-center text-sm font-bold text-ink-charcoal gap-2 bg-candy-pink/30 px-3 py-1 border-2 border-ink-charcoal">
               <UserIcon className="w-4 h-4" strokeWidth={2.5} />

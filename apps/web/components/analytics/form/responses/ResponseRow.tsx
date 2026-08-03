@@ -4,7 +4,6 @@ import React from "react";
 import { formatTimestamp, getPreviewText } from "./utils";
 import { FormResponseAnswer } from "@repo/services/form/model";
 
-// Pastel avatar background colors — cycle by index
 const AVATAR_COLORS = [
   "#F5E211", // electric-sun
   "#ffb3e6", // pink
@@ -45,7 +44,6 @@ export function ResponseRow({
       onKeyDown={(e) => e.key === "Enter" && onClick()}
       className="grid grid-cols-1 md:grid-cols-12 gap-4 p-4 items-center bg-pure-white hover:bg-canvas-cream transition-colors cursor-pointer group"
     >
-      {/* Avatar + identity */}
       <div className="col-span-1 md:col-span-3 flex items-center gap-3">
         <div
           className="w-10 h-10 rounded-full border-2 border-ink-charcoal flex items-center justify-center font-black text-sm text-ink-charcoal shrink-0 transition-transform group-hover:scale-110"
@@ -58,12 +56,10 @@ export function ResponseRow({
         </span>
       </div>
 
-      {/* Preview of first non-primary answer */}
       <div className="col-span-1 md:col-span-7 text-base text-ink-charcoal/70 truncate">
         {preview}
       </div>
 
-      {/* Timestamp */}
       <div className="col-span-1 md:col-span-2 text-left md:text-right text-xs font-bold uppercase tracking-wide text-ink-charcoal/50">
         {formatTimestamp(submittedAt)}
       </div>

@@ -30,7 +30,6 @@ import type {
 
 export type { AnalyticsFieldItem };
 
-// ── Icon map ─────────────────────────────────────────────────────
 const FIELD_ICONS: Record<FieldType, React.ElementType> = {
   short_text: Type,
   long_text: AlignLeft,
@@ -48,7 +47,6 @@ const FIELD_ICONS: Record<FieldType, React.ElementType> = {
   mood: Smile,
 };
 
-// ── Card accent colors (cycling) ─────────────────────────────────
 const CARD_COLORS = [
   "#00E5FF",
   "#ffffff",
@@ -58,7 +56,6 @@ const CARD_COLORS = [
   "#FF9548",
 ];
 
-// ── Bubble styles for text feed ───────────────────────────────────
 const BUBBLE_STYLES = [
   "bg-pure-white border-4 border-ink-charcoal rounded-3xl rounded-tl-none font-bold text-lg shadow-[4px_4px_0px_0px_rgba(44,46,42,1)]",
   "bg-electric-sun border-4 border-ink-charcoal rounded-3xl rounded-tr-none font-bold text-lg shadow-[4px_4px_0px_0px_rgba(44,46,42,1)] self-end text-right ml-8",
@@ -75,8 +72,6 @@ const BAR_ACCENT_COLORS = [
   "bg-[#C084FC]",
   "bg-[#FF9548]",
 ];
-
-// ── Sub-renderers ─────────────────────────────────────────────────
 
 function TextCard({ data }: { data: TextFieldAnalytics }) {
   if (data.samples.length === 0) {
@@ -270,7 +265,6 @@ function DateCard({ data }: { data: DateFieldAnalytics }) {
   );
 }
 
-// ── Analytics dispatcher ──────────────────────────────────────────
 function renderAnalytics(analytics: FieldAnalyticsData) {
   switch (analytics.kind) {
     case "text":
@@ -305,7 +299,6 @@ function getSubtitle(analytics: FieldAnalyticsData): string {
   }
 }
 
-// ── Field Card ────────────────────────────────────────────────────
 function FieldCard({
   field,
   colorIdx,
@@ -342,7 +335,6 @@ function FieldCard({
   );
 }
 
-// ── Main Export ───────────────────────────────────────────────────
 interface FieldAnalyticsProps {
   fields: AnalyticsFieldItem[];
 }

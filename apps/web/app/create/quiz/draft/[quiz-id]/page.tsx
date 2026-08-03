@@ -52,7 +52,7 @@ export default function DraftQuizPage() {
       <main className="flex-grow relative overflow-hidden py-8 md:py-16 px-4 md:px-10 flex justify-center w-full">
         <div className="w-full max-w-[1280px] mx-auto flex flex-col items-center">
           {/* Back link + step indicator */}
-          <div className="w-full max-w-4xl flex items-center justify-between mb-8">
+          <div className="w-full max-w-4xl flex flex-col md:flex-row items-center justify-between gap-4 md:gap-0 mb-8">
             <Link
               href="/create/quiz"
               className="bg-pure-white text-label-md font-body font-bold text-ink-charcoal px-5 py-2.5 border-2 border-ink-charcoal shadow-hard-sm btn-press transition-all flex items-center gap-2 uppercase"

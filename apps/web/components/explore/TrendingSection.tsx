@@ -5,7 +5,6 @@ import Link from "next/link";
 import { Flame, Users, FileSignature, TrendingUp } from "lucide-react";
 import { useTrending } from "@/hook/explore/useTrending";
 
-// ── Skeleton card ─────────────────────────────────────────────────────────────
 function SkeletonCard({ large = false }: { large?: boolean }) {
   return (
     <div
@@ -16,7 +15,6 @@ function SkeletonCard({ large = false }: { large?: boolean }) {
   );
 }
 
-// ── Trending item union type ──────────────────────────────────────────────────
 type TrendingPoll = {
   kind: "poll";
   id: string;
@@ -42,7 +40,6 @@ type TrendingPetition = {
 
 type TrendingItem = TrendingPoll | TrendingPetition;
 
-// ── Hero card (first / largest item) ─────────────────────────────────────────
 function HeroCard({ item }: { item: TrendingItem }) {
   const href =
     item.kind === "poll"
@@ -103,7 +100,6 @@ function HeroCard({ item }: { item: TrendingItem }) {
   );
 }
 
-// ── Small side card ───────────────────────────────────────────────────────────
 const SIDE_COLORS = [
   "bg-[var(--color-electric-sun)]",
   "bg-[var(--color-tertiary-fixed)]",
@@ -156,11 +152,9 @@ function SideCard({
   );
 }
 
-// ── Main section ─────────────────────────────────────────────────────────────
 export default function TrendingSection() {
   const { polls, petitions, isLoading } = useTrending(6);
 
-  // Interleave polls and petitions for visual variety
   const items: TrendingItem[] = [
     ...polls.map((p): TrendingPoll => ({
       kind: "poll",

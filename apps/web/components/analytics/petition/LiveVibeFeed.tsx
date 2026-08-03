@@ -88,7 +88,6 @@ export default function LiveVibeFeed({
       </div>
       <div className="flex-grow overflow-hidden relative">
         <div className="absolute top-0 left-0 right-0 w-full animate-scroll-vertical space-y-4 pb-4">
-          {/* Double the items for seamless scrolling, if any exist */}
           {feedItems.length > 0 ? (
             [...feedItems, ...feedItems].map((item, idx) => (
               <div

@@ -84,7 +84,6 @@ export function AnalyticsStats({
         accent="yellow"
         index={1}
       />
-      {/* Top Answer Card */}
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}

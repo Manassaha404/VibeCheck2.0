@@ -4,7 +4,6 @@ import { uuidToNumber } from "@/utils/uuid";
 
 interface LiveControlsProps {
   joinCode: string;
-  /** The session UUID — used to build the participant join URL (/q/{sessionId}) */
   sessionId: string;
   onGoToLeaderboard: () => void;
 }
@@ -26,7 +25,6 @@ export default function LiveControls({
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full">
-      {/* Left: Go to Leaderboard */}
       <div className="flex flex-col border-4 border-[var(--color-ink-charcoal)] shadow-hard-xl p-4 bg-[var(--color-surface-container)] h-full min-h-[160px]">
         <button
           onClick={onGoToLeaderboard}
@@ -37,13 +35,11 @@ export default function LiveControls({
         </button>
       </div>
 
-      {/* Right: Spread the Vibe */}
       <div className="flex flex-col border-4 border-[var(--color-ink-charcoal)] shadow-hard-xl p-4 bg-[var(--color-surface-container)] h-full min-h-[160px]">
         <h3 className="font-display text-headline-sm font-bold uppercase text-[var(--color-ink-charcoal)] mb-4 text-center">
           Spread the Vibe
         </h3>
         <div className="flex flex-col items-center gap-4 bg-[var(--color-pure-white)] p-4 border-4 border-[var(--color-ink-charcoal)] shadow-hard flex-grow justify-between">
-          {/* Live QR code pointing to the participant page */}
           <a
             href={participantUrl}
             target="_blank"

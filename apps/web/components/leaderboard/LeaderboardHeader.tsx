@@ -6,7 +6,6 @@ import { Trophy, Zap, Star, Sparkles } from "lucide-react";
 export function LeaderboardHeader() {
   return (
     <div className="text-center mb-20 md:mb-28 relative z-10 flex flex-col items-center">
-      {/* Floating decorative confetti blobs */}
       <div className="pointer-events-none absolute inset-0 overflow-visible">
         <div className="absolute -top-4 left-[10%] w-8 h-8 bg-[var(--color-vivid-coral)] border-2 border-[var(--color-ink-charcoal)] rotate-12 shadow-hard-sm animate-float-slow" />
         <div className="absolute top-8 right-[12%] w-6 h-6 bg-[var(--color-sky-blue)] border-2 border-[var(--color-ink-charcoal)] rounded-full shadow-hard-sm animate-float-medium" />
@@ -24,9 +23,7 @@ export function LeaderboardHeader() {
         />
       </div>
 
-      {/* Main hero title block */}
       <div className="relative inline-block -rotate-1 mb-8">
-        {/* Crown badge pinned above */}
         <div className="absolute -top-10 left-1/2 -translate-x-1/2 z-30 bg-[var(--color-electric-sun)] border-4 border-[var(--color-ink-charcoal)] rounded-full w-20 h-20 flex items-center justify-center shadow-hard-lg animate-wiggle">
           <Trophy
             size={36}
@@ -50,7 +47,6 @@ export function LeaderboardHeader() {
             </span>
           </h1>
 
-          {/* Inline accent icons */}
           <div className="flex items-center justify-center gap-3 mt-4">
             <Star
               size={18}
@@ -70,7 +66,6 @@ export function LeaderboardHeader() {
           </div>
         </div>
 
-        {/* Corner dot accent */}
         <div className="absolute -bottom-5 -right-5 w-14 h-14 border-4 border-[var(--color-ink-charcoal)] bg-[var(--color-pure-white)] rounded-full grid grid-cols-2 gap-1 p-2 z-20 shadow-hard">
           <div className="bg-[var(--color-ink-charcoal)] rounded-full" />
           <div className="bg-[var(--color-ink-charcoal)] rounded-full" />
@@ -78,13 +73,11 @@ export function LeaderboardHeader() {
           <div className="bg-[var(--color-ink-charcoal)] rounded-full" />
         </div>
 
-        {/* Small sparkle tag */}
         <div className="absolute -top-3 -right-8 bg-[var(--color-vivid-coral)] border-2 border-[var(--color-ink-charcoal)] px-2 py-0.5 rotate-12 shadow-hard-sm z-30">
           <Sparkles size={14} className="text-[var(--color-ink-charcoal)]" />
         </div>
       </div>
 
-      {/* Subtitle strip */}
       <p className="text-headline-sm text-[var(--color-ink-charcoal)] max-w-xl bg-[var(--color-pure-white)] border-2 border-[var(--color-ink-charcoal)] px-6 py-3 rotate-1 inline-block shadow-hard font-body font-semibold">
         🎉 &nbsp;Celebrating the loudest voices in the community.&nbsp; 🎉
       </p>

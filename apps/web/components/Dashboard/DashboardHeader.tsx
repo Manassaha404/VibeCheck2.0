@@ -24,7 +24,6 @@ export function DashboardHeader({
 
   return (
     <section className="relative w-full overflow-hidden border-2 border-[var(--color-ink-charcoal)] bg-[var(--color-ink-charcoal)] rounded-xl shadow-hard-xl p-8 md:p-10">
-      {/* Background decorative blobs */}
       <div
         className="absolute -top-10 -right-10 w-56 h-56 rounded-full opacity-20"
         style={{ background: "var(--color-leaf-green)" }}
@@ -35,7 +34,6 @@ export function DashboardHeader({
       />
 
       <div className="relative z-10 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
-        {/* Left: greeting */}
         <div>
           <p className="text-label-md text-[var(--color-leaf-green)] tracking-widest uppercase mb-1">
             {dateStr}
@@ -51,7 +49,6 @@ export function DashboardHeader({
           </p>
         </div>
 
-        {/* Right: CTA */}
         <div className="flex flex-col gap-3 shrink-0">
           <Link
             href="/create"

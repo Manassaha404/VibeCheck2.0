@@ -123,7 +123,6 @@ export function FieldPalette() {
           Drag to add
         </p>
 
-        {/* Draggable & Clickable Items */}
         {elements.map(({ icon: Icon, label, type }) => (
           <div
             key={label}
@@ -150,7 +149,6 @@ export function FieldPalette() {
         ))}
       </div>
 
-      {/* Decorative character */}
       <div className="p-4 mt-auto border-t-2 border-ink-charcoal bg-canvas-cream hidden md:block">
         <img
           alt="Playful vector illustration"

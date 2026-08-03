@@ -73,7 +73,6 @@ export function StartSessionModal({
           backgroundSize: "24px 24px",
         }}
       >
-        {/* ── Colourful top accent bar ────────────────────────── */}
         <div className="flex h-2 w-full">
           <div className="flex-1 bg-[var(--color-leaf-green)]" />
           <div className="flex-1 bg-[var(--color-electric-sun)]" />
@@ -83,15 +82,12 @@ export function StartSessionModal({
         </div>
 
         <div className="p-8 flex flex-col gap-7">
-          {/* ── Header ──────────────────────────────────────────── */}
           <DialogHeader className="gap-3">
-            {/* Badge row */}
             <div className="flex items-center gap-3">
               <div className="inline-flex items-center gap-1.5 bg-[var(--color-electric-sun)] text-[var(--color-ink-charcoal)] text-label-sm font-body font-bold px-3 py-1 border-2 border-[var(--color-ink-charcoal)] shadow-hard-sm transform -rotate-2 animate-wiggle">
                 <Radio className="w-3 h-3 fill-current" />
                 LIVE SESSION
               </div>
-              {/* Mini icon pills */}
               <div className="flex gap-1.5 ml-auto">
                 {ACCENT_ICONS.map(({ icon: Icon, color, label }) => (
                   <div
@@ -116,7 +112,6 @@ export function StartSessionModal({
                 style={{ WebkitTextStroke: "2px var(--color-ink-charcoal)" }}
               >
                 <span className="relative z-10">Session</span>
-                {/* Yellow underline block */}
                 <span
                   className="absolute bottom-0 left-0 right-0 h-3 bg-[var(--color-electric-sun)] -z-10 -rotate-1"
                   aria-hidden
@@ -130,7 +125,6 @@ export function StartSessionModal({
             </DialogDescription>
           </DialogHeader>
 
-          {/* ── Input block ─────────────────────────────────────── */}
           <div className="flex flex-col gap-2">
             <div
               className="relative transition-all duration-200"
@@ -164,7 +158,6 @@ export function StartSessionModal({
               />
             </div>
 
-            {/* Character bar */}
             <div className="flex items-center gap-3">
               <div className="flex-1 h-1.5 bg-[var(--color-ink-charcoal)]/10 border border-[var(--color-ink-charcoal)]/20 overflow-hidden">
                 <div
@@ -190,9 +183,6 @@ export function StartSessionModal({
             </div>
           </div>
 
-          {/* ── Tip chip ────────────────────────────────────────── */}
-
-          {/* ── Footer ──────────────────────────────────────────── */}
           <DialogFooter className="sm:justify-end gap-3 flex-col-reverse sm:flex-row mt-1">
             <button
               id="cancel-session-btn"
@@ -210,7 +200,6 @@ export function StartSessionModal({
               }
               className="relative overflow-hidden bg-[var(--color-leaf-green)] disabled:opacity-40 disabled:cursor-not-allowed disabled:shadow-none disabled:[transform:none] text-label-md font-display font-bold text-[var(--color-ink-charcoal)] px-8 py-4 border-4 border-[var(--color-ink-charcoal)] shadow-hard btn-press transition-all flex items-center justify-center w-full sm:w-auto gap-2 uppercase tracking-widest"
             >
-              {/* Animated shimmer on hover (CSS-only via pseudo, handled via group) */}
               {makeQuizSessionMutation.isPending ? (
                 <>
                   <Loader2 className="w-5 h-5 animate-spin" />

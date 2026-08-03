@@ -92,7 +92,6 @@ export default function TrendingCard({
         </motion.div>
       </div>
 
-      {/* Decorative corner circle — spins subtly on hover */}
       <motion.div
         className="absolute -bottom-10 -right-10 w-36 h-36 border-4 border-[var(--color-ink-charcoal)] rounded-full opacity-25"
         aria-hidden="true"

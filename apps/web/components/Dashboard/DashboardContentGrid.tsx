@@ -27,7 +27,6 @@ const filterTabs: { key: FilterTab; label: string }[] = [
   { key: "archived", label: "Archived" },
 ];
 
-/** Skeleton card shown while loading */
 function SkeletonCard() {
   return (
     <div className="bg-[var(--color-pure-white)] border-2 border-[var(--color-outline-variant)] rounded-xl p-5 flex flex-col gap-4 animate-pulse h-[260px]">
@@ -89,7 +88,6 @@ export function DashboardContentGrid({
 
   return (
     <section ref={sectionRef} aria-labelledby="content-grid-heading">
-      {/* Section title + header actions */}
       <div className="gsap-stagger-item flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-5">
         <h2
           id="content-grid-heading"
@@ -99,7 +97,6 @@ export function DashboardContentGrid({
         </h2>
 
         <div className="flex items-center gap-3 flex-wrap">
-          {/* Search */}
           <div className="relative">
             <Search
               size={15}
@@ -115,7 +112,6 @@ export function DashboardContentGrid({
             />
           </div>
 
-          {/* Refresh */}
           {onRefresh && (
             <button
               id="content-refresh"
@@ -130,7 +126,6 @@ export function DashboardContentGrid({
             </button>
           )}
 
-          {/* See all */}
           <Link
             href="/explore"
             className="inline-flex items-center gap-1.5 text-label-md font-bold text-[var(--color-primary)] hover:underline"
@@ -140,7 +135,6 @@ export function DashboardContentGrid({
         </div>
       </div>
 
-      {/* Filter tabs */}
       <div
         className="gsap-stagger-item flex gap-2 mb-5 flex-wrap"
         role="tablist"
@@ -175,7 +169,6 @@ export function DashboardContentGrid({
         })}
       </div>
 
-      {/* Error state */}
       {isError && !isLoading && (
         <div className="flex flex-col items-center justify-center py-12 text-center border-2 border-dashed border-[var(--color-vivid-coral)] rounded-xl bg-[var(--color-error-container)] bg-opacity-20">
           <p className="text-headline-sm font-display text-[var(--color-error)]">
@@ -195,7 +188,6 @@ export function DashboardContentGrid({
         </div>
       )}
 
-      {/* Loading skeletons */}
       {isLoading && (
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5">
           {Array.from({ length: 6 }).map((_, i) => (
@@ -204,7 +196,6 @@ export function DashboardContentGrid({
         </div>
       )}
 
-      {/* Empty state */}
       {!isLoading && !isError && filtered.length === 0 && (
         <div className="flex flex-col items-center justify-center py-20 text-center border-2 border-dashed border-[var(--color-outline-variant)] rounded-xl">
           <p className="text-headline-sm font-display text-[var(--color-on-surface-variant)]">
@@ -229,7 +220,6 @@ export function DashboardContentGrid({
         </div>
       )}
 
-      {/* Real content grid */}
       {!isLoading && !isError && filtered.length > 0 && (
         <motion.div
           className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5 gsap-stagger-item"

@@ -155,7 +155,6 @@ function DockLabel({ children, className = "", isHovered }: DockLabelProps) {
           style={{ x: "-50%" }}
         >
           {children}
-          {/* Arrow pointing down */}
           <div className="absolute left-1/2 -bottom-2.5 h-4 w-4 -translate-x-1/2 rotate-45 border-b-4 border-r-4 border-[var(--color-ink-charcoal)] bg-[var(--color-electric-sun)]"></div>
         </motion.div>
       )}

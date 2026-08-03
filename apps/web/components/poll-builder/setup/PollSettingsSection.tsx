@@ -20,7 +20,6 @@ export function PollSettingsSection() {
         </h2>
       </div>
       <div className="space-y-6">
-        {/* Public Poll */}
         <div className="flex items-center justify-between">
           <label
             className="font-label-md text-label-md cursor-pointer flex flex-col"
@@ -45,7 +44,6 @@ export function PollSettingsSection() {
           </div>
         </div>
 
-        {/* Allow Comments */}
         <div className="flex items-center justify-between">
           <label
             className="font-label-md text-label-md cursor-pointer flex flex-col"
@@ -70,7 +68,6 @@ export function PollSettingsSection() {
           </div>
         </div>
 
-        {/* Multiple Votes */}
         <div className="flex items-center justify-between">
           <label
             className="font-label-md text-label-md cursor-pointer flex flex-col"

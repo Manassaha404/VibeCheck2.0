@@ -49,14 +49,12 @@ export function ResponsesTable({
 }: ResponsesTableProps) {
   return (
     <section className="bg-pure-white border-4 border-ink-charcoal shadow-[8px_8px_0px_0px_rgba(44,46,42,1)] overflow-hidden flex flex-col w-full">
-      {/* Column headers */}
       <div className="grid grid-cols-12 gap-4 p-4 border-b-4 border-ink-charcoal bg-canvas-cream font-black text-xs uppercase tracking-widest text-ink-charcoal hidden md:grid">
         <div className="col-span-3">Respondent</div>
         <div className="col-span-7">Response Preview</div>
         <div className="col-span-2 text-right">Submitted</div>
       </div>
 
-      {/* Rows */}
       {responses.length === 0 ? (
         <EmptyState />
       ) : (
@@ -76,7 +74,6 @@ export function ResponsesTable({
         </div>
       )}
 
-      {/* Pagination footer */}
       <ResponsesPagination
         page={page}
         pageSize={pageSize}

@@ -71,7 +71,6 @@ export default function HowItWorksSection() {
     >
       <div className="max-w-[1280px] mx-auto relative z-10">
         <div className="flex flex-col lg:flex-row items-center gap-16">
-          {/* ── Left: Steps ── */}
           <div className="lg:w-1/2">
             <motion.h2
               id="how-it-works-heading"
@@ -86,7 +85,6 @@ export default function HowItWorksSection() {
             </motion.h2>
 
             <div ref={stepsRef} className="space-y-8 relative">
-              {/* Connecting line */}
               <div className="absolute left-6 top-10 bottom-10 w-1 bg-[var(--color-ink-charcoal)] hidden md:block" />
 
               {steps.map((step) => (
@@ -124,10 +122,8 @@ export default function HowItWorksSection() {
             </div>
           </div>
 
-          {/* ── Right: Floating UI Cards ── */}
           <div className="lg:w-1/2 relative flex justify-center items-center">
             <div className="relative w-full max-w-md aspect-square flex flex-col justify-center items-center">
-              {/* Poll Question card */}
               <motion.div
                 className="w-full bg-[var(--color-pure-white)] border-4 border-[var(--color-ink-charcoal)] rounded-xl p-6 z-20"
                 style={{
@@ -166,7 +162,6 @@ export default function HowItWorksSection() {
                 </div>
               </motion.div>
 
-              {/* Results card */}
               <motion.div
                 className="w-5/6 bg-[var(--color-electric-sun)] border-4 border-[var(--color-ink-charcoal)] rounded-xl p-5 z-10 absolute bottom-0 right-0 translate-y-12 translate-x-4"
                 style={{
@@ -211,7 +206,6 @@ export default function HowItWorksSection() {
               </motion.div>
             </div>
 
-            {/* Decorative accents */}
             <motion.span
               className="material-symbols-outlined absolute top-10 right-10 text-6xl text-[var(--color-pure-white)] select-none"
               aria-hidden="true"

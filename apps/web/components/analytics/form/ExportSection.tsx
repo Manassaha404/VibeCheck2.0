@@ -38,7 +38,6 @@ export function ExportSection({ formSlug, fields }: ExportSectionProps) {
 
   return (
     <section className="bg-pure-white border-4 border-ink-charcoal shadow-[16px_16px_0px_0px_rgba(44,46,42,1)] p-8 md:p-12 relative flex flex-col items-center mt-8">
-      {/* Corner badge */}
       <div className="absolute -top-6 -left-6 bg-[#00E5FF] text-ink-charcoal font-black text-xl p-3 border-4 border-ink-charcoal -rotate-[10deg] shadow-[4px_4px_0px_0px_rgba(44,46,42,1)] z-10 whitespace-nowrap">
         DATA DROP!
       </div>
@@ -48,7 +47,6 @@ export function ExportSection({ formSlug, fields }: ExportSectionProps) {
       </h2>
 
       <div className="w-full max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-12 mb-12">
-        {/* Field Selection */}
         <div className="bg-canvas-cream border-4 border-ink-charcoal p-6 shadow-[8px_8px_0px_0px_rgba(44,46,42,1)]">
           <div className="flex items-center justify-between border-b-4 border-ink-charcoal pb-2 mb-4">
             <h3 className="font-headline-md text-headline-md font-bold uppercase">
@@ -97,7 +95,6 @@ export function ExportSection({ formSlug, fields }: ExportSectionProps) {
           )}
         </div>
 
-        {/* Time Period */}
         <div className="bg-canvas-cream border-4 border-ink-charcoal p-6 shadow-[8px_8px_0px_0px_rgba(44,46,42,1)] flex flex-col">
           <h3 className="font-headline-md text-headline-md font-bold uppercase mb-4 border-b-4 border-ink-charcoal pb-2">
             Select Time Period
@@ -146,7 +143,6 @@ export function ExportSection({ formSlug, fields }: ExportSectionProps) {
         </div>
       </div>
 
-      {/* Export button */}
       <div className="flex flex-col md:flex-row gap-8 items-center justify-center w-full">
         <button
           onClick={handleExport}

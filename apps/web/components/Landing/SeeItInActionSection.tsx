@@ -1,8 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
 
-/* ─── Sub-components ──────────────────────────────────────────── */
-
 function AnswerBar({
   label,
   percent,
@@ -54,7 +52,6 @@ export default function SeeItInActionSection() {
       className="py-24 px-4 md:px-10 bg-[var(--color-canvas-cream)] bg-dot-pattern border-b-4 border-[var(--color-ink-charcoal)] overflow-hidden"
       aria-labelledby="see-in-action-heading"
     >
-      {/* Heading */}
       <motion.div
         className="max-w-[1280px] mx-auto text-center mb-16"
         initial={{ opacity: 0, y: 30 }}
@@ -74,9 +71,7 @@ export default function SeeItInActionSection() {
         </p>
       </motion.div>
 
-      {/* Cards — staggered entry, static tilt, hover straighten */}
       <div className="flex flex-col lg:flex-row gap-10 justify-center items-end max-w-5xl mx-auto">
-        {/* ── Card 1: Live Poll Results — tilted left ── */}
         <motion.div
           className="flex-1 bg-[var(--color-pure-white)] border-4 border-[var(--color-ink-charcoal)] rounded-2xl overflow-hidden flex flex-col origin-bottom-right"
           initial={{ opacity: 0, y: 60, rotate: -8 }}
@@ -94,7 +89,6 @@ export default function SeeItInActionSection() {
           <WindowBar label="Live Poll Results" />
 
           <div className="p-6 bg-[var(--color-canvas-cream)] flex-grow flex flex-col gap-6">
-            {/* Header row */}
             <div className="flex justify-between items-start gap-4">
               <div>
                 <span className="text-label-sm font-bold bg-[var(--color-ink-charcoal)] text-[var(--color-pure-white)] px-2 py-0.5 rounded uppercase">
@@ -113,7 +107,6 @@ export default function SeeItInActionSection() {
               </motion.div>
             </div>
 
-            {/* Bars */}
             <div className="space-y-4">
               <AnswerBar
                 label="Flexible Hours"
@@ -134,7 +127,6 @@ export default function SeeItInActionSection() {
           </div>
         </motion.div>
 
-        {/* ── Card 2: Deep Analytics — tilted right ── */}
         <motion.div
           className="flex-1 bg-[var(--color-pure-white)] border-4 border-[var(--color-ink-charcoal)] rounded-2xl overflow-hidden flex flex-col origin-bottom-left lg:-mt-10 lg:mb-10"
           initial={{ opacity: 0, y: 60, rotate: 8 }}
@@ -157,7 +149,6 @@ export default function SeeItInActionSection() {
           <WindowBar label="Deep Analytics" />
 
           <div className="p-6 bg-[var(--color-canvas-cream)] flex-grow flex flex-col gap-5">
-            {/* Stats row */}
             <div className="flex justify-between items-center gap-4">
               <div className="bg-[var(--color-electric-sun)] border-2 border-[var(--color-ink-charcoal)] p-4 rounded-xl shadow-hard flex-1">
                 <p className="text-label-sm font-bold uppercase mb-1">
@@ -172,7 +163,6 @@ export default function SeeItInActionSection() {
               </div>
             </div>
 
-            {/* Bar chart */}
             <div className="flex flex-col flex-grow">
               <p className="text-label-sm font-bold uppercase mb-3">
                 Vibes Over Time

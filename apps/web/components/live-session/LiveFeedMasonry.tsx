@@ -45,7 +45,6 @@ export default function LiveFeedWordCloud({
       ? Math.max(...groupedTexts.map((item) => item.count))
       : 1;
 
-  // Generate random colors for the tags from our palette
   const getColor = (index: number) => {
     const colors = [
       "text-[var(--color-ink-charcoal)]",
@@ -55,7 +54,6 @@ export default function LiveFeedWordCloud({
       "text-[var(--color-vivid-coral)]",
       "text-[var(--color-electric-sun)]",
     ];
-    // Hash string to pick color for consistency
     return colors[index % colors.length];
   };
 
@@ -80,7 +78,6 @@ export default function LiveFeedWordCloud({
         ) : (
           groupedTexts.map((item, index) => {
             const ratio = item.count / maxCount;
-            // Scale font size between 1rem and 4rem depending on frequency
             const size = 1 + ratio * 3;
 
             return (

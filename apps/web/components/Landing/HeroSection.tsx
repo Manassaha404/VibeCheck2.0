@@ -51,15 +51,12 @@ export default function HeroSection() {
       id="hero"
       className="relative w-full min-h-[90vh] flex items-center justify-center overflow-hidden border-b-4 border-[var(--color-ink-charcoal)] bg-[var(--color-canvas-cream)]"
     >
-      {/* Background Pattern */}
       <div className="absolute inset-0 bg-dot-pattern opacity-40 pointer-events-none z-0" />
 
-      {/* Animated Crowd Background */}
       <CrowdCanvas src="/images/peeps/all-peeps.png" rows={15} cols={7} />
 
       <div className="relative z-10 w-full max-w-[1280px] mx-auto px-4 md:px-10 flex flex-col items-center text-center mt-20">
         <div className="relative max-w-4xl mx-auto mb-8 w-full">
-          {/* Interactive Floating UI Elements */}
           <motion.div
             className="absolute -top-10 -right-4 md:-right-20 hidden md:flex flex-col gap-3 z-20"
             animate={{ y: [0, -15, 0] }}

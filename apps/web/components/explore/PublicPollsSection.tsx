@@ -19,7 +19,6 @@ export default function PublicPollsSection() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {/* Card 1 */}
         <article className="bg-[var(--color-pure-white)] border-4 border-[var(--color-ink-charcoal)] rounded-xl shadow-hard hover:translate-y-[-4px] hover:shadow-neubrutalist transition-all duration-300 flex flex-col">
           <div className="p-6 flex-1 flex flex-col relative overflow-hidden">
             <span className="inline-block bg-[var(--color-canvas-cream)] border-2 border-[var(--color-ink-charcoal)] text-label-sm px-2 py-1 rounded-md mb-3 font-bold w-fit">
@@ -48,7 +47,6 @@ export default function PublicPollsSection() {
           </div>
         </article>
 
-        {/* Card 2 */}
         <article className="bg-[var(--color-pure-white)] border-4 border-[var(--color-ink-charcoal)] rounded-xl shadow-hard hover:translate-y-[-4px] hover:shadow-neubrutalist transition-all duration-300 flex flex-col">
           <div className="p-6 flex-1 flex flex-col relative overflow-hidden">
             <span className="inline-block bg-[var(--color-canvas-cream)] border-2 border-[var(--color-ink-charcoal)] text-label-sm px-2 py-1 rounded-md mb-3 font-bold w-fit">
@@ -78,7 +76,6 @@ export default function PublicPollsSection() {
           </div>
         </article>
 
-        {/* Card 3 */}
         <article className="bg-[var(--color-pure-white)] border-4 border-[var(--color-ink-charcoal)] rounded-xl shadow-hard hover:translate-y-[-4px] hover:shadow-neubrutalist transition-all duration-300 flex flex-col">
           <div className="p-6 flex-1 flex flex-col relative overflow-hidden">
             <span className="inline-block bg-[var(--color-canvas-cream)] border-2 border-[var(--color-ink-charcoal)] text-label-sm px-2 py-1 rounded-md mb-3 font-bold w-fit">

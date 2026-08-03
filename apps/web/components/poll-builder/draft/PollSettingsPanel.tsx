@@ -19,7 +19,6 @@ export function PollSettingsPanel() {
         Settings
       </h2>
 
-      {/* Toggle: Allow Multiple Votes */}
       <div className="flex items-center justify-between">
         <div>
           <div className="font-label-md text-label-md text-ink-charcoal">
@@ -39,7 +38,6 @@ export function PollSettingsPanel() {
         </label>
       </div>
 
-      {/* Visibility Settings */}
       <div className="flex items-center justify-between">
         <div>
           <div className="font-label-md text-label-md text-ink-charcoal">

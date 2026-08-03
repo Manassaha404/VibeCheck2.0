@@ -22,7 +22,6 @@ export function ResponsesToolbar({
 }: ResponsesToolbarProps) {
   return (
     <section className="flex flex-col md:flex-row justify-between items-stretch md:items-center gap-4 bg-pure-white p-4 border-4 border-ink-charcoal shadow-[8px_8px_0px_0px_rgba(44,46,42,1)] w-full">
-      {/* Search */}
       <div className="relative flex-1 md:max-w-md">
         <Search
           size={18}
@@ -46,14 +45,11 @@ export function ResponsesToolbar({
         )}
       </div>
 
-      {/* Right controls */}
       <div className="flex items-center gap-4">
-        {/* Results label */}
         <span className="font-black text-sm uppercase text-ink-charcoal/60 whitespace-nowrap">
           {totalResults.toLocaleString()} results
         </span>
 
-        {/* Per-page */}
         <div className="flex items-center gap-2">
           <span className="font-black text-xs uppercase text-ink-charcoal/60 whitespace-nowrap">
             Show:

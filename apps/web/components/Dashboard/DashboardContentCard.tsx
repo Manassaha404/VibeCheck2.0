@@ -117,7 +117,6 @@ export function DashboardContentCard({
   const dropdownRef = useRef<HTMLDivElement>(null);
   const btnRef = useRef<HTMLButtonElement>(null);
 
-  // Close dropdown on outside click
   useEffect(() => {
     if (!dropdownOpen) return;
     function handleClickOutside(e: MouseEvent) {
@@ -135,8 +134,6 @@ export function DashboardContentCard({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [dropdownOpen]);
 
-  // ── tRPC mutations ──────────────────────────────────────────────
-
   const utils = trpc.useUtils();
 
   const invalidateDashboard = () => {
@@ -146,7 +143,6 @@ export function DashboardContentCard({
     utils.quiz.getDashboard.invalidate();
   };
 
-  // Form mutations
   const archiveForm = trpc.form.archiveItem.useMutation({
     onSuccess: () => {
       invalidateDashboard();
@@ -170,7 +166,6 @@ export function DashboardContentCard({
     },
   });
 
-  // Poll mutations
   const archivePoll = trpc.poll.archiveItem.useMutation({
     onSuccess: () => {
       invalidateDashboard();
@@ -194,7 +189,6 @@ export function DashboardContentCard({
     },
   });
 
-  // Petition mutations
   const archivePetition = trpc.petition.archiveItem.useMutation({
     onSuccess: () => {
       invalidateDashboard();
@@ -218,7 +212,6 @@ export function DashboardContentCard({
     },
   });
 
-  // Quiz mutations
   const archiveQuiz = trpc.quiz.archiveItem.useMutation({
     onSuccess: () => {
       invalidateDashboard();
@@ -325,17 +318,14 @@ export function DashboardContentCard({
       id={`content-card-${item.id}`}
       className="group bg-[var(--color-pure-white)] border-2 border-[var(--color-ink-charcoal)] rounded-xl p-5 shadow-hard card-lift flex flex-col gap-4 h-[260px]"
     >
-      {/* Header row */}
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-center gap-2 flex-wrap">
-          {/* Type badge */}
           <span
             className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md border border-[var(--color-outline-variant)] text-label-sm font-bold ${tc.bg} ${tc.color}`}
           >
             {tc.icon}
             {tc.label}
           </span>
-          {/* Status badge */}
           <span
             className={`inline-flex items-center px-2.5 py-1 rounded-md text-label-sm font-bold border border-[var(--color-ink-charcoal)] ${sc.class}`}
           >
@@ -343,7 +333,6 @@ export function DashboardContentCard({
           </span>
         </div>
 
-        {/* 3-dot menu */}
         <div className="relative">
           <button
             ref={btnRef}
@@ -365,7 +354,6 @@ export function DashboardContentCard({
             )}
           </button>
 
-          {/* Dropdown */}
           {dropdownOpen && (
             <div
               ref={dropdownRef}
@@ -373,7 +361,6 @@ export function DashboardContentCard({
               aria-label="Card actions"
               className="absolute right-0 top-full mt-1.5 w-44 bg-[var(--color-pure-white)] border-2 border-[var(--color-ink-charcoal)] rounded-xl shadow-hard z-50 overflow-hidden"
             >
-              {/* Archive / Activate toggle based on current status */}
               {item.status === "archived" ? (
                 <button
                   role="menuitem"
@@ -406,10 +393,8 @@ export function DashboardContentCard({
                 </button>
               )}
 
-              {/* Divider */}
               <div className="h-px bg-[var(--color-outline-variant)]" />
 
-              {/* Delete option — with inline confirmation */}
               <button
                 role="menuitem"
                 id={`card-delete-${item.id}`}
@@ -434,7 +419,6 @@ export function DashboardContentCard({
         </div>
       </div>
 
-      {/* Title + description */}
       <div className="flex-1">
         <h3 className="text-headline-sm font-display font-bold text-[var(--color-ink-charcoal)] line-clamp-2 leading-tight">
           {item.title}
@@ -446,7 +430,6 @@ export function DashboardContentCard({
         )}
       </div>
 
-      {/* Footer meta */}
       <div className="flex items-center justify-between gap-3 pt-3 border-t border-[var(--color-outline-variant)]">
         <div className="flex items-center gap-4 text-label-sm text-[var(--color-on-surface-variant)]">
           <span className="inline-flex items-center gap-1.5">

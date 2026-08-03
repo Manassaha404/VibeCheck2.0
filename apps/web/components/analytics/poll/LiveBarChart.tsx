@@ -39,7 +39,6 @@ const CHART_COLORS = [
   "#C084FC", // lavender
 ];
 
-// Custom Bar Chart Bars (neubrutalist style)
 function BarRow({
   option,
   index,
@@ -105,7 +104,6 @@ function BarRow({
   );
 }
 
-// Custom tooltip for recharts
 const CustomTooltip = ({
   active,
   payload,
@@ -138,7 +136,6 @@ export function LiveBarChart({
 
   const maxVotes = Math.max(...options.map((o) => o.votes));
 
-  // Recharts data format
   const rechartsData = options.map((opt, i) => ({
     name: opt.text.length > 16 ? opt.text.slice(0, 16) + "…" : opt.text,
     fullName: opt.text,
@@ -149,7 +146,6 @@ export function LiveBarChart({
 
   return (
     <section className="bg-pure-white border-2 border-ink-charcoal rounded-xl p-6 md:p-10 shadow-hard-lg flex flex-col gap-8 relative">
-      {/* Chart type toggle */}
       <div className="absolute top-4 right-4 flex gap-2">
         <button
           id="bar-chart-btn"
@@ -183,7 +179,6 @@ export function LiveBarChart({
 
       <AnimatePresence mode="wait">
         {chartType === "bar" ? (
-          /* ── Neubrutalist Bar Rows ── */
           <motion.div
             key="bar"
             initial={{ opacity: 0, y: 10 }}
@@ -202,7 +197,6 @@ export function LiveBarChart({
               />
             ))}
 
-            {/* Recharts horizontal bar underneath */}
             <div className="mt-4 pt-4 border-t-2 border-dashed border-ink-charcoal/30">
               <p className="text-label-sm text-ink-charcoal/50 font-body mb-3 uppercase tracking-wider">
                 Vote Distribution
@@ -248,7 +242,6 @@ export function LiveBarChart({
             </div>
           </motion.div>
         ) : (
-          /* ── Recharts Pie Chart ── */
           <motion.div
             key="pie"
             initial={{ opacity: 0, scale: 0.9 }}
@@ -322,7 +315,6 @@ export function LiveBarChart({
         )}
       </AnimatePresence>
 
-      {/* Footer */}
       <div className="pt-4 border-t-2 border-ink-charcoal border-dashed flex justify-between items-center text-ink-charcoal/60 text-label-md font-body">
         <span>
           Last updated:{" "}

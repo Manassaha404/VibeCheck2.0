@@ -39,11 +39,9 @@ const accentColors = [
   "bg-mint",
 ];
 
-/* Jagged torn-paper edge, used on the hero base */
 const TORN_EDGE_CLIP =
   "polygon(0% 0%,100% 0%,100% 95%,93.75% 100%,87.5% 95%,81.25% 100%,75% 95%,68.75% 100%,62.5% 95%,56.25% 100%,50% 95%,43.75% 100%,37.5% 95%,31.25% 100%,25% 95%,18.75% 100%,12.5% 95%,6.25% 100%,0% 95%)";
 
-/* Rotated ink-stamp badge with curved text, stamped on the winning ticket */
 const OfficialStamp = () => {
   const pathId = useId();
   return (
@@ -135,7 +133,6 @@ const TicketStub = ({
           : "shadow-hard hover:shadow-hard-lg z-0",
       )}
     >
-      {/* Percentage stub */}
       <div
         className={cn(
           "relative flex flex-col items-center justify-center px-5 md:px-7 py-6 shrink-0 w-[112px] md:w-[150px]",
@@ -154,13 +151,11 @@ const TicketStub = ({
         </span>
       </div>
 
-      {/* Perforation divider with hole-punch notches */}
       <div className="relative w-0 border-l-[3px] border-dashed border-ink-charcoal shrink-0">
         <span className="absolute -top-[9px] -left-[9px] w-[18px] h-[18px] rounded-full bg-canvas-cream border-[3px] border-ink-charcoal" />
         <span className="absolute -bottom-[9px] -left-[9px] w-[18px] h-[18px] rounded-full bg-canvas-cream border-[3px] border-ink-charcoal" />
       </div>
 
-      {/* Label + fill bar */}
       <div className="relative flex-1 flex items-center px-6 md:px-8 py-6 min-h-[104px] md:min-h-[128px] overflow-hidden">
         <motion.div
           initial={{ width: "0%" }}
@@ -231,7 +226,6 @@ export const VoteSuccessCard = ({
 
   return (
     <div className="w-full max-w-5xl mx-auto flex flex-col gap-10 md:gap-14">
-      {/* Hero — ballot header with torn bottom edge */}
       <div className="relative">
         <motion.div
           initial={{ opacity: 0, y: -30 }}
@@ -282,7 +276,6 @@ export const VoteSuccessCard = ({
         </motion.div>
       </div>
 
-      {/* Winner ticket with ink stamp */}
       {topOption && totalVotes > 0 && (
         <motion.div
           initial={{ opacity: 0, scale: 0.96 }}
@@ -310,7 +303,6 @@ export const VoteSuccessCard = ({
         </motion.div>
       )}
 
-      {/* Ticket stubs */}
       <div className="flex flex-col gap-5 md:gap-6 relative z-10">
         {options.map((opt, idx) => (
           <TicketStub
@@ -323,7 +315,6 @@ export const VoteSuccessCard = ({
         ))}
       </div>
 
-      {/* Action footer */}
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
@@ -389,7 +380,6 @@ export const VoteSuccessCard = ({
         </button>
       </motion.div>
 
-      {/* QR Modal */}
       <Dialog open={isQrOpen} onOpenChange={setIsQrOpen}>
         <DialogContent className="bg-canvas-cream border-[4px] border-ink-charcoal shadow-hard-xl rounded-none max-w-sm sm:max-w-md p-0 overflow-hidden">
           <div className="bg-vivid-coral border-b-[4px] border-ink-charcoal p-6 flex items-center justify-center">

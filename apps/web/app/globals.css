@@ -1316,3 +1316,316 @@
     padding: 12px;
   }
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   AI Features — Agent Call Terminal + Card Demos
+   Append this block to the end of globals.css
+   (uses only existing theme tokens — no new colors introduced)
+   ═══════════════════════════════════════════════════════════════ */
+
+.ai-terminal {
+  position: relative;
+  max-width: 640px;
+  margin: 0 auto 56px;
+  background-color: var(--color-pure-white);
+  border: 4px solid var(--color-ink-charcoal);
+  border-radius: 12px;
+  box-shadow: 8px 8px 0px 0px var(--color-ink-charcoal);
+  overflow: hidden;
+}
+
+.ai-terminal-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  border-bottom: 4px solid var(--color-ink-charcoal);
+  background-color: var(--color-lavender);
+}
+
+.ai-terminal-avatar-wrap {
+  position: relative;
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
+}
+
+.ai-terminal-avatar {
+  position: relative;
+  z-index: 2;
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-pure-white);
+  color: var(--color-ink-charcoal);
+  border: 2px solid var(--color-ink-charcoal);
+  border-radius: 8px;
+}
+
+.ai-terminal-pulse-ring {
+  position: absolute;
+  inset: 0;
+  border: 2px solid var(--color-ink-charcoal);
+  border-radius: 8px;
+  opacity: 0.8;
+  pointer-events: none;
+}
+
+.ai-terminal-title {
+  font-family: "Hanken Grotesk", sans-serif;
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-ink-charcoal);
+}
+
+.ai-terminal-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+  background-color: var(--color-pure-white);
+  padding: 4px 10px;
+  border: 2px solid var(--color-ink-charcoal);
+  border-radius: 20px;
+}
+
+.ai-terminal-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--color-leaf-green);
+  border: 1px solid var(--color-ink-charcoal);
+  animation: pulse-status 2s ease-in-out infinite;
+}
+
+.ai-terminal-status-label {
+  font-family: "Hanken Grotesk", sans-serif;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-ink-charcoal);
+}
+
+.ai-terminal-body {
+  padding: 18px 20px 22px;
+  font-family: "Hanken Grotesk", monospace, sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  background-color: var(--color-pure-white);
+}
+
+.ai-terminal-line {
+  display: block;
+  color: var(--color-ink-charcoal);
+  opacity: 0;
+  min-height: 24px;
+  line-height: 24px;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.ai-typing-dots {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  opacity: 0;
+  margin-bottom: 6px;
+}
+
+.ai-typing-dots span {
+  width: 8px;
+  height: 8px;
+  background-color: var(--color-ink-charcoal);
+  border-radius: 50%;
+  animation: typing-bounce 1.2s ease-in-out infinite;
+}
+.ai-typing-dots span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+.ai-typing-dots span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+/* Ambient sparkles floating on the terminal */
+.ai-sparkle {
+  position: absolute;
+  color: var(--color-ink-charcoal);
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+/* ── Card demo micro-visuals ─────────────────────────────────── */
+.ai-demo {
+  border-top: 4px dashed var(--color-ink-charcoal);
+  padding-top: 14px;
+  margin-top: auto;
+  opacity: 0;
+}
+
+.ai-demo-label {
+  font-family: "Hanken Grotesk", sans-serif;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-ink-charcoal);
+  opacity: 0.8;
+  margin-bottom: 8px;
+}
+
+/* Form demo */
+.ai-demo-input {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 32px;
+  border: 2px solid var(--color-ink-charcoal);
+  border-radius: 6px;
+  background-color: var(--color-pure-white);
+  padding: 0 8px;
+  overflow: hidden;
+  box-shadow: 2px 2px 0px 0px var(--color-ink-charcoal);
+}
+
+.ai-demo-fill {
+  height: 8px;
+  width: 0%;
+  border-radius: 4px;
+  background-color: var(--color-electric-sun);
+  border: 1px solid var(--color-ink-charcoal);
+}
+
+.ai-demo-check {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: var(--color-leaf-green);
+  border: 2px solid var(--color-ink-charcoal);
+  color: var(--color-ink-charcoal);
+  flex-shrink: 0;
+  transform: scale(0);
+}
+
+/* Quiz demo */
+.ai-demo-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--color-ink-charcoal);
+  border: 2px solid transparent;
+  border-radius: 6px;
+  margin-bottom: 4px;
+}
+
+.ai-demo-option-dot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px solid var(--color-ink-charcoal);
+  background-color: var(--color-pure-white);
+  color: var(--color-ink-charcoal);
+  flex-shrink: 0;
+  transform: scale(0);
+}
+
+.ai-demo-option--correct {
+  border-color: var(--color-ink-charcoal);
+  background-color: var(--color-leaf-green);
+  box-shadow: 2px 2px 0px 0px var(--color-ink-charcoal);
+}
+
+.ai-demo-option--correct .ai-demo-option-dot {
+  background-color: var(--color-electric-sun);
+}
+
+/* Respondent demo */
+.ai-demo-avatars {
+  display: flex;
+}
+
+.ai-demo-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 2px solid var(--color-ink-charcoal);
+  margin-left: -8px;
+  transform: scale(0);
+}
+
+.ai-demo-avatar:first-child {
+  margin-left: 0;
+}
+
+.ai-demo-count-wrap {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin-top: 12px;
+}
+
+.ai-demo-count {
+  font-family: "Bricolage Grotesque", sans-serif;
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--color-ink-charcoal);
+}
+
+.ai-demo-count-label {
+  font-family: "Hanken Grotesk", sans-serif;
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--color-ink-charcoal);
+  opacity: 0.8;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+@media (max-width: 640px) {
+  .ai-terminal {
+    margin-left: 0;
+    margin-right: 0;
+    border-width: 3px;
+    box-shadow: 6px 6px 0px 0px var(--color-ink-charcoal);
+  }
+  .ai-terminal-header {
+    padding: 12px;
+    gap: 8px;
+  }
+  .ai-terminal-title {
+    font-size: 12px;
+  }
+  .ai-terminal-status {
+    padding: 3px 8px;
+  }
+  .ai-terminal-status-label {
+    font-size: 10px;
+  }
+  .ai-terminal-body {
+    padding: 14px 16px;
+    font-size: 13.5px;
+  }
+  .ai-terminal-line {
+    min-height: 20px;
+    line-height: 20px;
+  }
+  .ai-demo-count {
+    font-size: 22px;
+  }
+  .ai-demo-label {
+    font-size: 10px;
+  }
+}

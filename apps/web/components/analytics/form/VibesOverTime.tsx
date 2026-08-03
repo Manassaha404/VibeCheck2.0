@@ -29,7 +29,6 @@ export function VibesOverTime({ weeklyData }: VibesOverTimeProps) {
 
   return (
     <section className="bg-pure-white border-4 border-ink-charcoal shadow-[16px_16px_0px_0px_rgba(44,46,42,1)] p-8 relative">
-      {/* Rising / Falling badge */}
       <div
         className={`absolute -top-6 -right-6 text-pure-white font-black text-xl p-3 border-4 border-ink-charcoal rotate-[15deg] shadow-[4px_4px_0px_0px_rgba(44,46,42,1)] z-10 flex items-center gap-1 ${
           isRising ? "bg-[#FF5733]" : "bg-ink-charcoal"
@@ -60,7 +59,6 @@ export function VibesOverTime({ weeklyData }: VibesOverTimeProps) {
                 className={`w-full border-4 border-ink-charcoal relative group hover:-translate-y-2 transition-transform ${BAR_COLORS[i % BAR_COLORS.length]}`}
                 style={{ height: `${heightPct}%` }}
               >
-                {/* Tooltip */}
                 <div className="absolute -top-12 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 bg-ink-charcoal text-pure-white px-3 py-1.5 font-bold text-sm pointer-events-none transition-opacity whitespace-nowrap border-2 border-electric-sun z-20">
                   {point.count.toLocaleString()} response
                   {point.count !== 1 ? "s" : ""}
@@ -71,7 +69,6 @@ export function VibesOverTime({ weeklyData }: VibesOverTimeProps) {
         </div>
       )}
 
-      {/* X-axis labels */}
       <div className="flex justify-between font-bold text-lg mt-4 pl-4 uppercase">
         {weeklyData.map((point) => (
           <span key={point.week}>{point.week}</span>

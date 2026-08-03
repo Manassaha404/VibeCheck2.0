@@ -37,7 +37,6 @@ interface QuestionCardProps {
   number: number;
 }
 
-/* Accent colours cycling per card number */
 const BADGE_ACCENTS = [
   {
     bg: "bg-electric-sun",
@@ -106,14 +105,12 @@ export default function QuestionCard({
     if (result) {
       updateQuestion(questionId, { mediaUrl: result.secureUrl });
     }
-    // Reset the input so the same file can be re-selected
     e.target.value = "";
   };
 
   const [focused, setFocused] = React.useState(false);
   const articleRef = useRef<HTMLElement>(null);
 
-  // Guard: question may have been removed
   if (!question) return null;
 
   const badge =
@@ -154,7 +151,6 @@ export default function QuestionCard({
           setFocused(false);
       }}
     >
-      {/* ── Animated top accent stripe ── */}
       <motion.div
         className="h-1.5 w-full"
         animate={{ backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"] }}
@@ -166,7 +162,6 @@ export default function QuestionCard({
         }}
       />
 
-      {/* ── Number badge ── */}
       <motion.div
         whileHover={{ rotate: 15, scale: 1.18 }}
         transition={{ type: "spring", stiffness: 350, damping: 12 }}
@@ -176,9 +171,7 @@ export default function QuestionCard({
         <span className={badge.text}>{number}</span>
       </motion.div>
 
-      {/* ── Header ── */}
       <div className="border-b-4 border-ink-charcoal bg-surface-container-low px-5 py-3 flex flex-wrap gap-3 items-center justify-between">
-        {/* Type pill toggle */}
         <div className="flex border-2 border-ink-charcoal bg-canvas-cream shadow-hard-sm overflow-hidden relative">
           {(["multiple_choice", "text_entry"] as const).map((t) => (
             <button
@@ -209,9 +202,7 @@ export default function QuestionCard({
           ))}
         </div>
 
-        {/* Right: time / points / multi-correct / collapse / delete */}
         <div className="flex items-center gap-2 flex-wrap">
-          {/* Time */}
           <div className="group flex items-center gap-1.5 border-2 border-ink-charcoal px-3 py-1.5 bg-pure-white shadow-hard-sm focus-within:border-electric-sun transition-colors">
             <Clock size={15} className="text-outline shrink-0" />
             <input
@@ -227,7 +218,6 @@ export default function QuestionCard({
             <span className="text-xs text-outline font-semibold">s</span>
           </div>
 
-          {/* Points (Only for Multiple Choice and Single Choice) */}
           {question.type === "multiple_choice" && (
             <>
               <div className="group flex items-center gap-1.5 border-2 border-ink-charcoal px-3 py-1.5 bg-pure-white shadow-hard-sm focus-within:border-electric-sun transition-colors">
@@ -245,7 +235,6 @@ export default function QuestionCard({
                 <span className="text-xs text-outline font-semibold">pts</span>
               </div>
 
-              {/* Multi/Single Toggle */}
               <button
                 onClick={() =>
                   updateQuestion(questionId, {
@@ -266,7 +255,6 @@ export default function QuestionCard({
             </>
           )}
 
-          {/* Collapse */}
           <motion.button
             whileTap={{ scale: 0.88 }}
             onClick={handleCollapse}
@@ -280,7 +268,6 @@ export default function QuestionCard({
             )}
           </motion.button>
 
-          {/* Delete */}
           <motion.button
             whileHover={{ rotate: -8, scale: 1.1 }}
             whileTap={{ scale: 0.88 }}
@@ -293,7 +280,6 @@ export default function QuestionCard({
         </div>
       </div>
 
-      {/* ── Body ── */}
       <AnimatePresence initial={false}>
         {!question.collapsed && (
           <motion.div
@@ -305,7 +291,6 @@ export default function QuestionCard({
             className="overflow-hidden"
           >
             <div className="p-6 md:p-8 flex flex-col gap-7">
-              {/* Question textarea */}
               <div className="relative group">
                 <div className="absolute left-0 top-0 bottom-0 w-1.5 rounded-full bg-ink-charcoal group-focus-within:animate-color-shift transition-all" />
                 <textarea
@@ -328,9 +313,7 @@ export default function QuestionCard({
                 </motion.span>
               </div>
 
-              {/* ── Media attach / preview ── */}
               <div className="flex flex-col gap-2">
-                {/* Hidden file input */}
                 <input
                   ref={fileInputRef}
                   type="file"
@@ -339,7 +322,6 @@ export default function QuestionCard({
                   onChange={handleFileChange}
                 />
 
-                {/* Uploaded image preview */}
                 <AnimatePresence>
                   {question.mediaUrl && (
                     <motion.div
@@ -349,13 +331,11 @@ export default function QuestionCard({
                       exit={{ opacity: 0, scale: 0.96 }}
                       className="relative group rounded-sm overflow-hidden border-2 border-ink-charcoal shadow-hard-sm"
                     >
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
                         src={question.mediaUrl}
                         alt="Question media"
                         className="w-full max-h-56 object-contain bg-surface-container-low"
                       />
-                      {/* Remove button overlay */}
                       <motion.button
                         whileHover={{ scale: 1.1 }}
                         whileTap={{ scale: 0.9 }}
@@ -372,7 +352,6 @@ export default function QuestionCard({
                   )}
                 </AnimatePresence>
 
-                {/* Upload progress bar */}
                 <AnimatePresence>
                   {(uploadStatus === "signing" ||
                     uploadStatus === "uploading") && (
@@ -404,7 +383,6 @@ export default function QuestionCard({
                   )}
                 </AnimatePresence>
 
-                {/* Error banner */}
                 <AnimatePresence>
                   {uploadStatus === "error" && uploadError && (
                     <motion.div
@@ -425,7 +403,6 @@ export default function QuestionCard({
                   )}
                 </AnimatePresence>
 
-                {/* Trigger button — only shown if no media yet and not uploading */}
                 {!question.mediaUrl &&
                   uploadStatus !== "uploading" &&
                   uploadStatus !== "signing" && (
@@ -444,7 +421,6 @@ export default function QuestionCard({
                   )}
               </div>
 
-              {/* ── Multiple Choice / Single Choice ── */}
               <AnimatePresence mode="wait">
                 {question.type === "multiple_choice" ? (
                   <motion.div
@@ -499,7 +475,6 @@ export default function QuestionCard({
                     )}
                   </motion.div>
                 ) : (
-                  /* ── Text Entry ── */
                   <motion.div
                     key="te"
                     initial={{ opacity: 0, y: 16 }}
@@ -508,7 +483,6 @@ export default function QuestionCard({
                     transition={{ duration: 0.18 }}
                     className="flex flex-col gap-5"
                   >
-                    {/* Preview box */}
                     <div className="relative border-4 border-dashed border-ink-charcoal bg-canvas-cream p-8 flex flex-col items-center justify-center gap-3 rounded-sm overflow-hidden">
                       <motion.div
                         animate={{ rotate: 360 }}
@@ -569,7 +543,6 @@ function OptionItem({
         transition={{ type: "spring", stiffness: 450, damping: 32 }}
         className="flex items-stretch gap-3 group"
       >
-        {/* Drag grip */}
         <div
           onPointerDown={(e) => controls.start(e)}
           style={{ touchAction: "none" }}
@@ -578,7 +551,6 @@ function OptionItem({
           <GripVertical size={18} />
         </div>
 
-        {/* Radio / Checkbox */}
         <button
           onClick={() => toggleCorrectOption(questionId, option.id)}
           title={option.isCorrect ? "Unmark as correct" : "Mark as correct"}
@@ -610,7 +582,6 @@ function OptionItem({
           </AnimatePresence>
         </button>
 
-        {/* Input */}
         <div
           className={`flex-grow flex items-stretch border-3 border-ink-charcoal overflow-hidden
           transition-all duration-200 rounded-sm
@@ -646,7 +617,6 @@ function OptionItem({
           )}
         </div>
 
-        {/* Remove */}
         {question.options.length > 2 && (
           <motion.button
             whileHover={{ scale: 1.15, rotate: 90 }}

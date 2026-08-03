@@ -28,7 +28,6 @@ const defaultLinks: NavLink[] = [
 
 const MotionLink = motion.create(Link);
 
-/* ── Dropdown / mobile-menu animation variants ─────────────── */
 const dropdownVariants = {
   hidden: { opacity: 0, y: -10, scale: 0.92 },
   visible: {
@@ -111,8 +110,6 @@ export default function Navbar({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // GSAP: one-time entrance stagger for logo + nav links, plus an idle
-  // checkmark "wiggle" that breathes gently forever.
   useEffect(() => {
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
@@ -165,26 +162,20 @@ export default function Navbar({
         boxShadow: "0 2px 0px 0px var(--color-shadow-hard)",
       }}
     >
-      {/* Desktop */}
       <div className="hidden md:flex justify-between items-center px-10 py-4 w-full max-w-[1280px] mx-auto">
-        {/* Logo */}
         <Link
           ref={logoRef}
           href="/"
-          className="text-headline-md font-display font-black text-[var(--color-ink-charcoal)] hover:text-[var(--color-primary)] transition-colors"
+          className="hover:opacity-80 transition-opacity relative h-10 w-48 block"
           id="navbar-logo"
         >
-          {logoText}
-          <span
-            ref={checkmarkRef}
-            className="ml-2 inline-block text-[var(--color-leaf-green)]"
-            style={{ fontVariationSettings: "'FILL' 1" }}
-          >
-            ✓
-          </span>
+          <img
+            src="/images/logo/logo.png"
+            alt="VibeCheck"
+            className="absolute left-[-16px] top-1/2 -translate-y-1/2 h-40 w-auto max-w-none object-contain object-left pointer-events-none"
+          />
         </Link>
 
-        {/* Nav links */}
         <nav ref={navRef} className="flex gap-8" aria-label="Main navigation">
           {links.map((link) => {
             const isActive = isLinkActive(link);
@@ -214,7 +205,6 @@ export default function Navbar({
           })}
         </nav>
 
-        {/* Actions */}
         <div className="flex items-center gap-4">
           {!userId ? (
             <>
@@ -324,13 +314,16 @@ export default function Navbar({
         </div>
       </div>
 
-      {/* Mobile */}
       <div className="flex md:hidden justify-between items-center px-4 py-4">
         <Link
           href="/"
-          className="text-headline-sm font-display font-black text-[var(--color-ink-charcoal)]"
+          className="hover:opacity-80 transition-opacity relative h-8 w-32 block"
         >
-          {logoText}
+          <img
+            src="/images/logo/logo.png"
+            alt="VibeCheck"
+            className="absolute left-[-10px] top-1/2 -translate-y-1/2 h-28 w-auto max-w-none object-contain object-left pointer-events-none"
+          />
         </Link>
 
         <div className="flex items-center gap-3">
@@ -358,7 +351,6 @@ export default function Navbar({
         </div>
       </div>
 
-      {/* Mobile dropdown */}
       <AnimatePresence>
         {mobileOpen && (
           <motion.nav

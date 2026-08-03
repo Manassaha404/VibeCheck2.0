@@ -28,6 +28,7 @@ import TestimonialCard from "@/components/Landing/TestimonialCard";
 
 import HowItWorksSection from "@/components/Landing/HowItWorksSection";
 import SeeItInActionSection from "@/components/Landing/SeeItInActionSection";
+import AiFeaturesSection from "@/components/Landing/AiFeaturesSection";
 
 const createCards = [
   {
@@ -204,13 +205,7 @@ export default function LandingPage() {
               See all →
             </Link>
           </div>
-          <div
-            className="hidden md:grid gap-6 mb-10"
-            style={{
-              gridTemplateColumns: "1fr 1fr 1fr",
-              gridTemplateRows: "minmax(300px, 1fr) minmax(300px, 1fr)",
-            }}
-          >
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10 md:auto-rows-[minmax(300px,1fr)]">
             <TrendingCard
               id="trending-featured"
               badge="HOT 🔥"
@@ -220,7 +215,7 @@ export default function LandingPage() {
               bgColor="var(--color-leaf-green)"
               href="/poll/remote-work"
               index={0}
-              className="[grid-column:1/3] [grid-row:1/2]"
+              className="md:col-span-2 md:row-span-1"
             />
             <TrendingCard
               id="trending-side-1"
@@ -229,7 +224,7 @@ export default function LandingPage() {
               bgColor="var(--color-electric-sun)"
               href="/poll/frontend-framework"
               index={1}
-              className="[grid-column:3/4] [grid-row:1/2]"
+              className="md:col-span-1 md:row-span-1"
             />
             <TrendingCard
               id="trending-side-2"
@@ -238,7 +233,7 @@ export default function LandingPage() {
               bgColor="var(--color-vivid-coral)"
               href="/poll/coffee-energy"
               index={2}
-              className="[grid-column:1/2] [grid-row:2/3]"
+              className="md:col-span-1 md:row-span-1"
             />
             <TrendingCard
               id="trending-side-3"
@@ -248,43 +243,7 @@ export default function LandingPage() {
               bgColor="var(--color-sky-blue)"
               href="/poll/mac-vs-windows"
               index={3}
-              className="[grid-column:2/4] [grid-row:2/3]"
-            />
-          </div>
-          <div className="flex flex-col gap-6 mb-10 md:hidden">
-            <TrendingCard
-              id="trending-featured-mobile"
-              badge="HOT 🔥"
-              title="Is Remote Work Actually Working?"
-              description="Join the largest tech community poll this week. Over 50k votes and counting."
-              voteCount="52.4k"
-              bgColor="var(--color-leaf-green)"
-              href="/poll/remote-work"
-              index={0}
-            />
-            <TrendingCard
-              id="trending-side-1-mobile"
-              title="Best Frontend Framework 2025?"
-              voteCount="12k"
-              bgColor="var(--color-electric-sun)"
-              href="/poll/frontend-framework"
-              index={1}
-            />
-            <TrendingCard
-              id="trending-side-2-mobile"
-              title="Coffee vs Energy Drinks"
-              voteCount="8.5k"
-              bgColor="var(--color-vivid-coral)"
-              href="/poll/coffee-energy"
-              index={2}
-            />
-            <TrendingCard
-              id="trending-side-3-mobile"
-              title="Mac vs Windows?"
-              voteCount="6.2k"
-              bgColor="var(--color-sky-blue)"
-              href="/poll/mac-vs-windows"
-              index={3}
+              className="md:col-span-2 md:row-span-1"
             />
           </div>
         </section>
@@ -325,6 +284,7 @@ export default function LandingPage() {
             </div>
           </div>
         </section>
+        <AiFeaturesSection />
         <HowItWorksSection />
         <SeeItInActionSection />
         <section
@@ -456,7 +416,7 @@ export default function LandingPage() {
               Create your first poll, quiz, or form — free, no credit card
               needed.
             </motion.p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <div className="flex flex-wrap flex-col sm:flex-row gap-4 justify-center">
               <motion.div
                 whileHover={{ scale: 1.04 }}
                 whileTap={{ scale: 0.96, x: 3, y: 3 }}

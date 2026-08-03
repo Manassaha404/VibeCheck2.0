@@ -34,9 +34,7 @@ export default function ParticipantPasswordGate({
       <Navbar />
       <main className="flex-grow flex items-center justify-center p-4">
         <div className="w-full max-w-md">
-          {/* Card */}
           <div className="relative bg-[var(--color-pure-white)] border-4 border-[var(--color-ink-charcoal)] shadow-hard-xl p-8 flex flex-col gap-6">
-            {/* Tilted backing */}
             <div className="absolute -inset-2 bg-[var(--color-vivid-coral)] border-4 border-[var(--color-ink-charcoal)] shadow-hard-xl -rotate-2 -z-10" />
 
             <div className="flex flex-col items-center gap-3 text-center">

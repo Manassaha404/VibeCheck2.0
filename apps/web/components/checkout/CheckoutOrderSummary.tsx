@@ -91,7 +91,6 @@ export function CheckoutOrderSummary({
       className="border-2 border-[var(--color-ink-charcoal)] bg-[var(--color-canvas-cream)] overflow-hidden"
       style={{ boxShadow: "6px 6px 0px 0px var(--color-ink-charcoal)" }}
     >
-      {/* Header bar */}
       <div className="bg-[var(--color-ink-charcoal)] px-6 py-4 flex items-center gap-3">
         <div className="w-8 h-8 bg-[var(--color-electric-sun)] border-2 border-[var(--color-electric-sun)] flex items-center justify-center flex-shrink-0">
           <Crown
@@ -110,7 +109,6 @@ export function CheckoutOrderSummary({
         </div>
       </div>
 
-      {/* Features */}
       <ul className="px-6 py-5 space-y-2.5 border-b-2 border-[var(--color-ink-charcoal)]">
         {features.map((f) => (
           <li
@@ -129,7 +127,6 @@ export function CheckoutOrderSummary({
         ))}
       </ul>
 
-      {/* Pricing breakdown */}
       <div className="px-6 py-5 space-y-3">
         <div className="flex items-center justify-between text-body-md text-[var(--color-ink-charcoal)]">
           <span>Plan price</span>

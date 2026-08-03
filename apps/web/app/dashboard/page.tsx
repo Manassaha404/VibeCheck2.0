@@ -4,9 +4,9 @@ import Footer from "@/components/Footer";
 import { DashboardBody } from "@/components/Dashboard/DashboardBody";
 
 export const metadata = {
-  title: "Dashboard — VibeCheck",
+  title: "Dashboard Overview | VibeCheck",
   description:
-    "Manage your polls, forms, and petitions. Track engagement, spot trends and keep the vibes flowing.",
+    "Manage your activities and track engagement across your polls, forms, and quizzes.",
 };
 
 export default function DashboardPage() {

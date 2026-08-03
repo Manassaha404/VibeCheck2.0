@@ -137,7 +137,6 @@ export function VoteTimeline({ data }: VoteTimelineProps) {
         </AreaChart>
       </ResponsiveContainer>
 
-      {/* Legend */}
       <div className="flex gap-6 flex-wrap">
         <div className="flex items-center gap-2">
           <div className="w-4 h-1 bg-leaf-green rounded" />

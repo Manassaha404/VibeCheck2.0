@@ -38,7 +38,6 @@ export function UpgradeStatusOverlay({
         className="relative w-full max-w-sm mx-4 bg-[var(--color-canvas-cream)] border-2 border-[var(--color-ink-charcoal)] p-8 text-center"
         style={{ boxShadow: "8px 8px 0px 0px var(--color-ink-charcoal)" }}
       >
-        {/* ── Loading ── */}
         {isLoading && (
           <>
             <div className="flex justify-center mb-5">
@@ -73,7 +72,6 @@ export function UpgradeStatusOverlay({
           </>
         )}
 
-        {/* ── Success ── */}
         {isSuccess && (
           <>
             <motion.div

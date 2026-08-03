@@ -17,7 +17,6 @@ export function SecuritySettingsSection() {
         </h2>
       </div>
       <div className="space-y-6">
-        {/* Toggle */}
         <div className="flex items-center justify-between">
           <label
             className="font-label-md text-label-md cursor-pointer flex flex-col"
@@ -44,7 +43,6 @@ export function SecuritySettingsSection() {
           </div>
         </div>
 
-        {/* Hidden Password Field */}
         <div
           className={`flex flex-col gap-2 mt-4 p-4 bg-canvas-cream border-2 border-ink-charcoal rounded-DEFAULT transition-opacity duration-200 ${passwordNeeded ? "opacity-100 pointer-events-auto" : "opacity-50 pointer-events-none"}`}
           id="password-field-container"
