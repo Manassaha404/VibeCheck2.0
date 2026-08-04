@@ -1,6 +1,5 @@
 import { publicProcedure, router } from "../../trpc";
 import { z, zodUndefinedModel } from "../../schema";
-import { handleRouteError } from "../../utils/error";
 
 export const healthRouter = router({
   getHealth: publicProcedure
@@ -17,10 +16,6 @@ export const healthRouter = router({
     .input(zodUndefinedModel)
     .output(z.string())
     .query(async () => {
-      try {
-        return "hello from trpc";
-      } catch (error) {
-        handleRouteError(error);
-      }
+      return "hello from trpc";
     }),
 });

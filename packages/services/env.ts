@@ -15,6 +15,8 @@ const envSchema = z.object({
   QDRANT_URL: z.string(),
   RAZORPAY_KEY_ID: z.string(),
   RAZORPAY_KEY_SECRET: z.string(),
+  REDIS_HOST: z.string().default("localhost"),
+  INNGEST_SERVE_ORIGIN: z.string().default("http://localhost:8000"),
 });
 
 function createEnv(env: NodeJS.ProcessEnv) {

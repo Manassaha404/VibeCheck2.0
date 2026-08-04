@@ -1,6 +1,14 @@
 "use client";
 
-import React, { createContext, useContext, useState, ReactNode } from "react";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  ReactNode,
+  useEffect,
+  useRef,
+} from "react";
+import { createPortal } from "react-dom";
 import { useRouter } from "next/navigation";
 import { X, Sparkles } from "lucide-react";
 
@@ -30,7 +38,13 @@ export const SubscriptionGuardProvider = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [message, setMessage] = useState("");
+  const [mounted, setMounted] = useState(false);
   const router = useRouter();
+
+  // Ensure we're on the client before using createPortal
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const showLimitAlert = (msg: string) => {
     setMessage(msg);
@@ -42,15 +56,22 @@ export const SubscriptionGuardProvider = ({
     setMessage("");
   };
 
-  return (
-    <SubscriptionGuardContext.Provider
-      value={{ showLimitAlert, closeLimitAlert }}
-    >
-      {children}
-
-      {isOpen && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-[var(--color-ink-charcoal)]/40 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="relative w-full max-w-md p-8 bg-[var(--color-canvas-cream)] border-2 border-[var(--color-ink-charcoal)] shadow-hard-xl rounded-xl animate-in zoom-in-95 duration-200">
+  const modal = mounted
+    ? createPortal(
+        <div
+          className={`fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-[var(--color-ink-charcoal)]/40 backdrop-blur-sm transition-all duration-200 ${
+            isOpen
+              ? "opacity-100 visible pointer-events-auto"
+              : "opacity-0 invisible pointer-events-none"
+          }`}
+          onClick={closeLimitAlert}
+        >
+          <div
+            className={`relative w-full max-w-md p-8 bg-[var(--color-canvas-cream)] border-2 border-[var(--color-ink-charcoal)] shadow-hard-xl rounded-xl transition-all duration-200 ${
+              isOpen ? "scale-100 opacity-100" : "scale-95 opacity-0"
+            }`}
+            onClick={(e) => e.stopPropagation()}
+          >
             <button
               onClick={closeLimitAlert}
               className="absolute top-4 right-4 p-1.5 bg-[var(--color-pure-white)] border-2 border-[var(--color-ink-charcoal)] text-[var(--color-ink-charcoal)] transition-colors hover:bg-[var(--color-vivid-coral)] hover:text-white rounded-full shadow-hard-sm btn-press"
@@ -93,8 +114,15 @@ export const SubscriptionGuardProvider = ({
               </div>
             </div>
           </div>
-        </div>
-      )}
+        </div>,
+        document.body,
+      )
+    : null;
+
+  return (
+    <SubscriptionGuardContext.Provider value={{ showLimitAlert, closeLimitAlert }}>
+      {children}
+      {modal}
     </SubscriptionGuardContext.Provider>
   );
 };

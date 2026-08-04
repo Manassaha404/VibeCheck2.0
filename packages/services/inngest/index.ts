@@ -5,6 +5,7 @@ import pollFunctions from "./poll-functions";
 import petitionFunctions from "./petition-functions";
 import agentFunctions from "./agent-functions";
 import langchainFunctions from "./langchain-functions";
+import { env } from "../env";
 export const inngestRouter = serve({
   client: inngest,
   functions: [
@@ -13,7 +14,7 @@ export const inngestRouter = serve({
     ...agentFunctions,
     ...langchainFunctions,
   ],
-  serveOrigin: process.env.API_BASE_URL ?? "http://localhost:8000",
+  serveOrigin: env.INNGEST_SERVE_ORIGIN ?? env.API_BASE_URL ?? "http://localhost:8000",
 });
 
 export { inngest, getClientSubscriptionToken };

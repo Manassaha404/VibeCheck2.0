@@ -4,7 +4,6 @@ import * as trpcExpress from "@trpc/server/adapters/express";
 import {
   serverRouter,
   createContext,
-  openApiDocument,
 } from "@repo/trpc/server";
 import { env } from "./env";
 import cookieParser from "cookie-parser";
@@ -18,13 +17,8 @@ export const app = express();
 app.use(razorPayWebhookRouter);
 app.set("trust proxy", 1);
 
-// Bug #1 fix: Webhook route MUST be registered before express.json() so that
-// express.raw() inside razorpayRouter can capture the raw Buffer for HMAC verification.
-// If express.json() runs first, req.body becomes a parsed object and the HMAC will fail.
-
 const inngestCors = cors({
   origin: (origin, callback) => {
-    // Allow Inngest dev server, Inngest cloud, and requests with no origin (server-to-server)
     const allowed = [
       "http://localhost:8288",
       "http://127.0.0.1:8288",
@@ -91,5 +85,4 @@ app.use(
     createContext,
   }),
 );
-
 export default app;

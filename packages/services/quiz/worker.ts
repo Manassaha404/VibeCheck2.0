@@ -48,7 +48,7 @@ export const inactivityQueueWorker = new Worker(
   },
   {
     connection: {
-      host: "localhost",
+      host: process.env.REDIS_HOST || "localhost",
       port: 6379,
     },
   },
@@ -69,7 +69,7 @@ export const autoActiveQueueWorker = new Worker(
   },
   {
     connection: {
-      host: "localhost",
+      host: process.env.REDIS_HOST || "localhost",
       port: 6379,
     },
   },

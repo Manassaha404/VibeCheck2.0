@@ -89,7 +89,7 @@ export const emailWorker = new Worker<EmailJobData>(
   },
   {
     connection: {
-      host: "localhost",
+      host: env.REDIS_HOST || "localhost",
       port: 6379,
     },
   },

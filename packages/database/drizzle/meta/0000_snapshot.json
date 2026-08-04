@@ -1,5 +1,5 @@
 {
-  "id": "6d4d9620-9d63-42e3-82e8-c75e257040a8",
+  "id": "23ec356e-7f4a-458f-806e-da0427c1c8f6",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -124,8 +124,12 @@
           "name": "auths_user_id_users_user_id_fk",
           "tableFrom": "auths",
           "tableTo": "users",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["user_id"],
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "user_id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -230,12 +234,16 @@
         "users_username_unique": {
           "name": "users_username_unique",
           "nullsNotDistinct": false,
-          "columns": ["username"]
+          "columns": [
+            "username"
+          ]
         },
         "users_email_unique": {
           "name": "users_email_unique",
           "nullsNotDistinct": false,
-          "columns": ["email"]
+          "columns": [
+            "email"
+          ]
         }
       },
       "policies": {},
@@ -403,8 +411,12 @@
           "name": "forms_user_id_users_user_id_fk",
           "tableFrom": "forms",
           "tableTo": "users",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["user_id"],
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "user_id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -541,8 +553,12 @@
           "name": "form_fields_form_id_forms_form_id_fk",
           "tableFrom": "form_fields",
           "tableTo": "forms",
-          "columnsFrom": ["form_id"],
-          "columnsTo": ["form_id"],
+          "columnsFrom": [
+            "form_id"
+          ],
+          "columnsTo": [
+            "form_id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -649,8 +665,12 @@
           "name": "form_responses_form_id_forms_form_id_fk",
           "tableFrom": "form_responses",
           "tableTo": "forms",
-          "columnsFrom": ["form_id"],
-          "columnsTo": ["form_id"],
+          "columnsFrom": [
+            "form_id"
+          ],
+          "columnsTo": [
+            "form_id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -658,8 +678,12 @@
           "name": "form_responses_user_id_users_user_id_fk",
           "tableFrom": "form_responses",
           "tableTo": "users",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["user_id"],
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "user_id"
+          ],
           "onDelete": "set null",
           "onUpdate": "no action"
         }
@@ -751,8 +775,12 @@
           "name": "form_answers_field_id_form_fields_field_id_fk",
           "tableFrom": "form_answers",
           "tableTo": "form_fields",
-          "columnsFrom": ["field_id"],
-          "columnsTo": ["field_id"],
+          "columnsFrom": [
+            "field_id"
+          ],
+          "columnsTo": [
+            "field_id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -760,8 +788,12 @@
           "name": "form_answers_response_id_form_responses_response_id_fk",
           "tableFrom": "form_answers",
           "tableTo": "form_responses",
-          "columnsFrom": ["response_id"],
-          "columnsTo": ["response_id"],
+          "columnsFrom": [
+            "response_id"
+          ],
+          "columnsTo": [
+            "response_id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -907,8 +939,12 @@
           "name": "polls_user_id_users_user_id_fk",
           "tableFrom": "polls",
           "tableTo": "users",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["user_id"],
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "user_id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -979,8 +1015,12 @@
           "name": "poll_questions_poll_id_polls_poll_id_fk",
           "tableFrom": "poll_questions",
           "tableTo": "polls",
-          "columnsFrom": ["poll_id"],
-          "columnsTo": ["poll_id"],
+          "columnsFrom": [
+            "poll_id"
+          ],
+          "columnsTo": [
+            "poll_id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -1057,8 +1097,12 @@
           "name": "poll_options_question_id_poll_questions_poll_question_id_fk",
           "tableFrom": "poll_options",
           "tableTo": "poll_questions",
-          "columnsFrom": ["question_id"],
-          "columnsTo": ["poll_question_id"],
+          "columnsFrom": [
+            "question_id"
+          ],
+          "columnsTo": [
+            "poll_question_id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -1165,8 +1209,12 @@
           "name": "poll_views_poll_id_polls_poll_id_fk",
           "tableFrom": "poll_views",
           "tableTo": "polls",
-          "columnsFrom": ["poll_id"],
-          "columnsTo": ["poll_id"],
+          "columnsFrom": [
+            "poll_id"
+          ],
+          "columnsTo": [
+            "poll_id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -1174,8 +1222,12 @@
           "name": "poll_views_user_id_users_user_id_fk",
           "tableFrom": "poll_views",
           "tableTo": "users",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["user_id"],
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "user_id"
+          ],
           "onDelete": "set null",
           "onUpdate": "no action"
         }
@@ -1303,8 +1355,12 @@
           "name": "poll_votes_question_id_poll_questions_poll_question_id_fk",
           "tableFrom": "poll_votes",
           "tableTo": "poll_questions",
-          "columnsFrom": ["question_id"],
-          "columnsTo": ["poll_question_id"],
+          "columnsFrom": [
+            "question_id"
+          ],
+          "columnsTo": [
+            "poll_question_id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -1312,8 +1368,12 @@
           "name": "poll_votes_option_id_poll_options_poll_option_id_fk",
           "tableFrom": "poll_votes",
           "tableTo": "poll_options",
-          "columnsFrom": ["option_id"],
-          "columnsTo": ["poll_option_id"],
+          "columnsFrom": [
+            "option_id"
+          ],
+          "columnsTo": [
+            "poll_option_id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -1321,8 +1381,12 @@
           "name": "poll_votes_user_id_users_user_id_fk",
           "tableFrom": "poll_votes",
           "tableTo": "users",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["user_id"],
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "user_id"
+          ],
           "onDelete": "set null",
           "onUpdate": "no action"
         }
@@ -1405,8 +1469,12 @@
           "name": "poll_comments_poll_id_polls_poll_id_fk",
           "tableFrom": "poll_comments",
           "tableTo": "polls",
-          "columnsFrom": ["poll_id"],
-          "columnsTo": ["poll_id"],
+          "columnsFrom": [
+            "poll_id"
+          ],
+          "columnsTo": [
+            "poll_id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -1414,8 +1482,12 @@
           "name": "poll_comments_user_id_users_user_id_fk",
           "tableFrom": "poll_comments",
           "tableTo": "users",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["user_id"],
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "user_id"
+          ],
           "onDelete": "set null",
           "onUpdate": "no action"
         }
@@ -1553,8 +1625,12 @@
           "name": "petitions_user_id_users_user_id_fk",
           "tableFrom": "petitions",
           "tableTo": "users",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["user_id"],
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "user_id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -1697,8 +1773,12 @@
           "name": "petition_signatures_petition_id_petitions_petition_id_fk",
           "tableFrom": "petition_signatures",
           "tableTo": "petitions",
-          "columnsFrom": ["petition_id"],
-          "columnsTo": ["petition_id"],
+          "columnsFrom": [
+            "petition_id"
+          ],
+          "columnsTo": [
+            "petition_id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -1706,8 +1786,12 @@
           "name": "petition_signatures_user_id_users_user_id_fk",
           "tableFrom": "petition_signatures",
           "tableTo": "users",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["user_id"],
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "user_id"
+          ],
           "onDelete": "set null",
           "onUpdate": "no action"
         }
@@ -1759,7 +1843,9 @@
         "tags_text_unique": {
           "name": "tags_text_unique",
           "nullsNotDistinct": false,
-          "columns": ["text"]
+          "columns": [
+            "text"
+          ]
         }
       },
       "policies": {},
@@ -1847,8 +1933,12 @@
           "name": "poll_tags_poll_id_polls_poll_id_fk",
           "tableFrom": "poll_tags",
           "tableTo": "polls",
-          "columnsFrom": ["poll_id"],
-          "columnsTo": ["poll_id"],
+          "columnsFrom": [
+            "poll_id"
+          ],
+          "columnsTo": [
+            "poll_id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -1856,8 +1946,12 @@
           "name": "poll_tags_tag_id_tags_tag_id_fk",
           "tableFrom": "poll_tags",
           "tableTo": "tags",
-          "columnsFrom": ["tag_id"],
-          "columnsTo": ["tag_id"],
+          "columnsFrom": [
+            "tag_id"
+          ],
+          "columnsTo": [
+            "tag_id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -1949,8 +2043,12 @@
           "name": "petition_tags_petition_id_petitions_petition_id_fk",
           "tableFrom": "petition_tags",
           "tableTo": "petitions",
-          "columnsFrom": ["petition_id"],
-          "columnsTo": ["petition_id"],
+          "columnsFrom": [
+            "petition_id"
+          ],
+          "columnsTo": [
+            "petition_id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -1958,8 +2056,12 @@
           "name": "petition_tags_tag_id_tags_tag_id_fk",
           "tableFrom": "petition_tags",
           "tableTo": "tags",
-          "columnsFrom": ["tag_id"],
-          "columnsTo": ["tag_id"],
+          "columnsFrom": [
+            "tag_id"
+          ],
+          "columnsTo": [
+            "tag_id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -2073,8 +2175,12 @@
           "name": "user_tag_preferences_user_id_users_user_id_fk",
           "tableFrom": "user_tag_preferences",
           "tableTo": "users",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["user_id"],
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "user_id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -2082,8 +2188,12 @@
           "name": "user_tag_preferences_tag_id_tags_tag_id_fk",
           "tableFrom": "user_tag_preferences",
           "tableTo": "tags",
-          "columnsFrom": ["tag_id"],
-          "columnsTo": ["tag_id"],
+          "columnsFrom": [
+            "tag_id"
+          ],
+          "columnsTo": [
+            "tag_id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -2182,8 +2292,12 @@
           "name": "form_building_agent_conversations_user_id_users_user_id_fk",
           "tableFrom": "form_building_agent_conversations",
           "tableTo": "users",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["user_id"],
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "user_id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -2191,8 +2305,12 @@
           "name": "form_building_agent_conversations_form_id_forms_form_id_fk",
           "tableFrom": "form_building_agent_conversations",
           "tableTo": "forms",
-          "columnsFrom": ["form_id"],
-          "columnsTo": ["form_id"],
+          "columnsFrom": [
+            "form_id"
+          ],
+          "columnsTo": [
+            "form_id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -2277,8 +2395,12 @@
           "name": "quiz_building_agent_conversations_user_id_users_user_id_fk",
           "tableFrom": "quiz_building_agent_conversations",
           "tableTo": "users",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["user_id"],
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "user_id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -2286,8 +2408,12 @@
           "name": "quiz_building_agent_conversations_quiz_id_quizzes_quiz_id_fk",
           "tableFrom": "quiz_building_agent_conversations",
           "tableTo": "quizzes",
-          "columnsFrom": ["quiz_id"],
-          "columnsTo": ["quiz_id"],
+          "columnsFrom": [
+            "quiz_id"
+          ],
+          "columnsTo": [
+            "quiz_id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -2433,8 +2559,12 @@
           "name": "saves_user_id_users_user_id_fk",
           "tableFrom": "saves",
           "tableTo": "users",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["user_id"],
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "user_id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -2442,8 +2572,12 @@
           "name": "saves_form_id_forms_form_id_fk",
           "tableFrom": "saves",
           "tableTo": "forms",
-          "columnsFrom": ["form_id"],
-          "columnsTo": ["form_id"],
+          "columnsFrom": [
+            "form_id"
+          ],
+          "columnsTo": [
+            "form_id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -2451,8 +2585,12 @@
           "name": "saves_petition_id_petitions_petition_id_fk",
           "tableFrom": "saves",
           "tableTo": "petitions",
-          "columnsFrom": ["petition_id"],
-          "columnsTo": ["petition_id"],
+          "columnsFrom": [
+            "petition_id"
+          ],
+          "columnsTo": [
+            "petition_id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -2460,8 +2598,12 @@
           "name": "saves_poll_id_polls_poll_id_fk",
           "tableFrom": "saves",
           "tableTo": "polls",
-          "columnsFrom": ["poll_id"],
-          "columnsTo": ["poll_id"],
+          "columnsFrom": [
+            "poll_id"
+          ],
+          "columnsTo": [
+            "poll_id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -2508,6 +2650,13 @@
           "primaryKey": false,
           "notNull": true,
           "default": "'draft'"
+        },
+        "is_bonus_points_enabled": {
+          "name": "is_bonus_points_enabled",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
         },
         "password_needed": {
           "name": "password_needed",
@@ -2574,8 +2723,12 @@
           "name": "quizzes_user_id_users_user_id_fk",
           "tableFrom": "quizzes",
           "tableTo": "users",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["user_id"],
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "user_id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -2719,8 +2872,12 @@
           "name": "quiz_questions_quiz_id_quizzes_quiz_id_fk",
           "tableFrom": "quiz_questions",
           "tableTo": "quizzes",
-          "columnsFrom": ["quiz_id"],
-          "columnsTo": ["quiz_id"],
+          "columnsFrom": [
+            "quiz_id"
+          ],
+          "columnsTo": [
+            "quiz_id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -2854,8 +3011,12 @@
           "name": "quiz_sessions_quiz_id_quizzes_quiz_id_fk",
           "tableFrom": "quiz_sessions",
           "tableTo": "quizzes",
-          "columnsFrom": ["quiz_id"],
-          "columnsTo": ["quiz_id"],
+          "columnsFrom": [
+            "quiz_id"
+          ],
+          "columnsTo": [
+            "quiz_id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -2976,8 +3137,12 @@
           "name": "quiz_participants_session_id_quiz_sessions_session_id_fk",
           "tableFrom": "quiz_participants",
           "tableTo": "quiz_sessions",
-          "columnsFrom": ["session_id"],
-          "columnsTo": ["session_id"],
+          "columnsFrom": [
+            "session_id"
+          ],
+          "columnsTo": [
+            "session_id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -2985,8 +3150,12 @@
           "name": "quiz_participants_user_id_users_user_id_fk",
           "tableFrom": "quiz_participants",
           "tableTo": "users",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["user_id"],
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "user_id"
+          ],
           "onDelete": "set null",
           "onUpdate": "no action"
         }
@@ -3068,12 +3237,617 @@
           "name": "session_results_session_id_quiz_sessions_session_id_fk",
           "tableFrom": "session_results",
           "tableTo": "quiz_sessions",
-          "columnsFrom": ["session_id"],
-          "columnsTo": ["session_id"],
+          "columnsFrom": [
+            "session_id"
+          ],
+          "columnsTo": [
+            "session_id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
       },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.coupon_redemptions": {
+      "name": "coupon_redemptions",
+      "schema": "",
+      "columns": {
+        "redemption_id": {
+          "name": "redemption_id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "coupon_id": {
+          "name": "coupon_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "subscription_id": {
+          "name": "subscription_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "redeemed_at": {
+          "name": "redeemed_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "coupon_redemptions_coupon_id_coupons_coupon_id_fk": {
+          "name": "coupon_redemptions_coupon_id_coupons_coupon_id_fk",
+          "tableFrom": "coupon_redemptions",
+          "tableTo": "coupons",
+          "columnsFrom": [
+            "coupon_id"
+          ],
+          "columnsTo": [
+            "coupon_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "coupon_redemptions_user_id_users_user_id_fk": {
+          "name": "coupon_redemptions_user_id_users_user_id_fk",
+          "tableFrom": "coupon_redemptions",
+          "tableTo": "users",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "user_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "coupon_redemptions_subscription_id_subscriptions_subscription_id_fk": {
+          "name": "coupon_redemptions_subscription_id_subscriptions_subscription_id_fk",
+          "tableFrom": "coupon_redemptions",
+          "tableTo": "subscriptions",
+          "columnsFrom": [
+            "subscription_id"
+          ],
+          "columnsTo": [
+            "subscription_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.coupons": {
+      "name": "coupons",
+      "schema": "",
+      "columns": {
+        "coupon_id": {
+          "name": "coupon_id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "code": {
+          "name": "code",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "discount_type": {
+          "name": "discount_type",
+          "type": "discount_type",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "discount_value": {
+          "name": "discount_value",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "applicable_plan_id": {
+          "name": "applicable_plan_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "razorpay_offer_id": {
+          "name": "razorpay_offer_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "max_redemptions": {
+          "name": "max_redemptions",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "times_redeemed": {
+          "name": "times_redeemed",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "max_redemptions_per_user": {
+          "name": "max_redemptions_per_user",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 1
+        },
+        "valid_from": {
+          "name": "valid_from",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "valid_until": {
+          "name": "valid_until",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "is_active": {
+          "name": "is_active",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "coupons_applicable_plan_id_plans_plan_id_fk": {
+          "name": "coupons_applicable_plan_id_plans_plan_id_fk",
+          "tableFrom": "coupons",
+          "tableTo": "plans",
+          "columnsFrom": [
+            "applicable_plan_id"
+          ],
+          "columnsTo": [
+            "plan_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "coupons_code_unique": {
+          "name": "coupons_code_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "code"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.plans": {
+      "name": "plans",
+      "schema": "",
+      "columns": {
+        "plan_id": {
+          "name": "plan_id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "razorpay_plan_id": {
+          "name": "razorpay_plan_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "price_in_paise": {
+          "name": "price_in_paise",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "interval": {
+          "name": "interval",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'monthly'"
+        },
+        "max_quizzes": {
+          "name": "max_quizzes",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 3
+        },
+        "max_questions_per_quiz": {
+          "name": "max_questions_per_quiz",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 10
+        },
+        "max_sessions_per_quiz": {
+          "name": "max_sessions_per_quiz",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 2
+        },
+        "max_forms": {
+          "name": "max_forms",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 10
+        },
+        "ai_features_for_quiz_enabled": {
+          "name": "ai_features_for_quiz_enabled",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "ai_features_for_forms_enabled": {
+          "name": "ai_features_for_forms_enabled",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.subscriptions": {
+      "name": "subscriptions",
+      "schema": "",
+      "columns": {
+        "subscription_id": {
+          "name": "subscription_id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "plan_id": {
+          "name": "plan_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "razorpay_subscription_id": {
+          "name": "razorpay_subscription_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "razorpay_customer_id": {
+          "name": "razorpay_customer_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "status": {
+          "name": "status",
+          "type": "subscription_status",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'created'"
+        },
+        "cancel_at_cycle_end": {
+          "name": "cancel_at_cycle_end",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "scheduled_cancellation_date": {
+          "name": "scheduled_cancellation_date",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "coupon_id": {
+          "name": "coupon_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "pending_plan_id": {
+          "name": "pending_plan_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "pending_coupon_id": {
+          "name": "pending_coupon_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "current_start": {
+          "name": "current_start",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "current_end": {
+          "name": "current_end",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "charge_at": {
+          "name": "charge_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "total_count": {
+          "name": "total_count",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "paid_count": {
+          "name": "paid_count",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "default": 0
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "subscriptions_user_id_users_user_id_fk": {
+          "name": "subscriptions_user_id_users_user_id_fk",
+          "tableFrom": "subscriptions",
+          "tableTo": "users",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "user_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "subscriptions_plan_id_plans_plan_id_fk": {
+          "name": "subscriptions_plan_id_plans_plan_id_fk",
+          "tableFrom": "subscriptions",
+          "tableTo": "plans",
+          "columnsFrom": [
+            "plan_id"
+          ],
+          "columnsTo": [
+            "plan_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "subscriptions_coupon_id_coupons_coupon_id_fk": {
+          "name": "subscriptions_coupon_id_coupons_coupon_id_fk",
+          "tableFrom": "subscriptions",
+          "tableTo": "coupons",
+          "columnsFrom": [
+            "coupon_id"
+          ],
+          "columnsTo": [
+            "coupon_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "subscriptions_pending_plan_id_plans_plan_id_fk": {
+          "name": "subscriptions_pending_plan_id_plans_plan_id_fk",
+          "tableFrom": "subscriptions",
+          "tableTo": "plans",
+          "columnsFrom": [
+            "pending_plan_id"
+          ],
+          "columnsTo": [
+            "plan_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "subscriptions_pending_coupon_id_coupons_coupon_id_fk": {
+          "name": "subscriptions_pending_coupon_id_coupons_coupon_id_fk",
+          "tableFrom": "subscriptions",
+          "tableTo": "coupons",
+          "columnsFrom": [
+            "pending_coupon_id"
+          ],
+          "columnsTo": [
+            "coupon_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "subscriptions_razorpay_subscription_id_unique": {
+          "name": "subscriptions_razorpay_subscription_id_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "razorpay_subscription_id"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.usage_counters": {
+      "name": "usage_counters",
+      "schema": "",
+      "columns": {
+        "usage_counters_id": {
+          "name": "usage_counters_id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "metric": {
+          "name": "metric",
+          "type": "usage_metric",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "count": {
+          "name": "count",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "period_end": {
+          "name": "period_end",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "usage_counters_user_id_users_user_id_fk": {
+          "name": "usage_counters_user_id_users_user_id_fk",
+          "tableFrom": "usage_counters",
+          "tableTo": "users",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "user_id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.razorpay_webhook_events": {
+      "name": "razorpay_webhook_events",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "event_type": {
+          "name": "event_type",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "processed_at": {
+          "name": "processed_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
       "policies": {},
@@ -3085,17 +3859,29 @@
     "public.user_plan": {
       "name": "user_plan",
       "schema": "public",
-      "values": ["free", "pro", "premium"]
+      "values": [
+        "free",
+        "pro",
+        "premium"
+      ]
     },
     "public.user_roles": {
       "name": "user_roles",
       "schema": "public",
-      "values": ["admin", "user"]
+      "values": [
+        "admin",
+        "user"
+      ]
     },
     "public.form_status": {
       "name": "form_status",
       "schema": "public",
-      "values": ["draft", "active", "closed", "archived"]
+      "values": [
+        "draft",
+        "active",
+        "closed",
+        "archived"
+      ]
     },
     "public.field_type": {
       "name": "field_type",
@@ -3120,22 +3906,73 @@
     "public.poll_status": {
       "name": "poll_status",
       "schema": "public",
-      "values": ["draft", "active", "archived"]
+      "values": [
+        "draft",
+        "active",
+        "archived"
+      ]
     },
     "public.petition_status": {
       "name": "petition_status",
       "schema": "public",
-      "values": ["draft", "active", "closed", "archived"]
+      "values": [
+        "draft",
+        "active",
+        "closed",
+        "archived"
+      ]
     },
     "public.quiz_status": {
       "name": "quiz_status",
       "schema": "public",
-      "values": ["active", "archived", "draft"]
+      "values": [
+        "active",
+        "archived",
+        "draft"
+      ]
     },
     "public.session_status": {
       "name": "session_status",
       "schema": "public",
-      "values": ["waiting", "active", "ended"]
+      "values": [
+        "waiting",
+        "active",
+        "ended"
+      ]
+    },
+    "public.discount_type": {
+      "name": "discount_type",
+      "schema": "public",
+      "values": [
+        "percentage",
+        "flat"
+      ]
+    },
+    "public.subscription_status": {
+      "name": "subscription_status",
+      "schema": "public",
+      "values": [
+        "created",
+        "authenticated",
+        "active",
+        "pending",
+        "halted",
+        "cancelled",
+        "completed",
+        "expired",
+        "failed"
+      ]
+    },
+    "public.usage_metric": {
+      "name": "usage_metric",
+      "schema": "public",
+      "values": [
+        "quiz_created",
+        "form_created",
+        "quiz_session_created",
+        "ai_call_quiz",
+        "ai_call_form"
+      ]
     }
   },
   "schemas": {},

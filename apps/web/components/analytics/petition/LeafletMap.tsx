@@ -5,6 +5,7 @@ import { MapContainer, TileLayer, Marker, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import { Country, City } from "country-state-city";
 import { useMemo } from "react";
+import { createCustomIcon } from "./utils";
 
 const CITY_COORDINATES: Record<string, [number, number]> = {
   "New York": [40.7128, -74.006],

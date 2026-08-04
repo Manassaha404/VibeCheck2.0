@@ -63,7 +63,7 @@ export const useAgentChat = () => {
   const tokenFactory = useCallback(async () => {
     if (!activeJobId) throw new Error("No active job");
     const result = await trpcUtils.agent.getRealTimeToken.fetch({
-      jobId: activeJobId,
+      quizId: activeJobId,
     });
     if (!result) throw new Error("Failed to get token");
     return result.token;

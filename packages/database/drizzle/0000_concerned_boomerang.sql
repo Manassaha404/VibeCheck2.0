@@ -6,6 +6,9 @@ CREATE TYPE "public"."poll_status" AS ENUM('draft', 'active', 'archived');--> st
 CREATE TYPE "public"."petition_status" AS ENUM('draft', 'active', 'closed', 'archived');--> statement-breakpoint
 CREATE TYPE "public"."quiz_status" AS ENUM('active', 'archived', 'draft');--> statement-breakpoint
 CREATE TYPE "public"."session_status" AS ENUM('waiting', 'active', 'ended');--> statement-breakpoint
+CREATE TYPE "public"."discount_type" AS ENUM('percentage', 'flat');--> statement-breakpoint
+CREATE TYPE "public"."subscription_status" AS ENUM('created', 'authenticated', 'active', 'pending', 'halted', 'cancelled', 'completed', 'expired', 'failed');--> statement-breakpoint
+CREATE TYPE "public"."usage_metric" AS ENUM('quiz_created', 'form_created', 'quiz_session_created', 'ai_call_quiz', 'ai_call_form');--> statement-breakpoint
 CREATE TABLE "auths" (
 	"auth_id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"user_id" uuid NOT NULL,
@@ -245,6 +248,7 @@ CREATE TABLE "quizzes" (
 	"title" varchar(255) NOT NULL,
 	"description" text,
 	"status" "quiz_status" DEFAULT 'draft' NOT NULL,
+	"is_bonus_points_enabled" boolean DEFAULT false NOT NULL,
 	"password_needed" boolean DEFAULT false NOT NULL,
 	"password" varchar(255),
 	"created_at" timestamp DEFAULT now() NOT NULL,
@@ -300,6 +304,83 @@ CREATE TABLE "session_results" (
 	"completed_at" timestamp DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
+CREATE TABLE "coupon_redemptions" (
+	"redemption_id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"coupon_id" uuid NOT NULL,
+	"user_id" uuid NOT NULL,
+	"subscription_id" uuid,
+	"redeemed_at" timestamp DEFAULT now()
+);
+--> statement-breakpoint
+CREATE TABLE "coupons" (
+	"coupon_id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"code" text NOT NULL,
+	"discount_type" "discount_type" NOT NULL,
+	"discount_value" integer NOT NULL,
+	"applicable_plan_id" uuid,
+	"razorpay_offer_id" text,
+	"max_redemptions" integer,
+	"times_redeemed" integer DEFAULT 0 NOT NULL,
+	"max_redemptions_per_user" integer DEFAULT 1 NOT NULL,
+	"valid_from" timestamp DEFAULT now() NOT NULL,
+	"valid_until" timestamp,
+	"is_active" boolean DEFAULT true NOT NULL,
+	"created_at" timestamp DEFAULT now(),
+	CONSTRAINT "coupons_code_unique" UNIQUE("code")
+);
+--> statement-breakpoint
+CREATE TABLE "plans" (
+	"plan_id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"name" text NOT NULL,
+	"razorpay_plan_id" text,
+	"price_in_paise" integer DEFAULT 0 NOT NULL,
+	"interval" text DEFAULT 'monthly' NOT NULL,
+	"max_quizzes" integer DEFAULT 3 NOT NULL,
+	"max_questions_per_quiz" integer DEFAULT 10 NOT NULL,
+	"max_sessions_per_quiz" integer DEFAULT 2 NOT NULL,
+	"max_forms" integer DEFAULT 10 NOT NULL,
+	"ai_features_for_quiz_enabled" boolean DEFAULT false NOT NULL,
+	"ai_features_for_forms_enabled" boolean DEFAULT false NOT NULL,
+	"created_at" timestamp DEFAULT now()
+);
+--> statement-breakpoint
+CREATE TABLE "subscriptions" (
+	"subscription_id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"user_id" uuid NOT NULL,
+	"plan_id" uuid NOT NULL,
+	"razorpay_subscription_id" text,
+	"razorpay_customer_id" text,
+	"status" "subscription_status" DEFAULT 'created' NOT NULL,
+	"cancel_at_cycle_end" boolean DEFAULT false NOT NULL,
+	"scheduled_cancellation_date" timestamp,
+	"coupon_id" uuid,
+	"pending_plan_id" uuid,
+	"pending_coupon_id" uuid,
+	"current_start" timestamp,
+	"current_end" timestamp,
+	"charge_at" timestamp,
+	"total_count" integer,
+	"paid_count" integer DEFAULT 0,
+	"created_at" timestamp DEFAULT now(),
+	"updated_at" timestamp DEFAULT now(),
+	CONSTRAINT "subscriptions_razorpay_subscription_id_unique" UNIQUE("razorpay_subscription_id")
+);
+--> statement-breakpoint
+CREATE TABLE "usage_counters" (
+	"usage_counters_id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"user_id" uuid NOT NULL,
+	"metric" "usage_metric" NOT NULL,
+	"count" integer DEFAULT 0 NOT NULL,
+	"period_end" timestamp NOT NULL,
+	"updated_at" timestamp DEFAULT now()
+);
+--> statement-breakpoint
+CREATE TABLE "razorpay_webhook_events" (
+	"id" text PRIMARY KEY NOT NULL,
+	"event_type" text NOT NULL,
+	"processed_at" timestamp DEFAULT now()
+);
+--> statement-breakpoint
 ALTER TABLE "auths" ADD CONSTRAINT "auths_user_id_users_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("user_id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "forms" ADD CONSTRAINT "forms_user_id_users_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("user_id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "form_fields" ADD CONSTRAINT "form_fields_form_id_forms_form_id_fk" FOREIGN KEY ("form_id") REFERENCES "public"."forms"("form_id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
@@ -340,6 +421,16 @@ ALTER TABLE "quiz_sessions" ADD CONSTRAINT "quiz_sessions_quiz_id_quizzes_quiz_i
 ALTER TABLE "quiz_participants" ADD CONSTRAINT "quiz_participants_session_id_quiz_sessions_session_id_fk" FOREIGN KEY ("session_id") REFERENCES "public"."quiz_sessions"("session_id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "quiz_participants" ADD CONSTRAINT "quiz_participants_user_id_users_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("user_id") ON DELETE set null ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "session_results" ADD CONSTRAINT "session_results_session_id_quiz_sessions_session_id_fk" FOREIGN KEY ("session_id") REFERENCES "public"."quiz_sessions"("session_id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "coupon_redemptions" ADD CONSTRAINT "coupon_redemptions_coupon_id_coupons_coupon_id_fk" FOREIGN KEY ("coupon_id") REFERENCES "public"."coupons"("coupon_id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "coupon_redemptions" ADD CONSTRAINT "coupon_redemptions_user_id_users_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("user_id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "coupon_redemptions" ADD CONSTRAINT "coupon_redemptions_subscription_id_subscriptions_subscription_id_fk" FOREIGN KEY ("subscription_id") REFERENCES "public"."subscriptions"("subscription_id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "coupons" ADD CONSTRAINT "coupons_applicable_plan_id_plans_plan_id_fk" FOREIGN KEY ("applicable_plan_id") REFERENCES "public"."plans"("plan_id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "subscriptions" ADD CONSTRAINT "subscriptions_user_id_users_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("user_id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "subscriptions" ADD CONSTRAINT "subscriptions_plan_id_plans_plan_id_fk" FOREIGN KEY ("plan_id") REFERENCES "public"."plans"("plan_id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "subscriptions" ADD CONSTRAINT "subscriptions_coupon_id_coupons_coupon_id_fk" FOREIGN KEY ("coupon_id") REFERENCES "public"."coupons"("coupon_id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "subscriptions" ADD CONSTRAINT "subscriptions_pending_plan_id_plans_plan_id_fk" FOREIGN KEY ("pending_plan_id") REFERENCES "public"."plans"("plan_id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "subscriptions" ADD CONSTRAINT "subscriptions_pending_coupon_id_coupons_coupon_id_fk" FOREIGN KEY ("pending_coupon_id") REFERENCES "public"."coupons"("coupon_id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "usage_counters" ADD CONSTRAINT "usage_counters_user_id_users_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("user_id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 CREATE INDEX "auth_user_id_idx" ON "auths" USING btree ("user_id");--> statement-breakpoint
 CREATE UNIQUE INDEX "user_email_idx" ON "users" USING btree ("email");--> statement-breakpoint
 CREATE UNIQUE INDEX "user_username_idx" ON "users" USING btree ("username");--> statement-breakpoint
