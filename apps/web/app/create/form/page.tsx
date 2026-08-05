@@ -81,7 +81,7 @@ export default function FormSetupPage() {
       <Navbar />
 
       {/* Main Content */}
-      <main className="flex-grow w-full px-4 md:px-10 py-12 md:py-24 relative overflow-hidden">
+      <main className="flex-grow w-full px-3 sm:px-6 md:px-10 py-6 sm:py-12 md:py-24 relative overflow-hidden">
         {/* Decorative Floating Shapes */}
         <div className="absolute top-10 left-10 w-32 h-32 bg-vivid-coral rounded-full border-4 border-ink-charcoal hard-shadow animate-float-slow hidden md:block" />
         <div className="absolute bottom-20 left-10 w-24 h-24 bg-mint border-4 border-ink-charcoal rotate-12 hard-shadow animate-wiggle hidden md:block" />
@@ -93,12 +93,12 @@ export default function FormSetupPage() {
           <FormSetupHeader />
 
           {/* Form Builder Layout */}
-          <div className="flex flex-col gap-8 relative z-10">
+          <div className="flex flex-col gap-5 sm:gap-8 relative z-10">
             <GeneralDetailsSection />
 
             {/* Settings Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <div className="flex flex-col gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-8">
+              <div className="flex flex-col gap-5 sm:gap-8">
                 <SecuritySettingsSection />
                 <IntegrationsSection />
               </div>
@@ -106,16 +106,16 @@ export default function FormSetupPage() {
             </div>
 
             {/* Actions */}
-            <div className="flex flex-col items-center gap-4 mt-8">
+            <div className="flex flex-col items-center gap-4 mt-4 sm:mt-8">
               {apiError && (
-                <div className="text-red-600 font-bold bg-red-100 px-4 py-2 rounded border-2 border-red-600">
+                <div className="w-full text-red-600 font-bold bg-red-100 px-4 py-2 rounded border-2 border-red-600 text-center">
                   {apiError}
                 </div>
               )}
               <button
                 onClick={onDraftClick}
                 disabled={isDrafting}
-                className={`font-label-md text-label-md px-10 py-4 ${isDrafting ? "bg-surface-variant" : "bg-leaf-green hover:bg-primary-fixed hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[1px_1px_0px_0px_rgba(44,46,42,1)]"} text-ink-charcoal border-4 border-ink-charcoal rounded shadow-[6px_6px_0px_0px_rgba(44,46,42,1)] transition-all active:translate-x-1 active:translate-y-1 active:shadow-none whitespace-nowrap text-lg uppercase tracking-wider font-bold`}
+                className={`w-full sm:w-auto font-label-md text-label-md px-8 sm:px-10 py-4 ${isDrafting ? "bg-surface-variant" : "bg-leaf-green hover:bg-primary-fixed hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[1px_1px_0px_0px_rgba(44,46,42,1)]"} text-ink-charcoal border-4 border-ink-charcoal rounded shadow-[6px_6px_0px_0px_rgba(44,46,42,1)] transition-all active:translate-x-1 active:translate-y-1 active:shadow-none text-lg uppercase tracking-wider font-bold`}
               >
                 {isDrafting ? "Drafting..." : "Let's Draft"}
               </button>

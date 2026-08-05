@@ -162,96 +162,105 @@ export default function FormDraftBuilderPage() {
   }
 
   return (
-    <div className="bg-canvas-cream bg-dot-pattern h-screen overflow-hidden flex flex-col font-body-md text-ink-charcoal selection:bg-electric-sun selection:text-ink-charcoal">
+    <div className="bg-canvas-cream bg-dot-pattern h-screen flex flex-col font-body-md text-ink-charcoal selection:bg-electric-sun selection:text-ink-charcoal relative overflow-hidden">
       {/* Top Navigation */}
       <Navbar />
 
       {/* View Toolbar */}
-      <div className="border-b-2 border-ink-charcoal bg-pure-white px-4 py-2 flex flex-col md:flex-row justify-between items-center gap-4 md:gap-0 z-20 shadow-[0_2px_0px_0px_rgba(44,46,42,1)] relative">
+      <div className="border-b-2 border-ink-charcoal bg-pure-white px-2 sm:px-4 py-2 flex flex-col sm:flex-row justify-between items-center gap-2 sm:gap-4 md:gap-0 z-20 shadow-[0_2px_0px_0px_rgba(44,46,42,1)] relative">
         <div className="hidden md:flex flex-1" />
-        <div className="flex bg-surface-container-low border-2 border-ink-charcoal rounded p-1 w-full md:w-auto justify-center">
+        {/* View Mode Toggle */}
+        <div className="flex bg-surface-container-low border-2 border-ink-charcoal rounded p-1 w-full sm:w-auto justify-center">
           <button
             onClick={() => setViewMode("linear")}
-            className={`flex items-center gap-2 px-4 py-2 rounded font-label-md transition-colors ${viewMode === "linear" ? "bg-electric-sun border-2 border-ink-charcoal shadow-[2px_2px_0px_0px_rgba(44,46,42,1)]" : "border-2 border-transparent hover:bg-pure-white"}`}
+            className={`flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 rounded font-label-md transition-colors text-sm sm:text-base ${viewMode === "linear" ? "bg-electric-sun border-2 border-ink-charcoal shadow-[2px_2px_0px_0px_rgba(44,46,42,1)]" : "border-2 border-transparent hover:bg-pure-white"}`}
           >
-            <List className="w-5 h-5" />
-            Normal View
+            <List className="w-4 h-4 sm:w-5 sm:h-5" />
+            <span>Normal View</span>
           </button>
           <button
             onClick={() => setViewMode("canvas")}
-            className={`flex items-center gap-2 px-4 py-2 rounded font-label-md transition-colors ${viewMode === "canvas" ? "bg-electric-sun border-2 border-ink-charcoal shadow-[2px_2px_0px_0px_rgba(44,46,42,1)]" : "border-2 border-transparent hover:bg-pure-white"}`}
+            className={`flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 rounded font-label-md transition-colors text-sm sm:text-base ${viewMode === "canvas" ? "bg-electric-sun border-2 border-ink-charcoal shadow-[2px_2px_0px_0px_rgba(44,46,42,1)]" : "border-2 border-transparent hover:bg-pure-white"}`}
           >
-            <GitMerge className="w-5 h-5" />
-            Logic Canvas
+            <GitMerge className="w-4 h-4 sm:w-5 sm:h-5" />
+            <span>Logic Canvas</span>
           </button>
         </div>
-        <div className="flex-1 flex justify-center md:justify-end gap-2 flex-wrap w-full md:w-auto">
+        {/* Action Buttons */}
+        <div className="flex-1 flex justify-center sm:justify-end gap-1.5 sm:gap-2 w-full sm:w-auto">
           <button
             onClick={() => setIsSettingsModalOpen(true)}
-            className="flex items-center gap-2 px-6 py-2 bg-surface-variant text-ink-charcoal font-bold font-label-md uppercase border-2 border-ink-charcoal rounded shadow-[2px_2px_0px_0px_rgba(44,46,42,1)] hover:-translate-y-0.5 hover:shadow-[4px_4px_0px_0px_rgba(44,46,42,1)] transition-all active:translate-y-0 active:shadow-none disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex items-center gap-1.5 px-3 sm:px-6 py-2 bg-surface-variant text-ink-charcoal font-bold font-label-md uppercase border-2 border-ink-charcoal rounded shadow-[2px_2px_0px_0px_rgba(44,46,42,1)] hover:-translate-y-0.5 hover:shadow-[4px_4px_0px_0px_rgba(44,46,42,1)] transition-all active:translate-y-0 active:shadow-none disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            <Settings className="w-5 h-5" />
-            Settings
+            <Settings className="w-4 h-4 sm:w-5 sm:h-5" />
+            <span className="hidden sm:inline">Settings</span>
           </button>
 
           <button
             onClick={onSaveDraft}
             disabled={isSaving || isSaved || isPublishing}
-            className="flex items-center gap-2 px-6 py-2 bg-leaf-green text-pure-white font-bold font-label-md uppercase border-2 border-ink-charcoal rounded shadow-[2px_2px_0px_0px_rgba(44,46,42,1)] hover:-translate-y-0.5 hover:shadow-[4px_4px_0px_0px_rgba(44,46,42,1)] transition-all active:translate-y-0 active:shadow-none disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex items-center gap-1.5 px-3 sm:px-6 py-2 bg-leaf-green text-pure-white font-bold font-label-md uppercase border-2 border-ink-charcoal rounded shadow-[2px_2px_0px_0px_rgba(44,46,42,1)] hover:-translate-y-0.5 hover:shadow-[4px_4px_0px_0px_rgba(44,46,42,1)] transition-all active:translate-y-0 active:shadow-none disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isSaving ? (
-              <Loader2 className="w-5 h-5 animate-spin" />
+              <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />
             ) : isSaved ? (
-              <Check className="w-5 h-5" />
+              <Check className="w-4 h-4 sm:w-5 sm:h-5" />
             ) : (
-              <Save className="w-5 h-5" />
+              <Save className="w-4 h-4 sm:w-5 sm:h-5" />
             )}
-            {isSaving
-              ? "Saving..."
-              : isSaved
-                ? "Saved"
-                : isFormPublished
-                  ? "Save"
-                  : "Save Draft"}
+            <span className="hidden sm:inline">
+              {isSaving
+                ? "Saving..."
+                : isSaved
+                  ? "Saved"
+                  : isFormPublished
+                    ? "Save"
+                    : "Save Draft"}
+            </span>
+            <span className="sm:hidden">
+              {isSaving ? "..." : isSaved ? "✓" : ""}
+            </span>
           </button>
 
           {!isFormPublished ? (
             <button
               onClick={onPublish}
               disabled={isPublishing || isPublished || isSaving}
-              className="flex items-center gap-2 px-6 py-2 bg-electric-sun text-ink-charcoal font-bold font-label-md uppercase border-2 border-ink-charcoal rounded shadow-[2px_2px_0px_0px_rgba(44,46,42,1)] hover:-translate-y-0.5 hover:shadow-[4px_4px_0px_0px_rgba(44,46,42,1)] transition-all active:translate-y-0 active:shadow-none disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex items-center gap-1.5 px-3 sm:px-6 py-2 bg-electric-sun text-ink-charcoal font-bold font-label-md uppercase border-2 border-ink-charcoal rounded shadow-[2px_2px_0px_0px_rgba(44,46,42,1)] hover:-translate-y-0.5 hover:shadow-[4px_4px_0px_0px_rgba(44,46,42,1)] transition-all active:translate-y-0 active:shadow-none disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isPublishing ? (
-                <Loader2 className="w-5 h-5 animate-spin" />
+                <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />
               ) : isPublished ? (
-                <Check className="w-5 h-5" />
+                <Check className="w-4 h-4 sm:w-5 sm:h-5" />
               ) : (
-                <Send className="w-5 h-5" />
+                <Send className="w-4 h-4 sm:w-5 sm:h-5" />
               )}
-              {isPublishing
-                ? "Publishing..."
-                : isPublished
-                  ? "Published"
-                  : "Publish"}
+              <span className="hidden sm:inline">
+                {isPublishing
+                  ? "Publishing..."
+                  : isPublished
+                    ? "Published"
+                    : "Publish"}
+              </span>
             </button>
           ) : (
             <button
               onClick={() =>
                 router.replace(`/dashboard/analytics/form/${formSlug}`)
               }
-              className="flex items-center gap-2 px-6 py-2 bg-electric-sun text-ink-charcoal font-bold font-label-md uppercase border-2 border-ink-charcoal rounded shadow-[2px_2px_0px_0px_rgba(44,46,42,1)] hover:-translate-y-0.5 hover:shadow-[4px_4px_0px_0px_rgba(44,46,42,1)] transition-all active:translate-y-0 active:shadow-none"
+              className="flex items-center gap-1.5 px-3 sm:px-6 py-2 bg-electric-sun text-ink-charcoal font-bold font-label-md uppercase border-2 border-ink-charcoal rounded shadow-[2px_2px_0px_0px_rgba(44,46,42,1)] hover:-translate-y-0.5 hover:shadow-[4px_4px_0px_0px_rgba(44,46,42,1)] transition-all active:translate-y-0 active:shadow-none"
             >
-              <BarChart2 className="w-5 h-5" />
-              View Analytics
+              <BarChart2 className="w-4 h-4 sm:w-5 sm:h-5" />
+              <span className="hidden sm:inline">View Analytics</span>
             </button>
           )}
         </div>
       </div>
 
       {/* Main Builder Layout - fixed height to allow canvas scrolling/zooming */}
-      <main className="flex-1 flex flex-col md:flex-row overflow-hidden relative">
+      <main className="flex-1 flex flex-col md:flex-row overflow-hidden relative min-h-0">
         <ReactFlowProvider>
-          {/* Left Sidebar: Field Palette */}
+          {/* Top (mobile) / Left (desktop) Sidebar: Field Palette */}
           <FieldPalette />
 
           {/* Center Canvas or Linear Layout */}
@@ -261,7 +270,7 @@ export default function FormDraftBuilderPage() {
             <FormLinearPreview />
           )}
 
-          {/* Right Sidebar: Field Settings & Properties */}
+          {/* Bottom (mobile) / Right (desktop) Sidebar: Field Settings & Properties */}
           <FieldSettings />
         </ReactFlowProvider>
       </main>

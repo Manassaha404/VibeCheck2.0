@@ -57,20 +57,20 @@ export function PetitionBuilderContainer() {
 
   return (
     <FormProvider {...methods}>
-      <main className="flex-grow w-full max-w-[1280px] mx-auto px-4 md:px-10 py-12 flex flex-col lg:flex-row gap-6 lg:gap-16 relative">
-        <section className="w-full lg:w-1/2 relative z-10 flex flex-col gap-8">
-          <header className="mb-4 border-b-4 border-ink-charcoal pb-8 border-dashed">
-            <h1 className="font-display text-display-lg text-ink-charcoal animate-pop-in leading-[1.1]">
-              <span className="text-shadow-yellow inline-block transform -rotate-2 mr-4">
+      <main className="flex-grow w-full max-w-[1280px] mx-auto px-3 sm:px-6 md:px-10 py-6 sm:py-12 flex flex-col lg:flex-row gap-6 lg:gap-16 relative">
+        <section className="w-full lg:w-1/2 relative z-10 flex flex-col gap-6 sm:gap-8">
+          <header className="mb-2 sm:mb-4 border-b-4 border-ink-charcoal pb-6 sm:pb-8 border-dashed">
+            <h1 className="font-display text-4xl md:text-display-lg text-ink-charcoal animate-pop-in leading-[1.1]">
+              <span className="text-shadow-yellow inline-block transform -rotate-2 mr-2 sm:mr-4">
                 Build
               </span>
-              <span className="bg-leaf-green text-ink-charcoal px-4 py-1 rounded-2xl border-4 border-ink-charcoal inline-block transform rotate-2 shadow-hard">
+              <span className="bg-leaf-green text-ink-charcoal px-3 sm:px-4 py-1 rounded-2xl border-4 border-ink-charcoal inline-block transform rotate-2 shadow-[4px_4px_0px_0px_rgba(44,46,42,1)] sm:shadow-hard">
                 Your Petition
               </span>
             </h1>
-            <p className="font-body-lg text-body-lg text-on-surface-variant mt-6 text-xl">
+            <p className="font-body-lg text-body-md sm:text-body-lg text-on-surface-variant mt-4 sm:mt-6 text-lg sm:text-xl">
               Craft a narrative that moves people to action.{" "}
-              <strong className="text-ink-charcoal underline decoration-wavy decoration-electric-sun decoration-4 underline-offset-4">
+              <strong className="text-ink-charcoal underline decoration-wavy decoration-electric-sun decoration-2 sm:decoration-4 underline-offset-4">
                 Bold ideas win.
               </strong>
             </p>

@@ -31,7 +31,7 @@ export default function ParticipantMCQ({
     revealedOptionIds !== null && revealedOptionIds !== undefined;
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+    <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 gap-3 sm:gap-5">
       {options.map((option) => {
         const isSelected = allowMultiple
           ? selectedIds.includes(option.id)
@@ -47,8 +47,8 @@ export default function ParticipantMCQ({
             onClick={() => !disabled && !isRevealed && onSelect(option.id)}
             disabled={disabled || isRevealed}
             className={[
-              "border-4 border-[var(--color-ink-charcoal)] p-5",
-              "flex items-center gap-4 text-left transition-all duration-300",
+              "border-4 border-[var(--color-ink-charcoal)] p-3 sm:p-5",
+              "flex items-center gap-3 sm:gap-4 text-left transition-all duration-300",
               "focus:outline-none focus:ring-4 focus:ring-[var(--color-ink-charcoal)]/30",
               isCorrect
                 ? "bg-[var(--color-leaf-green)] ring-4 ring-[var(--color-leaf-green)] shadow-[6px_6px_0px_0px_var(--color-leaf-green)] scale-[1.03] cursor-default"
@@ -69,8 +69,8 @@ export default function ParticipantMCQ({
           >
             <span
               className={[
-                "w-11 h-11 flex-shrink-0 border-4 border-[var(--color-ink-charcoal)] flex items-center justify-center flex-shrink-0",
-                "font-display font-black text-headline-sm transition-colors",
+                "w-9 h-9 sm:w-11 sm:h-11 flex-shrink-0 border-4 border-[var(--color-ink-charcoal)] flex items-center justify-center",
+                "font-display font-black text-sm sm:text-headline-sm transition-colors",
                 isCorrect
                   ? "bg-[var(--color-ink-charcoal)] text-[var(--color-leaf-green)]"
                   : isWrong && wasMyAnswer
@@ -91,7 +91,7 @@ export default function ParticipantMCQ({
               )}
             </span>
 
-            <span className="font-display text-headline-sm font-bold text-[var(--color-ink-charcoal)] leading-tight">
+            <span className="font-display text-sm sm:text-headline-sm font-bold text-[var(--color-ink-charcoal)] leading-tight">
               {option.text}
             </span>
 

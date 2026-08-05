@@ -41,26 +41,26 @@ export function FeedbackScreen({
   }[state];
 
   return (
-    <div className="bg-white border-[3px] border-[var(--color-ink-charcoal)] shadow-hard-lg w-[90%] md:w-full max-w-md p-6 md:p-12 text-center relative z-10 flex flex-col items-center justify-center animate-pop-in mx-auto mt-12 md:mt-20">
+    <div className="bg-white border-[3px] border-[var(--color-ink-charcoal)] shadow-hard-lg w-full max-w-md p-5 sm:p-8 md:p-12 text-center relative z-10 flex flex-col items-center justify-center animate-pop-in mx-3 sm:mx-auto mt-8 sm:mt-12 md:mt-20">
       <div
-        className={`w-24 h-24 ${config.color} rounded-full border-[3px] border-[var(--color-ink-charcoal)] shadow-hard mb-6 flex items-center justify-center animate-wiggle`}
+        className={`w-16 h-16 sm:w-24 sm:h-24 ${config.color} rounded-full border-[3px] border-[var(--color-ink-charcoal)] shadow-hard mb-4 sm:mb-6 flex items-center justify-center animate-wiggle`}
       >
         {config.icon}
       </div>
 
-      <h2 className="font-headline-lg text-[var(--color-ink-charcoal)] mb-3">
+      <h2 className="font-headline-lg text-[var(--color-ink-charcoal)] mb-2 sm:mb-3 text-xl sm:text-2xl">
         {config.title}
       </h2>
-      <p className="text-body-lg opacity-80 mb-8 leading-relaxed">
+      <p className="text-body-md sm:text-body-lg opacity-80 mb-5 sm:mb-8 leading-relaxed text-sm sm:text-base">
         {config.message}
       </p>
 
       {state === "already_responded" && allowEdit && onEdit && (
         <button
           onClick={onEdit}
-          className="w-full bg-[var(--color-electric-sun)] text-[var(--color-ink-charcoal)] font-bold text-headline-sm py-4 px-8 border-[3px] border-[var(--color-ink-charcoal)] shadow-hard hover:translate-y-[4px] hover:translate-x-[4px] hover:shadow-none transition-all flex items-center justify-center gap-3"
+          className="w-full bg-[var(--color-electric-sun)] text-[var(--color-ink-charcoal)] font-bold text-sm sm:text-headline-sm py-3 sm:py-4 px-6 sm:px-8 border-[3px] border-[var(--color-ink-charcoal)] shadow-hard hover:translate-y-[4px] hover:translate-x-[4px] hover:shadow-none transition-all flex items-center justify-center gap-2 sm:gap-3"
         >
-          <Edit2 size={24} strokeWidth={2.5} />
+          <Edit2 size={20} strokeWidth={2.5} />
           Edit Response
         </button>
       )}

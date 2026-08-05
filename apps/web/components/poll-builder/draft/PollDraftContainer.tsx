@@ -117,14 +117,14 @@ export function PollDraftContainer() {
 
   return (
     <FormProvider {...methods}>
-      <main className="flex-grow w-full max-w-3xl mx-auto px-margin-mobile md:px-margin-desktop py-12 flex flex-col gap-8">
-        <section className="w-full flex flex-col gap-8">
-          <div className="flex flex-col gap-8 mb-4 border-b-4 border-ink-charcoal pb-8 border-dashed">
-            <h1 className="font-display text-display-lg text-ink-charcoal animate-pop-in leading-[1.1]">
-              <span className="text-shadow-yellow inline-block transform -rotate-1 mr-4">
+      <main className="flex-grow w-full max-w-3xl mx-auto px-4 sm:px-6 md:px-10 py-6 sm:py-12 flex flex-col gap-6 sm:gap-8">
+        <section className="w-full flex flex-col gap-6 sm:gap-8">
+          <div className="flex flex-col gap-6 sm:gap-8 mb-4 border-b-4 border-ink-charcoal pb-6 sm:pb-8 border-dashed">
+            <h1 className="font-display text-4xl md:text-display-lg text-ink-charcoal animate-pop-in leading-[1.1]">
+              <span className="text-shadow-yellow inline-block transform -rotate-1 mr-2 sm:mr-4">
                 Build
               </span>
-              <span className="bg-electric-sun px-4 py-1 rounded-2xl border-4 border-ink-charcoal inline-block transform rotate-2 shadow-hard">
+              <span className="bg-electric-sun px-3 sm:px-4 py-1 rounded-2xl border-4 border-ink-charcoal inline-block transform rotate-2 shadow-[4px_4px_0px_0px_rgba(44,46,42,1)] sm:shadow-[8px_8px_0px_0px_rgba(44,46,42,1)]">
                 Your Poll
               </span>
             </h1>

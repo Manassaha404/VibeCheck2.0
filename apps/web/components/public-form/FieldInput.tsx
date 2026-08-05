@@ -259,7 +259,7 @@ export function FieldInput({
       )}
 
       {field.type === "rating" && (
-        <div className="flex gap-4 flex-wrap">
+        <div className="flex gap-2 sm:gap-4 flex-wrap">
           {[1, 2, 3, 4, 5].map((n) => (
             <label key={n} className="cursor-pointer">
               <input
@@ -271,9 +271,9 @@ export function FieldInput({
                 className="peer sr-only"
               />
               <div
-                className={`border-[3px] border-[var(--color-ink-charcoal)] bg-white w-14 h-14 flex flex-col items-center justify-center transition-all peer-checked:bg-[var(--color-electric-sun)] peer-checked:shadow-hard hover:bg-[var(--color-canvas-cream)]`}
+                className={`border-[3px] border-[var(--color-ink-charcoal)] bg-white w-10 h-10 sm:w-14 sm:h-14 flex flex-col items-center justify-center transition-all peer-checked:bg-[var(--color-electric-sun)] peer-checked:shadow-hard hover:bg-[var(--color-canvas-cream)]`}
               >
-                <span className="text-2xl">⭐</span>
+                <span className="text-lg sm:text-2xl">⭐</span>
               </div>
             </label>
           ))}
@@ -281,7 +281,7 @@ export function FieldInput({
       )}
 
       {field.type === "scale" && (
-        <div className="flex gap-2 flex-wrap">
+        <div className="flex gap-1.5 sm:gap-2 flex-wrap">
           {Array.from({ length: 10 }, (_, i) => i + 1).map((n) => (
             <label key={n} className="cursor-pointer">
               <input
@@ -293,7 +293,7 @@ export function FieldInput({
                 className="peer sr-only"
               />
               <div
-                className={`border-[3px] border-[var(--color-ink-charcoal)] bg-white w-12 h-12 flex items-center justify-center transition-all text-body-lg font-bold peer-checked:bg-[var(--color-leaf-green)] peer-checked:shadow-hard hover:bg-[var(--color-canvas-cream)]`}
+                className={`border-[3px] border-[var(--color-ink-charcoal)] bg-white w-8 h-8 sm:w-12 sm:h-12 flex items-center justify-center transition-all text-xs sm:text-body-lg font-bold peer-checked:bg-[var(--color-leaf-green)] peer-checked:shadow-hard hover:bg-[var(--color-canvas-cream)]`}
               >
                 {n}
               </div>
@@ -303,7 +303,7 @@ export function FieldInput({
       )}
 
       {field.type === "mood" && (
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+        <div className="grid grid-cols-3 sm:grid-cols-5 gap-2 sm:gap-4">
           {(field.options && field.options.length > 0
             ? field.options.map((o) => ({
                 id: o.id,
@@ -322,10 +322,10 @@ export function FieldInput({
                 className="peer sr-only"
               />
               <div
-                className={`border-[3px] border-[var(--color-ink-charcoal)] bg-white p-4 flex flex-col items-center gap-2 transition-all peer-checked:bg-[var(--color-electric-sun)] peer-checked:shadow-hard hover:bg-[var(--color-canvas-cream)]`}
+                className={`border-[3px] border-[var(--color-ink-charcoal)] bg-white p-2 sm:p-4 flex flex-col items-center gap-1 sm:gap-2 transition-all peer-checked:bg-[var(--color-electric-sun)] peer-checked:shadow-hard hover:bg-[var(--color-canvas-cream)]`}
               >
-                <span className="text-4xl">{m.emoji}</span>
-                <span className="text-label-md font-bold text-[var(--color-ink-charcoal)] text-center">
+                <span className="text-2xl sm:text-4xl">{m.emoji}</span>
+                <span className="text-[10px] sm:text-label-md font-bold text-[var(--color-ink-charcoal)] text-center">
                   {m.value}
                 </span>
               </div>

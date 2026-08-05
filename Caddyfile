@@ -1,0 +1,21 @@
+:80 {
+	handle /auth/* {
+		reverse_proxy api:8000
+	}
+
+	handle /api/* {
+		reverse_proxy api:8000
+	}
+
+	handle /trpc/* {
+		reverse_proxy api:8000
+	}
+
+	handle /socket.io/* {
+		reverse_proxy socket:8080
+	}
+
+	handle {
+		reverse_proxy web:3000
+	}
+}

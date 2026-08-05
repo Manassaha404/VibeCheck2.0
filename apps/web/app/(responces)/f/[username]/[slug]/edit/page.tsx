@@ -101,9 +101,9 @@ export default function FormEditPage({ params }: PageProps) {
       />
 
       {/* ── Body ────────────────────────────────────────────────────────── */}
-      <main className="flex-grow flex flex-col items-center py-12 md:py-16 px-4 md:px-10 max-w-3xl mx-auto w-full relative">
+      <main className="flex-grow flex flex-col items-center py-4 px-3 sm:py-10 sm:px-6 md:py-16 md:px-10 max-w-3xl mx-auto w-full relative">
         {/* Decorative elements */}
-        <div className="absolute -left-12 top-20 text-[var(--color-electric-sun)] opacity-50 hidden lg:block animate-float-slow">
+        <div className="absolute -left-12 top-20 text-[var(--color-electric-sun)] opacity-50 hidden xl:block animate-float-slow">
           <Star
             size={80}
             strokeWidth={1}
@@ -111,7 +111,7 @@ export default function FormEditPage({ params }: PageProps) {
             className="transform -rotate-12"
           />
         </div>
-        <div className="absolute -right-12 bottom-40 text-[var(--color-leaf-green)] opacity-50 hidden lg:block animate-float-medium">
+        <div className="absolute -right-12 bottom-40 text-[var(--color-leaf-green)] opacity-50 hidden xl:block animate-float-medium">
           <Star
             size={80}
             strokeWidth={1}
@@ -127,29 +127,30 @@ export default function FormEditPage({ params }: PageProps) {
             onEdit={() => setIsAgentComplete(false)}
           />
         ) : (
-          <div className="bg-white border-[3px] border-[var(--color-ink-charcoal)] shadow-hard-lg w-full p-6 md:p-12 relative z-10 transition-all duration-500 ease-in-out flex flex-col">
+          <div className="bg-white border-[3px] border-[var(--color-ink-charcoal)] shadow-hard-lg w-full p-4 sm:p-8 md:p-12 relative z-10 transition-all duration-500 ease-in-out flex flex-col">
             <Link
               href={`/f/${username}/${slug}`}
-              className="inline-flex items-center gap-2 text-body-md font-bold opacity-60 hover:opacity-100 transition-opacity mb-6 w-fit"
+              className="inline-flex items-center gap-1.5 sm:gap-2 text-xs sm:text-body-md font-bold opacity-60 hover:opacity-100 transition-opacity mb-4 sm:mb-6 w-fit"
             >
-              <ArrowLeft size={18} />
+              <ArrowLeft size={15} className="sm:hidden" />
+              <ArrowLeft size={18} className="hidden sm:block" />
               Cancel Editing
             </Link>
 
             {/* Title Area */}
-            <div className="mb-8 border-b-[3px] border-[var(--color-ink-charcoal)] pb-6">
-              <h1 className="font-headline-lg-mobile md:font-headline-lg text-[var(--color-ink-charcoal)] mb-3 leading-tight flex items-center gap-3">
+            <div className="mb-5 sm:mb-8 border-b-[3px] border-[var(--color-ink-charcoal)] pb-4 sm:pb-6">
+              <h1 className="font-headline-lg-mobile sm:font-headline-lg text-[var(--color-ink-charcoal)] mb-1 sm:mb-3 leading-tight">
                 Editing: {form.title}
               </h1>
               {form.description && (
-                <p className="text-body-lg text-[var(--color-on-surface-variant)] opacity-90 font-headline-sm">
+                <p className="text-body-md sm:text-body-lg text-[var(--color-on-surface-variant)] opacity-90 font-headline-sm">
                   {form.description}
                 </p>
               )}
             </div>
 
             {/* Content Area */}
-            <div className="flex-1 flex flex-col min-h-[300px]">
+            <div className="flex-1 flex flex-col min-h-[200px] sm:min-h-[300px]">
               <StaticFormPanel
                 form={form as any}
                 previousAnswers={form.previousAnswers}

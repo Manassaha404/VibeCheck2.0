@@ -52,15 +52,15 @@ export default function EditQuizPage() {
     <div className="bg-canvas-cream text-ink-charcoal font-body min-h-screen flex flex-col bg-dot-pattern selection:bg-electric-sun selection:text-ink-charcoal">
       <Navbar />
 
-      <main className="flex-grow relative overflow-hidden py-8 md:py-16 px-4 md:px-10 flex justify-center w-full">
+      <main className="flex-grow relative overflow-hidden py-8 md:py-16 px-3 sm:px-6 md:px-10 flex justify-center w-full">
         <div className="w-full max-w-[1280px] mx-auto flex flex-col items-center">
           {/* Back Button Container */}
           <div className="w-full max-w-4xl flex justify-start mb-6">
             <Link
               href={`/dashboard/quiz/${params.id}`}
-              className="bg-[var(--color-pure-white)] text-label-md font-body font-bold text-[var(--color-ink-charcoal)] px-6 py-3 border-2 border-[var(--color-ink-charcoal)] shadow-hard btn-press transition-all flex items-center justify-center gap-2 uppercase self-start w-max"
+              className="bg-[var(--color-pure-white)] text-label-md font-body font-bold text-[var(--color-ink-charcoal)] px-4 sm:px-6 py-2.5 sm:py-3 border-2 border-[var(--color-ink-charcoal)] shadow-[2px_2px_0px_0px_rgba(44,46,42,1)] sm:shadow-hard btn-press transition-all flex items-center justify-center gap-2 uppercase self-start w-full sm:w-max"
             >
-              <ArrowLeft size={20} />
+              <ArrowLeft size={18} className="sm:w-5 sm:h-5" />
               Back to Session Hub
             </Link>
           </div>
@@ -79,11 +79,11 @@ export default function EditQuizPage() {
             <div className="w-full border-t-8 border-ink-charcoal border-dashed my-4" />
 
             {/* Question Builder Header */}
-            <div className="flex items-center justify-between">
-              <h2 className="font-headline-lg text-headline-lg font-black uppercase tracking-tight">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-2 sm:gap-0">
+              <h2 className="font-headline-lg text-2xl sm:text-headline-lg font-black uppercase tracking-tight">
                 Questions
               </h2>
-              <div className="font-label-md text-label-md bg-surface-container-high border-2 border-ink-charcoal px-4 py-1 shadow-hard-sm">
+              <div className="font-label-md text-sm sm:text-label-md bg-surface-container-high border-2 border-ink-charcoal px-4 py-1 shadow-[2px_2px_0px_0px_rgba(44,46,42,1)] sm:shadow-hard-sm">
                 Total: {questions.length}
               </div>
             </div>

@@ -11,19 +11,24 @@ export function PasswordScreen({
   const [password, setPassword] = useState("");
 
   return (
-    <div className="bg-white border-[3px] border-[var(--color-ink-charcoal)] shadow-hard-lg w-[90%] md:w-full max-w-md p-6 md:p-12 text-center relative z-10 flex flex-col items-center justify-center animate-pop-in mx-auto mt-12 md:mt-20">
-      <div className="w-20 h-20 bg-[var(--color-electric-sun)] rounded-2xl border-[3px] border-[var(--color-ink-charcoal)] shadow-hard mb-6 flex items-center justify-center">
+    <div className="bg-white border-[3px] border-[var(--color-ink-charcoal)] shadow-hard-lg w-full max-w-md p-5 sm:p-8 md:p-12 text-center relative z-10 flex flex-col items-center justify-center animate-pop-in mx-3 sm:mx-auto mt-8 sm:mt-12 md:mt-20">
+      <div className="w-14 h-14 sm:w-20 sm:h-20 bg-[var(--color-electric-sun)] rounded-2xl border-[3px] border-[var(--color-ink-charcoal)] shadow-hard mb-4 sm:mb-6 flex items-center justify-center">
+        <Lock
+          size={28}
+          strokeWidth={2.5}
+          className="text-[var(--color-ink-charcoal)] sm:hidden"
+        />
         <Lock
           size={40}
           strokeWidth={2.5}
-          className="text-[var(--color-ink-charcoal)]"
+          className="text-[var(--color-ink-charcoal)] hidden sm:block"
         />
       </div>
 
-      <h2 className="font-headline-lg text-[var(--color-ink-charcoal)] mb-3">
+      <h2 className="font-headline-lg text-[var(--color-ink-charcoal)] mb-2 sm:mb-3 text-xl sm:text-2xl">
         Password Required
       </h2>
-      <p className="text-body-md opacity-80 mb-8">
+      <p className="text-body-md opacity-80 mb-5 sm:mb-8 text-sm sm:text-base">
         This form is password protected. Please enter the password to access it.
       </p>
 

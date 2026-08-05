@@ -2,13 +2,12 @@ import { z } from "zod";
 
 const envSchema = z.object({
   PORT: z.string().optional(),
-  CLIENT_URL: z.string().optional().default("http://localhost:3000"),
+  CLIENT_URL: z.string(),
   NODE_ENV: z
     .enum(["development", "production", "test"])
     .optional()
     .default("development"),
   RAZORPAY_WEBHOOK_SECRET: z.string(),
-  // Bug #2 fix: validate Razorpay API keys at startup so missing keys fail fast
   RAZORPAY_KEY_ID: z.string(),
   RAZORPAY_KEY_SECRET: z.string(),
 });

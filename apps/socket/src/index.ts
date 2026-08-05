@@ -10,7 +10,7 @@ async function init() {
     const server = http.createServer();
     attachSocketServer(server);
 
-    const PORT: number = env.PORT ? +env.PORT : 9000;
+    const PORT: number = env.PORT ? +env.PORT : 8080;
     server.listen(PORT, () => {
       logger.info(`Socket server is running on PORT ${PORT}`);
     });

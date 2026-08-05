@@ -49,29 +49,30 @@ export default function DraftQuizPage() {
     <div className="bg-canvas-cream text-ink-charcoal font-body min-h-screen flex flex-col bg-dot-pattern selection:bg-electric-sun selection:text-ink-charcoal">
       <Navbar />
 
-      <main className="flex-grow relative overflow-hidden py-8 md:py-16 px-4 md:px-10 flex justify-center w-full">
+      <main className="flex-grow relative overflow-hidden py-8 md:py-16 px-3 sm:px-6 md:px-10 flex justify-center w-full">
         <div className="w-full max-w-[1280px] mx-auto flex flex-col items-center">
           {/* Back link + step indicator */}
-          <div className="w-full max-w-4xl flex flex-col md:flex-row items-center justify-between gap-4 md:gap-0 mb-8">
+          <div className="w-full max-w-4xl flex flex-col sm:flex-row items-center justify-between gap-4 sm:gap-0 mb-6 sm:mb-8">
             <Link
               href="/create/quiz"
-              className="bg-pure-white text-label-md font-body font-bold text-ink-charcoal px-5 py-2.5 border-2 border-ink-charcoal shadow-hard-sm btn-press transition-all flex items-center gap-2 uppercase"
+              className="bg-pure-white text-label-md font-body font-bold text-ink-charcoal px-4 sm:px-5 py-2.5 border-2 border-ink-charcoal shadow-[2px_2px_0px_0px_rgba(44,46,42,1)] sm:shadow-hard-sm btn-press transition-all flex items-center gap-2 uppercase w-full sm:w-auto justify-center"
             >
-              <ArrowLeft size={18} />
+              <ArrowLeft size={18} className="sm:w-5 sm:h-5" />
               Back to Info
             </Link>
 
             {/* Step indicator */}
-            <div className="flex items-center gap-3">
-              <div className="flex items-center gap-2 border-2 border-ink-charcoal/30 px-4 py-1.5 font-label-md text-label-md font-black uppercase tracking-wide text-ink-charcoal/40">
-                <span className="border border-ink-charcoal/30 rounded-full w-6 h-6 flex items-center justify-center text-sm font-black">
+            <div className="flex items-center gap-2 sm:gap-3 w-full sm:w-auto justify-center">
+              <div className="flex items-center gap-1 sm:gap-2 border-2 border-ink-charcoal/30 px-3 sm:px-4 py-1.5 font-label-md text-xs sm:text-label-md font-black uppercase tracking-wide text-ink-charcoal/40">
+                <span className="border border-ink-charcoal/30 rounded-full w-5 h-5 sm:w-6 sm:h-6 flex items-center justify-center text-xs sm:text-sm font-black">
                   1
                 </span>
-                Quiz Info
+                <span className="hidden sm:inline">Quiz Info</span>
+                <span className="sm:hidden">Info</span>
               </div>
-              <div className="h-0.5 w-8 bg-ink-charcoal" />
-              <div className="flex items-center gap-2 bg-electric-sun border-2 border-ink-charcoal px-4 py-1.5 shadow-hard-sm font-label-md text-label-md font-black uppercase tracking-wide">
-                <span className="bg-ink-charcoal text-electric-sun rounded-full w-6 h-6 flex items-center justify-center text-sm font-black">
+              <div className="h-0.5 w-4 sm:w-8 bg-ink-charcoal" />
+              <div className="flex items-center gap-1 sm:gap-2 bg-electric-sun border-2 border-ink-charcoal px-3 sm:px-4 py-1.5 shadow-[2px_2px_0px_0px_rgba(44,46,42,1)] sm:shadow-hard-sm font-label-md text-xs sm:text-label-md font-black uppercase tracking-wide">
+                <span className="bg-ink-charcoal text-electric-sun rounded-full w-5 h-5 sm:w-6 sm:h-6 flex items-center justify-center text-xs sm:text-sm font-black">
                   2
                 </span>
                 Questions
@@ -84,7 +85,7 @@ export default function DraftQuizPage() {
             {/* Header */}
             <div className="flex justify-center mb-4">
               <div className="relative inline-block">
-                <h1 className="font-display-lg text-display-lg uppercase font-black italic -rotate-3 bg-vivid-coral text-pure-white px-8 py-4 border-4 border-ink-charcoal shadow-hard relative z-10 tracking-tighter">
+                <h1 className="font-display-lg text-3xl sm:text-display-lg uppercase font-black italic -rotate-3 bg-vivid-coral text-pure-white px-6 sm:px-8 py-3 sm:py-4 border-4 border-ink-charcoal shadow-[4px_4px_0px_0px_rgba(44,46,42,1)] sm:shadow-hard relative z-10 tracking-tighter">
                   ADD QUESTIONS
                 </h1>
                 <div
@@ -107,11 +108,11 @@ export default function DraftQuizPage() {
             <QuizSettings />
 
             {/* Question Builder Header */}
-            <div className="flex items-center justify-between">
-              <h2 className="font-headline-lg text-headline-lg font-black uppercase tracking-tight">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-2 sm:gap-0">
+              <h2 className="font-headline-lg text-2xl sm:text-headline-lg font-black uppercase tracking-tight">
                 Questions
               </h2>
-              <div className="font-label-md text-label-md bg-surface-container-high border-2 border-ink-charcoal px-4 py-1 shadow-hard-sm">
+              <div className="font-label-md text-sm sm:text-label-md bg-surface-container-high border-2 border-ink-charcoal px-4 py-1 shadow-[2px_2px_0px_0px_rgba(44,46,42,1)] sm:shadow-hard-sm">
                 Total: {questions.length}
               </div>
             </div>
@@ -149,7 +150,7 @@ export default function DraftQuizPage() {
                 disabled={isSubmitting || questions.length === 0}
                 whileHover={questions.length > 0 ? { scale: 1.01 } : {}}
                 whileTap={questions.length > 0 ? { scale: 0.98 } : {}}
-                className="w-full flex items-center justify-center gap-3 bg-leaf-green text-ink-charcoal border-4 border-ink-charcoal py-6 px-12 font-display-lg text-display-lg uppercase font-black tracking-tight shadow-[8px_8px_0px_0px_#2C2E2A] hover:shadow-[4px_4px_0px_0px_#2C2E2A] hover:translate-x-[4px] hover:translate-y-[4px] active:shadow-none active:translate-x-[8px] active:translate-y-[8px] disabled:opacity-40 disabled:pointer-events-none transition-all duration-200 relative overflow-hidden group"
+                className="w-full flex items-center justify-center gap-2 sm:gap-3 bg-leaf-green text-ink-charcoal border-4 border-ink-charcoal py-4 sm:py-6 px-4 sm:px-12 font-display-lg text-2xl sm:text-display-lg uppercase font-black tracking-tight shadow-[4px_4px_0px_0px_#2C2E2A] sm:shadow-[8px_8px_0px_0px_#2C2E2A] hover:translate-x-[2px] hover:translate-y-[2px] sm:hover:translate-x-[4px] sm:hover:translate-y-[4px] active:shadow-none transition-all duration-200 relative overflow-hidden group text-center"
               >
                 <div className="absolute inset-0 bg-ink-charcoal -translate-x-full group-hover:translate-x-0 transition-transform duration-300 ease-out z-0" />
                 <span className="relative z-10 group-hover:text-leaf-green transition-colors duration-300 flex items-center gap-3">

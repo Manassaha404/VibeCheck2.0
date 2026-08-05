@@ -12,7 +12,7 @@ export function PollSettingsSection() {
   const { register } = useFormContext<CreatePollFormInput>();
 
   return (
-    <section className="bg-pure-white border-4 border-ink-charcoal rounded-DEFAULT shadow-[6px_6px_0px_0px_rgba(44,46,42,1)] p-6 relative">
+    <section className="bg-pure-white border-4 border-ink-charcoal rounded-DEFAULT shadow-[6px_6px_0px_0px_rgba(44,46,42,1)] p-4 sm:p-6 relative">
       <div className="flex items-center gap-3 mb-6 border-b-2 border-ink-charcoal pb-4">
         <Settings className="text-primary w-7 h-7" />
         <h2 className="font-headline-sm text-headline-sm uppercase">

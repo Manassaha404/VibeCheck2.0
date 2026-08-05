@@ -14,7 +14,7 @@ export function PollGeneralDetailsSection() {
   } = useFormContext<CreatePollFormInput>();
 
   return (
-    <section className="bg-pure-white border-4 border-ink-charcoal rounded-DEFAULT shadow-[8px_8px_0px_0px_rgba(44,46,42,1)] p-6 md:p-8 relative">
+    <section className="bg-pure-white border-4 border-ink-charcoal rounded-DEFAULT shadow-[8px_8px_0px_0px_rgba(44,46,42,1)] p-4 sm:p-6 md:p-8 relative">
       <div className="absolute -top-4 -left-4 bg-leaf-green border-2 border-ink-charcoal rounded-DEFAULT px-3 py-1 font-label-md text-label-md text-ink-charcoal shadow-[2px_2px_0px_0px_rgba(44,46,42,1)] rotate-[-2deg]">
         01. The Basics
       </div>

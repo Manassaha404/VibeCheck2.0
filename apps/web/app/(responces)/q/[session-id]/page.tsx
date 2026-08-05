@@ -160,9 +160,9 @@ export default function ParticipantQuizSessionPage({
     <div className="bg-[var(--color-canvas-cream)] min-h-screen flex flex-col">
       <Navbar />
 
-      <main className="flex-grow w-full max-w-[1280px] mx-auto px-4 md:px-10 py-8 flex flex-col md:flex-row gap-8 relative">
+      <main className="flex-grow w-full max-w-[1280px] mx-auto px-3 sm:px-6 md:px-10 py-4 sm:py-6 md:py-8 flex flex-col lg:flex-row gap-4 sm:gap-6 lg:gap-8 relative">
         {/* ── Left: Question area ──────────────────────────────────────────── */}
-        <section className="flex-grow flex flex-col gap-6 w-full md:w-2/3">
+        <section className="flex-grow flex flex-col gap-3 sm:gap-5 w-full min-w-0">
           {/* Quiz title bar */}
           <ParticipantSessionHeader
             quizTitle={quizTitle}
@@ -230,13 +230,13 @@ export default function ParticipantQuizSessionPage({
                     revealedOptionIds={revealedOptionIds}
                   />
 
-                  {/* Single-select: auto-submit on selection */}
+                  {/* Single-select: submit button */}
                   {!currentQuestion.allowMultipleCorrect &&
                     selectedId &&
                     !submitted && (
                       <button
                         onClick={handleSubmitMCQ}
-                        className="flex items-center justify-center gap-3 bg-[var(--color-leaf-green)] border-4 border-[var(--color-ink-charcoal)] shadow-hard px-6 py-4 font-display font-black uppercase text-headline-sm btn-press hover:bg-[var(--color-electric-sun)] transition-colors"
+                        className="w-full sm:w-auto flex items-center justify-center gap-3 bg-[var(--color-leaf-green)] border-4 border-[var(--color-ink-charcoal)] shadow-hard px-6 py-4 font-display font-black uppercase text-headline-sm btn-press hover:bg-[var(--color-electric-sun)] transition-colors"
                       >
                         <Send size={20} strokeWidth={2.5} />
                         Lock In Answer
@@ -249,7 +249,7 @@ export default function ParticipantQuizSessionPage({
                     selectedIds.length > 0 && (
                       <button
                         onClick={handleSubmitMCQ}
-                        className="flex items-center justify-center gap-3 bg-[var(--color-leaf-green)] border-4 border-[var(--color-ink-charcoal)] shadow-hard px-6 py-4 font-display font-black uppercase text-headline-sm btn-press hover:bg-[var(--color-electric-sun)] transition-colors"
+                        className="w-full sm:w-auto flex items-center justify-center gap-3 bg-[var(--color-leaf-green)] border-4 border-[var(--color-ink-charcoal)] shadow-hard px-6 py-4 font-display font-black uppercase text-headline-sm btn-press hover:bg-[var(--color-electric-sun)] transition-colors"
                       >
                         <Send size={20} strokeWidth={2.5} />
                         Submit {selectedIds.length} Answer

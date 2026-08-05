@@ -75,15 +75,12 @@ authRouter.get("/google/callback", async (req: Request, res: Response) => {
       maxAge: 7 * 24 * 60 * 60 * 1000,
       path: "/",
     };
-
     res.cookie("refreshToken", refreshToken, cookieOptions);
-
     if (isNewUser) {
       const redirectUrl = new URL(`${env.CLIENT_URL}/username`);
       if (basePath) redirectUrl.searchParams.set("returnTo", basePath);
       return res.redirect(redirectUrl.toString());
     }
-
     return res.redirect(`${env.CLIENT_URL}${basePath}`);
   } catch (err) {
     logger.error("Google OAuth error:", err);
@@ -128,7 +125,7 @@ authRouter.get("/google/drive", async (req: Request, res: Response) => {
       return res.redirect(redirectUrl.toString());
     }
 
-    const redirectUri = `${req.protocol}://${req.get("host")}/auth/google/drive/callback`;
+    const redirectUri = `${env.CLIENT_URL}/auth/google/drive/callback`;
     res.redirect(oAuthService.getGoogleDriveAuthUrl({ redirectUri }));
   } catch (err) {
     return res.status(401).json({ error: "Unauthorized" });
@@ -166,7 +163,7 @@ authRouter.get(
     try {
       const { userId } = verifyRefreshToken(token);
 
-      const redirectUri = `${req.protocol}://${req.get("host")}/auth/google/drive/callback`;
+      const redirectUri = `${env.CLIENT_URL}/auth/google/drive/callback`;
       const { refresh_token } = await oAuthService.exchangeCodeForDriveTokens({
         code: code as string,
         redirectUri,

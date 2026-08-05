@@ -388,7 +388,7 @@ export default function Navbar({
               <>
                 <motion.div variants={mobileItemVariants}>
                   <Link
-                    href="/auth/login"
+                    href="/signin"
                     onClick={() => setMobileOpen(false)}
                     className="text-body-lg font-bold text-[var(--color-ink-charcoal)] py-2 block"
                   >
@@ -397,7 +397,7 @@ export default function Navbar({
                 </motion.div>
                 <motion.div variants={mobileItemVariants}>
                   <MotionLink
-                    href="/auth/signup"
+                    href="/signup"
                     onClick={() => setMobileOpen(false)}
                     whileTap={{ scale: 0.97, x: 2, y: 2 }}
                     className="bg-[var(--color-electric-sun)] text-[var(--color-ink-charcoal)] border-2 border-[var(--color-ink-charcoal)] px-6 py-3 font-bold text-center shadow-hard mt-2 block"

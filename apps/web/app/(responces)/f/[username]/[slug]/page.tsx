@@ -121,10 +121,10 @@ export default function PublicFormPage({ params }: PageProps) {
 
       {/* ── Body ────────────────────────────────────────────────────────── */}
       <main
-        className={`flex-grow flex flex-col items-center max-w-3xl mx-auto w-full relative ${mode === "agent" && !isAgentComplete ? "overflow-hidden p-2 md:py-8 md:px-10" : "py-8 px-4 md:py-16 md:px-10"}`}
+        className={`flex-grow flex flex-col items-center max-w-3xl mx-auto w-full relative ${mode === "agent" && !isAgentComplete ? "overflow-hidden p-2 sm:p-4 md:py-8 md:px-10" : "py-4 px-3 sm:py-10 sm:px-6 md:py-16 md:px-10"}`}
       >
         {/* Decorative elements */}
-        <div className="absolute -left-12 top-20 text-[var(--color-electric-sun)] opacity-50 hidden lg:block animate-float-slow">
+        <div className="absolute -left-12 top-20 text-[var(--color-electric-sun)] opacity-50 hidden xl:block animate-float-slow">
           <Star
             size={80}
             strokeWidth={1}
@@ -132,7 +132,7 @@ export default function PublicFormPage({ params }: PageProps) {
             className="transform -rotate-12"
           />
         </div>
-        <div className="absolute -right-12 bottom-40 text-[var(--color-leaf-green)] opacity-50 hidden lg:block animate-float-medium">
+        <div className="absolute -right-12 bottom-40 text-[var(--color-leaf-green)] opacity-50 hidden xl:block animate-float-medium">
           <Star
             size={80}
             strokeWidth={1}
@@ -149,18 +149,18 @@ export default function PublicFormPage({ params }: PageProps) {
           />
         ) : (
           <div
-            className={`bg-white border-[3px] border-[var(--color-ink-charcoal)] shadow-hard-lg w-full relative z-10 transition-all duration-500 ease-in-out flex flex-col ${mode === "agent" && !isAgentComplete ? "flex-1 min-h-0 overflow-hidden p-2 md:p-8" : "p-6 md:p-12"}`}
+            className={`bg-white border-[3px] border-[var(--color-ink-charcoal)] shadow-hard-lg w-full relative z-10 transition-all duration-500 ease-in-out flex flex-col ${mode === "agent" && !isAgentComplete ? "flex-1 min-h-0 overflow-hidden p-2 sm:p-4 md:p-8" : "p-4 sm:p-8 md:p-12"}`}
           >
             {/* Title Area */}
             <div
-              className={`flex-shrink-0 border-b-[3px] border-[var(--color-ink-charcoal)] pb-4 md:pb-6 px-2 md:px-0 flex justify-between items-start ${mode === "agent" && !isAgentComplete ? "mb-4" : "mb-8"}`}
+              className={`flex-shrink-0 border-b-[3px] border-[var(--color-ink-charcoal)] pb-3 sm:pb-4 md:pb-6 px-1 sm:px-2 md:px-0 flex justify-between items-start gap-2 ${mode === "agent" && !isAgentComplete ? "mb-3 sm:mb-4" : "mb-5 sm:mb-8"}`}
             >
               <div>
-                <h1 className="font-headline-lg-mobile md:font-headline-lg text-[var(--color-ink-charcoal)] mb-2 md:mb-3 leading-tight">
+                <h1 className="font-headline-lg-mobile sm:font-headline-lg text-[var(--color-ink-charcoal)] mb-1 sm:mb-2 md:mb-3 leading-tight">
                   {form.title}
                 </h1>
                 {form.description && (
-                  <p className="text-body-md md:text-body-lg text-[var(--color-on-surface-variant)] opacity-90 font-headline-sm">
+                  <p className="text-body-md sm:text-body-lg text-[var(--color-on-surface-variant)] opacity-90 font-headline-sm">
                     {form.description}
                   </p>
                 )}

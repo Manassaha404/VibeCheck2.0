@@ -1,7 +1,9 @@
+"use client";
 import { io } from "socket.io-client";
-const socketUrl = process.env.NEXT_PUBLIC_SOCKET_URL || "";
-const socket = io(socketUrl, {
+
+const socket = io({
   autoConnect: false,
+  withCredentials: true, 
 });
 
 export default socket;

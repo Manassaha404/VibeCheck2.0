@@ -38,7 +38,7 @@ export function GeneralDetailsSection() {
   };
 
   return (
-    <section className="bg-pure-white border-4 border-ink-charcoal rounded-DEFAULT shadow-[8px_8px_0px_0px_rgba(44,46,42,1)] p-6 md:p-8 relative">
+    <section className="bg-pure-white border-4 border-ink-charcoal rounded-DEFAULT shadow-[8px_8px_0px_0px_rgba(44,46,42,1)] p-4 sm:p-6 md:p-8 relative">
       <div className="absolute -top-4 -left-4 bg-electric-sun border-2 border-ink-charcoal rounded-DEFAULT px-3 py-1 font-label-md text-label-md text-ink-charcoal shadow-[2px_2px_0px_0px_rgba(44,46,42,1)] rotate-[-2deg]">
         01. The Basics
       </div>
@@ -83,8 +83,8 @@ export function GeneralDetailsSection() {
             Custom URL Slug
           </label>
           <div className="flex items-stretch border-2 border-ink-charcoal rounded-DEFAULT overflow-hidden shadow-[4px_4px_0px_0px_rgba(245,226,17,0.3)] transition-colors focus-within:border-electric-sun focus-within:shadow-[4px_4px_0px_0px_rgba(245,226,17,0.6)]">
-            <span className="bg-canvas-cream px-4 py-4 flex items-center border-r-2 border-ink-charcoal font-body-md text-ink-charcoal font-bold select-none whitespace-nowrap">
-              vibecheck.com/f/{username ? `${username}/` : "username/"}
+            <span className="bg-canvas-cream px-2 sm:px-4 py-4 flex items-center border-r-2 border-ink-charcoal font-body-md text-ink-charcoal font-bold select-none whitespace-nowrap text-xs sm:text-sm">
+              <span className="hidden sm:inline">vibecheck.com/</span>f/{username ? `${username}/` : "username/"}
             </span>
             <input
               className="flex-grow bg-pure-white p-4 font-body-lg text-body-lg focus:outline-none focus:ring-0 min-w-0"

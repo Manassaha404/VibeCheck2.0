@@ -137,30 +137,34 @@ export function StaticFormPanel({
     <div className="space-y-6 animate-fade-up">
       {!hideAiMode && (
         <button
-          id="try-ai-banner"
-          onClick={onSwitchToAgent}
-          className="w-full flex items-center gap-3 bg-[var(--color-electric-sun)] border-[3px] border-[var(--color-ink-charcoal)] rounded-xl px-5 py-4 shadow-hard hover:translate-y-[4px] hover:translate-x-[4px] hover:shadow-none transition-all text-left group"
-        >
-          <Sparkles
-            size={24}
-            className="flex-shrink-0 group-hover:scale-110 transition-transform"
-          />
-          <div className="flex-1 min-w-0">
-            <p className="text-headline-sm font-bold text-[var(--color-ink-charcoal)]">
-              Try AI Mode
-            </p>
-            <p className="text-body-md opacity-80 mt-1 font-bold">
-              Let our AI guide you through this form conversationally
-            </p>
-          </div>
-          <ChevronRight
-            size={24}
-            className="flex-shrink-0 opacity-50 group-hover:opacity-100 transition-opacity"
-          />
-        </button>
+        id="try-ai-banner"
+        onClick={onSwitchToAgent}
+        className="w-full flex items-center gap-2 sm:gap-3 bg-[var(--color-electric-sun)] border-[3px] border-[var(--color-ink-charcoal)] rounded-xl px-3 sm:px-5 py-3 sm:py-4 shadow-hard hover:translate-y-[4px] hover:translate-x-[4px] hover:shadow-none transition-all text-left group"
+      >
+        <Sparkles
+          size={20}
+          className="flex-shrink-0 group-hover:scale-110 transition-transform sm:hidden"
+        />
+        <Sparkles
+          size={24}
+          className="flex-shrink-0 group-hover:scale-110 transition-transform hidden sm:block"
+        />
+        <div className="flex-1 min-w-0">
+          <p className="text-sm sm:text-headline-sm font-bold text-[var(--color-ink-charcoal)]">
+            Try AI Mode
+          </p>
+          <p className="text-xs sm:text-body-md opacity-80 mt-0.5 sm:mt-1 font-bold">
+            Let our AI guide you through this form conversationally
+          </p>
+        </div>
+        <ChevronRight
+          size={20}
+          className="flex-shrink-0 opacity-50 group-hover:opacity-100 transition-opacity"
+        />
+      </button>
       )}
 
-      <div className="space-y-8 mt-8">
+      <div className="space-y-5 sm:space-y-8 mt-5 sm:mt-8">
         {form.fields.map((field) => {
           const primaryField = form.fields.find((f) => f.isPrimary);
           const primaryFieldValue = primaryField
@@ -268,7 +272,7 @@ export function StaticFormPanel({
               setIsUploadingFiles(false);
             }
           }}
-          className="w-full md:w-auto md:min-w-[240px] bg-[var(--color-leaf-green)] text-[var(--color-ink-charcoal)] font-bold text-headline-sm py-4 px-8 border-[3px] border-[var(--color-ink-charcoal)] shadow-hard hover:translate-y-[4px] hover:translate-x-[4px] hover:shadow-none active:bg-[var(--color-primary-container)] transition-all flex items-center justify-center gap-3 disabled:opacity-60"
+          className="w-full bg-[var(--color-leaf-green)] text-[var(--color-ink-charcoal)] font-bold text-sm sm:text-headline-sm py-3 sm:py-4 px-6 sm:px-8 border-[3px] border-[var(--color-ink-charcoal)] shadow-hard hover:translate-y-[4px] hover:translate-x-[4px] hover:shadow-none active:bg-[var(--color-primary-container)] transition-all flex items-center justify-center gap-2 sm:gap-3 disabled:opacity-60"
         >
           {submitMutation.isPending ? (
             <>

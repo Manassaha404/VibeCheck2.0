@@ -17,7 +17,7 @@ export function SuccessScreen({
   }, []);
 
   return (
-    <div className="bg-[var(--color-electric-sun)] border-[3px] border-[var(--color-ink-charcoal)] shadow-hard-lg w-full p-8 md:p-16 text-center relative z-10 flex flex-col items-center justify-center min-h-[500px] animate-pop-in overflow-hidden">
+    <div className="bg-[var(--color-electric-sun)] border-[3px] border-[var(--color-ink-charcoal)] shadow-hard-lg w-full p-6 sm:p-10 md:p-16 text-center relative z-10 flex flex-col items-center justify-center min-h-[380px] sm:min-h-[500px] animate-pop-in overflow-hidden">
       {showConfetti && (
         <div className="absolute inset-0 pointer-events-none z-0">
           {[...Array(20)].map((_, i) => {
@@ -56,7 +56,7 @@ export function SuccessScreen({
         </div>
       )}
 
-      <div className="w-48 h-48 bg-white rounded-full border-[3px] border-[var(--color-ink-charcoal)] shadow-hard mb-8 flex items-center justify-center relative overflow-hidden z-10">
+      <div className="w-28 h-28 sm:w-40 sm:h-40 md:w-48 md:h-48 bg-white rounded-full border-[3px] border-[var(--color-ink-charcoal)] shadow-hard mb-4 sm:mb-6 md:mb-8 flex items-center justify-center relative overflow-hidden z-10">
         <img
           alt="Success Character"
           className="w-full h-full object-cover"
@@ -64,11 +64,11 @@ export function SuccessScreen({
         />
       </div>
 
-      <h2 className="font-display-lg text-display-lg text-[var(--color-ink-charcoal)] mb-4">
+      <h2 className="font-display-lg text-[var(--color-ink-charcoal)] mb-3 sm:mb-4" style={{ fontSize: "clamp(1.8rem, 6vw, 3rem)" }}>
         You Rock!
       </h2>
 
-      <p className="font-headline-sm text-headline-sm text-[var(--color-ink-charcoal)] max-w-md mx-auto mb-10 opacity-90 leading-relaxed">
+      <p className="font-headline-sm text-[var(--color-ink-charcoal)] max-w-md mx-auto mb-6 sm:mb-10 opacity-90 leading-relaxed text-sm sm:text-base">
         Your response to <strong>"{formTitle}"</strong> has been successfully
         submitted. Thanks for helping out!
       </p>
@@ -76,9 +76,9 @@ export function SuccessScreen({
       {onReset && (
         <button
           onClick={onReset}
-          className="bg-white text-[var(--color-ink-charcoal)] font-headline-sm text-headline-sm py-4 px-8 border-[3px] border-[var(--color-ink-charcoal)] shadow-hard hover:translate-y-[4px] hover:translate-x-[4px] hover:shadow-none transition-all flex items-center gap-3 z-10"
+          className="w-full sm:w-auto bg-white text-[var(--color-ink-charcoal)] font-headline-sm text-sm sm:text-headline-sm py-3 sm:py-4 px-6 sm:px-8 border-[3px] border-[var(--color-ink-charcoal)] shadow-hard hover:translate-y-[4px] hover:translate-x-[4px] hover:shadow-none transition-all flex items-center justify-center gap-2 sm:gap-3 z-10"
         >
-          <RefreshCcw size={24} strokeWidth={3} />
+          <RefreshCcw size={20} strokeWidth={3} />
           Submit Another
         </button>
       )}

@@ -112,14 +112,17 @@ export function FieldPalette() {
   ];
 
   return (
-    <aside className="w-full md:w-72 border-r-2 border-ink-charcoal bg-pure-white flex flex-col h-full flex-shrink-0 z-10">
-      <div className="p-4 border-b-2 border-ink-charcoal bg-canvas-cream">
+    <aside className="w-full md:w-72 border-b-2 md:border-b-0 md:border-r-2 border-ink-charcoal bg-pure-white flex flex-row md:flex-col h-auto md:h-full flex-shrink-0 z-10">
+      {/* Header — visible on md+ only */}
+      <div className="hidden md:block p-4 border-b-2 border-ink-charcoal bg-canvas-cream">
         <h2 className="text-headline-sm text-ink-charcoal uppercase tracking-tight font-headline-sm font-bold">
           Form Elements
         </h2>
       </div>
-      <div className="p-4 flex-grow overflow-y-auto bg-pure-white space-y-4">
-        <p className="text-label-sm font-label-sm font-bold text-outline uppercase tracking-wider mb-2">
+
+      {/* Mobile: horizontal scroll strip | Desktop: vertical scroll list */}
+      <div className="flex md:flex-col flex-row overflow-x-auto md:overflow-y-auto p-2 md:p-4 gap-2 md:gap-4 flex-1 bg-pure-white md:space-y-0 custom-scrollbar">
+        <p className="hidden md:block text-label-sm font-label-sm font-bold text-outline uppercase tracking-wider mb-2">
           Drag to add
         </p>
 
@@ -128,19 +131,19 @@ export function FieldPalette() {
             key={label}
             draggable
             onDragStart={(e) => onDragStart(e, type, label)}
-            className="flex items-center gap-3 p-3 border-2 border-ink-charcoal bg-pure-white rounded cursor-grab hover:shadow-[4px_4px_0px_0px_rgba(44,46,42,1)] hover:-translate-y-1 transition-all group"
+            className="flex md:flex-row flex-col items-center gap-1.5 md:gap-3 p-2 md:p-3 border-2 border-ink-charcoal bg-pure-white rounded cursor-grab hover:shadow-[4px_4px_0px_0px_rgba(44,46,42,1)] hover:-translate-y-1 transition-all group flex-shrink-0 min-w-[60px] md:min-w-0"
           >
             <div
-              className={`p-2 rounded border-2 border-ink-charcoal ${getTypeColor(type)}`}
+              className={`p-1.5 md:p-2 rounded border-2 border-ink-charcoal ${getTypeColor(type)}`}
             >
-              <Icon className="w-5 h-5 text-ink-charcoal" />
+              <Icon className="w-4 h-4 md:w-5 md:h-5 text-ink-charcoal" />
             </div>
-            <span className="font-label-md text-label-md flex-grow">
+            <span className="font-label-md text-label-md flex-grow text-center md:text-left text-[10px] md:text-sm leading-tight">
               {label}
             </span>
             <button
               onClick={() => handleAddClick(type, label)}
-              className="p-1.5 border-2 border-transparent group-hover:border-ink-charcoal rounded hover:bg-electric-sun transition-colors opacity-0 group-hover:opacity-100"
+              className="p-1.5 border-2 border-transparent group-hover:border-ink-charcoal rounded hover:bg-electric-sun transition-colors opacity-0 group-hover:opacity-100 hidden md:flex"
               title="Add to Canvas"
             >
               <Plus className="w-4 h-4" />
