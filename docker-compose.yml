@@ -1,6 +1,8 @@
 networks:
   vibecheck_network:
     driver: bridge
+  edge:
+    external: true
 
 services:
   postgres:
@@ -124,9 +126,8 @@ services:
     image: caddy:2-alpine
     container_name: caddy
     restart: unless-stopped
-    ports:
-      - "80:80"
-      - "443:443"
+    expose:
+      - "80"
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile:ro
       - caddy_data:/data
@@ -137,6 +138,14 @@ services:
       - socket
     networks:
       - vibecheck_network
+      - edge
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=edge"
+      - "traefik.http.routers.vibecheck.rule=Host(`vibecheck.manasx.online`)"
+      - "traefik.http.routers.vibecheck.entrypoints=websecure"
+      - "traefik.http.routers.vibecheck.tls.certresolver=le"
+      - "traefik.http.services.vibecheck.loadbalancer.server.port=80"
 
 volumes:
   postgres_data:
