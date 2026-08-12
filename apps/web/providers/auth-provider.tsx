@@ -27,7 +27,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       pathname.startsWith("/reset-password/") ||
       pathname.startsWith("/f/") ||
       pathname.startsWith("/p/") ||
-      pathname.startsWith("/pe/");
+      pathname.startsWith("/pe/") || 
+      pathname.startsWith("/legal");
 
     if (isError || !data?.users?.userId) {
       setInitialized(true);

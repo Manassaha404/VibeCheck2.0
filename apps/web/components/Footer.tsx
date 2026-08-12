@@ -31,15 +31,6 @@ const defaultSections: FooterSection[] = [
     ],
   },
   {
-    heading: "Company",
-    links: [
-      { label: "About", href: "/about" },
-      { label: "Blog", href: "/blog" },
-      { label: "Careers", href: "/careers" },
-      { label: "Press", href: "/press" },
-    ],
-  },
-  {
     heading: "Legal",
     links: [
       { label: "Terms of Service", href: "/legal/terms" },

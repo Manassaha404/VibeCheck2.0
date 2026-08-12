@@ -11,7 +11,7 @@ const LAST_UPDATED = "August 12, 2026";
 const EFFECTIVE_DATE = "August 12, 2026";
 const CONTACT_EMAIL = "manassaha425@gmail.com";
 const COMPANY_NAME = "VibeCheck";
-const WEBSITE = "https://vibecheck.app";
+const WEBSITE = "https://vibecheck.manasx.online";
 
 export default function PrivacyPolicyPage() {
   return (

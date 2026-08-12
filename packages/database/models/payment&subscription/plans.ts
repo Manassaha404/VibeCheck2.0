@@ -10,7 +10,7 @@ import {
 
 export const plans = pgTable("plans", {
   planId: uuid("plan_id").primaryKey().defaultRandom(),
-  name: text("name").notNull(),
+  name: text("name").notNull().unique(),
   razorpayPlanId: text("razorpay_plan_id"), // null for free plan
   priceInPaise: integer("price_in_paise").notNull().default(0),
   interval: text("interval")

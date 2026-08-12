@@ -341,7 +341,8 @@ CREATE TABLE "plans" (
 	"max_forms" integer DEFAULT 10 NOT NULL,
 	"ai_features_for_quiz_enabled" boolean DEFAULT false NOT NULL,
 	"ai_features_for_forms_enabled" boolean DEFAULT false NOT NULL,
-	"created_at" timestamp DEFAULT now()
+	"created_at" timestamp DEFAULT now(),
+	CONSTRAINT "plans_name_unique" UNIQUE("name")
 );
 --> statement-breakpoint
 CREATE TABLE "subscriptions" (

@@ -39,7 +39,7 @@ export default function LoginForm() {
   const handleGoogleLogin = () => {
     const apiUrl =
       process.env.NEXT_PUBLIC_API_URL?.replace("/trpc", "") || "";
-    window.location.href = `${apiUrl}/auth/google`;
+      window.location.href = `${apiUrl}/auth/google`;
   };
 
   return (

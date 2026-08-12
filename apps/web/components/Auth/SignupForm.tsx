@@ -53,7 +53,7 @@ export default function SignupForm() {
   const handleGoogleSignup = () => {
     const apiUrl =
       process.env.NEXT_PUBLIC_API_URL?.replace("/trpc", "") ||
-      "http://localhost:8000";
+      "";
     window.location.href = `${apiUrl}/auth/google`;
   };
 

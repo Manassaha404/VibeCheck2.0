@@ -333,7 +333,7 @@ export default function CancellationPolicyPage() {
               <li>
                 Log in to your {COMPANY_NAME} account at{" "}
                 <a
-                  href="https://vibecheck.app"
+                  href="https://vibecheck.manasx.online"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="underline"

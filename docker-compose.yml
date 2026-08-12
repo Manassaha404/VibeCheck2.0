@@ -54,13 +54,14 @@ services:
       - vibecheck_network
 
   api:
-    build:
-      context: .
-      dockerfile: apps/api/Dockerfile
+    image: ${DOCKERHUB_USERNAME}/vibecheck-api:${TAG:-latest}
+    pull_policy: always
     container_name: api
     expose:
       - "8000"
     restart: unless-stopped
+    env_file:
+      - ./env/api.env
     environment:
       DATABASE_URL: postgresql://vibecheck:vibecheck@postgres:5432/vibecheck
       REDIS_URL: redis://redis:6379
@@ -89,16 +90,16 @@ services:
       - vibecheck_network
 
   socket:
-    build:
-      context: .
-      dockerfile: apps/socket/Dockerfile
+    image: ${DOCKERHUB_USERNAME}/vibecheck-socket:${TAG:-latest}
+    pull_policy: always
     container_name: socket
     expose:
       - "8080"
     restart: unless-stopped
+    env_file:
+      - ./env/socket.env
     environment:
       REDIS_URL: redis://redis:6379
-      CORS_ORIGIN: http://localhost
     depends_on:
       redis:
         condition: service_healthy
@@ -106,16 +107,14 @@ services:
       - vibecheck_network
 
   web:
-    build:
-      context: .
-      dockerfile: apps/web/Dockerfile
+    image: ${DOCKERHUB_USERNAME}/vibecheck-web:${TAG:-latest}
+    pull_policy: always
     container_name: web
     expose:
       - "3000"
     restart: unless-stopped
-    environment:
-      NEXT_PUBLIC_API_URL: ""
-      NEXT_PUBLIC_SOCKET_URL: ""
+    env_file:
+      - ./env/web.env
     depends_on:
       - api
       - socket
@@ -144,6 +143,7 @@ services:
       - "traefik.docker.network=edge"
       - "traefik.http.routers.vibecheck.rule=Host(`vibecheck.manasx.online`)"
       - "traefik.http.routers.vibecheck.entrypoints=websecure"
+      - "traefik.http.routers.vibecheck.tls=true"
       - "traefik.http.routers.vibecheck.tls.certresolver=le"
       - "traefik.http.services.vibecheck.loadbalancer.server.port=80"
 

@@ -5,7 +5,7 @@ import { trpc } from "@/trpc/client";
 import { useSubscriptionStore } from "@/store/subscriptionStore";
 
 export function SubscriptionDataProvider() {
-  const { data: plansData } = trpc.subscription.listPlans.useQuery(undefined, {
+  const { data: plansData } = trpc.subscription.getAllPlans.useQuery({}, {
     staleTime: Infinity,
   });
 

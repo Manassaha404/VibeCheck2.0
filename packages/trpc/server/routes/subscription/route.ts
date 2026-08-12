@@ -21,14 +21,7 @@ export const subscriptionRouter = router({
         handleRouteError(error);
       }
     }),
-  listPlans: publicProcedure.query(async () => {
-    try {
-      const plans = await subscriptionService.getAllPlans();
-      return { plans };
-    } catch (error) {
-      handleRouteError(error);
-    }
-  }),
+
 
   //protected routes
   createCheckout: protectedProcedure
