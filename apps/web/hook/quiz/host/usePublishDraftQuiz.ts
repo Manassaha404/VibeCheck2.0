@@ -19,6 +19,11 @@ export function usePublishDraftQuiz(quizId: string) {
 
     const payload = {
       quizId,
+      globalSettings: {
+        isBonusPointsEnabled: quizStore.globalSettings.isBonusPointsEnabled,
+        passwordProtect: quizStore.globalSettings.passwordProtect,
+        password: quizStore.globalSettings.password || undefined,
+      },
       questions: quizStore.questions.map((q) => ({
         id: q.id,
         type: q.type,
@@ -43,6 +48,7 @@ export function usePublishDraftQuiz(quizId: string) {
       quizStore.reset();
 
       trpcUtils.quiz.getDashboard.invalidate();
+      trpcUtils.quiz.getQuizForEdit.invalidate({ quizId });
 
       const quizIdURL = uuidToNumber(quizId);
       router.push(`/dashboard/quiz/${quizIdURL}`);

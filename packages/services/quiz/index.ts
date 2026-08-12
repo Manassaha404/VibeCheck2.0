@@ -288,10 +288,19 @@ class QuizService {
 
       await tx.insert(quizQuestions).values(questionsToInsert);
 
-      // 3. Set status to active
+      // 3. Save global settings + set status to active in one update.
+      // Previously only { status: "active" } was set, so isBonusPointsEnabled,
+      // passwordNeeded and password were never persisted from the draft flow.
       await tx
         .update(quizzes)
-        .set({ status: "active" })
+        .set({
+          status: "active",
+          isBonusPointsEnabled: data.globalSettings.isBonusPointsEnabled,
+          passwordNeeded: data.globalSettings.passwordProtect,
+          password: data.globalSettings.passwordProtect
+            ? (data.globalSettings.password ?? null)
+            : null,
+        })
         .where(eq(quizzes.quizId, data.quizId));
 
       return {
@@ -300,6 +309,7 @@ class QuizService {
       };
     });
   }
+
 
   public async createQuiz(userId: string, payload: CreateQuizInput) {
     const data = createQuizDto.parse(payload);

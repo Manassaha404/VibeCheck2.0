@@ -26,6 +26,7 @@ const defaultSections: FooterSection[] = [
     links: [
       { label: "Explore", href: "/explore" },
       { label: "Create", href: "/create" },
+      { label: "Pricing", href: "/pricing" },
       { label: "Dashboard", href: "/dashboard" },
     ],
   },
@@ -41,9 +42,9 @@ const defaultSections: FooterSection[] = [
   {
     heading: "Legal",
     links: [
-      { label: "Privacy", href: "/privacy" },
-      { label: "Terms", href: "/terms" },
-      { label: "Support", href: "/support" },
+      { label: "Terms of Service", href: "/legal/terms" },
+      { label: "Privacy Policy", href: "/legal/privacy-policy" },
+      { label: "Cancellation Policy", href: "/legal/cancellation" },
     ],
   },
 ];
@@ -120,6 +121,35 @@ export default function Footer({
           <p className="text-label-md text-[var(--color-pure-white)] opacity-50">
             © {new Date().getFullYear()} VibeCheck. All rights reserved.
           </p>
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
+            <Link
+              href="/legal/terms"
+              id="footer-quick-terms"
+              className="text-label-sm text-[var(--color-on-surface-variant)] hover:text-[var(--color-electric-sun)] transition-colors"
+            >
+              Terms
+            </Link>
+            <span className="text-[var(--color-on-surface-variant)] opacity-40 text-label-sm select-none">
+              ·
+            </span>
+            <Link
+              href="/legal/privacy-policy"
+              id="footer-quick-privacy"
+              className="text-label-sm text-[var(--color-on-surface-variant)] hover:text-[var(--color-electric-sun)] transition-colors"
+            >
+              Privacy
+            </Link>
+            <span className="text-[var(--color-on-surface-variant)] opacity-40 text-label-sm select-none">
+              ·
+            </span>
+            <Link
+              href="/legal/cancellation"
+              id="footer-quick-cancellation"
+              className="text-label-sm text-[var(--color-on-surface-variant)] hover:text-[var(--color-electric-sun)] transition-colors"
+            >
+              Cancellation
+            </Link>
+          </div>
           <p className="text-label-sm text-[var(--color-on-surface-variant)]">
             Made with ☀️ by the VibeCheck team
           </p>

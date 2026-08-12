@@ -47,7 +47,7 @@ export default function PricingPage() {
     },
     {
       icon: <BadgeCheck size={14} strokeWidth={2.5} />,
-      label: "7-Day Money-Back Guarantee",
+      label: "Cancel Anytime — No Refunds on Used Periods",
     },
   ];
 

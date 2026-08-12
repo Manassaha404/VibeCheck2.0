@@ -32,7 +32,7 @@ import { handleRouteError } from "../../utils/error";
 import { AppError } from "@repo/error";
 
 export const quizRouter = router({
-  initDraftQuiz: protectedProcedure
+  initDraftQuiz: planRestrictedProcedure("quiz_created")
     .input(initDraftQuizDto)
     .mutation(async ({ input, ctx }) => {
       try {

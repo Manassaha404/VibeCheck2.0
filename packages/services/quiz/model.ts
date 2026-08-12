@@ -62,6 +62,11 @@ export type InitDraftQuizInput = z.infer<typeof initDraftQuizDto>;
  */
 export const publishDraftQuizDto = z.object({
   quizId: z.string().uuid(),
+  globalSettings: z.object({
+    passwordProtect: z.boolean().default(false),
+    password: z.string().optional(),
+    isBonusPointsEnabled: z.boolean().default(false),
+  }),
   questions: z
     .array(quizQuestionSchema)
     .min(1, "At least one question is required"),
