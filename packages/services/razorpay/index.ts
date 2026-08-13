@@ -677,7 +677,7 @@ class SubscriptionService {
     const latestSub = subs[0] ?? null;
 
     let plan;
-    if (latestSub) {
+    if (latestSub && ACTIVE_STATUSES.includes(latestSub.status as any)) {
       const [p] = await db
         .select()
         .from(plans)
