@@ -11,11 +11,18 @@ import { PricingHeader } from "@/components/pricing/PricingHeader";
 import { PlanCard } from "@/components/pricing/PlanCard";
 import { PricingFaq } from "@/components/pricing/PricingFaq";
 import { useGetPlans } from "@/hook/subscription/useGetPlans";
+import { useUserInfoStore } from "@/store/userInfoStore";
 import Footer from "@/components/Footer";
 
 export default function PricingPage() {
   const router = useRouter();
   const { plans, isLoading, isError } = useGetPlans("monthly");
+  const { plan: userPlan } = useUserInfoStore();
+
+  // planId of the plan the user currently holds (null = free / not logged in)
+  const currentPlanId: string | null = userPlan?.planId ?? null;
+  // Is user on a paid plan?
+  const isOnPaidPlan = !!currentPlanId && (userPlan?.priceInPaise ?? 0) > 0;
 
   const handleSelectPlan = useCallback(
     (planId: string) => {
@@ -25,9 +32,14 @@ export default function PricingPage() {
         router.push("/create");
         return;
       }
+      // If user already has an active paid subscription → upgrade flow
+      if (isOnPaidPlan) {
+        router.push(`/checkout/update?planId=${planId}`);
+        return;
+      }
       router.push(`/checkout?planId=${planId}`);
     },
-    [plans, router],
+    [plans, router, isOnPaidPlan],
   );
 
   // Most popular = cheapest paid plan
@@ -97,6 +109,7 @@ export default function PricingPage() {
               index={i}
               isPopular={plan.planId === popularPlanId}
               onSelect={handleSelectPlan}
+              currentPlanId={currentPlanId}
             />
           ))}
         </div>

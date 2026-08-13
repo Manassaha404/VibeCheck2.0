@@ -9,7 +9,7 @@ function SkeletonCard({ large = false }: { large?: boolean }) {
   return (
     <div
       className={`border-4 border-[var(--color-ink-charcoal)] rounded-2xl shadow-hard animate-pulse bg-[var(--color-canvas-cream)] ${
-        large ? "md:col-span-2 p-8 min-h-[260px]" : "p-6 min-h-[160px]"
+        large ? "sm:col-span-2 p-6 sm:p-8 min-h-[200px] sm:min-h-[260px]" : "p-5 sm:p-6 min-h-[140px] sm:min-h-[160px]"
       }`}
     />
   );
@@ -59,18 +59,18 @@ function HeroCard({ item }: { item: TrendingItem }) {
 
   return (
     <div
-      className={`md:col-span-2 ${bgClass} border-4 border-[var(--color-ink-charcoal)] rounded-2xl p-8 shadow-hard flex flex-col justify-between relative overflow-hidden group hover:translate-y-[-4px] hover:shadow-neubrutalist transition-all duration-300`}
+      className={`sm:col-span-2 ${bgClass} border-4 border-[var(--color-ink-charcoal)] rounded-2xl p-5 sm:p-8 shadow-hard flex flex-col justify-between relative overflow-hidden group hover:translate-y-[-4px] hover:shadow-neubrutalist transition-all duration-300`}
     >
       <div className="relative z-10">
-        <span className="inline-flex items-center gap-1.5 bg-[var(--color-pure-white)] border-2 border-[var(--color-ink-charcoal)] text-label-sm px-3 py-1 rounded-full mb-4 font-bold shadow-hard-sm">
+        <span className="inline-flex items-center gap-1.5 bg-[var(--color-pure-white)] border-2 border-[var(--color-ink-charcoal)] text-label-sm px-2.5 sm:px-3 py-1 rounded-full mb-3 sm:mb-4 font-bold shadow-hard-sm">
           <Flame size={14} className="text-red-500" />
           {item.kind === "poll" ? "POLL" : "PETITION"} · HOT
         </span>
-        <h3 className="text-headline-md md:text-display-lg font-display font-extrabold text-[var(--color-ink-charcoal)] leading-tight mb-3 max-w-lg">
+        <h3 className="text-headline-sm sm:text-headline-md md:text-display-lg font-display font-extrabold text-[var(--color-ink-charcoal)] leading-tight mb-3 max-w-lg">
           {item.title}
         </h3>
         {item.tags.length > 0 && (
-          <div className="flex flex-wrap gap-2 mb-4">
+          <div className="flex flex-wrap gap-1.5 sm:gap-2 mb-3 sm:mb-4">
             {item.tags.slice(0, 3).map((tag) => (
               <span
                 key={tag}
@@ -82,16 +82,16 @@ function HeroCard({ item }: { item: TrendingItem }) {
           </div>
         )}
       </div>
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between relative z-10 gap-4">
-        <div className="flex items-center gap-2 text-[var(--color-ink-charcoal)] font-bold">
-          <Icon size={20} />
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between relative z-10 gap-3 sm:gap-4 mt-3 sm:mt-0">
+        <div className="flex items-center gap-2 text-[var(--color-ink-charcoal)] font-bold text-sm sm:text-base">
+          <Icon size={18} />
           <span>
             {count.toLocaleString()} {label}
           </span>
         </div>
         <Link
           href={href}
-          className="bg-[var(--color-pure-white)] border-4 border-[var(--color-ink-charcoal)] px-8 py-3 rounded-full text-headline-sm font-display font-bold shadow-hard hover:translate-y-1 hover:translate-x-1 hover:shadow-none transition-all text-center"
+          className="bg-[var(--color-pure-white)] border-4 border-[var(--color-ink-charcoal)] px-6 sm:px-8 py-2.5 sm:py-3 rounded-full text-sm sm:text-headline-sm font-display font-bold shadow-hard hover:translate-y-1 hover:translate-x-1 hover:shadow-none transition-all text-center"
         >
           {ctaLabel}
         </Link>
@@ -127,23 +127,23 @@ function SideCard({
 
   return (
     <div
-      className={`${bgClass} border-4 border-[var(--color-ink-charcoal)] rounded-2xl p-6 shadow-hard flex flex-col justify-between hover:translate-y-[-4px] hover:shadow-neubrutalist transition-all duration-300`}
+      className={`${bgClass} border-4 border-[var(--color-ink-charcoal)] rounded-2xl p-4 sm:p-6 shadow-hard flex flex-col justify-between hover:translate-y-[-4px] hover:shadow-neubrutalist transition-all duration-300`}
     >
       <div>
         <span className="inline-block bg-[var(--color-pure-white)]/60 border border-[var(--color-ink-charcoal)] text-xs font-bold px-2 py-0.5 rounded-full mb-2">
           {item.kind === "poll" ? "POLL" : "PETITION"}
         </span>
-        <h4 className="text-headline-sm font-display font-bold text-[var(--color-ink-charcoal)] mb-2 leading-tight line-clamp-2">
+        <h4 className="text-sm sm:text-headline-sm font-display font-bold text-[var(--color-ink-charcoal)] mb-2 leading-tight line-clamp-2">
           {item.title}
         </h4>
       </div>
-      <div className="flex items-center justify-between mt-4">
+      <div className="flex items-center justify-between mt-3 sm:mt-4">
         <span className="font-bold text-sm">
           {count.toLocaleString()} {label}
         </span>
         <Link
           href={href}
-          className="bg-[var(--color-pure-white)] border-2 border-[var(--color-ink-charcoal)] px-4 py-2 rounded-full font-bold shadow-hard-sm hover:shadow-none hover:translate-y-[2px] transition-all"
+          className="bg-[var(--color-pure-white)] border-2 border-[var(--color-ink-charcoal)] px-3 sm:px-4 py-1.5 sm:py-2 rounded-full font-bold text-sm shadow-hard-sm hover:shadow-none hover:translate-y-[2px] transition-all"
         >
           {ctaLabel}
         </Link>
@@ -187,33 +187,33 @@ export default function TrendingSection() {
   const sideItems = rest.slice(0, 2);
 
   return (
-    <section className="mb-16">
-      <div className="flex items-center gap-3 mb-8">
-        <TrendingUp size={28} className="text-red-500" />
-        <h2 className="text-headline-sm md:text-headline-lg font-display font-extrabold text-[var(--color-ink-charcoal)] tracking-tight">
+    <section className="mb-10 sm:mb-16">
+      <div className="flex items-center gap-2 sm:gap-3 mb-5 sm:mb-8">
+        <TrendingUp size={22} className="text-red-500 sm:w-7 sm:h-7" />
+        <h2 className="text-headline-sm sm:text-headline-md md:text-headline-lg font-display font-extrabold text-[var(--color-ink-charcoal)] tracking-tight">
           Trending Today
         </h2>
       </div>
 
       {isLoading ? (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
           <SkeletonCard large />
-          <div className="flex flex-col gap-6">
+          <div className="flex flex-col gap-4 sm:gap-6">
             <SkeletonCard />
             <SkeletonCard />
           </div>
         </div>
       ) : items.length === 0 ? (
-        <div className="border-4 border-dashed border-[var(--color-outline)] rounded-2xl p-12 text-center">
-          <p className="text-body-lg text-[var(--color-on-surface-variant)] font-semibold">
+        <div className="border-4 border-dashed border-[var(--color-outline)] rounded-2xl p-8 sm:p-12 text-center">
+          <p className="text-body-md sm:text-body-lg text-[var(--color-on-surface-variant)] font-semibold">
             Nothing trending yet today. Check back soon!
           </p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
           {hero && <HeroCard item={hero} />}
 
-          <div className="flex flex-col gap-6">
+          <div className="flex flex-col gap-4 sm:gap-6">
             {sideItems.map((item, i) => (
               <SideCard key={item.id} item={item} colorIdx={i} />
             ))}

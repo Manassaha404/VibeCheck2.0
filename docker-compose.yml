@@ -81,8 +81,8 @@ services:
   inngest:
     image: inngest/inngest:latest
     container_name: inngest
-    ports:
-      - "8288:8288"
+    expose:
+      - "8288"
     command: ["inngest", "dev", "-u", "http://api:8000/api/inngest"]
     depends_on:
       - api

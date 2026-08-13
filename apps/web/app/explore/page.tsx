@@ -2,7 +2,6 @@
 
 import React, { useState } from "react";
 import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 import ExploreSearch from "@/components/explore/ExploreSearch";
 import TrendingSection from "@/components/explore/TrendingSection";
 import ForYouSection from "@/components/explore/ForYouSection";
@@ -82,18 +81,18 @@ export default function ExplorePage() {
   return (
     <div className="bg-[var(--color-canvas-cream)] text-[var(--color-ink-charcoal)] font-body min-h-screen flex flex-col relative overflow-hidden">
       {/* Decorative background elements for vibe */}
-      <div className="absolute top-[-10%] left-[-5%] w-[40%] h-[40%] bg-[var(--color-lavender)] rounded-full mix-blend-multiply filter blur-[100px] opacity-30 animate-float-slow pointer-events-none" />
-      <div className="absolute bottom-[-10%] right-[-5%] w-[40%] h-[40%] bg-[var(--color-mint)] rounded-full mix-blend-multiply filter blur-[100px] opacity-30 animate-float-medium pointer-events-none" />
+      <div className="absolute top-[-10%] left-[-5%] w-[60%] h-[40%] sm:w-[40%] bg-[var(--color-lavender)] rounded-full mix-blend-multiply filter blur-[100px] opacity-30 animate-float-slow pointer-events-none" />
+      <div className="absolute bottom-[-10%] right-[-5%] w-[60%] h-[40%] sm:w-[40%] bg-[var(--color-mint)] rounded-full mix-blend-multiply filter blur-[100px] opacity-30 animate-float-medium pointer-events-none" />
 
       <Navbar />
 
-      <div className="flex flex-1 max-w-[1000px] mx-auto w-full relative z-10 mb-24">
-        <main className="flex-1 p-4 md:p-8 lg:p-12 overflow-y-auto custom-scrollbar relative">
+      <div className="flex flex-1 max-w-[1000px] mx-auto w-full relative z-10 mb-28 sm:mb-24">
+        <main className="flex-1 px-3 py-4 sm:px-5 sm:py-6 md:px-8 md:py-8 lg:px-12 lg:py-10 overflow-y-auto custom-scrollbar relative">
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, ease: "easeOut" }}
-            className="mb-8"
+            className="mb-6 sm:mb-8"
           >
             <ExploreSearch />
           </motion.div>
@@ -107,7 +106,7 @@ export default function ExplorePage() {
               transition={{ duration: 0.3, ease: "easeInOut" }}
             >
               {activeTab === "trending" && (
-                <div className="flex flex-col gap-12">
+                <div className="flex flex-col gap-8 sm:gap-12">
                   <TrendingSection />
                   <ForYouSection />
                 </div>

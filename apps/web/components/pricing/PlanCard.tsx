@@ -23,6 +23,8 @@ interface PlanCardProps {
   index: number;
   isPopular?: boolean;
   onSelect: (planId: string) => void;
+  /** planId of the user's current active plan (undefined = not logged in / free) */
+  currentPlanId?: string | null;
 }
 
 const ACCENT_COLORS = [
@@ -89,11 +91,24 @@ export function PlanCard({
   index,
   isPopular = false,
   onSelect,
+  currentPlanId,
 }: PlanCardProps) {
   const isFree = plan.priceInPaise === 0;
   const accentColor = ACCENT_COLORS[index % ACCENT_COLORS.length]!;
   const accentBg = ACCENT_BG_CLASSES[index % ACCENT_BG_CLASSES.length]!;
   const features = buildFeatures(plan);
+
+  const isCurrentPlan = !!currentPlanId && currentPlanId === plan.planId;
+  // Disable the button when this IS the current plan (can't re-subscribe)
+  const isDisabled = isCurrentPlan;
+
+  const buttonLabel = isFree
+    ? "Get Started Free"
+    : isCurrentPlan
+      ? "Current Plan"
+      : currentPlanId && !isFree
+        ? `Upgrade to ${plan.name}`
+        : `Choose ${plan.name}`;
 
   return (
     <motion.div
@@ -101,17 +116,28 @@ export function PlanCard({
       initial="hidden"
       animate="visible"
       custom={index}
-      whileHover={{
-        y: -6,
-        boxShadow: `8px 8px 0px 0px var(--color-ink-charcoal)`,
-        transition: { type: "spring", stiffness: 300, damping: 20 },
-      }}
+      whileHover={
+        isDisabled
+          ? {}
+          : {
+              y: -6,
+              boxShadow: `8px 8px 0px 0px var(--color-ink-charcoal)`,
+              transition: { type: "spring", stiffness: 300, damping: 20 },
+            }
+      }
       className={`relative flex flex-col bg-[var(--color-canvas-cream)] border-2 border-[var(--color-ink-charcoal)] shadow-hard overflow-hidden ${
-        isPopular ? "ring-4 ring-offset-2 ring-[var(--color-leaf-green)]" : ""
-      }`}
+        isPopular && !isCurrentPlan
+          ? "ring-4 ring-offset-2 ring-[var(--color-leaf-green)]"
+          : ""
+      } ${isCurrentPlan ? "opacity-70" : ""}`}
       style={{ boxShadow: `6px 6px 0px 0px var(--color-ink-charcoal)` }}
     >
-      {isPopular && (
+      {isCurrentPlan && (
+        <div className="absolute top-0 right-0 bg-[var(--color-ink-charcoal)] text-[var(--color-canvas-cream)] font-display font-black text-[10px] uppercase tracking-widest px-3 py-1 border-l-2 border-b-2 border-[var(--color-ink-charcoal)] z-10 flex items-center gap-1">
+          ✓ Your Plan
+        </div>
+      )}
+      {isPopular && !isCurrentPlan && (
         <div className="absolute top-0 right-0 bg-[var(--color-leaf-green)] text-[var(--color-ink-charcoal)] font-display font-black text-[10px] uppercase tracking-widest px-3 py-1 border-l-2 border-b-2 border-[var(--color-ink-charcoal)] z-10 flex items-center gap-1">
           <Zap size={10} strokeWidth={3} />
           Most Popular
@@ -187,14 +213,17 @@ export function PlanCard({
       <div className="p-6 pt-0">
         <button
           id={`plan-select-${plan.planId}`}
-          onClick={() => onSelect(plan.planId)}
-          className={`w-full font-display font-bold text-sm uppercase tracking-wide py-3 px-6 border-2 border-[var(--color-ink-charcoal)] shadow-hard-sm transition-all btn-press ${
-            isFree
-              ? "bg-[var(--color-canvas-cream)] text-[var(--color-ink-charcoal)] hover:bg-[var(--color-surface-container)]"
-              : `${accentBg} text-[var(--color-ink-charcoal)]`
+          onClick={() => !isDisabled && onSelect(plan.planId)}
+          disabled={isDisabled}
+          className={`w-full font-display font-bold text-sm uppercase tracking-wide py-3 px-6 border-2 border-[var(--color-ink-charcoal)] shadow-hard-sm transition-all ${
+            isDisabled
+              ? "bg-[var(--color-ink-charcoal)]/10 text-[var(--color-ink-charcoal)]/40 cursor-not-allowed shadow-none"
+              : isFree
+                ? "bg-[var(--color-canvas-cream)] text-[var(--color-ink-charcoal)] hover:bg-[var(--color-surface-container)] btn-press"
+                : `${accentBg} text-[var(--color-ink-charcoal)] btn-press`
           }`}
         >
-          {isFree ? "Get Started Free" : `Choose ${plan.name}`}
+          {buttonLabel}
         </button>
       </div>
     </motion.div>

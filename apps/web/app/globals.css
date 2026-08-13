@@ -1,5 +1,5 @@
 /* ─── Google Fonts (must be first @imports) ────────────────── */
-@import url("https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Hanken+Grotesk:wght@400..700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=DynaPuff:wght@400..700&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap");
 
 @import "tailwindcss";
@@ -163,7 +163,7 @@
   body {
     background-color: var(--color-canvas-cream);
     color: var(--color-ink-charcoal);
-    font-family: "Hanken Grotesk", sans-serif;
+    font-family: "DynaPuff", sans-serif;
     font-size: 16px;
     line-height: 24px;
     min-height: 100vh;
@@ -178,7 +178,7 @@
   h4,
   h5,
   h6 {
-    font-family: "Bricolage Grotesque", sans-serif;
+    font-family: "DynaPuff", sans-serif;
     font-weight: 800;
     color: var(--color-ink-charcoal);
   }
@@ -188,14 +188,14 @@
 @layer utilities {
   /* Typography */
   .font-display {
-    font-family: "Bricolage Grotesque", sans-serif;
+    font-family: "DynaPuff", sans-serif;
   }
   .font-body {
-    font-family: "Hanken Grotesk", sans-serif;
+    font-family: "DynaPuff", sans-serif;
   }
 
   .text-display-lg {
-    font-family: "Bricolage Grotesque", sans-serif;
+    font-family: "DynaPuff", sans-serif;
     font-size: clamp(40px, 6vw, 72px);
     line-height: 1.05;
     letter-spacing: -0.04em;
@@ -203,7 +203,7 @@
   }
 
   .text-headline-lg {
-    font-family: "Bricolage Grotesque", sans-serif;
+    font-family: "DynaPuff", sans-serif;
     font-size: clamp(32px, 4vw, 48px);
     line-height: 1.08;
     letter-spacing: -0.02em;
@@ -211,35 +211,35 @@
   }
 
   .text-headline-md {
-    font-family: "Bricolage Grotesque", sans-serif;
+    font-family: "DynaPuff", sans-serif;
     font-size: 32px;
     line-height: 38px;
     font-weight: 700;
   }
 
   .text-headline-sm {
-    font-family: "Bricolage Grotesque", sans-serif;
+    font-family: "DynaPuff", sans-serif;
     font-size: 24px;
     line-height: 30px;
     font-weight: 700;
   }
 
   .text-body-lg {
-    font-family: "Hanken Grotesk", sans-serif;
+    font-family: "DynaPuff", sans-serif;
     font-size: 18px;
     line-height: 28px;
     font-weight: 400;
   }
 
   .text-body-md {
-    font-family: "Hanken Grotesk", sans-serif;
+    font-family: "DynaPuff", sans-serif;
     font-size: 16px;
     line-height: 24px;
     font-weight: 400;
   }
 
   .text-label-md {
-    font-family: "Hanken Grotesk", sans-serif;
+    font-family: "DynaPuff", sans-serif;
     font-size: 14px;
     line-height: 20px;
     letter-spacing: 0.02em;
@@ -247,7 +247,7 @@
   }
 
   .text-label-sm {
-    font-family: "Hanken Grotesk", sans-serif;
+    font-family: "DynaPuff", sans-serif;
     font-size: 12px;
     line-height: 16px;
     letter-spacing: 0.05em;
@@ -643,7 +643,7 @@
   background-color: var(--color-ink-charcoal);
   color: var(--color-electric-sun);
   border: 2px solid var(--color-ink-charcoal);
-  font-family: "Hanken Grotesk", sans-serif;
+  font-family: "DynaPuff", sans-serif;
   font-size: 14px;
   font-weight: 700;
   letter-spacing: 0.04em;
@@ -676,7 +676,7 @@
   background-color: var(--color-electric-sun);
   color: var(--color-ink-charcoal);
   border: 2px solid var(--color-ink-charcoal);
-  font-family: "Hanken Grotesk", sans-serif;
+  font-family: "DynaPuff", sans-serif;
   font-size: 13px;
   font-weight: 700;
   letter-spacing: 0.03em;
@@ -746,7 +746,7 @@
 }
 
 .agent-panel-header__title {
-  font-family: "Bricolage Grotesque", sans-serif;
+  font-family: "DynaPuff", sans-serif;
   font-size: 13px;
   font-weight: 800;
   letter-spacing: 0.02em;
@@ -781,7 +781,7 @@
 }
 
 .agent-panel-header__status-label {
-  font-family: "Hanken Grotesk", sans-serif;
+  font-family: "DynaPuff", sans-serif;
   font-size: 11px;
   font-weight: 600;
   color: var(--color-leaf-green);
@@ -905,7 +905,7 @@
 }
 
 .agent-bubble-label {
-  font-family: "Hanken Grotesk", sans-serif;
+  font-family: "DynaPuff", sans-serif;
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.07em;
@@ -935,7 +935,7 @@
 }
 
 .agent-bubble-text {
-  font-family: "Hanken Grotesk", sans-serif;
+  font-family: "DynaPuff", sans-serif;
   font-size: 14px;
   line-height: 1.55;
   margin: 0;
@@ -944,7 +944,7 @@
 }
 
 .agent-bubble-time {
-  font-family: "Hanken Grotesk", sans-serif;
+  font-family: "DynaPuff", sans-serif;
   font-size: 10px;
   font-weight: 500;
   color: var(--color-ink-charcoal);
@@ -961,7 +961,7 @@
   padding: 4px 8px;
   background-color: var(--color-canvas-cream);
   border: 1.5px solid var(--color-ink-charcoal);
-  font-family: "Hanken Grotesk", sans-serif;
+  font-family: "DynaPuff", sans-serif;
   font-size: 11px;
   font-weight: 600;
 }
@@ -1080,14 +1080,14 @@
 }
 
 .agent-dropzone__main-text {
-  font-family: "Hanken Grotesk", sans-serif;
+  font-family: "DynaPuff", sans-serif;
   font-size: 13px;
   font-weight: 700;
   color: var(--color-ink-charcoal);
 }
 
 .agent-dropzone__sub-text {
-  font-family: "Hanken Grotesk", sans-serif;
+  font-family: "DynaPuff", sans-serif;
   font-size: 11px;
   font-weight: 500;
   color: var(--color-ink-charcoal);
@@ -1102,7 +1102,7 @@
   background-color: var(--color-error-container, #ffdad6);
   border: 1.5px solid var(--color-error, #ba1a1a);
   color: var(--color-on-error-container, #93000a);
-  font-family: "Hanken Grotesk", sans-serif;
+  font-family: "DynaPuff", sans-serif;
   font-size: 11px;
   font-weight: 600;
 }
@@ -1124,7 +1124,7 @@
 }
 
 .agent-file-chip-selected__name {
-  font-family: "Hanken Grotesk", sans-serif;
+  font-family: "DynaPuff", sans-serif;
   font-size: 13px;
   font-weight: 700;
   color: var(--color-ink-charcoal);
@@ -1135,7 +1135,7 @@
 }
 
 .agent-file-chip-selected__size {
-  font-family: "Hanken Grotesk", sans-serif;
+  font-family: "DynaPuff", sans-serif;
   font-size: 11px;
   font-weight: 500;
   color: var(--color-ink-charcoal);
@@ -1213,7 +1213,7 @@
   border: none;
   outline: none;
   resize: none;
-  font-family: "Hanken Grotesk", sans-serif;
+  font-family: "DynaPuff", sans-serif;
   font-size: 14px;
   line-height: 1.5;
   color: var(--color-ink-charcoal);
@@ -1276,7 +1276,7 @@
 }
 
 .agent-input-hint {
-  font-family: "Hanken Grotesk", sans-serif;
+  font-family: "DynaPuff", sans-serif;
   font-size: 10px;
   font-weight: 500;
   color: var(--color-ink-charcoal);
@@ -1374,7 +1374,7 @@
 }
 
 .ai-terminal-title {
-  font-family: "Hanken Grotesk", sans-serif;
+  font-family: "DynaPuff", sans-serif;
   font-size: 14px;
   font-weight: 800;
   letter-spacing: 0.04em;
@@ -1403,7 +1403,7 @@
 }
 
 .ai-terminal-status-label {
-  font-family: "Hanken Grotesk", sans-serif;
+  font-family: "DynaPuff", sans-serif;
   font-size: 11px;
   font-weight: 800;
   letter-spacing: 0.06em;
@@ -1413,7 +1413,7 @@
 
 .ai-terminal-body {
   padding: 18px 20px 22px;
-  font-family: "Hanken Grotesk", monospace, sans-serif;
+  font-family: "DynaPuff", monospace, sans-serif;
   font-size: 15px;
   font-weight: 700;
   background-color: var(--color-pure-white);
@@ -1468,7 +1468,7 @@
 }
 
 .ai-demo-label {
-  font-family: "Hanken Grotesk", sans-serif;
+  font-family: "DynaPuff", sans-serif;
   font-size: 11px;
   font-weight: 800;
   letter-spacing: 0.08em;
@@ -1578,14 +1578,14 @@
 }
 
 .ai-demo-count {
-  font-family: "Bricolage Grotesque", sans-serif;
+  font-family: "DynaPuff", sans-serif;
   font-size: 26px;
   font-weight: 800;
   color: var(--color-ink-charcoal);
 }
 
 .ai-demo-count-label {
-  font-family: "Hanken Grotesk", sans-serif;
+  font-family: "DynaPuff", sans-serif;
   font-size: 12px;
   font-weight: 800;
   color: var(--color-ink-charcoal);
@@ -1632,7 +1632,7 @@
 
 /* ─── Legal Pages — Prose Typography ───────────────────────── */
 .legal-content p {
-  font-family: "Hanken Grotesk", sans-serif;
+  font-family: "DynaPuff", sans-serif;
   font-size: 16px;
   line-height: 26px;
   color: var(--color-on-surface);
@@ -1644,7 +1644,7 @@
 }
 
 .legal-content h3 {
-  font-family: "Bricolage Grotesque", sans-serif;
+  font-family: "DynaPuff", sans-serif;
   font-size: 18px;
   font-weight: 700;
   line-height: 26px;
@@ -1668,7 +1668,7 @@
 }
 
 .legal-content li {
-  font-family: "Hanken Grotesk", sans-serif;
+  font-family: "DynaPuff", sans-serif;
   font-size: 16px;
   line-height: 26px;
   color: var(--color-on-surface);
