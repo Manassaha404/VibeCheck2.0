@@ -125,7 +125,7 @@ class UsageService {
     }
 
     // Unlimited on this plan — skip counter check
-    if (limit === Infinity) {
+    if (limit === -1) {
       return { periodEnd, plan };
     }
 

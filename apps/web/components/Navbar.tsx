@@ -412,7 +412,7 @@ export default function Navbar({
                 className="flex flex-col gap-2 mt-2 pt-4 border-t-2 border-[var(--color-outline-variant)]"
               >
                 <Link
-                  href={username ? `/profile/${username}` : "/profile"}
+                  href="/profile"
                   onClick={() => setMobileOpen(false)}
                   className="text-body-lg font-bold text-[var(--color-ink-charcoal)] hover:text-[var(--color-primary)] py-2 flex items-center gap-2"
                 >

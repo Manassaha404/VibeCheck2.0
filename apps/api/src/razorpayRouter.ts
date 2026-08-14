@@ -24,10 +24,10 @@ razorPayWebhookRouter.post(
     const eventId =
       (req.headers["x-razorpay-event-id"] as string) ??
       event?.payload?.subscription?.entity?.id +
-        "_" +
-        event.event +
-        "_" +
-        event.created_at;
+      "_" +
+      event.event +
+      "_" +
+      event.created_at;
     const alreadyProcessed =
       await subscriptionService.checkWebHookAlreadyProcessed(eventId);
     if (alreadyProcessed) {
