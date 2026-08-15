@@ -34,7 +34,7 @@ const ingestDocument = inngest.createFunction(
     });
 
     try {
-      const localSource = await step.run("download-file", async () => {
+      const rawDocs = await step.run("download-and-load-document", async () => {
         const response = await fetch(fileUrl);
         if (!response.ok) {
           throw new Error(
@@ -50,24 +50,21 @@ const ingestDocument = inngest.createFunction(
         const tmpPath = path.join(os.tmpdir(), `ingest-${documentId}${ext}`);
 
         fs.writeFileSync(tmpPath, buffer);
-        return tmpPath;
+
+        try {
+          return await loadAnyDocument(tmpPath);
+        } finally {
+          try {
+            fs.unlinkSync(tmpPath);
+          } catch {
+            // os will clean up temp files eventually, but we try to delete it here to avoid cluttering the temp directory
+          }
+        }
       });
 
       await step.realtime.publish("document-chunking", ch.status, {
         status: "processing",
         stage: "chunking",
-      });
-
-      const rawDocs = await step.run("load-document", async () => {
-        try {
-          return await loadAnyDocument(localSource);
-        } finally {
-          try {
-            fs.unlinkSync(localSource);
-          } catch {
-            // os will clean up temp files eventually, but we try to delete it here to avoid cluttering the temp directory
-          }
-        }
       });
 
       const taggedChunks = await step.run("chunk-and-tag", async () => {

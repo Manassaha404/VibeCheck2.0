@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useRef, useState } from "react";
-import { Paperclip, AlertCircle } from "lucide-react";
+import { Paperclip, AlertCircle, X } from "lucide-react";
 
 interface AgentFileUploadProps {
   onFileSelect: (file: File) => void;
@@ -20,6 +20,8 @@ const MAX_SIZE_MB = 10;
 
 export default function AgentFileUpload({
   onFileSelect,
+  selectedFile,
+  onClear,
 }: AgentFileUploadProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [error, setError] = useState<string | null>(null);
@@ -45,19 +47,38 @@ export default function AgentFileUpload({
     e.target.value = "";
   };
 
+  const handleClear = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setError(null);
+    onClear();
+  };
+
   return (
     <div className="flex flex-col gap-1.5">
       <button
         type="button"
-        onClick={() => inputRef.current?.click()}
+        onClick={() => !selectedFile && inputRef.current?.click()}
         className="flex items-center gap-2 w-full px-3 py-2 rounded border-2 border-ink-charcoal bg-pure-white hover:bg-lavender hover:shadow-[2px_2px_0px_0px_rgba(44,46,42,1)] transition-all text-label-sm font-bold text-ink-charcoal"
-        aria-label="Choose a file to upload"
+        aria-label={selectedFile ? `Selected file: ${selectedFile.name}` : "Choose a file to upload"}
       >
         <Paperclip className="w-4 h-4 shrink-0" />
-        <span className="min-w-0 truncate">Choose a file…</span>
-        <span className="ml-auto shrink-0 text-ink-charcoal/50 font-medium text-[11px]">
-          PDF · TXT · DOC · DOCX · MD
+        <span className="min-w-0 truncate">
+          {selectedFile ? selectedFile.name : "Choose a file…"}
         </span>
+        {selectedFile ? (
+          <button
+            type="button"
+            onClick={handleClear}
+            className="ml-auto shrink-0 p-0.5 rounded hover:bg-ink-charcoal/10 transition-colors"
+            aria-label="Clear selected file"
+          >
+            <X className="w-3.5 h-3.5 text-ink-charcoal/70" />
+          </button>
+        ) : (
+          <span className="ml-auto shrink-0 text-ink-charcoal/50 font-medium text-[11px]">
+            PDF · TXT · DOC · DOCX · MD
+          </span>
+        )}
       </button>
 
       <input
