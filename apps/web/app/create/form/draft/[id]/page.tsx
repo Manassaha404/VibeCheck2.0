@@ -40,6 +40,7 @@ export default function FormDraftBuilderPage() {
   const { handlePublishForm, isPublishing } = usePublishForm();
   const [isPublished, setIsPublished] = React.useState(false);
   const [isSettingsModalOpen, setIsSettingsModalOpen] = React.useState(false);
+  const [showDriveWarning, setShowDriveWarning] = React.useState(false);
   const { loadDraft, isLoading, apiError, isFormPublished } =
     useLoadDraftForm();
 
@@ -57,6 +58,7 @@ export default function FormDraftBuilderPage() {
 
     const hasFileField = nodes.some((node) => node.data.type === "file");
     if (hasFileField && !isGoogleDriveConnected) {
+      setShowDriveWarning(true);
       return;
     }
 
@@ -89,6 +91,7 @@ export default function FormDraftBuilderPage() {
 
     const hasFileField = nodes.some((node) => node.data.type === "file");
     if (hasFileField && !isGoogleDriveConnected) {
+      setShowDriveWarning(true);
       return;
     }
 
@@ -284,6 +287,48 @@ export default function FormDraftBuilderPage() {
         onClose={() => setIsSettingsModalOpen(false)}
         formSlug={formSlug}
       />
+
+      {/* Drive Warning Modal */}
+      {showDriveWarning && (
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-ink-charcoal/50 backdrop-blur-sm p-4">
+          <div className="w-full max-w-md bg-pure-white border-[3px] border-ink-charcoal shadow-[8px_8px_0px_0px_rgba(44,46,42,1)] p-8 flex flex-col items-center text-center relative animate-pop-in">
+            {/* Top accent bar */}
+            <div className="absolute top-0 left-0 right-0 h-3 bg-vivid-coral border-b-[3px] border-ink-charcoal" />
+            
+            <div className="w-16 h-16 bg-vivid-coral border-[3px] border-ink-charcoal rounded flex items-center justify-center mt-4 mb-6 shadow-[4px_4px_0px_0px_rgba(44,46,42,1)]">
+              <span className="text-3xl font-bold text-ink-charcoal">!</span>
+            </div>
+
+            <h2 className="text-headline-sm font-bold mb-3 uppercase tracking-tight">
+              Google Drive Required
+            </h2>
+            
+            <div className="w-16 h-1.5 bg-ink-charcoal mb-5" />
+
+            <p className="text-body-md font-bold opacity-80 mb-8 leading-relaxed">
+              You have a file upload field in your form, but Google Drive is not connected. Please connect your Google Drive in the Settings to save and publish.
+            </p>
+
+            <div className="flex gap-4 w-full">
+              <button
+                onClick={() => setShowDriveWarning(false)}
+                className="flex-1 px-4 py-3 bg-canvas-cream text-ink-charcoal font-bold font-label-md uppercase border-[3px] border-ink-charcoal shadow-[4px_4px_0px_0px_rgba(44,46,42,1)] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(44,46,42,1)] transition-all active:translate-y-0 active:shadow-none"
+              >
+                Close
+              </button>
+              <button
+                onClick={() => {
+                  setShowDriveWarning(false);
+                  setIsSettingsModalOpen(true);
+                }}
+                className="flex-1 px-4 py-3 bg-electric-sun text-ink-charcoal font-bold font-label-md uppercase border-[3px] border-ink-charcoal shadow-[4px_4px_0px_0px_rgba(44,46,42,1)] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_rgba(44,46,42,1)] transition-all active:translate-y-0 active:shadow-none"
+              >
+                Settings
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

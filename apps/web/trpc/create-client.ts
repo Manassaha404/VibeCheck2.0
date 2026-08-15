@@ -7,7 +7,7 @@ function getBaseUrl() {
   if (process.env.INTERNAL_API_URL) {
     return process.env.INTERNAL_API_URL;
   }
-  return process.env.NEXT_PUBLIC_API_URL?.replace("/trpc", "") || "http://localhost:8000";
+  return process.env.NEXT_PUBLIC_API_URL?.replace("/trpc", "") || "";
 }
 
 export const createTRPCLink = () =>

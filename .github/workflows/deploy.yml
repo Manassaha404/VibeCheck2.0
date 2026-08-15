@@ -123,7 +123,7 @@ jobs:
             docker compose pull
 
             echo "Recreating containers..."
-            docker compose up -d --force-recreate --remove-orphans
+            docker compose up -d --force-recreate 
 
             # Wait a few seconds to ensure everything settles
             sleep 5

@@ -13,8 +13,7 @@ export const useDriveConnection = () => {
 
   const handleConnectDrive = () => {
     const apiUrl =
-      process.env.NEXT_PUBLIC_API_URL?.replace("/trpc", "") ||
-      "http://localhost:8000";
+      process.env.NEXT_PUBLIC_API_URL?.replace("/trpc", "") || "";
     window.location.href = `${apiUrl}/auth/google/drive?returnTo=${pathname}`;
   };
 
