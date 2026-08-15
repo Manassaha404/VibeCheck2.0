@@ -4,22 +4,7 @@ import {
   useFormBuilderStore,
   FieldNode,
 } from "@/store/formStore/formBuilderStore";
-import { useRealtime } from "inngest/react";
-import { realtime } from "inngest";
-import { z } from "zod";
-
-// the copy of agent channel what in inngest agent function so,don't need depend on backend call for loading the channel
-const agentChannel = realtime.channel({
-  name: ({ jobId }: { jobId: string }) => `agent:${jobId}`,
-  topics: {
-    status: {
-      schema: z.object({
-        status: z.string(),
-        result: z.any().optional(),
-      }),
-    },
-  },
-});
+import socket from "@/lib/socket";
 
 //type of messages
 export type ChatMessage = {
@@ -59,43 +44,15 @@ export const useAgentChat = () => {
 
   const trpcUtils = trpc.useUtils();
 
-  // to generate realtime token token
-  const tokenFactory = useCallback(async () => {
-    if (!activeJobId) throw new Error("No active job");
-    const result = await trpcUtils.agent.getRealTimeToken.fetch({
-      quizId: activeJobId,
-    });
-    if (!result) throw new Error("Failed to get token");
-    return result.token;
-  }, [activeJobId, trpcUtils]);
-
-  const topics = ["status"] as const;
-  //to generate channel
-  const channel = useMemo(
-    () =>
-      activeJobId
-        ? agentChannel({ jobId: activeJobId })
-        : agentChannel({ jobId: "__none__" }),
-    [activeJobId],
-  );
-  //call realtime hook
-  const { messages: realtimeMessages } = useRealtime({
-    channel,
-    topics,
-    token: tokenFactory,
-    enabled: !!activeJobId,
-    bufferInterval: 100,
-    autoCloseOnTerminal: false,
-  });
-
-  const latestStatusMsg = realtimeMessages.byTopic.status;
-  console.log(latestStatusMsg);
-
   useEffect(() => {
-    if (!latestStatusMsg || !activeJobId) return;
-    if (processedJobIds.current.has(activeJobId)) return;
+    if (!activeJobId) return;
 
-    const payload = latestStatusMsg.data as { status: string; result?: any };
+    socket.connect();
+    socket.emit("join:agent", activeJobId);
+
+    const handleStatus = (payload: { status: string; result?: any }) => {
+      if (processedJobIds.current.has(activeJobId)) return;
+
     if (payload.status !== "done") return;
 
     // Mark this job as handled before any async work.
@@ -179,7 +136,15 @@ export const useAgentChat = () => {
     // Tear down the subscription and clear the loading state.
     setActiveJobId(null);
     setIsGenerating(false);
-  }, [latestStatusMsg, activeJobId]);
+    };
+
+    socket.on("status", handleStatus);
+
+    return () => {
+      socket.off("status", handleStatus);
+      socket.emit("leave:agent", activeJobId);
+    };
+  }, [activeJobId]);
 
   //handel send function
   const handleSend = async () => {

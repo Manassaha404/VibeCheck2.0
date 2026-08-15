@@ -1,5 +1,4 @@
 import { inngest } from "./client";
-import { realtime } from "inngest";
 import { z } from "zod";
 import { run } from "@openai/agents";
 import type { AgentInputItem } from "@openai/agents";
@@ -8,33 +7,7 @@ import FormRespondentAgentService from "../agent/formRespondentAgent";
 import { routerQuizBuilderAgent } from "../agent/quizBuilderAgent/createAgent";
 import db, { eq, and } from "@repo/database";
 import { quizBuilderAgentConversation } from "@repo/database/models/quiz-builder-agent-conversation";
-export const agentChannel = realtime.channel({
-  name: ({ jobId }: { jobId: string }) => `agent:${jobId}`,
-  topics: {
-    status: {
-      schema: z.object({
-        status: z.string(),
-        result: z.any().optional(),
-      }),
-    },
-  },
-});
-
-export const quizAgentChannel = realtime.channel({
-  name: ({ quizId }: { quizId: string }) => `quiz-agent:${quizId}`,
-  topics: {
-    status: {
-      schema: z.object({
-        status: z.string(),
-        result: z.any().optional(),
-        stage: z.string().optional(),
-        progress: z.any().optional(),
-        error: z.string().optional(),
-        timestamp: z.string().optional(),
-      }),
-    },
-  },
-});
+import { publisher } from "@repo/redis/pubsub";
 
 interface formBuilderAgentEventData {
   jobId: string;
@@ -76,9 +49,16 @@ const runFormBuilderAgent = inngest.createFunction(
   async ({ event, step }) => {
     const { jobId, prompt, userId, formId, currentFields } =
       event.data as formBuilderAgentEventData;
-    const ch = agentChannel({ jobId });
-    await step.realtime.publish("agent-running", ch.status, {
-      status: "running",
+    
+    await step.run("publish-agent-running", async () => {
+      await publisher.publish(
+        "redis:agent:status",
+        JSON.stringify({
+          jobId,
+          topic: "status",
+          payload: { status: "running" },
+        })
+      );
     });
     const result = await step.run("call-openai", async () => {
       try {
@@ -103,9 +83,15 @@ const runFormBuilderAgent = inngest.createFunction(
         throw error;
       }
     });
-    await step.realtime.publish("agent-done", ch.status, {
-      status: "done",
-      result,
+    await step.run("publish-agent-done", async () => {
+      await publisher.publish(
+        "redis:agent:status",
+        JSON.stringify({
+          jobId,
+          topic: "status",
+          payload: { status: "done", result },
+        })
+      );
     });
   },
 );
@@ -120,9 +106,16 @@ const runFormRespondentAgent = inngest.createFunction(
   async ({ event, step }) => {
     const { jobId, formId, guestToken, userMessage } =
       event.data as formRespondentEventData;
-    const ch = agentChannel({ jobId });
-    await step.realtime.publish("agent-running", ch.status, {
-      status: "running",
+    
+    await step.run("publish-respondent-running", async () => {
+      await publisher.publish(
+        "redis:agent:status",
+        JSON.stringify({
+          jobId,
+          topic: "status",
+          payload: { status: "running" },
+        })
+      );
     });
     const result = await step.run("call-openai", async () => {
       try {
@@ -146,9 +139,15 @@ const runFormRespondentAgent = inngest.createFunction(
         throw error;
       }
     });
-    await step.realtime.publish("agent-done", ch.status, {
-      status: "done",
-      result,
+    await step.run("publish-respondent-done", async () => {
+      await publisher.publish(
+        "redis:agent:status",
+        JSON.stringify({
+          jobId,
+          topic: "status",
+          payload: { status: "done", result },
+        })
+      );
     });
   },
 );
@@ -163,10 +162,16 @@ const runQuizBuilderAgent = inngest.createFunction(
   async ({ event, step }) => {
     const { userId, quizId, input, conversationId } =
       event.data as quizBuilderAgentEventData;
-    const ch = quizAgentChannel({ quizId });
 
-    await step.realtime.publish("agent-running", ch.status, {
-      status: "running",
+    await step.run("publish-quiz-running", async () => {
+      await publisher.publish(
+        "redis:quiz-agent:status",
+        JSON.stringify({
+          quizId,
+          topic: "status",
+          payload: { status: "running" },
+        })
+      );
     });
 
     const result = await step.run("call-openai", async () => {
@@ -207,9 +212,15 @@ const runQuizBuilderAgent = inngest.createFunction(
       }
     });
 
-    await step.realtime.publish("agent-done", ch.status, {
-      status: "done",
-      result: { ...(result as any), quizId },
+    await step.run("publish-quiz-done", async () => {
+      await publisher.publish(
+        "redis:quiz-agent:status",
+        JSON.stringify({
+          quizId,
+          topic: "status",
+          payload: { status: "done", result: { ...(result as any), quizId } },
+        })
+      );
     });
   },
 );

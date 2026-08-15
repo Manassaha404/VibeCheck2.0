@@ -1,8 +1,6 @@
 import { useState, useRef, useEffect, useCallback, useMemo } from "react";
 import { trpc } from "@/trpc/client";
-import { useRealtime } from "inngest/react";
-import { realtime } from "inngest";
-import { z } from "zod";
+import socket from "@/lib/socket";
 
 export interface Message {
   id: string;
@@ -10,18 +8,6 @@ export interface Message {
   text: string;
   timestamp: Date;
 }
-
-const agentChannel = realtime.channel({
-  name: ({ jobId }: { jobId: string }) => `agent:${jobId}`,
-  topics: {
-    status: {
-      schema: z.object({
-        status: z.string(),
-        result: z.any().optional(),
-      }),
-    },
-  },
-});
 
 export function useAgentChat(
   formId: string,
@@ -47,45 +33,19 @@ export function useAgentChat(
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
-  const tokenFactory = useCallback(async () => {
-    if (!activeJobId) throw new Error("No active job");
-    const result = await utils.agent.getRealTimeToken.fetch({
-      quizId: activeJobId,
-    });
-    if (!result) throw new Error("Failed to get token");
-    return result.token;
-  }, [activeJobId, utils]);
-
-  const topics = ["status"] as const;
-  const channel = useMemo(
-    () =>
-      activeJobId
-        ? agentChannel({ jobId: activeJobId })
-        : agentChannel({ jobId: "__none__" }),
-    [activeJobId],
-  );
-
-  const { messages: realtimeMessages } = useRealtime({
-    channel,
-    topics,
-    token: tokenFactory,
-    enabled: !!activeJobId,
-    bufferInterval: 100,
-    autoCloseOnTerminal: false,
-  });
-
-  const latestStatusMsg = realtimeMessages.byTopic.status;
-
   useEffect(() => {
-    if (!latestStatusMsg || !activeJobId) return;
-    if (processedJobIds.current.has(activeJobId)) return;
+    if (!activeJobId) return;
 
-    const payload = latestStatusMsg.data as { status: string; result?: any };
-    if (payload.status !== "done") return;
+    socket.connect();
+    socket.emit("join:agent", activeJobId);
 
-    processedJobIds.current.add(activeJobId);
+    const handleStatus = (payload: { status: string; result?: any }) => {
+      if (processedJobIds.current.has(activeJobId)) return;
+      if (payload.status !== "done") return;
 
-    const data = payload.result;
+      processedJobIds.current.add(activeJobId);
+
+      const data = payload.result;
 
     if (data?.error) {
       let displayMessage = `⚠️ Something went wrong: ${data.message}. Please try again.`;
@@ -151,7 +111,15 @@ export function useAgentChat(
 
     setActiveJobId(null);
     setIsTyping(false);
-  }, [latestStatusMsg, activeJobId]);
+    };
+
+    socket.on("status", handleStatus);
+
+    return () => {
+      socket.off("status", handleStatus);
+      socket.emit("leave:agent", activeJobId);
+    };
+  }, [activeJobId]);
 
   const chatMutation = trpc.agent.respondentAgentChat.useMutation({
     onSuccess: (data) => {

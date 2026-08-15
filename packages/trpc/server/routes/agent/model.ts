@@ -36,9 +36,6 @@ export const clearHistoryDto = z.object({
   formId: z.string().uuid("formId must be a valid UUID"),
 });
 
-export const getRealTimeTokenDto = z.object({
-  quizId: z.string().optional(),
-});
 
 export type generateFormType = z.infer<typeof generateFormDto>;
 export type clearHistoryType = z.infer<typeof clearHistoryDto>;
@@ -58,13 +55,6 @@ export type StoreDocumentsEmbeddingsDto = z.infer<
   typeof storeDocumentsEmbeddingsDto
 >;
 
-export const getDocumentRealTimeTokenDto = z.object({
-  quizId: z.string().uuid("quizId must be a valid UUID"),
-});
-
-export type GetDocumentRealTimeTokenDto = z.infer<
-  typeof getDocumentRealTimeTokenDto
->;
 
 export const runQuizBuilderAgentDto = z.object({
   prompt: z.string().min(1, "Prompt cannot be empty"),

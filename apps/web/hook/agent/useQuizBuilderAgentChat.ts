@@ -2,24 +2,10 @@
 
 import { useState, useCallback, useRef, useEffect, useMemo } from "react";
 import { trpc } from "@/trpc/client";
-import { useRealtime } from "inngest/react";
-import { realtime } from "inngest";
-import { z } from "zod";
 import type { AgentMessage } from "@/components/agent-chat/AgentMessageBubble";
 import { useQuizStore, Question } from "@/store/quizStore";
 import { useAgentSessionStore } from "@/store/agentSessionStore";
-
-const quizAgentChannel = realtime.channel({
-  name: ({ quizId }: { quizId: string }) => `quiz-agent:${quizId}`,
-  topics: {
-    status: {
-      schema: z.object({
-        status: z.string(),
-        result: z.any().optional(),
-      }),
-    },
-  },
-});
+import socket, { joinRoom, leaveRoom } from "@/lib/socket";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -134,38 +120,15 @@ export function useQuizBuilderAgentChat(
 
   const trpcUtils = trpc.useUtils();
 
-  // ── Inngest realtime subscription ──────────────────────────────────────────
-  const tokenFactory = useCallback(async () => {
-    const result = await trpcUtils.agent.getRealTimeToken.fetch({
-      quizId,
-    });
-    if (!result) throw new Error("Failed to get realtime token");
-    return result.token;
-  }, [quizId, trpcUtils]);
-
-  const topics = ["status"] as const;
-
-  const channel = useMemo(() => quizAgentChannel({ quizId }), [quizId]);
-
-  const { messages: realtimeMessages } = useRealtime({
-    channel,
-    topics,
-    token: tokenFactory,
-    enabled: true,
-    bufferInterval: 100,
-    autoCloseOnTerminal: false,
-  });
-
-  const latestStatusMsg = realtimeMessages.byTopic.status;
-
   // ── Handle realtime status updates ────────────────────────────────────────
   useEffect(() => {
-    if (!latestStatusMsg) return;
+    if (!quizId) return;
 
-    const payload = latestStatusMsg.data as {
-      status: string;
-      result?: any;
-    };
+    socket.connect();
+    joinRoom("join:quiz-agent", quizId);
+
+    const handleStatus = (payload: { status: string; result?: any }) => {
+
 
     if (payload.status === "running") {
       setIsGenerating(true);
@@ -277,7 +240,15 @@ export function useQuizBuilderAgentChat(
     }
 
     setIsGenerating(false);
-  }, [latestStatusMsg]);
+    };
+
+    socket.on("status", handleStatus);
+
+    return () => {
+      socket.off("status", handleStatus);
+      leaveRoom("leave:quiz-agent", quizId);
+    };
+  }, [quizId]);
 
   // ── Send handler ──────────────────────────────────────────────────────────
   const handleSend = useCallback(async () => {

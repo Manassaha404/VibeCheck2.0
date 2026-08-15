@@ -15,9 +15,7 @@ import {
 import {
   generateFormDto,
   clearHistoryDto,
-  getRealTimeTokenDto,
   storeDocumentsEmbeddingsDto,
-  getDocumentRealTimeTokenDto,
   runQuizBuilderAgentDto,
   clearQuizBuilderHistoryDto,
 } from "./model";
@@ -27,8 +25,7 @@ import {
   agentGetSessionDto,
 } from "@repo/services/form/model";
 import { handleRouteError } from "../../utils/error";
-import { inngest, getClientSubscriptionToken } from "@repo/services/inngest";
-import { quizAgentChannel } from "@repo/services/inngest/agent-functions";
+import { inngest } from "@repo/services/inngest";
 
 export const agentRouter = router({
   generateForm: planRestrictedProcedure("ai_call_form")
@@ -50,26 +47,6 @@ export const agentRouter = router({
           jobId,
           message:
             "Agent is processing your request. You will receive updates on the status of the job.",
-        };
-      } catch (error) {
-        handleRouteError(error);
-      }
-    }),
-  getRealTimeToken: publicProcedure
-    .input(getRealTimeTokenDto)
-    .query(async ({ input }) => {
-      try {
-        const { quizId } = input;
-        const channel = quizAgentChannel({ quizId: quizId as string });
-
-        const token = await getClientSubscriptionToken(inngest, {
-          channel,
-          topics: ["status"],
-        });
-        return {
-          token,
-          message:
-            "Token generated successfully. Use this token to subscribe to the agent's status updates.",
         };
       } catch (error) {
         handleRouteError(error);
@@ -168,19 +145,6 @@ export const agentRouter = router({
       }
     }),
 
-  getDocumentRealTimeToken: protectedProcedure
-    .input(getDocumentRealTimeTokenDto)
-    .query(async ({ input }) => {
-      try {
-        const token = await getClientSubscriptionToken(inngest, {
-          channel: quizAgentChannel({ quizId: input.quizId }),
-          topics: ["status"],
-        });
-        return { token };
-      } catch (error) {
-        handleRouteError(error);
-      }
-    }),
 
   runQuizBuilderAgent: planRestrictedProcedure("ai_call_quiz")
     .input(runQuizBuilderAgentDto)

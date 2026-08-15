@@ -21,6 +21,9 @@ RUN pnpm install --frozen-lockfile
 
 COPY --from=builder /app/out/full/ .
 COPY turbo.json turbo.json
+
+
+
 RUN pnpm run build --filter=web...
 
 

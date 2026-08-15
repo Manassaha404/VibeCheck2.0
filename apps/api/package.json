@@ -21,6 +21,7 @@
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "multer": "^2.2.0",
+    "pdf-parse": "^2.4.5",
     "trpc-to-openapi": "^3.3.0",
     "zod": "^4.3.5"
   },

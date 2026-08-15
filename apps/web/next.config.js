@@ -7,6 +7,7 @@ const nextConfig = {
     "@repo/error",
     "@repo/services",
   ],
+  env: {},
 };
 
 export default nextConfig;

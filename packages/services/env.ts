@@ -16,7 +16,10 @@ const envSchema = z.object({
   RAZORPAY_KEY_ID: z.string(),
   RAZORPAY_KEY_SECRET: z.string(),
   REDIS_HOST: z.string().default("localhost"),
+  INNGEST_BASE_URL: z.string().optional(),
   INNGEST_SERVE_ORIGIN: z.string().default("http://localhost:8000"),
+  INNGEST_SIGNING_KEY: z.string().optional(),
+  INNGEST_EVENT_KEY: z.string().optional(),
 });
 
 function createEnv(env: NodeJS.ProcessEnv) {

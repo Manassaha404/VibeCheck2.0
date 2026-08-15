@@ -2,6 +2,7 @@ import { Server } from "socket.io";
 import { env } from "./env";
 import { registerPollSocket } from "./pollSocket";
 import { registerQuizSocket } from "./quizSocket";
+import { registerAgentSocket } from "./agentSocket";
 
 const io = new Server({
   cors: {
@@ -13,6 +14,8 @@ const io = new Server({
 
 registerPollSocket(io);
 registerQuizSocket(io);
+registerAgentSocket(io);
+
 const attachSocketServer = (httpServer: any) => {
   io.attach(httpServer);
 };

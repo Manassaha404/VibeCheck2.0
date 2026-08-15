@@ -1,29 +1,10 @@
 "use client";
 
 import { useState, useCallback, useMemo, useEffect, useRef } from "react";
-import { useRealtime } from "inngest/react";
-import { realtime } from "inngest";
-import { z } from "zod";
 import { trpc } from "@/trpc/client";
 import { useCloudinaryUpload } from "@/hook/uploads/useCloudinaryUpload";
 import { useAgentSessionStore } from "@/store/agentSessionStore";
-
-const quizAgentChannel = realtime.channel({
-  name: ({ quizId }: { quizId: string }) => `quiz-agent:${quizId}`,
-  topics: {
-    status: {
-      schema: z.object({
-        status: z.string(),
-        stage: z.string().optional(),
-        progress: z
-          .object({ totalChunks: z.number(), embeddedChunks: z.number() })
-          .optional(),
-        error: z.string().optional(),
-        timestamp: z.string().optional(),
-      }),
-    },
-  },
-});
+import socket, { joinRoom, leaveRoom } from "@/lib/socket";
 
 export type DocumentIngestStatus =
   "idle" | "uploading" | "indexing" | "ready" | "error";
@@ -73,46 +54,21 @@ export function useAgentFileUploadPipeline(): UseAgentFileUploadPipelineReturn {
 
   const storeDocumentsMutation =
     trpc.agent.quizBuilderAgentStoreDocuments.useMutation();
-  const trpcUtils = trpc.useUtils();
-
-  const channel = useMemo(
-    () =>
-      activeQuizId
-        ? quizAgentChannel({ quizId: activeQuizId })
-        : quizAgentChannel({ quizId: "__none__" }),
-    [activeQuizId],
-  );
-
-  const tokenFactory = useCallback(async () => {
-    if (!activeQuizId) throw new Error("No active quiz");
-    const result = await trpcUtils.agent.getRealTimeToken.fetch({
-      quizId: activeQuizId,
-    });
-    if (!result) throw new Error("Failed to get document realtime token");
-    return result.token;
-  }, [activeQuizId, trpcUtils]);
-
-  const { messages: realtimeMessages } = useRealtime({
-    channel,
-    topics: ["status"] as const,
-    token: tokenFactory,
-    enabled: !!activeQuizId && pipelineStatus === "indexing",
-    bufferInterval: 100,
-    autoCloseOnTerminal: false,
-  });
-
-  const latestStatus = realtimeMessages.byTopic.status;
-
   // Side effects belong in useEffect, not useMemo.
   useEffect(() => {
-    if (!latestStatus || !activeDocumentId) return;
+    if (!activeQuizId || pipelineStatus !== "indexing") return;
 
-    const data = latestStatus.data as {
+    socket.connect();
+    joinRoom("join:quiz-agent", activeQuizId);
+
+    const handleStatus = (data: {
       status: "uploaded" | "processing" | "ready" | "failed";
       stage?: string;
       progress?: { totalChunks: number; embeddedChunks: number };
       error?: string;
-    };
+    }) => {
+      if (!activeDocumentId) return;
+
 
     if (data.stage) setIndexingStage(data.stage);
     if (data.progress) setIndexingProgress(data.progress);
@@ -137,7 +93,15 @@ export function useAgentFileUploadPipeline(): UseAgentFileUploadPipelineReturn {
       setUploadStatus("error");
       pendingRef.current = null;
     }
-  }, [latestStatus, activeDocumentId]);
+    };
+
+    socket.on("status", handleStatus);
+
+    return () => {
+      socket.off("status", handleStatus);
+      leaveRoom("leave:quiz-agent", activeQuizId);
+    };
+  }, [activeQuizId, pipelineStatus, activeDocumentId]);
 
   const startPipeline = useCallback(
     async (

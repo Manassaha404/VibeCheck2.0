@@ -1,6 +1,6 @@
 //perfectly fine
 import { inngest } from "./client";
-import { quizAgentChannel } from "./agent-functions";
+import { publisher } from "@repo/redis/pubsub";
 import loadAnyDocument from "../agent/quizBuilderAgent/langchain/docloader";
 import { chunkAndTagDocuments } from "../agent/quizBuilderAgent/langchain/splitter";
 import { getVectorStore } from "../agent/quizBuilderAgent/langchain/vectorStore";
@@ -26,11 +26,15 @@ const ingestDocument = inngest.createFunction(
     const { documentId, fileUrl, conversationId, quizId } =
       event.data as ingestDocumentEventData;
 
-    const ch = quizAgentChannel({ quizId });
-
-    await step.realtime.publish("document-processing", ch.status, {
-      status: "processing",
-      stage: "downloading",
+    await step.run("publish-processing", async () => {
+      await publisher.publish(
+        "redis:quiz-agent:status",
+        JSON.stringify({
+          quizId,
+          topic: "status",
+          payload: { status: "processing", stage: "downloading" },
+        })
+      );
     });
 
     try {
@@ -62,19 +66,34 @@ const ingestDocument = inngest.createFunction(
         }
       });
 
-      await step.realtime.publish("document-chunking", ch.status, {
-        status: "processing",
-        stage: "chunking",
+      await step.run("publish-chunking", async () => {
+        await publisher.publish(
+          "redis:quiz-agent:status",
+          JSON.stringify({
+            quizId,
+            topic: "status",
+            payload: { status: "processing", stage: "chunking" },
+          })
+        );
       });
 
       const taggedChunks = await step.run("chunk-and-tag", async () => {
         return chunkAndTagDocuments(rawDocs, { conversationId });
       });
 
-      await step.realtime.publish("document-embedding", ch.status, {
-        status: "processing",
-        stage: "embedding",
-        progress: { totalChunks: taggedChunks.length, embeddedChunks: 0 },
+      await step.run("publish-embedding", async () => {
+        await publisher.publish(
+          "redis:quiz-agent:status",
+          JSON.stringify({
+            quizId,
+            topic: "status",
+            payload: {
+              status: "processing",
+              stage: "embedding",
+              progress: { totalChunks: taggedChunks.length, embeddedChunks: 0 },
+            },
+          })
+        );
       });
 
       const result = await step.run("store-embeddings", async () => {
@@ -83,22 +102,40 @@ const ingestDocument = inngest.createFunction(
         return { chunkCount: taggedChunks.length, ids };
       });
 
-      await step.realtime.publish("document-ready", ch.status, {
-        status: "ready",
-        stage: "done",
-        progress: {
-          totalChunks: result.chunkCount,
-          embeddedChunks: result.chunkCount,
-        },
+      await step.run("publish-ready", async () => {
+        await publisher.publish(
+          "redis:quiz-agent:status",
+          JSON.stringify({
+            quizId,
+            topic: "status",
+            payload: {
+              status: "ready",
+              stage: "done",
+              progress: {
+                totalChunks: result.chunkCount,
+                embeddedChunks: result.chunkCount,
+              },
+            },
+          })
+        );
       });
 
       return result;
     } catch (error) {
       const message = error instanceof Error ? error.message : "Unknown error";
 
-      await step.realtime.publish("document-failed", ch.status, {
-        status: "failed",
-        error: message,
+      await step.run("publish-failed", async () => {
+        await publisher.publish(
+          "redis:quiz-agent:status",
+          JSON.stringify({
+            quizId,
+            topic: "status",
+            payload: {
+              status: "failed",
+              error: message,
+            },
+          })
+        );
       });
 
       throw error;

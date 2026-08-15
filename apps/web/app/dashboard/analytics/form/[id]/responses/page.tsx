@@ -33,10 +33,6 @@ export default function FormResponsesPage() {
     search,
   });
 
-  if (isLoading) {
-    return <PageLoader />;
-  }
-
   // Reset to page 1 when search or limit changes
   const handleSearchChange = useCallback((val: string) => {
     setSearch(val);
@@ -53,6 +49,10 @@ export default function FormResponsesPage() {
     if (!data?.responses.length) return null;
     return data.responses[0]?.submittedAt ?? null;
   }, [data]);
+
+  if (isLoading) {
+    return <PageLoader />;
+  }
 
   return (
     <div className="text-ink-charcoal min-h-screen flex flex-col">

@@ -1,5 +1,4 @@
 import { serve } from "inngest/express";
-import { getClientSubscriptionToken } from "inngest/react";
 import { inngest } from "./client";
 import pollFunctions from "./poll-functions";
 import petitionFunctions from "./petition-functions";
@@ -17,4 +16,4 @@ export const inngestRouter = serve({
   serveOrigin: env.INNGEST_SERVE_ORIGIN ?? env.API_BASE_URL ?? "http://localhost:8000",
 });
 
-export { inngest, getClientSubscriptionToken };
+export { inngest };

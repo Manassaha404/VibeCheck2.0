@@ -23,6 +23,7 @@ export default function AgentChatPanel({
   quizId,
 }: AgentChatPanelProps) {
   const [showUpload, setShowUpload] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -91,6 +92,7 @@ export default function AgentChatPanel({
   }, [pipelineStatus, pipelineError, resetPipeline, pushMessage]);
 
   const handleFileSelect = async (file: File) => {
+    setSelectedFile(file);
     setShowUpload(false);
 
     pushMessage({
@@ -103,6 +105,8 @@ export default function AgentChatPanel({
       quizId,
       conversationId: conversationId ?? undefined,
     });
+
+    setSelectedFile(null);
   };
 
   const renderPipelineBanner = () => {
@@ -198,8 +202,8 @@ export default function AgentChatPanel({
         <div className="px-4 pt-3 pb-0 bg-canvas-cream border-t-2 border-ink-charcoal">
           <AgentFileUpload
             onFileSelect={handleFileSelect}
-            selectedFile={null}
-            onClear={() => {}}
+            selectedFile={selectedFile}
+            onClear={() => setSelectedFile(null)}
           />
         </div>
       )}

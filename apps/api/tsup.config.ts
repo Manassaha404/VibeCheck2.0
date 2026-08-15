@@ -5,6 +5,6 @@ export default defineConfig({
   format: ["cjs"],
   outDir: "dist",
   noExternal: ["@repo/trpc", "@repo/error", "@repo/services", "@repo/database", "@repo/logger"],
-  external: ["bcrypt"],
+  external: ["bcrypt", "pdf-parse"],
   clean: true,
 });
